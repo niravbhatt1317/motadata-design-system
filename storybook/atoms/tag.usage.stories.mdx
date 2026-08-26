@@ -1,0 +1,78 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Tag/Usage" />
+
+# Tag — Usage
+
+🟢 **Stable** · Atom — a compact label for categorization, metadata, status, or a removable
+selection. `MTag` (wraps Ant `a-tag`), plus the status variant `MStatusTag`.
+
+Decision rules below are mirrored in `registry/tag.json` (`decisionFlow` + `usageRules`).
+
+## Pick the right tag
+
+First match wins:
+
+1. **Are you letting the user TYPE/ADD tags?** → that's an input — use **`LooseTags`**, not Tag.
+2. **Does it show status / severity** (up/down, critical, success)? → **`MStatusTag`**.
+3. **Can the user remove it** (a selection/filter chip)? → **`MTag :closable="true"`**.
+4. **Is it a colored category label?** → **`MTag` + a `tag-*` class**.
+5. **Plain read-only label / metadata?** → **`MTag :closable="false"`**.
+
+## Use cases by type
+
+### Plain tag — `MTag :closable="false"`
+
+- **Use when:** a read-only label or metadata chip — a type, a count, a category name.
+- **Don't use when:** the user should be able to remove it (add `:closable`).
+- **Example:** an OS name, an environment label.
+
+### Removable chip — `MTag :closable="true"`
+
+- **Use when:** a **selection the user can dismiss** — applied filters, picked items.
+- **Note:** `closable` defaults to **true**, so display tags need `:closable="false"`.
+- **Example:** an active filter chip with an ×.
+
+### Colored category — `MTag class="tag-*"`
+
+- **Use when:** color-coding categories — `tag-red` / `tag-green` / `tag-yellow` /
+  `tag-orange` / `tag-purple` / `tag-unknown` / `tag-primary` (legible in both themes).
+- **Don't use:** the color `variant` **prop** — it's broken/illegible (finding F2). Use the
+  class.
+- **Example:** a severity-tinted category label.
+
+### Status / severity — `MStatusTag`
+
+- **Use when:** reflecting a **status string** (up/down/critical/paused/…) — it maps the
+  status to the right color + capitalized label automatically.
+- **Example:** a monitor's **Up** / **Down** state.
+
+### Pill — `:rounded`
+
+- **Use when:** a fully-rounded pill look is wanted (cosmetic).
+
+### State chips — `MTag class="…"` (tinted state classes)
+
+- **Use when:** showing a **count or provisioning state** with a tinted background — distinct from
+  the `tag-*` color classes (defined in `src/design/tags.less`). See the **State classes** story.
+- **`used-count-pill`** (48×, always `:rounded`) — a primary-text **count** chip (e.g. "3 used").
+- **`new`** (green) / **`provision`** (blue) / **`unprovision`** (orange) — provisioning **state**
+  badges. Apply via `class`, with `:closable="false"`.
+- **Example:** a "3 used" count pill in usage lists; **Provisioned / Unprovisioned** status chips.
+
+## Anatomy
+
+Container (`.ant-tag`) · label (default slot) · optional remove "×" (when `closable`).
+
+## Content
+
+Short noun/label; for removable chips the label is the selected value.
+
+## In the product
+
+**As seen in:** Plain/colored tags label categories and metadata in **grids**; **`MStatusTag`** shows a monitor's **Up/Down** state in the **monitor status sidebar** and **instance grids**; removable chips are the applied **filter chips**.
+
+## Related
+
+`MStatusTag` (status) · `LooseTags` (tag **input**) · `SelectedItemPills` (picker "+N" pills) ·
+`TagsList` (read-only overflow — dead; use `SelectedItemPills`).

@@ -1,0 +1,20 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Link/Changelog" />
+
+# Link — Changelog
+
+## 2026-06-07
+
+- Added to the design system — authored to the **decision-grade Usage** standard from the
+  start (link-vs-button decision flow + per-type cards, mirrored in `registry/link.json`).
+- Deep-dive of `_base-app-link.vue` (`FlotoLink`, **67× / 48 files**): default renders a
+  `RouterLink` (`<a>`); `as-button` renders an `MButton` that pushes the route on click; the
+  only own prop is `asButton` (everything else passes through `$attrs`).
+- Storybook: registered `FlotoLink` + a lightweight `RouterLink` stub and a `$router` stub in
+  the preview so links render and `as-button` clicks don't throw (no vue-router in SB).
+- Stories: Text link · As button · Playground — verified text link (`<a href>`) and as-button
+  (navigating MButton) render with no errors.
+- Findings: **F1** (`as-button` navigates as a `<button>`, not a real link — no
+  href/new-tab, a11y), **F2** (plain links have no default affordance — inherit text color).
+- **Closes the Button family's "Link" relative** — the navigation member.

@@ -1,0 +1,289 @@
+{
+  "name": "metric-picker",
+  "component": "metric-explorer/views/metric-explorer.vue + metric-picker.vue → counter-selector.vue → counter-list.vue",
+  "display": "Metric Picker",
+  "tier": "molecule",
+  "family": "Data Visualization",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The METRIC selection panel — a 'Select Monitor' dropdown on top (reuses obs-select) + optional Metric/Instance tabs + a SEARCH box + a flat, scrollable LIST of counter names (each row: an optional ⊕ add · the raw counterName · a drag handle). It is the AUTHORING side of the data-visualization workflow: pick/drag an entity's metrics onto a chart / widget (the charts themselves are app-rendered guides — this is the buildable selector that feeds them). Also used for alert/report metric fields. Data-driven: give it `monitors` + a flat `counters` list; it emits `select-monitor`, `add` and `drag`. Source-derived from metric-explorer/metric-picker.vue → counter-selector.vue → counter-list.vue.",
+  "selectHint": "The metric-explorer picker (monitor tabs → Select Monitor grid dropdown → Metric/Instance/Saved View → counter list with ⊕/drag) that feeds a chart? -> obs-metric-picker. A generic dropdown -> obs-select. A standalone monitor TABLE picker -> obs-grid-select. NAVIGATING sections -> obs-side-menu.",
+  "whenToUse": "Anywhere the user picks or drags a metric to build a chart / widget or a query: pick a monitor, then ⊕ / drag a counter from the searchable list (widget builder, metric explorer, alert/report metric fields).",
+  "insteadOf": [
+    "a bare obs-select of a flat metric list (loses the monitor step + the category grouping + search)",
+    "an obs-side-menu (that navigates; this selects a value)",
+    "a hand-built monitor dropdown + counter tree wired from scratch"
+  ],
+  "variants": [
+    {
+      "name": "explorer",
+      "what": "the full panel: monitor TABS (+ add) → Select Monitor grid dropdown (obs-grid-select) → Metric/Instance/Saved View tabs → search → counter list (⊕ add · counterName · 4-way drag).",
+      "usage": "the metric explorer / widget builder"
+    },
+    {
+      "name": "multi-monitor",
+      "what": "several monitor tabs (each closable with ×); the active tab’s counters show; + adds another from the grid picker.",
+      "usage": "comparing counters across monitors"
+    },
+    {
+      "name": "grid-monitor-picker",
+      "what": "the Select Monitor control opens obs-grid-select — a searchable monitor TABLE (MONITOR/IP/TYPE/GROUPS/TAGS, checkboxes, View Selected / Clear Selected).",
+      "usage": "choosing/adding monitors"
+    },
+    {
+      "name": "metric-only",
+      "what": "views=\"Metric\" drops the sub-tab strip (monitors with no instances / saved views).",
+      "usage": "simple monitors"
+    },
+    {
+      "name": "add-drag",
+      "what": "the counter rows are NOT a selection list — each is an ADD (⊕) + DRAG action; taking a counter (⊕ or drag-drop) REMOVES it from the list (no selected state).",
+      "usage": "the widget builder — add/drag counters onto a chart"
+    },
+    {
+      "name": "embedded",
+      "what": "scoped mode (embedded=true) — no monitor tabs, no Select Monitor; starts at the Metric/Instance/Saved View tabs + search + counter list for one fixed monitor.",
+      "usage": "a monitor detail screen’s Metric Explorer tab"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "bordered panel; list scrolls at ~320px, 40px rows",
+      "note": "a bordered card: monitor tabs + Select Monitor grid + sub-tabs + search + a flat counter list (40px rows, scrolls ~340px). Width is set by the container (a drawer / side panel)."
+    }
+  ],
+  "states": [
+    {
+      "name": "browsing",
+      "what": "a monitor tab is active with a monitor picked; its counter list shows (⊕ / drag per row)."
+    },
+    {
+      "name": "searching",
+      "what": "the search box filters the counter list by name (case-insensitive)."
+    },
+    {
+      "name": "empty-tab",
+      "what": "a new / blank monitor tab (no monitor picked yet) shows the “Select a monitor to see its metrics” placeholder — the Select Monitor grid is blank."
+    },
+    {
+      "name": "taken",
+      "what": "a counter added (⊕) or dragged out LEAVES the list; when the list empties it reads “All counters added”."
+    }
+  ],
+  "props": {
+    "monitors": {
+      "type": "array|string",
+      "default": "",
+      "note": "the monitor TABLE rows the grid picker opens: [{id,name,ip,type,groups?,tags?,sev?}] (reuses obs-grid-select, SINGLE-select — one monitor per tab; `sev` → the status ring, `type` → the monitor-type icon)."
+    },
+    "monitor-columns": {
+      "type": "array|string",
+      "default": "(MONITOR/IP/TYPE/GROUPS/TAGS)",
+      "note": "override the grid columns [{key,title,type?,sortable?}]; default is MONITOR(severity)/IP/TYPE(type-icon)/GROUPS/TAGS."
+    },
+    "selected": {
+      "type": "array|string",
+      "default": "",
+      "note": "the INITIAL open monitor tabs — ids [\"xen75\"] (one tab each; the element then manages add/close at runtime). Empty → one blank tab."
+    },
+    "active": {
+      "type": "string",
+      "default": "",
+      "note": "the INITIAL active monitor id."
+    },
+    "counters": {
+      "type": "array|string",
+      "default": "",
+      "note": "the flat counter list for the active monitor: [\"ping.latency.ms\", …] or [{name}] — raw counterName rows, like the product counter-list."
+    },
+    "metrics": {
+      "type": "array|string",
+      "default": "",
+      "note": "alias: also accepts a grouped tree [{label,items:[{name}]}] and FLATTENS it into the counter list."
+    },
+    "views": {
+      "type": "string",
+      "default": "Metric,Instance,Saved View",
+      "note": "the sub-tab labels (comma list); one label → no strip (reuses obs-tabs)."
+    },
+    "can-add": {
+      "type": "boolean",
+      "default": true,
+      "note": "show the ⊕ (add) on the left and the 4-way drag handle on the right of each counter row (the explorer/widget-builder default = true); the ⊕ emits `add`."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Search",
+      "note": "the search field placeholder."
+    },
+    "embedded": {
+      "type": "boolean",
+      "default": false,
+      "note": "SCOPED to one already-known monitor: hide the monitor tabs + the Select Monitor grid and go straight to the Metric/Instance/Saved View tabs + search + counter list. Use it on a monitor-detail screen’s Metric Explorer tab (the monitor is fixed — pass its `counters`)."
+    }
+  },
+  "events": [
+    {
+      "name": "select-monitor",
+      "detail": "{value}",
+      "note": "a monitor tab was clicked, or the grid selection changed (the active/selected monitor)."
+    },
+    {
+      "name": "add-monitor",
+      "detail": "none",
+      "note": "the + button was clicked (open the grid picker to add a monitor)."
+    },
+    {
+      "name": "remove-monitor",
+      "detail": "{value}",
+      "note": "a monitor tab’s × was clicked."
+    },
+    {
+      "name": "view",
+      "detail": "{value}",
+      "note": "the Metric/Instance/Saved View sub-tab changed."
+    },
+    {
+      "name": "add",
+      "detail": "{name}",
+      "note": "the ⊕ on a counter row was clicked (add it to the chart)."
+    },
+    {
+      "name": "drag",
+      "detail": "{name}",
+      "note": "a counter row is being dragged out (HTML5 drag); on a successful drop it LEAVES the list."
+    },
+    {
+      "name": "search",
+      "detail": "{query}",
+      "note": "the counter search text changed."
+    }
+  ],
+  "slots": {},
+  "decisionFlow": [
+    "The metric-explorer picker (monitor tabs → Select Monitor grid → Metric/Instance/Saved View → counter list)? -> obs-metric-picker.",
+    "Just a generic single-value dropdown? -> obs-select, NOT this.",
+    "A standalone monitor TABLE picker (no counter list)? -> obs-grid-select (this composes it as the Select Monitor control).",
+    "NAVIGATING between pages/sections (it looks like a list too)? -> obs-side-menu — that navigates; this selects a value.",
+    "Comparing several monitors? -> pass several ids in `selected` → one closable tab each; the + adds more via the grid picker.",
+    "Building a widget (add/drag counters onto a chart)? -> keep can-add on (default) — the ⊕ + 4-way drag per row.",
+    "Instance-based monitor (disks / interfaces)? -> keep the Instance sub-tab (views default includes it).",
+    "Counter rows are ADD/DRAG actions (⊕ to add, drag onto a chart) — NOT a persistent selection. Taking a counter removes it from the list; emits add / drag.",
+    "Already on a specific monitor’s detail screen (the monitor is fixed)? -> `embedded` hides the monitor tabs + Select Monitor and shows just the Metric/Instance/Saved View tabs + counter list."
+  ],
+  "usageRules": {
+    "explorer": {
+      "useWhen": "the metric explorer / widget builder — pick a monitor, then a counter to plot",
+      "dontUse": "a simple flat single-select (obs-select) or navigation (obs-side-menu)",
+      "example": "monitor xen75 cluster → Metric tab → ⊕ citrix.xen.cluster.cpu.cores",
+      "asSeenIn": "metric-explorer/views/metric-explorer.vue + counter-list.vue"
+    },
+    "multi-monitor": {
+      "useWhen": "comparing counters across several monitors in one panel",
+      "dontUse": "a single monitor (one tab, no ×)",
+      "example": "selected=[\"xen75\",\"url1\"] → two closable tabs"
+    },
+    "grid-monitor-picker": {
+      "useWhen": "choosing/adding a monitor from a rich table (name/ip/type/groups/tags, status, checkboxes)",
+      "dontUse": "a plain name dropdown (that loses the columns/search/multi-select)",
+      "example": "click Select Monitor → the obs-grid-select monitor table"
+    },
+    "metric-only": {
+      "useWhen": "the monitor has no instances / saved views — hide the sub-tabs",
+      "dontUse": "an instance-based monitor (keep Instance)",
+      "example": "views=\"Metric\""
+    },
+    "add-drag": {
+      "useWhen": "the rows are actions (add to / drag onto a chart), not a value to keep selected",
+      "dontUse": "a single-value picker where the choice persists (use obs-select)",
+      "example": "⊕ adds the counter (and it disappears from the list); drag it onto a chart to move it out"
+    },
+    "embedded": {
+      "useWhen": "the monitor is already known (a monitor detail screen) — no need to pick/add monitors",
+      "dontUse": "the global metric explorer where the user chooses monitors (leave embedded off)",
+      "example": "embedded counters=[…] → straight to Metric/Instance + the counter list"
+    }
+  },
+  "usage": {
+    "total": 1,
+    "files": 1,
+    "byModule": {
+      "metric-explorer": 1
+    },
+    "note": "The widget builder / metric explorer metric field. The product wires it to CounterProvider (loads counters per monitor); the DS element is data-driven (feed `monitors` + the `metrics` tree)."
+  },
+  "do": [
+    "Use it to AUTHOR a visualization — pick a monitor, then ⊕ or drag a counter onto a chart / widget.",
+    "Load the monitor’s counters on `select-monitor` and feed them as the flat `counters` list.",
+    "Use `embedded` on a monitor-detail screen (the monitor is already known — no monitor tabs / Select Monitor).",
+    "Wire `add` (⊕) and `drag` to add the counter to your chart; both then remove it from the list.",
+    "Add monitors with the \"+\" (a new blank tab); close extras with a tab’s × (shown only when there is more than one)."
+  ],
+  "dont": [
+    "Don’t use it as a generic dropdown — that’s obs-select; or a bare monitor table — that’s obs-grid-select.",
+    "Don’t confuse it with navigation — it looks like obs-side-menu but AUTHORS a value (a counter to plot), it doesn’t route.",
+    "Don’t treat the counter rows as a persistent selection — they are ADD / DRAG actions (there is no selected state).",
+    "Don’t hardcode colours — it uses tokens (border / neutral / primary / text)."
+  ],
+  "a11y": {
+    "summary": "Composed from labelled DS parts: the MONITOR tabs are obs-tabs (role=tablist/tab; each × is a role=button, aria-label \"Close tab\", shown only when >1; the + is an obs-button, aria-label \"Add monitor\"). Select Monitor is obs-grid-select — a searchable, SINGLE-select table with keyboard-navigable rows. The Metric / Instance / Saved View sub-tabs are obs-tabs. Search is a labelled obs-input. Each counter row is a draggable item with a real ⊕ button (aria-label \"Add counter\") on the left + a decorative drag handle on the right — because native drag-and-drop is pointer-only, the ⊕ is the KEYBOARD-accessible way to add a counter.",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "Counter rows use HTML5 drag (pointer-only). The ⊕ button provides the keyboard / assistive-tech path to add a counter; ensure any drop target also offers a non-drag alternative."
+      },
+      {
+        "severity": "low",
+        "issue": "A counter leaving the list (added or dragged) and a monitor-tab switch are visual-only changes — announce them via an aria-live region so screen-reader users track the state."
+      }
+    ],
+    "doc": "Molecules/Metric Picker/Accessibility",
+    "notes": "Give the search a discernible name (placeholder + aria). The ⊕ is the keyboard/AT path to add a counter (drag is pointer-only). Each monitor tab’s × should convey which monitor it closes. Announce counter add/remove + the active-monitor switch via a live region. In `embedded` mode there is no monitor step — focus lands on the sub-tabs / search."
+  },
+  "knownIssues": [
+    "The counter list is a flat ADD / DRAG list (matches counter-list.vue) — there is no per-counter INSTANCE sub-selection UI; the Instance tab is a strip only and instance data is consumer-provided. Drag removal needs a real drop target (a chart); the ⊕ is the always-available add path.",
+    "The Select Monitor grid is SINGLE-select (one monitor per tab) — multiple monitors are handled via the closable/addable monitor tabs, not multi-select in the grid."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--neutral-lightest",
+    "--neutral-light",
+    "--neutral-regular",
+    "--primary",
+    "--text-color-common-secondary"
+  ],
+  "related": [
+    "grid-select",
+    "tabs",
+    "input",
+    "select",
+    "data-viz",
+    "side-menu",
+    "dropdown-picker"
+  ],
+  "changelog": [
+    {
+      "date": "2026-08-12",
+      "change": "Added a theme-aware scrollbar (--utility-scrollbar-thumb) to the counter list so it no longer renders the browsers bright default scrollbar in dark theme."
+    },
+    "2026-07-23 — Docs completeness pass: refreshed states (browsing / searching / empty-tab / taken), a11y (obs-tabs monitor tabs + obs-grid-select single-select + the ⊕ as the keyboard add path since drag is pointer-only), do/dont (author-a-visualization + embedded + add/drag, no selected state), knownIssues (flat add/drag list; single-select grid; instance data consumer-provided) and tokensUsed to match the shipped component. No API change.",
+    "2026-07-23 — Family move (owner): re-homed from Form Controls to DATA VISUALIZATION. It is a domain composite whose purpose is authoring a visualization (pick/drag an entity’s metrics onto a chart/widget), not a generic form input — so it belongs with the charting workflow (the buildable selector that feeds the chart-type guides), not with dropdown/select/input.",
+    "2026-07-23 — Polish (owner): panel top padding 10→8px (0 in embedded mode); the Select Monitor label now matches the DS input/form-item label (0.8rem, normal weight, muted slate) instead of a bold blue label.",
+    "2026-07-23 — Added an `embedded` variant (owner): a scoped mode with NO monitor tabs and NO Select Monitor — it starts straight at the Metric/Instance/Saved View tabs + search + counter list for one already-known monitor (a monitor-detail screen’s Metric Explorer tab).",
+    "2026-07-23 — Product-behaviour pass (owner): the MONITOR tabs now REUSE obs-tabs (closable+addable) — the \"+\" (far right) adds a new BLANK tab, each tab is closable with × ONLY when there is more than one; a new/blank tab shows an empty list until a monitor is picked. The Select Monitor grid is now SINGLE-select (one monitor per tab; multi-select removed). Tightened the counter-list spacing so the drag handle is no longer clipped on the right.",
+    "2026-07-22 — Product-behaviour fix (owner): the counter rows are now ADD/DRAG actions, not a selection list — no selected state; clicking the ⊕ adds a counter (emits add) and drag-drop moves it out (emits drag), and either way it LEAVES the list. The + add-monitor button moved to the far RIGHT of the tab strip. Removed the `value`/`select` selection API.",
+    "2026-07-22 — Product-match rebuild (owner): rebuilt to the real metric-explorer — MONITOR tabs (closable + \"+\") + a Select Monitor GRID dropdown (now REUSES obs-grid-select: monitor table + checkboxes + View/Clear Selected) + Metric/Instance/Saved View tabs (obs-tabs) + search (obs-input) + a flat counter list where each row is ⊕ add · counterName · a 4-way drag handle (can-add defaults TRUE, the explorer default). New props: monitors(table)/selected(tabs)/active/views; removed the plain monitor-select shape.",
+    "2026-07-22 — Reuse pass (owner): the search box now REUSES obs-input (search-icon prefix + allow-clear) and the Metric/Instance tabs REUSE obs-tabs, instead of hand-built input/buttons (the monitor picker already reused obs-select). Only the flat counter row stays a native button (no DS list-row primitive).",
+    "2026-07-22 — Product-match fix (owner): rebuilt the panel to match the real counter-selector / counter-list — a flat, searchable LIST of raw counter names (not a grouped category tree), with a search box (icon + clear), an optional + add / drag handle per row (`can-add`), and optional Metric/Instance `tabs`. Props: `counters` (flat) replaces the grouped tree emphasis (`metrics` still accepted + flattened); removed the invented unit-per-group grouping.",
+    "2026-07-22 — Shipped obs-metric-picker (Form Controls family): the two-part metric selection panel — a 'Select Monitor' dropdown (reuses obs-select) + a searchable, grouped counter TREE (categories → counters with units), with expand/collapse, cross-group search, an empty (no-monitor) placeholder, and a highlighted selection. Emits select-monitor / select / search. Source-derived from metric-explorer/components/metric-picker.vue (a turnkey preset over obs-select tree-select — closes the metric-picker recipe with a real element)."
+  ],
+  "storybook": "Molecules/Metric Picker",
+  "figma": {
+    "status": "not-started",
+    "component": "Metric Picker"
+  }
+}

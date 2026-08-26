@@ -1,0 +1,53 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Navigation/Changelog" />
+
+# Navigation — Changelog
+
+- **2026-06-16 (full per-module sweep)** — Ran the per-module agent fan-out across **all** modules to
+  close the family. Added **6** previously-missed components: **User account menu** (`user-dropdown.vue`),
+  **Notification dropdown** (`notification-dropdown.vue`), **Global search / Omnibox**
+  (`omnibox/searchbar.vue`), **NOC Player** (`noc-player.vue` — wallboard rotator), **Timeline scrollbar**
+  (`netroute/timeline-scrollbar.vue` — temporal navigator), and the **Graph expansion breadcrumb**
+  (`netroute/graph-view.vue` — a Breadcrumb variant). All verified light + dark. **Cross-referenced** (no
+  new entry): topology Full/Tree + chart-type selectors → Radio (segmented); topology/APM/Alert tabs →
+  Tabs; ViewDetailDrawer → Drawer+Tabs; faceted sidebars → Filters (Vertical filter). **Scoped out**
+  (not navigation): swap/reorder control, role-navigation settings form, flame-graph zoom, Layer-3
+  toggle, keyboard-shortcuts tooltip.
+- **2026-06-16 (left-panel sweep)** — Owner flagged the **Side menu** was under-catalogued (only the
+  Settings section menu). Ran the **per-module agent fan-out** and found "side menu" is really a *family*
+  of left-panels. Added three **Side menu** variant stories — **Tree** (Log Explorer / Topology
+  hierarchy: chevron + type icon + count badge + nested, on `infinite-tree.vue`), **Categories**
+  (Dashboard: segmented tabs + count badges + favourites, `dashboard-dropdown.vue`), **List / Saved
+  views** (Report `report-sidebar.vue` + `ExplorerSavedViewList`: tabs + active + pencil-edit) — plus a
+  **Metric picker** story (Metric Explorer; a *picker*, cross-referenced). The **faceted checkbox
+  sidebar** is a *Filter*, not navigation → added as **Vertical filter** under **Molecules/Filters**.
+  All verified light + dark.
+- **2026-06-16** — Primary nav — added **item hover states** for **both themes** (the product
+  `--nav-hover-bg` token: a darker tint on the light panel, a lighter tint on the dark panel), distinct
+  from the active pill and the resting state. Verified light + dark.
+- **2026-06-16** — Added a **second Steps example** — **Setup guide steps** (the vertical
+  `product-setup/guide-section-step.vue` pattern: rounded index box, number → green ✓ when done, title +
+  description) next to the horizontal report-builder wizard. Verified light + dark.
+- **2026-06-16** — Fidelity pass (round 2, vs a product screenshot) — corrected the Primary nav **logo**
+  to the real **ObserveOps donut mark** (coral wedge + ring + hollow centre), the **active item** to a
+  **filled rounded pill** (no left rule), the **BETA** tag to a grey pill, and added the bottom
+  **MaskGroup** decoration. Also **corrected the Steps source** — the product has **no `MSteps`**; its
+  steppers are bespoke (`report-steps.vue`, the `product-setup` guide, and 2FA setup).
+- **2026-06-16** — Recheck — **rebuilt Primary nav for product fidelity** against the real
+  `FlotoNavBar`: collapsible sidebar (**collapsed 65px → hover-expand 170px**), the **ObserveOps** logo,
+  the real **16 modules** with their registered icons, the **SLO BETA** tag, and the `--primary` active
+  highlight + inset left rule. Verified collapsed + expanded in **both light and dark** themes. Recheck
+  sweep: **Pagination** (79×) → cross-referenced to the **Table** family; **menu toggle** folded into
+  the collapsed↔expanded variant; flyout/mega-menus (`MSubMenu`) confirmed **absent** (0×).
+- **2026-06-16** — Added — the **Navigation** family (wayfinding by archetype), surfaced during the
+  Toolbars recheck (navigation ≠ toolbar). Archetypes: **Primary nav** (`FlotoNavBar` — left module
+  sidebar), **Side menu** (`settings/left-menu`, **20×** — searchable collapsible section nav),
+  **Steps** (`MSteps` — numbered wizard with completed/current/remaining), **Breadcrumb** (back +
+  trail), **Back button** (`FlotoBackButton`, 3×). **Tabs** (`MTab`, 86×) stay their **own family**
+  (Molecules/Tabs), cross-referenced.
+- **Stories:** Primary nav · Side menu · Steps · Breadcrumb · Back button — interactive where it helps
+  (active module, collapse sections, pick a step). Reproductions (router/store-bound); verified render,
+  no console errors. Fixed a nested-backtick syntax error in the side-menu chevron during the build.
+- **A11y** flagged: nav landmarks + `aria-current` + focus ring + stepper semantics (F2).
+- Related: **Tabs** · **Toolbars** (Page header hosts back/breadcrumb) · `MMenu` / `MCollapse` · Input.

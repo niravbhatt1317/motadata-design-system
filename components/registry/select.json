@@ -1,0 +1,259 @@
+{
+  "name": "select",
+  "component": "MSelect",
+  "display": "Select",
+  "tier": "atom",
+  "category": "form-control",
+  "source": "mkit",
+  "sourceFile": "ui/components/Select/Select.vue",
+  "status": "low-use",
+  "maturity": "low-use",
+  "summary": "Kit's raw Ant a-select wrapper. LOW-USE (2x, both mode=tags) — the product's select is FlotoDropdownPicker (510x). Modes default/multiple/tags; v-model value/change.",
+  "variants": [
+    {
+      "name": "single",
+      "what": "single select (default, rare)",
+      "usage": ""
+    },
+    {
+      "name": "multiple",
+      "what": "multi-select chips",
+      "usage": ""
+    },
+    {
+      "name": "tags",
+      "what": "free-type (mode=tags)",
+      "usage": "2×"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "small",
+      "value": "compact",
+      "note": ""
+    },
+    {
+      "name": "default",
+      "value": "normal",
+      "note": ""
+    },
+    {
+      "name": "large",
+      "value": "expanded",
+      "note": ""
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "what": "resting"
+    },
+    {
+      "name": "focus",
+      "what": "no ring (SF-001)"
+    },
+    {
+      "name": "open",
+      "what": "dropdown visible"
+    },
+    {
+      "name": "disabled",
+      "what": "greyed"
+    },
+    {
+      "name": "loading",
+      "what": "chevron → spinner"
+    }
+  ],
+  "family": "Form Controls",
+  "model": {
+    "prop": "value",
+    "event": "change"
+  },
+  "optionShape": {
+    "value": "value || key || id",
+    "label": "text || label || title || name",
+    "disabled": "option.disabled"
+  },
+  "props": {
+    "mode": {
+      "type": "string",
+      "default": "default",
+      "enum": [
+        "default",
+        "multiple",
+        "tags",
+        "combobox"
+      ]
+    },
+    "options": {
+      "type": "array",
+      "note": "{ value, text } objects; or slot a-select-option"
+    },
+    "showSearch": {
+      "type": "boolean",
+      "default": false
+    },
+    "allowClear": {
+      "type": "boolean",
+      "default": true
+    },
+    "size": {
+      "type": "string",
+      "default": "default",
+      "enum": [
+        "small",
+        "default",
+        "large"
+      ]
+    },
+    "loading": {
+      "type": "boolean",
+      "note": "chevron -> spinner"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "maxTagCount": {
+      "type": "number"
+    },
+    "labelInValue": {
+      "type": "boolean"
+    },
+    "filterOption": {
+      "type": [
+        "boolean",
+        "function"
+      ],
+      "note": "default case-insensitive on label"
+    },
+    "tokenSeparators": {
+      "type": "array"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Select..."
+    }
+  },
+  "events": [
+    "change",
+    "search",
+    "select",
+    "deselect",
+    "blur",
+    "focus",
+    "inputKeydown",
+    "popupScroll",
+    "dropdownVisibleChange"
+  ],
+  "slots": [
+    "default/option",
+    "suffixIcon",
+    "clearIcon",
+    "removeIcon",
+    "menuItemSelectedIcon",
+    "notFoundContent (MNoData)",
+    "dropdownRender"
+  ],
+  "anatomy": [
+    "trigger (value/placeholder + chevron)",
+    "selected chips (multiple/tags)",
+    "dropdown options list",
+    "no-data (MNoData)"
+  ],
+  "tokensUsed": [
+    "--page-background-color",
+    "--border-color",
+    "--page-text-color",
+    "@input-height-base"
+  ],
+  "accessibility": {
+    "semantics": "real Ant combobox — role/aria-expanded/aria-activedescendant, listbox/options, keyboard open + type-ahead",
+    "note": "MORE accessible than FlotoDropdownPicker (SF-003); a reference for fixing SF-003",
+    "focus": "no visible ring (SF-001)"
+  },
+  "decisionFlow": [
+    "Need the product's standard select (single/multi/search/virtualized/custom trigger)? -> FlotoDropdownPicker (the norm, 510x).",
+    "Free-form tag input? -> LooseTags.",
+    "Tree / hierarchy select? -> MTreeSelect.",
+    "Specifically need the raw Ant a-select primitive? -> MSelect (rare, 2x)."
+  ],
+  "usageRules": {
+    "default(single)": {
+      "useWhen": "raw single Ant select (rare) — prefer FlotoDropdownPicker",
+      "example": "low-level use only"
+    },
+    "multiple": {
+      "useWhen": "raw multi Ant select (rare) — prefer FlotoDropdownPicker multiple",
+      "example": "chips in field"
+    },
+    "tags": {
+      "useWhen": "free-type tags — but prefer LooseTags",
+      "example": "the 2 real usages (LooseTags / object-tag-picker)"
+    },
+    "single": {
+      "useWhen": "You specifically need the raw Ant a-select single-select primitive (mode=default) — the low-level combobox with optional show-search and allow-clear. Effectively a reference/primitive case; in this product a real single select is almost never MSelect.",
+      "dontUse": "For any actual single-select in a form or filter bar, use FlotoDropdownPicker (the product norm, 510x) instead — it handles search, virtualized lists, custom triggers, and inline-add. Also avoid relying on allow-clear here: the clear × renders blank (fas icon not registered, F4) and overlaps the chevron (F5); use FlotoDropdownPicker when you need a clearable select.",
+      "example": "Low-level primitive only — no product single-select ships on MSelect; every real dropdown (column selector, severity picker, monitor/group selection) uses FlotoDropdownPicker."
+    }
+  },
+  "do": [
+    "For a real select use FlotoDropdownPicker; for a tag input use LooseTags.",
+    "Use MSelect only as the low-level Ant primitive when raw a-select is specifically needed.",
+    "Wrap in FlotoFormItem for label + validation."
+  ],
+  "dont": [
+    "Don't introduce new MSelect usages as 'the select' (that's FlotoDropdownPicker).",
+    "Don't use mode=tags here — use LooseTags."
+  ],
+  "whenToUse": "Rarely — FlotoDropdownPicker is the product select. MSelect is the low-level Ant primitive.",
+  "insteadOf": [
+    "raw a-select"
+  ],
+  "usage": {
+    "total": 2,
+    "files": 2,
+    "note": "both mode=tags (LooseTags, object-tag-picker); FlotoDropdownPicker is 510x",
+    "MTreeSelect": 0
+  },
+  "knownIssues": [
+    "F1 (medium): superseded by FlotoDropdownPicker (2x vs 510x) — effectively legacy/low-level. Use DropdownPicker for selects, LooseTags for tag inputs.",
+    "F2 (medium, a11y, ironic): MSelect IS an accessible combobox (Ant) while the widely-used FlotoDropdownPicker is NOT (SF-003). Mirror Ant's ARIA when fixing SF-003.",
+    "F3 (high, a11y): no visible focus ring (SF-001).",
+    "F4 (low): clear x is invisible — Select.vue hardcodes clearIcon as <MIcon name=times-circle type=fas> (FA solid) but only fal (light) icons are registered (639 fal, 0 fas). type=fas used 3x (Select, TreeSelect, navbar). Chip remove x works (fal times). Fix: drop type=fas (use fal) or register fas set.",
+    "F5 (low): clear x overlaps the dropdown chevron — the custom suffixIcon chevron (MIcon) is wider than Ant's clear mask box, so the chevron's left edge pokes out beside the x (chevron left 123, clear left 129). Fix: hide .ant-select-arrow while clearing, or widen the mask. NET (F4+F5): MSelect clear-all is broken; catalog stories omit allow-clear and show chip-remove; use FlotoDropdownPicker for a clearable select.",
+    "[element] obs-select: the option-menu now renders in the TOP LAYER (Popover API) so it positions correctly inside a transform-animated ancestor (e.g. a sliding drawer) — C4 fixed. Event detail is an array (unwrap detail[0]).",
+    "[rule] Searchable is AUTOMATIC by option count: obs-select shows the search box only when the list has more than ~8 options (long lists — monitors/hosts/types); short lists (status/severity/priority ≤8) render WITHOUT search, which scans faster. Override with searchable / searchable=\"false\". Applies to the obs-filters value dropdown too.",
+    "[fix elements@0.1.19] disabled-options now greys+locks STRING options too (leafOf only set disabled for object options → string lists silently ignored disabled-options). And canUserAddOptions now FORCES the search row so the inline-add \"+\" shows even when the auto-searchable threshold would hide the box (the \"+\" lives inside the search row).",
+    "[rule] The PRODUCT dropdown (FlotoDropdownPicker) is SEARCHABLE BY DEFAULT — \"not searchable\" is the explicit opt-out (119× via :searchable=false). obs-select adds an auto-by-count opinion (search only >~8 options) for value pickers; to match the product on a short list, set searchable explicitly."
+  ],
+  "related": [
+    "FlotoDropdownPicker",
+    "LooseTags",
+    "MTreeSelect",
+    "MSelectOption",
+    "FlotoFormItem"
+  ],
+  "changelog": [
+    "2026-08-06 — Hardening: stop the internal native <input> `input` event from leaking out of the shadow DOM (@input.stop) so a stray composed native `input` (e.detail=0) can no longer reach consumer listeners on the host. Same class of fix as obs-input.",
+    "2026-06-07: added (badged low-use, decision-grade). Ant a-select wrapper — modes default/multiple/tags, show-search, allow-clear (default true), sizes, loading, slots (notFoundContent->MNoData); v-model value/change. Verified single/multiple/tags. F1 (superseded 2x vs 510x), F2 (accessible vs SF-003), F3 (focus).",
+    "2026-07-10: fixed disabled-options for string option lists + inline-add search row (elements@0.1.19). Clarified searchable: product default is searchable; auto-by-count is a DS opinion.",
+    "2026-07-10: searchable rule finalized (elements@0.1.20) — auto-by-count stays the DEFAULT, but inline-add (canUserAddOptions) and two-pane (useAfterMenuDescription) ALWAYS force the search box (they intrinsically need it). Explicit searchable / searchable=false still override the count."
+  ],
+  "storybook": "Atoms/Select",
+  "figma": {
+    "status": "n/a",
+    "component": "Select (low-use — build DropdownPicker instead)"
+  },
+  "$tokensNote": "Dropdown/selected highlight uses the kit Ant accent @primary-color (#099dd9, kit-accents.json); other Ant Select internals follow the kit, not variables.json.",
+  "a11y": {
+    "summary": "role=combobox + aria-expanded + aria-activedescendant; listbox of options. Enter/Space/↓ open, type-ahead, Esc close. Label via FlotoFormItem/aria-label.",
+    "issues": [
+      "No visible focus ring (SF-001).",
+      "Ensure empty (MNoData) result is announced."
+    ],
+    "doc": "Atoms/Select/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

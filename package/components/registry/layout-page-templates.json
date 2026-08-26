@@ -1,0 +1,81 @@
+{
+  "name": "layout-page-templates",
+  "component": "recipes.json",
+  "display": "Page templates",
+  "tier": "foundation",
+  "section": "Foundations",
+  "family": "Layout",
+  "status": "stable",
+  "summary": "The canonical page types ObserveOps repeats, as annotated wireframes inside the app frame — built from the composition recipes. List view (header + toolbar + table + pager) · Form view (field grid) · Detail view (header + tabs + panels) · Dashboard view (picker + time range + widget grid) · Explorer view (left tree/filter + query + results) · Wizard flow (stepper + step + Back/Next) · Graph / Canvas (tree + interactive node graph).",
+  "props": {
+    "template": {
+      "type": "string",
+      "default": "list",
+      "enum": [
+        "list",
+        "form",
+        "detail",
+        "dashboard",
+        "explorer",
+        "wizard",
+        "graph"
+      ],
+      "note": "which page template wireframe to show"
+    }
+  },
+  "do": [
+    "Assemble pages from these archetypes + the per-region component mapping (recipes.json).",
+    "Use the List view for the most common index pages; Form/Detail for records.",
+    "Graph/Canvas (topology) is its own archetype — not a Dashboard or Explorer."
+  ],
+  "dont": [
+    "Don't invent a new page shape where one of these seven fits.",
+    "Don't put a second scrolling region inside the body."
+  ],
+  "tokensUsed": [
+    "--nav-panel-bg",
+    "--border-color",
+    "--page-background-color",
+    "--primary",
+    "--code-tag-background-color",
+    "--severity-critical",
+    "--severity-clear",
+    "--severity-warning"
+  ],
+  "related": [
+    "layout-app-shell",
+    "layout-screen-regions",
+    "layout-shells"
+  ],
+  "storybook": "Foundations/Layout/Page templates",
+  "a11y": {
+    "summary": "Composition references — each template names the component per region; those components carry the semantics, headings and tab order.",
+    "issues": []
+  },
+  "knownIssues": [
+    "Wireframes, not live pages — assemble from the per-region components (recipes.json).",
+    "[element] The obs-layout-* WEB COMPONENT is a fixed visual demo, not a slotted layout primitive — you can't put a real page inside it. Use the layout GUIDANCE (decisionFlow/regions) + compose the shell from atoms + the 12-col grid + tokens."
+  ],
+  "changelog": [
+    "2026-06-29: added — the 7 canonical page-template wireframes.",
+    "2026-06-29: fixed Detail/Explorer/Graph body panes collapsing to zero height (align-items).",
+    "2026-06-29: Usage enriched — when-to-use + where-it's-used."
+  ],
+  "whenToUse": "Pick the page archetype that matches the task, then assemble it from the per-region components (recipes).",
+  "usedIn": [
+    "List view — inventory / alert / policy lists.",
+    "Form view — monitor / policy / credential forms · Detail view — monitor / alert detail.",
+    "Dashboard view — dashboards / NOC · Explorer view — log / metric explorers.",
+    "Wizard flow — discovery / report setup / 2FA · Graph / Canvas — topology."
+  ],
+  "decisionFlow": [
+    "Browsing/managing MANY records (a list you filter, sort, page)? -> List view (list-view recipe).",
+    "Create or edit ONE record? -> Form view (form-view) — off a list use a Drawer; complex/settings forms use a full page.",
+    "Viewing ONE record's details (status + related tabs)? -> Detail view (detail-view).",
+    "Metrics / an at-a-glance overview? -> Dashboard (dashboard-view, tiles).",
+    "Querying/exploring a dataset (filters + results, e.g. logs)? -> Explorer (explorer-view).",
+    "A guided, multi-step task? -> Wizard (wizard-flow).",
+    "Pick the archetype by what the page is FOR; don't invent a new page shape where one of these seven fits."
+  ],
+  "referenceOnly": true
+}

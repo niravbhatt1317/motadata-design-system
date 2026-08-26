@@ -1,0 +1,31 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/TagsList/Usage" />
+
+# TagsList — Usage
+
+⚠️ **Unused (dead code)** — `src/components/tags-list.vue` has **0 usages**. Documented for
+completeness. Rules mirrored in `registry/tags-list.json`.
+
+## Decision: don't reach for TagsList
+
+First match wins:
+
+1. **Need to display a list of tags with overflow** (show some, "+N" the rest)? → use
+   **`SelectedItemPills`** (the live, themed pattern), or **`LooseTags :disabled`** for a
+   read-only tag list.
+2. **Need editable tags?** → **`LooseTags`**.
+3. **A single label/status?** → **`MTag`** / **`MStatusTag`**.
+
+There is no case where new code should use `TagsList` — it duplicates `SelectedItemPills`
+with a count-only overflow and no keyboard support.
+
+## What it does (for reference)
+
+Shows up to `maxLength` (default 2) neutral chips inline; beyond that, a single **count** chip
+that opens a hover popover listing all items. See the spec findings F1 (dead code) and F2
+(count-only overflow vs the live first-N + "+N" idiom).
+
+## Related
+
+`SelectedItemPills` (live equivalent — use this) · `LooseTags` · `MTag` · `MPopover`.

@@ -1,0 +1,221 @@
+{
+  "name": "app-header",
+  "display": "App Header",
+  "tier": "organisms",
+  "family": "App Chrome",
+  "group": "Structure & Navigation",
+  "source": "layout/header.vue (the global top bar), split from the product Toolbars family",
+  "status": "stable",
+  "summary": "The GLOBAL top bar present on every authenticated page, and the COMPOSITION HOST for the App Chrome family: the brand/logo on the left, and on the right the interactive surfaces — global search, notifications, and the user account menu — plus a BUILD version tag. Two ways to fill the right side: (1) the INTERACTIVE composition (drop obs-command-palette, obs-notification-menu, obs-user-menu into the slots — each opens its own surface on click; this is how the product's bar works), or (2) the PRESENTATIONAL `actions` prop (declarative circular icon-buttons that fire an `action` event but open nothing — for a simple static header). App CHROME — a SEPARATE archetype from obs-page-header (the per-page title bar); pairs with obs-sidebar (the left module nav). Bar: 50px tall, --page-background-color, a --border-color bottom rule. Circular buttons 36×36 (--neutral-light; --primary when active); notification badge --secondary-red; avatar --primary.",
+  "variants": [
+    {
+      "name": "interactive-chrome",
+      "what": "the whole App Chrome family composed in the slots — obs-command-palette (overlay/Cmd+K) + obs-notification-menu + obs-user-menu — each opening its own surface on click",
+      "usage": "the real product top bar; the default recommendation"
+    },
+    {
+      "name": "presentational-actions",
+      "what": "static circular icon-buttons via the `actions` prop (JSON) — fire an `action` event, open no panel",
+      "usage": "a simple non-interactive header, or when you wire the surfaces yourself"
+    },
+    {
+      "name": "default",
+      "what": "brand + action icons + build tag + user avatar",
+      "usage": "on every page"
+    },
+    {
+      "name": "with-badge",
+      "what": "a count badge on an action (e.g. notifications)",
+      "usage": ""
+    },
+    {
+      "name": "active-route",
+      "what": "the current-route action highlights --primary",
+      "usage": ""
+    },
+    {
+      "name": "logo",
+      "what": "a logo <img> in the brand slot instead of text",
+      "usage": ""
+    },
+    {
+      "name": "wordmark",
+      "what": "a text brand via the `brand` prop when there is no logo image",
+      "usage": ""
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "50px bar (single fixed height)",
+      "note": "the global bar is a fixed 50px tall (matches the product @navbar-height); circular action buttons 36×36, the user avatar 32×32, the BUILD tag 22px. No size variants — one global chrome height."
+    }
+  ],
+  "states": [
+    "rest",
+    "hover",
+    "active"
+  ],
+  "props": {
+    "brand": {
+      "type": "string",
+      "note": "brand text on the left (18px / weight 700 / --primary-alt / letter-spacing .5px). For a logo image use the `brand` slot instead."
+    },
+    "actions": {
+      "type": "string",
+      "note": "the right-side action buttons — a JSON array of {icon,label,badge?,active?}. Each renders a 36×36 circular icon button (reuses obs-icon); `badge` shows a --secondary-red count; `active` highlights it --primary. Clicking one fires `action`.",
+      "itemShape": {
+        "icon": "string (obs-icon name)",
+        "label": "string (aria-label + tooltip)",
+        "badge?": "number (count bubble, e.g. notifications)",
+        "active?": "boolean (current-route highlight, maps to --primary)"
+      }
+    },
+    "build": {
+      "type": "string",
+      "note": "the BUILD version tag text, e.g. \"8.0.0\" → renders \"BUILD : 8.0.0\" (--timerange-background-color / --primary)."
+    },
+    "user": {
+      "type": "string",
+      "note": "user initials for the avatar (32×32, --primary). For the account dropdown use the `user` slot (drop an obs-menu)."
+    }
+  },
+  "events": {
+    "action": "({icon,label,index}) — a right-side action icon-button was clicked.",
+    "user": "() — the fallback avatar (user attribute) was clicked/activated. Handle it to open your account menu, or use the `user` slot with obs-user-menu for a turnkey menu."
+  },
+  "slots": {
+    "brand": "a custom brand logo (<img>/obs-logo). If omitted AND the `brand` text prop is empty, the DEFAULT FULL ObserveOps logo (obs-logo name=\"motadata_full\" — mark + wordmark) renders.",
+    "default": "extra custom actions inserted between the icon buttons and the build tag / user.",
+    "user": "a custom user control — drop an obs-menu for the account/logout dropdown, replacing the initials avatar."
+  },
+  "decisionFlow": [
+    "The GLOBAL bar at the very top of every page (logo + global search + notifications + user)? -> obs-app-header.",
+    "The per-PAGE title bar (title + count + page actions)? -> obs-page-header, NOT app-header.",
+    "The left module/primary navigation? -> obs-sidebar (app-header is the horizontal counterpart).",
+    "A left-nav trail / in-page section switch? -> obs-breadcrumbs / obs-tabs.",
+    "Want the header to actually WORK (each icon opens a panel)? -> use the INTERACTIVE composition: drop the App Chrome elements into the slots (below), not the `actions` prop.",
+    "The global SEARCH / command omnibox (Cmd+K)? -> put an obs-command-palette (overlay) in the default slot — the 🔍 opens a centered modal.",
+    "The notifications bell + dropdown panel? -> put an obs-notification-menu in the default slot (it renders its own bell + badge + panel).",
+    "The account dropdown from the avatar? -> put an obs-user-menu (turnkey: profile/setup/docs + theme switch + logout) in the `user` slot; for a bespoke list use an obs-menu instead.",
+    "Just a simple, non-interactive header (no panels)? -> the `actions` prop (presentational circular icons) + the `user` initials avatar."
+  ],
+  "usageRules": {
+    "interactive-chrome": {
+      "useWhen": "the real product top bar — you want clicking search / bell / avatar to actually open their surfaces. Compose the three App Chrome elements in the slots.",
+      "dontUse": "when you only need static icons that fire an event you handle yourself (use `actions`).",
+      "example": "<obs-app-header><obs-command-palette overlay …></obs-command-palette><obs-notification-menu count=\"3\" …></obs-notification-menu><obs-user-menu slot=\"user\" …></obs-user-menu></obs-app-header> — 🔍 opens the Cmd+K modal, 🔔 the alerts panel, avatar the account menu."
+    },
+    "presentational-actions": {
+      "useWhen": "a simple non-interactive header, or when the surfaces are wired elsewhere and you only need the icon row + an `action` event.",
+      "dontUse": "when you want the panels to open on click — compose the interactive elements instead.",
+      "example": "actions=[{icon:\"search\",label:\"Search\"},{icon:\"bell\",label:\"Notifications\",badge:3}] + handle @action."
+    },
+    "default": {
+      "useWhen": "the global chrome of an authenticated app shell — one per app, on every page.",
+      "dontUse": "as a page-level header (title + page actions) -> obs-page-header.",
+      "example": "brand \"motadata\" + search/health/approval/notifications + BUILD tag + user avatar."
+    },
+    "with-badge": {
+      "useWhen": "an action carries a live count (unread notifications / approvals).",
+      "dontUse": "a plain action with no count.",
+      "example": "actions=[{icon:\"bell\",label:\"Notifications\",badge:3}]."
+    },
+    "active-route": {
+      "useWhen": "highlight the action for the current route/section.",
+      "dontUse": "when no action maps to the current page.",
+      "example": "the Health action is active on the health page ({active:true} → --primary)."
+    },
+    "logo": {
+      "useWhen": "a real product/tenant logo image belongs in the bar.",
+      "dontUse": "when a wordmark/text brand is enough (use the brand prop).",
+      "example": "put <img slot=\"brand\"> (rendered at 40px)."
+    },
+    "wordmark": {
+      "useWhen": "there is no logo image — render the product/tenant name as text (18px / weight 700 / --primary-alt).",
+      "dontUse": "when a logo image exists (use the `brand` slot); the slot wins over the prop.",
+      "example": "brand=\"ObserveOps\"."
+    },
+    "brand": {
+      "useWhen": "leave brand unset to get the DEFAULT ObserveOps logo; set the `brand` slot for a custom logo, or the `brand` text prop for a wordmark.",
+      "dontUse": "expecting an empty brand area when nothing is passed — it now falls back to the ObserveOps mark (like obs-sidebar).",
+      "example": "<obs-app-header></obs-app-header> → shows the ObserveOps logo; <obs-app-header brand=\"Acme\"> → text; <obs-app-header><img slot=\"brand\" src=...></obs-app-header> → custom logo"
+    }
+  },
+  "a11y": {
+    "summary": "The bar renders as a <header> landmark. Presentational actions are real <button>s with an aria-label/title (the icon is decorative); the count badge sits inside the button (announced with its label). In the INTERACTIVE composition each slotted element owns its own a11y contract — obs-command-palette manages the Cmd+K modal focus/Esc, obs-notification-menu and obs-user-menu render their own keyboard-navigable popovers with roles — so prefer those over the bare `user` initials avatar (which is only a role=button). One app-header per app; don't nest landmarks.",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "The count badge is a small overlay on the bell — ensure the surrounding button's aria-label conveys the count (e.g. \"Notifications, 3 unread\") for screen readers, since the visual \"3\" alone is easy to miss."
+      }
+    ]
+  },
+  "knownIssues": [
+    {
+      "severity": "info",
+      "issue": "The action set is data-driven (the `actions` prop) rather than the fixed product list, so it is reusable; the real header also has route-aware active states and a global command-search overlay wired to the app router — those bindings are the consumer's (obs-app-header renders the chrome + fires `action`)."
+    }
+  ],
+  "tokensUsed": [
+    "--page-background-color",
+    "--page-text-color",
+    "--border-color",
+    "--primary",
+    "--primary-alt",
+    "--neutral-light",
+    "--neutral-lighter",
+    "--secondary-red",
+    "--timerange-background-color",
+    "--white-regular"
+  ],
+  "changelog": [
+    "2026-08-11 — Default brand logo enlarged to height 36 and switched to the crisp SVG (was a smaller pixelating raster).",
+    "2026-08-11 — Default brand is the FULL ObserveOps logo (motadata_full, mark + wordmark), not just the mark. Bundled motadata_full into the built-in logo set so it renders out of the box, and made obs-logo image logos aspect-preserving (height-driven) so the wide wordmark isn't squished.",
+    "2026-08-11 — Brand default + padding (owner/consumer): the brand area now FALLS BACK to the default ObserveOps mark (obs-logo name=\"motadata_full\" — the FULL logo with wordmark) when neither the `brand` slot nor the `brand` text prop is provided (was an empty area with no obs-logo reference). Reduced the header horizontal padding to 8px (both sides).",
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves (dropped stale/typography vars, added the overlay/theme tokens it uses). a11y / props / variants / usage verified current against the shipped component — no content drift. No API change.",
+    "2026-07-22 — Docs completeness pass: promoted the two composition modes to first-class variants — `interactive-chrome` (compose obs-command-palette + obs-notification-menu + obs-user-menu in the slots; each opens on click) and `presentational-actions` (the static `actions` prop) — plus a `wordmark` variant. decisionFlow now routes each surface (search → command-palette, bell → notification-menu, avatar → user-menu); usageRules + a11y updated for the interactive composition. The playground Composition picker cycles all variants (each keeps the interactive slotted children). No API change.",
+    "2026-07-22 — Assembled interactive chrome: a lead example now composes the whole App Chrome family in one bar — obs-command-palette (overlay/Cmd+K) + obs-notification-menu + obs-user-menu in the slots, each opening its own surface on click. Verified all three open with 0 console errors.",
+    "2026-07-21 — Moved to the new App Chrome family (with obs-user-menu + the coming notification-menu / command-palette). Its `user` slot now hosts the turnkey obs-user-menu; the `actions` bell/search host the notification/command-palette compositions.",
+    {
+      "date": "2026-07-15",
+      "change": "Completeness pass: documented the `actions` item shape ({icon,label,badge?,active?}); verified every variant (default, with-badge, active-route, logo, account-menu in the user slot) is reachable from the playground Actions + Brand presets. No API change."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Completeness pass: Actions control moved to the TOP of the playground (each preset keeps the logo) + a Brand preset (logo / text wordmark); default brand is the full Motadata logo (light+dark, theme-toggled); default action set is all-neutral (the active-route --primary highlight moved to its own labelled example — one icon was reading as black); added usedIn (\"Where it’s used\"). props/decisionFlow/usageRules/a11y/knownIssues reviewed complete."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Added obs-app-header element — render-faithful global top bar (brand + circular action icon-buttons with count badge + BUILD tag + user avatar), split from the product Toolbars/layout header. diff.mjs ✅ MATCH (light+dark); reuses obs-icon; `action` event + brand/user slots. 3rd of the Structure & Navigation set."
+    }
+  ],
+  "related": [
+    "page-header",
+    "sidebar",
+    "breadcrumbs",
+    "menu",
+    "tabs",
+    "toolbars",
+    "user-menu"
+  ],
+  "storybook": "Organisms/Toolbars/Examples (AppHeader)",
+  "usedIn": [
+    "The top of every authenticated app layout — the global chrome above all page content (layout/header.vue).",
+    "Left: the product/tenant brand (Motadata logo, or a text wordmark). Right: global search · health monitoring · approval · the notifications bell (with an unread count) · a BUILD version tag · the user account menu.",
+    "The current-route action highlights --primary (e.g. the Health icon on the health dashboard).",
+    "Pairs with obs-sidebar (the vertical module nav) to form the app shell; per-page titles/actions live in obs-page-header, not here."
+  ],
+  "do": [
+    "Use as the GLOBAL top bar / app chrome on every authenticated page — brand (left) + global actions + user (right).",
+    "Give an action a `badge` for a live count (notifications / approvals); mark the current-route action `active` (→ --primary).",
+    "Put an obs-menu in the `user` slot for the account dropdown; a logo <img> in the `brand` slot (theme-toggled).",
+    "Drive the action buttons from the `actions` prop (reuses obs-icon) and handle clicks via the `action` event."
+  ],
+  "dont": [
+    "Don’t use as a per-page header (title + page actions) — that is obs-page-header.",
+    "Don’t use for the left module/primary navigation — that is obs-sidebar (app-header is the horizontal counterpart).",
+    "Don’t hand-build the circular icon buttons / avatar — the component renders the chrome; wire routing/search to your app.",
+    "Don’t place more than one per app — it is the single global chrome."
+  ]
+}

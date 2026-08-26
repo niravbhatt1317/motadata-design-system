@@ -1,0 +1,34 @@
+{
+  "$description": "TIER 3 — COMPONENT. Code-only (Figma binds components to semantic, not these). References the SEMANTIC tier, never primitives. SLICE for sign-off.",
+  "$status": "FUTURE / portable DTCG token layer (mds-*). NOT yet wired to the running product or component tokensUsed — the LIVE product uses tokens/variables.json (--vars). Do not emit mds-* for live output.",
+  "button": {
+    "background": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.background.brand.bold}"
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.text.inverse}"
+      }
+    }
+  },
+  "input": {
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.border.subtle}"
+      }
+    }
+  },
+  "grid": {
+    "background": {
+      "header": {
+        "$type": "color",
+        "$value": "{color.surface.raised}"
+      }
+    }
+  }
+}

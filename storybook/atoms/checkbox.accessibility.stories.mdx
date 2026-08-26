@@ -1,0 +1,20 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Checkbox/Accessibility" />
+
+# Checkbox — Accessibility
+
+- **Label association:** the `<input>` is nested in the `<label>` (implicit) — clicking
+  the label toggles. Provide a label, or an `aria-label` for a bare box.
+- **Keyboard:** Space toggles, Tab focuses (native input). ✅
+- **Target size:** the 19px box is below the ~24px minimum; the label extends the hit
+  area, but a label-less box is a small touch target.
+
+## ⚠️ Known accessibility issues
+
+- **Screen-reader state is wrong:** the override never binds `:checked` to the `<input>`,
+  so `input.checked` stays `false` even when visually checked — assistive tech announces
+  the wrong state (WCAG 4.1.2). Fix: bind `:checked="props.checked"` on the input.
+- **Indeterminate not exposed:** the dash is CSS-only; the input lacks the `indeterminate`
+  DOM property / `aria-checked="mixed"`, so AT can't announce "mixed". Fix: set
+  `inputEl.indeterminate`.

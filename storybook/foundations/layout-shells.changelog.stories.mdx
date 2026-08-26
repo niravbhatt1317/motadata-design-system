@@ -1,0 +1,27 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/Layout shells/Changelog" />
+
+# Layout shells — Changelog
+
+- **2026-06-18 (skeleton style)** — Converted the **Playground** preview from product-accurate (real nav
+  icons, brand header, donut logo) to a **skeleton** style — skeleton blocks for the nav rail / header /
+  sign-in card, with the hierarchy tree and settings menu kept as skeleton bars. Content area white for
+  clear bars.
+- **2026-06-18 (interactive Playground)** — Added a **Playground** story (Elastic-EUI style): a grouped
+  shell **picker** (route shells | content layouts) that morphs one preview into a **recognizable**
+  rendering — real nav rail + brand header for `Layout`, a centered **sign-in card** for `LoginLayout`,
+  padded chrome-less content for `EmptyLayout`/`PublicLayout`, a **hierarchy tree** for
+  `MonitorHierarchyLayout`, and a **settings menu** for the Settings two-pane — with the kind tag, file,
+  usage and description for the selected shell.
+- **2026-06-18 (reclassified + bigger boxes)** — Corrected the model to **4 route shells**
+  (`Layout` / `LoginLayout` / `EmptyLayout` / `PublicLayout`, tagged "route shell") **+ 2 content
+  layouts** (`MonitorHierarchyLayout`, the Settings `splitpanes` two-pane, tagged "content layout").
+  The product sweep found **`MonitorHierarchyLayout` has 0 `meta.layout` overrides** — it's a content
+  layout used inside `Layout`, not a route shell. Added real usages + the `app.vue` switcher logic, and
+  resized the wireframe boxes to **420×300** to match Panel behaviours.
+- **2026-06-17 (Usage page)** — Added the **Usage** page: a "which shell to use" decision table, how to
+  set the shell via route `layout` meta, and best practices.
+- **2026-06-17 (created)** — Added the **Layout shells** page — the 5 shells (`Layout`,
+  `MonitorHierarchyLayout`, `EmptyLayout`, `PublicLayout`, `LoginLayout`) as mini-wireframes ordered by
+  decreasing chrome, with in-product usage counts. Verified light + dark, deployed.

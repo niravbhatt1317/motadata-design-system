@@ -1,0 +1,42 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Modal/Changelog" />
+
+# Modal — Changelog
+
+## 2026-06-11
+
+- **Triple-check audit of the whole overlay/dialog family** — confirmed complete at the
+  component level (MModal 39× · FlotoConfirmModal 71× · FlotoDrawer 99× · FlotoDrawerForm 59×;
+  `MDrawer` internal-only; `FlotoFormModal` doesn't exist; no programmatic `Modal.confirm`
+  service; no lightbox/viewer/fullscreen; all 42 custom `*-modal/-drawer` files build on the 4
+  bases).
+- **Added two MModal variants that existed but weren't showcased:** **No-padding**
+  (`no-padding-modal`, body → 8px; 13×) and **Large (restrict-width 1020px)** (~5×). Verified
+  headless (8px body padding; 1020px content width; no console errors).
+- **Correction:** `readable-content-overlay` is a **popover/tooltip** class (on MPopover/MTooltip),
+  **not** a modal variant — removed it from the Modal Usage variants.
+
+## 2026-06-08
+
+- **Fidelity pass** (owner: "doesn't match the product"). Real modals add their **own header**
+  (`text-primary` title + close ×, ~26 modals) since the built-in × is off; the backdrop
+  **blurs** (3px). Reworked the stories to the product header pattern.
+- **Added variant stories:** **hide-footer** (read-only/viewer) and **scrollable-modal**
+  (long content, inner `overflow-y:auto` wrapper — F3). Documented the header pattern, the
+  overlay-class variants, and the measured dimensions (16px corners; confirm = 20px; header
+  `5px 16px`; body `24px`).
+
+## 2026-06-07
+
+- Added (decision-grade Usage) — the **Modal** overlay. Deep-dive of `MModal` (`Modal.vue`, 39×)
+  and the confirm variant `FlotoConfirmModal` (`_base-confirm-modal.vue`, 71×).
+- API: open via the **`trigger`** slot (`{ open }`) or the **`open`** prop (confirm);
+  `title` / body / **`footer`** (`{ cancel, success }`) slots; `width` / `centered` /
+  `confirmLoading`. `destroyOnClose` re-creates the body each open.
+- **Storybook:** registered `FlotoConfirmModal` in the preview. Stories: Basic · Confirm ·
+  Sizes · Playground — verified Basic opens (title, 2 footer buttons, backdrop) and Confirm
+  opens (error, icon + Delete). Escape closes; **no × / no backdrop-close** (F1).
+- Findings: **F1** (no × / no backdrop-close — footer/Escape only; UX/a11y), **F2** (no focus
+  ring → SF-001).
+- Flagged **`FlotoDrawer`** (158×) — the most-used overlay — as the related **own entry** next.

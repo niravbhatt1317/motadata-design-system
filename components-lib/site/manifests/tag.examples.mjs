@@ -1,0 +1,58 @@
+// Showcase manifest for <obs-tag> — full tag family: colours, state-classes, status mode, removable/confirm.
+export default {
+  el: 'obs-tag',
+  controls: [
+    { prop: 'variant', type: 'select', options: ['tag-primary', 'tag-green', 'tag-red', 'tag-yellow', 'tag-orange', 'tag-purple', 'tag-unknown', 'used-count-pill', 'new', 'provision', 'unprovision', 'nav-beta-tag', 'main-tags'] },
+    { prop: 'status', type: 'select', options: ['', 'up', 'down', 'paused', 'suspended', 'unreachable', 'maintenance', 'unknown'], label: 'Status' },
+    { prop: 'closable', type: 'toggle' },
+    { prop: 'confirmable', type: 'toggle' },
+    { prop: 'rounded', type: 'toggle' },
+    { prop: 'numeric', type: 'toggle', label: 'Numeric (count font)' },
+    { prop: 'compliance', type: 'toggle' },
+    { prop: 'disabled', type: 'toggle' },
+    { prop: 'text', type: 'text', slot: true, label: 'Label', default: 'Tag' },
+  ],
+  playground: { attrs: { variant: 'tag-primary' }, text: 'Tag' },
+  events: [{ name: 'close', detail: 'void' }],
+  gallery: [
+    { group: 'Colours', items: [
+      { attrs: { variant: 'tag-green' }, text: 'green' },
+      { attrs: { variant: 'tag-red' }, text: 'red' },
+      { attrs: { variant: 'tag-yellow' }, text: 'yellow' },
+      { attrs: { variant: 'tag-orange' }, text: 'orange' },
+      { attrs: { variant: 'tag-purple' }, text: 'purple' },
+      { attrs: { variant: 'tag-unknown' }, text: 'unknown' },
+      { attrs: { variant: 'tag-primary' }, text: 'primary' },
+    ] },
+    { group: 'Display / removable / confirmable', items: [
+      { attrs: { variant: 'tag-primary' }, text: 'Display' },
+      { attrs: { variant: 'tag-primary', closable: true }, text: 'Removable' },
+      { attrs: { variant: 'tag-primary', rounded: true }, text: 'Rounded' },
+      { attrs: { variant: 'tag-primary', disabled: true }, text: 'Disabled' },
+      { attrs: { variant: 'tag-green', closable: true, confirmable: true, 'confirm-title': 'Remove this tag?' }, text: 'Confirmable' },
+    ] },
+    { group: 'Status (status → colour + capitalised label)', items: [
+      { attrs: { status: 'up' } },
+      { attrs: { status: 'down' } },
+      { attrs: { status: 'paused' } },
+      { attrs: { status: 'suspended' } },
+      { attrs: { status: 'unreachable' } },
+      { attrs: { status: 'maintenance' } },
+      { attrs: { status: 'unknown' } },
+    ] },
+    { group: 'State classes', items: [
+      { attrs: { variant: 'used-count-pill', rounded: true }, text: '3 used' },
+      { attrs: { variant: 'new' }, text: 'New' },
+      { attrs: { variant: 'provision' }, text: 'Provisioned' },
+      { attrs: { variant: 'unprovision' }, text: 'Unprovisioned' },
+      { attrs: { variant: 'nav-beta-tag' }, text: 'BETA' },
+    ] },
+    { group: 'Numeric — count / metric tags in the numeric font (JetBrains Mono, tabular figures — the product .numeric-value). Default 4px squarish shape (the Log tree counts); add `rounded` for a pill', items: [
+      { attrs: { variant: 'tag-primary', numeric: true }, text: '6.77 M' },
+      { attrs: { variant: 'tag-primary', numeric: true }, text: '653.32 K' },
+      { attrs: { variant: 'tag-green', numeric: true }, text: '99.9%' },
+      { attrs: { variant: 'tag-red', numeric: true }, text: '12' },
+      { attrs: { variant: 'tag-primary', numeric: true, rounded: true }, text: '3 used' },
+    ] },
+  ],
+}

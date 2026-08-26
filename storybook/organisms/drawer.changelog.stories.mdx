@@ -1,0 +1,42 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Drawer/Changelog" />
+
+# Drawer — Changelog
+
+## 2026-06-11
+
+- **Large / full-screen drawer reworked for real fidelity** (owner flagged it still looked off).
+  Read the real `apm-application-registration-drawer.vue` end-to-end: `width="96%"`
+  `:scrolled-content="false"` with a **2 : 6 : 4 `MRow`** body — tinted deployment nav | sectioned
+  form (dividers + section-headings + Apply Configuration) | right info column (accent-bar headings
+  + supported-tech tables + bordered Verification). Verified headless (1382px = 96%; columns
+  230/691/461 = 17/50/33% side-by-side).
+- **Real brand icons** in the left nav (`vm` / `docker` / `kubernetes`) — already registered via the
+  preview's `@assets/icons` import (verified each resolves to a real SVG path).
+- **First shared DS primitive classes** — extracted the repeated inline styles into
+  `storybook/ds-primitives.less` (`.ds-section-heading` / `.ds-helper-text` / `.ds-divider` /
+  `.ds-accent-bar` / `.ds-panel` / `.ds-nav-item` / `.ds-spec-table`, token-backed); the story now
+  reuses them. Verified each resolves to the same computed value as the prior inline style.
+
+## 2026-06-08 (later)
+
+- **Footer-spacing fidelity** (owner: buttons touched). The `.actions` bar is right-aligned with
+  **no built-in gap** — space buttons with **`mr-2`**. Added the **Footer actions (2 / 3 / 4
+  buttons)** story (right-aligned vs split with destructive/tertiary/note on the left).
+- Added the **Large / full-screen (90–96%, multi-pane)** story (width 85–96%, ~30×) after the
+  owner flagged the APM Application Registration drawer was missing.
+
+## 2026-06-08
+
+- Added (decision-grade Usage) — the **Drawer**, the product's **most-used overlay** (158×).
+- Deep-dive of `FlotoDrawer` (`_base-drawer.vue`, 99×) and `FlotoDrawerForm` (59×): slide-in
+  side panel; open via the **`open`** prop or a **`trigger`** slot; `title` / scrollable body
+  (`FlotoScrollView`) / **`actions`** (fixed footer) slots; `width` default 40%; **built-in
+  close ×** + `maskClosable:false`. `FlotoDrawerForm` = vertical `FlotoForm` + drawer, and (per
+  the product) **suppresses `MForm`'s default Submit** so only the footer submits.
+- **Storybook:** registered `FlotoDrawer` + `FlotoScrollView` in the preview. Stories: Basic
+  (detail) · Form drawer · Widths · Playground — verified the panel slides in (title, actions,
+  backdrop) and the form drawer (2 fields, Cancel/Save).
+- Findings: **F1** (`@hide` delayed ~500ms for the animation), **F2** (no focus ring → SF-001).
+- Closes the **Overlay family** (Modal + Drawer).

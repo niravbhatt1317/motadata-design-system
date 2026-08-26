@@ -1,0 +1,62 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Switch/Usage" />
+
+# Switch — Usage
+
+🟢 **Stable** · Atom — an **instant** on/off toggle for a setting that applies immediately.
+`MSwitch` (wraps Ant `a-switch`); **controlled** — bind `v-model` / `:checked`.
+
+Written so anyone (or an AI) picks correctly without guessing. Same rules mirrored in
+`registry/switch.json` (`decisionFlow` + `usageRules`).
+
+## Pick the right control (Switch vs Checkbox vs Radio)
+
+First match wins:
+
+1. **One of several mutually-exclusive options?** → **Radio**, not a switch.
+2. **Does the change take effect immediately** (no Save button — it persists on toggle)? →
+   **Switch**.
+3. **Committed only when a form is saved** (opt-in, consent, multi-select)? → **Checkbox**.
+
+## Use cases by type
+
+### Switch (default)
+
+- **Use when:** a single **binary setting that applies the moment you toggle it** — enable a
+  feature, turn a monitor on/off, activate a policy.
+- **Don't use when:** the value is only saved with a form (use **Checkbox**), or it's a
+  one-of-many choice (use **Radio**).
+- **Example:** "Enable notifications", a status enable/disable in settings.
+
+### `:loading`
+
+- **Use when:** the toggle triggers an async persist and you need to show progress + block
+  re-toggling until it resolves.
+
+### `:disabled`
+
+- **Use when:** the setting exists but can't be changed in the current state/permission.
+
+### `size`
+
+- **Use when:** `small` for dense rows/tables; default elsewhere.
+
+> Don't rely on `:defaultChecked` — it's a no-op (MSwitch always reads `:checked`).
+
+## Anatomy
+
+Track · knob (**gray when off → green when on**; the track color doesn't change) · optional
+on/off label slots (`#checked` / `#unchecked` — unused in the product).
+
+## Content
+
+Label what turns **on** ("Enable notifications") — not a neutral or negative phrasing.
+
+## In the product
+
+**As seen in:** **Widget property panels** — chart style, sparkline, map — toggling options that take effect immediately.
+
+## Related
+
+`MCheckbox` (save-committed choices) · `MRadio` (one-of-many).

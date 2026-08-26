@@ -1,0 +1,2710 @@
+{
+  "$note": "The ACTUAL API of each obs-* web component (parsed from the element source), for tools that need to discover attributes/events/SLOTS without reverse-engineering the shadow DOM. Events deliver the value in event.detail as an ARRAY (unwrap detail[0]). String props with discrete values carry an `enum`. `slots` lists the named slots (plus \"default\" for the unnamed slot). `referenceOnly` = renders but has no functional data contract.",
+  "elements": {
+    "obs-button": {
+      "element": "ObsButton",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'primary'"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "String",
+          "default": "'default'"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "loading",
+          "attribute": "loading",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "outline",
+          "attribute": "outline",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "square",
+          "attribute": "square",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "shape",
+          "attribute": "shape",
+          "type": "String",
+          "default": "''",
+          "note": "'circle' → rounded-square icon button"
+        },
+        {
+          "prop": "squared",
+          "attribute": "squared",
+          "type": "Boolean",
+          "default": "false",
+          "note": ".squared-button 35×35"
+        }
+      ],
+      "events": [],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-tag": {
+      "element": "ObsTag",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'tag-primary'"
+        },
+        {
+          "prop": "closable",
+          "attribute": "closable",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "rounded",
+          "attribute": "rounded",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "status",
+          "attribute": "status",
+          "type": "String",
+          "default": "''",
+          "note": "when set → status-tag mode"
+        },
+        {
+          "prop": "forcePrimary",
+          "attribute": "force-primary",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "compliance",
+          "attribute": "compliance",
+          "type": "Boolean",
+          "default": "false",
+          "note": ".compliance-tag-padding (wider horizontal padding)"
+        },
+        {
+          "prop": "numeric",
+          "attribute": "numeric",
+          "type": "Boolean",
+          "default": "false",
+          "note": "count/metric tag — JetBrains Mono + tabular figures (.numeric-value)"
+        },
+        {
+          "prop": "confirmable",
+          "attribute": "confirmable",
+          "type": "Boolean",
+          "default": "false",
+          "note": "ask before removing (registry: confirmable + confirm-title)"
+        },
+        {
+          "prop": "confirmTitle",
+          "attribute": "confirm-title",
+          "type": "String",
+          "default": "'Are you sure?'"
+        }
+      ],
+      "events": [
+        "close"
+      ],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-checkbox": {
+      "element": "ObsCheckbox",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "checked",
+          "attribute": "checked",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "indeterminate",
+          "attribute": "indeterminate",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String",
+          "default": "''",
+          "note": "passthrough id for grouping — readable via e.target.value"
+        }
+      ],
+      "events": [
+        "change"
+      ],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-switch": {
+      "element": "ObsSwitch",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "checked",
+          "attribute": "checked",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "String",
+          "default": "'default'"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "loading",
+          "attribute": "loading",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "checkedText",
+          "attribute": "checked-text",
+          "type": "String"
+        },
+        {
+          "prop": "uncheckedText",
+          "attribute": "unchecked-text",
+          "type": "String"
+        }
+      ],
+      "events": [
+        "change"
+      ],
+      "slots": []
+    },
+    "obs-selected-pills": {
+      "element": "ObsSelectedPills",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "[String,Array]",
+          "default": "''"
+        },
+        {
+          "prop": "maxItems",
+          "attribute": "max-items",
+          "type": "Number",
+          "default": "1"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-radio": {
+      "element": "ObsRadio",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "options",
+          "attribute": "options",
+          "type": "[String,Array]",
+          "note": "comma string, JSON string, OR a real JS array (el.options = [...])"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String"
+        },
+        {
+          "prop": "asButton",
+          "attribute": "as-button",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "severity",
+          "attribute": "severity",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "String",
+          "default": "'default'"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "vertical",
+          "attribute": "vertical",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "Boolean",
+          "default": "false",
+          "note": "full-width segmented control — segments split the width evenly"
+        }
+      ],
+      "events": [
+        "change"
+      ],
+      "slots": []
+    },
+    "obs-input": {
+      "element": "ObsInput",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "type",
+          "attribute": "type",
+          "type": "String",
+          "default": "'text'"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String"
+        },
+        {
+          "prop": "label",
+          "attribute": "label",
+          "type": "String",
+          "note": "form-item label above the field (product FlotoFormItem pattern)"
+        },
+        {
+          "prop": "help",
+          "attribute": "help",
+          "type": "String",
+          "note": "helper/hint text below the field"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "readonly",
+          "attribute": "readonly",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "required",
+          "attribute": "required",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "error",
+          "attribute": "error",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "errorMessage",
+          "attribute": "error-message",
+          "type": "String"
+        },
+        {
+          "prop": "allowClear",
+          "attribute": "allow-clear",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "material",
+          "attribute": "material",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "noBorder",
+          "attribute": "no-border",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "prefixIcon",
+          "attribute": "prefix-icon",
+          "type": "String"
+        },
+        {
+          "prop": "suffixIcon",
+          "attribute": "suffix-icon",
+          "type": "String"
+        },
+        {
+          "prop": "prefix",
+          "attribute": "prefix",
+          "type": "String"
+        },
+        {
+          "prop": "suffix",
+          "attribute": "suffix",
+          "type": "String"
+        },
+        {
+          "prop": "addonBefore",
+          "attribute": "addon-before",
+          "type": "String"
+        },
+        {
+          "prop": "addonAfter",
+          "attribute": "addon-after",
+          "type": "String"
+        }
+      ],
+      "events": [
+        "input",
+        "change",
+        "search",
+        "enterKey"
+      ],
+      "slots": []
+    },
+    "obs-link": {
+      "element": "ObsLink",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "href",
+          "attribute": "href",
+          "type": "String"
+        },
+        {
+          "prop": "asButton",
+          "attribute": "as-button",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'primary'"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "String",
+          "default": "'default'"
+        },
+        {
+          "prop": "external",
+          "attribute": "external",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "kLink",
+          "attribute": "k-link",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "muted",
+          "attribute": "muted",
+          "type": "Boolean",
+          "default": "false",
+          "note": "secondary/subdued link (e.g. a Cancel action) — lighter text, same dotted underline"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        }
+      ],
+      "events": [],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-select": {
+      "element": "ObsSelect",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "options",
+          "attribute": "options",
+          "type": "[String,Array]",
+          "note": "comma string, JSON string, OR a real JS array (el.options = [...])"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String"
+        },
+        {
+          "prop": "multiple",
+          "attribute": "multiple",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "allowSelectAll",
+          "attribute": "allow-select-all",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "allowClear",
+          "attribute": "allow-clear",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "Boolean",
+          "default": "false",
+          "note": "full-width instead of the fixed 240px"
+        },
+        {
+          "prop": "searchable",
+          "attribute": "searchable",
+          "type": "String",
+          "note": "unset → AUTO (by option count); off via searchable=\"false\" / :searchable=\"false\""
+        },
+        {
+          "prop": "asInput",
+          "attribute": "as-input",
+          "type": "String",
+          "note": "unset → input mode; off via as-input=\"false\" / :as-input=\"false\""
+        },
+        {
+          "prop": "textOnly",
+          "attribute": "text-only",
+          "type": "Boolean",
+          "default": "false",
+          "note": "trigger STYLE — one enum consolidating the legacy asInput/textOnly + adding button/icon triggers."
+        },
+        {
+          "prop": "trigger",
+          "attribute": "trigger",
+          "type": "String",
+          "enum": [
+            "input",
+            "text",
+            "button",
+            "icon",
+            "chip"
+          ],
+          "note": "input | text | button | icon | chip"
+        },
+        {
+          "prop": "triggerIcon",
+          "attribute": "trigger-icon",
+          "type": "String",
+          "note": "the glyph for the `icon` (and leading `button`) trigger; default chevronDown/ellipsisV"
+        },
+        {
+          "prop": "triggerLabel",
+          "attribute": "trigger-label",
+          "type": "String",
+          "note": "optional fixed label for the button/icon trigger (else the selection/placeholder)"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "loading",
+          "attribute": "loading",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "disabledOptions",
+          "attribute": "disabled-options",
+          "type": "String"
+        },
+        {
+          "prop": "canUserAddOptions",
+          "attribute": "can-user-add-options",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "addLabel",
+          "attribute": "add-label",
+          "type": "String"
+        },
+        {
+          "prop": "useAfterMenuDescription",
+          "attribute": "use-after-menu-description",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "maxValues",
+          "attribute": "max-values",
+          "type": "Number",
+          "default": "0"
+        },
+        {
+          "prop": "maxItems",
+          "attribute": "max-items",
+          "type": "Number",
+          "default": "1",
+          "note": "read-only pills: how many before \"+N\""
+        },
+        {
+          "prop": "removeClearBtn",
+          "attribute": "remove-clear-btn",
+          "type": "Boolean",
+          "default": "false",
+          "note": "── column-chooser variant (the table show/hide-columns dropdown) ──"
+        },
+        {
+          "prop": "columns",
+          "attribute": "columns",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{key,label,checked?,locked?}] → column-chooser menu (drag-reorder + heading + reset)"
+        },
+        {
+          "prop": "heading",
+          "attribute": "heading",
+          "type": "String",
+          "default": "''",
+          "note": "section header at the top of the menu (e.g. \"COLUMNS\")"
+        },
+        {
+          "prop": "resetLabel",
+          "attribute": "reset-label",
+          "type": "String",
+          "default": "''",
+          "note": "reset-footer text ('' = no footer), e.g. \"Reset Column Preference\""
+        }
+      ],
+      "events": [
+        "change",
+        "show",
+        "hide",
+        "search",
+        "add",
+        "reorder",
+        "reset"
+      ],
+      "slots": []
+    },
+    "obs-severity": {
+      "element": "ObsSeverity",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "severity",
+          "attribute": "severity",
+          "type": "String",
+          "default": "'unknown'"
+        },
+        {
+          "prop": "shape",
+          "attribute": "shape",
+          "type": "String",
+          "default": "'dot'",
+          "enum": [
+            "dot",
+            "chip",
+            "text",
+            "bg",
+            "stripe"
+          ],
+          "note": "dot | chip | text | bg | stripe"
+        },
+        {
+          "prop": "displayText",
+          "attribute": "display-text",
+          "type": "Boolean",
+          "default": "false",
+          "note": "dot + capitalized label"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String",
+          "note": "text/chip/bg display value (default = capitalized level)"
+        }
+      ],
+      "events": [],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-tags": {
+      "element": "ObsTags",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "type",
+          "attribute": "type",
+          "type": "String",
+          "default": "'loose'",
+          "enum": [
+            "loose",
+            "select"
+          ],
+          "note": "loose | select"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String",
+          "default": "''",
+          "note": "comma-separated selected values"
+        },
+        {
+          "prop": "options",
+          "attribute": "options",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "select pick-list: comma/JSON string OR a real JS array"
+        },
+        {
+          "prop": "suggestions",
+          "attribute": "suggestions",
+          "type": "String",
+          "default": "''",
+          "note": "loose type: optional assist list"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String",
+          "default": "''"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "loading",
+          "attribute": "loading",
+          "type": "Boolean",
+          "default": "false",
+          "note": "select: chevron → spinner, non-interactive"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "Boolean",
+          "default": "false",
+          "note": "full-width"
+        },
+        {
+          "prop": "lowercase",
+          "attribute": "lowercase",
+          "type": "String",
+          "default": "'true'",
+          "note": "loose default-true; off via lowercase=\"false\" / :lowercase=\"false\" (String type avoids Vue boolean-casting)"
+        }
+      ],
+      "events": [
+        "change"
+      ],
+      "slots": []
+    },
+    "obs-tooltip": {
+      "element": "ObsTooltip",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "placement",
+          "attribute": "placement",
+          "type": "String",
+          "default": "'top-start'",
+          "enum": [
+            "top",
+            "top-start",
+            "top-end",
+            "bottom",
+            "left",
+            "right"
+          ],
+          "note": "top | top-start | top-end | bottom | left | right"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "chartLike",
+          "attribute": "chart-like",
+          "type": "Boolean",
+          "default": "false",
+          "note": "attr: chart-like"
+        },
+        {
+          "prop": "triggerLabel",
+          "attribute": "trigger-label",
+          "type": "String",
+          "default": "''",
+          "note": "text trigger (a button); else the info-circle ⓘ"
+        },
+        {
+          "prop": "open",
+          "attribute": "open",
+          "type": "Boolean",
+          "default": "false",
+          "note": "force-show the bubble (for the static examples)"
+        }
+      ],
+      "events": [],
+      "slots": [
+        "trigger",
+        "default"
+      ]
+    },
+    "obs-dataviz-tooltip": {
+      "element": "ObsDataVizTooltip",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "kind",
+          "attribute": "kind",
+          "type": "String",
+          "default": "'bar'"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "Boolean",
+          "default": "false",
+          "note": "stretch the card to the full width of its container"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-date-time-picker": {
+      "element": "ObsDateTimePicker",
+      "referenceOnly": true,
+      "attributes": [
+        {
+          "prop": "kind",
+          "attribute": "kind",
+          "type": "String",
+          "default": "'range'",
+          "enum": [
+            "range",
+            "range-presets",
+            "field-datetime",
+            "field-date",
+            "field-time",
+            "slider"
+          ],
+          "note": "range | range-presets | field-datetime | field-date | field-time | slider"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "bordered",
+          "attribute": "bordered",
+          "type": "Boolean",
+          "default": "false",
+          "note": "range trigger gets a --border-color frame"
+        },
+        {
+          "prop": "allowClear",
+          "attribute": "allow-clear",
+          "type": "Boolean",
+          "default": "false",
+          "note": "attr allow-clear → times-circle × on the range pill"
+        },
+        {
+          "prop": "empty",
+          "attribute": "empty",
+          "type": "Boolean",
+          "default": "false",
+          "note": "start with no selection (shows the 'Select Time' placeholder)"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String",
+          "default": "''"
+        }
+      ],
+      "events": [
+        "change"
+      ],
+      "slots": []
+    },
+    "obs-filters": {
+      "element": "ObsFilters",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "kind",
+          "attribute": "kind",
+          "type": "String",
+          "default": "'bar'",
+          "note": "FUNCTIONAL CONTRACT (kind=\"bar\"): pass your own fields + read back the user's selection."
+        },
+        {
+          "prop": "fields",
+          "attribute": "fields",
+          "type": "[String,Array]",
+          "note": "[{ key, label, type:'enum'|'string', values:[…], selectAll? }] — array or JSON string"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "[String,Array]",
+          "note": "active conditions [{ field, operator, value }] — array or JSON string"
+        },
+        {
+          "prop": "match",
+          "attribute": "match",
+          "type": "String",
+          "default": "'all'",
+          "note": "the Match toggle mode: 'all' (AND) | 'any' (OR). Emitted in `change` as {conditions, match}."
+        }
+      ],
+      "events": [
+        "change"
+      ],
+      "slots": []
+    },
+    "obs-drawer": {
+      "element": "ObsDrawer",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "open",
+          "attribute": "open",
+          "type": "Boolean",
+          "default": "false",
+          "note": "visibility (reflected to el.open)"
+        },
+        {
+          "prop": "title",
+          "attribute": "title",
+          "type": "String",
+          "default": "''",
+          "note": "header title text (or use the `title` slot)"
+        },
+        {
+          "prop": "width",
+          "attribute": "width",
+          "type": "[String,Number]",
+          "default": "'40%'",
+          "note": "Number → px; String %/px passthrough. Product: 360→40%→50-70%→85-96%"
+        },
+        {
+          "prop": "placement",
+          "attribute": "placement",
+          "type": "String",
+          "default": "'right'",
+          "enum": [
+            "right",
+            "left"
+          ],
+          "note": "right | left"
+        },
+        {
+          "prop": "maskClosable",
+          "attribute": "mask-closable",
+          "type": "Boolean",
+          "default": "false",
+          "note": "product default: clicking the backdrop does NOT close"
+        },
+        {
+          "prop": "scrolledContent",
+          "attribute": "scrolled-content",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "wrap body in a scroll region; false = multi-pane (columns scroll)"
+        },
+        {
+          "prop": "usePadding",
+          "attribute": "use-padding",
+          "type": "Boolean",
+          "default": "false",
+          "note": "widen the shared inset to 24px for the WHOLE panel (header+body+footer stay aligned)"
+        },
+        {
+          "prop": "escClosable",
+          "attribute": "esc-closable",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "Escape closes; esc-closable=\"false\" disables"
+        },
+        {
+          "prop": "footer",
+          "attribute": "footer",
+          "type": "String",
+          "default": "''",
+          "enum": [
+            "close",
+            "cancel-save",
+            "reset-cancel-save",
+            "delete-split",
+            "note-split"
+          ]
+        }
+      ],
+      "events": [
+        "open",
+        "close",
+        "after-close",
+        "update:open",
+        "footer-action"
+      ],
+      "slots": [
+        "title",
+        "default",
+        "actions"
+      ]
+    },
+    "obs-icon": {
+      "element": "ObsIcon",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "name",
+          "attribute": "name",
+          "type": "String",
+          "default": "''",
+          "note": "icon key from the library (e.g. 'vm', 'docker', 'search')"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "[String,Number]",
+          "default": "16",
+          "note": "px (number/plain digits) or any CSS length (e.g. '1.2em')"
+        },
+        {
+          "prop": "label",
+          "attribute": "label",
+          "type": "String",
+          "default": "''",
+          "note": "accessible name; empty → decorative (aria-hidden)"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-grid-select": {
+      "element": "ObsGridSelect",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "columns",
+          "attribute": "columns",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{key,title,width?,align?,sortable?,type?}] JSON/array"
+        },
+        {
+          "prop": "rows",
+          "attribute": "rows",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{id, …}] JSON/array"
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "selected id (single) or comma/JSON ids (multi)"
+        },
+        {
+          "prop": "multiple",
+          "attribute": "multiple",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String",
+          "default": "'Select'"
+        },
+        {
+          "prop": "rowKey",
+          "attribute": "row-key",
+          "type": "String",
+          "default": "'id'"
+        },
+        {
+          "prop": "searchable",
+          "attribute": "searchable",
+          "type": "[Boolean,String]",
+          "default": "true"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "Boolean",
+          "default": "false"
+        }
+      ],
+      "events": [
+        "change",
+        "search",
+        "show",
+        "hide"
+      ],
+      "slots": []
+    },
+    "obs-menu": {
+      "element": "ObsMenu",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{key,label,icon?,danger?,positive?,divider?,disabled?,selected?}]"
+        },
+        {
+          "prop": "mode",
+          "attribute": "mode",
+          "type": "String",
+          "default": "'context'",
+          "note": "context (⋯/button trigger) | inline (render list in place)"
+        },
+        {
+          "prop": "trigger",
+          "attribute": "trigger",
+          "type": "String",
+          "default": "'dots'",
+          "note": "dots (⋯) | button — the context trigger style"
+        },
+        {
+          "prop": "bordered",
+          "attribute": "bordered",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "give the ⋯ dots trigger a border (a bordered kebab button)"
+        },
+        {
+          "prop": "label",
+          "attribute": "label",
+          "type": "String",
+          "default": "'Actions'",
+          "note": "button-trigger label"
+        },
+        {
+          "prop": "placement",
+          "attribute": "placement",
+          "type": "String",
+          "default": "'bottom-end'",
+          "note": "bottom-end (product bottomRight) | bottom-start"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        }
+      ],
+      "events": [
+        "select",
+        "show",
+        "hide"
+      ],
+      "slots": []
+    },
+    "obs-color-picker": {
+      "element": "ObsColorPicker",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String",
+          "default": "'#0D9488'",
+          "note": "hex or 'transparent'"
+        },
+        {
+          "prop": "presets",
+          "attribute": "presets",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "override the 16-colour palette (JSON/array/comma)"
+        },
+        {
+          "prop": "allowTransparent",
+          "attribute": "allow-transparent",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "offer a no-fill (transparent) option"
+        },
+        {
+          "prop": "hideArrow",
+          "attribute": "hide-arrow",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "hide the chevron next to the swatch"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "Boolean",
+          "default": "false"
+        }
+      ],
+      "events": [
+        "change",
+        "show",
+        "hide"
+      ],
+      "slots": []
+    },
+    "obs-table": {
+      "element": "ObsTable",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "columns",
+          "attribute": "columns",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{key,title,width?,align?,sortable?,type?,cls?}] JSON/array"
+        },
+        {
+          "prop": "rows",
+          "attribute": "rows",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{id, …}] JSON/array"
+        },
+        {
+          "prop": "rowKey",
+          "attribute": "row-key",
+          "type": "String",
+          "default": "'id'"
+        },
+        {
+          "prop": "headerStyle",
+          "attribute": "header-style",
+          "type": "String",
+          "default": "'default'",
+          "note": "default (transparent .k-grid) | tinted (.item-list-table)"
+        },
+        {
+          "prop": "selectable",
+          "attribute": "selectable",
+          "type": "Boolean",
+          "default": "false",
+          "note": "checkbox column + select-all (composes obs-checkbox)"
+        },
+        {
+          "prop": "selected",
+          "attribute": "selected",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "selected id array; reflects to el.selected (JSON)"
+        },
+        {
+          "prop": "hideSelectionInfo",
+          "attribute": "hide-selection-info",
+          "type": "Boolean",
+          "default": "false",
+          "note": "hide the \"N items selected\" tag"
+        },
+        {
+          "prop": "rowActions",
+          "attribute": "row-actions",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{key,label,icon,danger?}] → a ⋯ actions menu per row"
+        },
+        {
+          "prop": "expandable",
+          "attribute": "expandable",
+          "type": "Boolean",
+          "default": "false",
+          "note": "a chevron column; each row's `detail` (HTML) opens below"
+        },
+        {
+          "prop": "groupBy",
+          "attribute": "group-by",
+          "type": "String",
+          "default": "''",
+          "note": "group rows under collapsible group-header rows by a column key"
+        },
+        {
+          "prop": "groupCollapsible",
+          "attribute": "group-collapsible",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "false → pivot / report grid: no chevron, all rows always shown"
+        },
+        {
+          "prop": "tree",
+          "attribute": "tree",
+          "type": "Boolean",
+          "default": "false",
+          "note": "hierarchical rows: each row has `children`; chevron + indent per level"
+        },
+        {
+          "prop": "editable",
+          "attribute": "editable",
+          "type": "Boolean",
+          "default": "false",
+          "note": "inline editing: a pencil per row; editable columns become obs-inputs + Save/Cancel"
+        },
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "\"default\"",
+          "note": "default | bordered (internal grid, no outer frame) | borderless-rows (no row dividers, airy)"
+        },
+        {
+          "prop": "hideHeader",
+          "attribute": "hide-header",
+          "type": "Boolean",
+          "default": "false",
+          "note": "hide the header row (compact widget grids)"
+        },
+        {
+          "prop": "stickyHeader",
+          "attribute": "sticky-header",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "pin the header while the body scrolls (needs a bounded height — set max-height)"
+        },
+        {
+          "prop": "maxHeight",
+          "attribute": "max-height",
+          "type": "String",
+          "default": "''",
+          "note": "cap the grid height + scroll the body (e.g. \"420px\"); pairs with sticky-header"
+        },
+        {
+          "prop": "sortable",
+          "attribute": "sortable",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "false/\"false\" turns column sorting off (default on)"
+        },
+        {
+          "prop": "sort",
+          "attribute": "sort",
+          "type": "String",
+          "default": "''",
+          "note": "initial sort \"key:asc|desc\" (the product's default-sort)"
+        },
+        {
+          "prop": "pageSize",
+          "attribute": "page-size",
+          "type": "Number",
+          "default": "0",
+          "note": "0 → no pagination; product default is 50"
+        },
+        {
+          "prop": "page",
+          "attribute": "page",
+          "type": "Number",
+          "default": "1"
+        },
+        {
+          "prop": "loading",
+          "attribute": "loading",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "emptyText",
+          "attribute": "empty-text",
+          "type": "String",
+          "default": "'No records found'"
+        }
+      ],
+      "events": [
+        "change",
+        "sort",
+        "rowaction",
+        "pagechange",
+        "rowclick",
+        "edit",
+        "save",
+        "canceledit",
+        "cellaction"
+      ],
+      "slots": []
+    },
+    "obs-modal": {
+      "element": "ObsModal",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "open",
+          "attribute": "open",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "title",
+          "attribute": "title",
+          "type": "String",
+          "default": "''",
+          "note": "header title (default variant) AND the bold heading in the confirm variant"
+        },
+        {
+          "prop": "width",
+          "attribute": "width",
+          "type": "[Number,String]",
+          "default": "560"
+        },
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'default'",
+          "note": "default | confirm (icon + message + Cancel/action)"
+        },
+        {
+          "prop": "icon",
+          "attribute": "icon",
+          "type": "String",
+          "default": "''",
+          "note": "confirm-variant icon (a library key, e.g. timesCircle)"
+        },
+        {
+          "prop": "confirmText",
+          "attribute": "confirm-text",
+          "type": "String",
+          "default": "'Save'"
+        },
+        {
+          "prop": "cancelText",
+          "attribute": "cancel-text",
+          "type": "String",
+          "default": "'Cancel'"
+        },
+        {
+          "prop": "confirmVariant",
+          "attribute": "confirm-variant",
+          "type": "String",
+          "default": "'primary'",
+          "note": "the footer confirm button variant (primary | error | …)"
+        },
+        {
+          "prop": "hideFooter",
+          "attribute": "hide-footer",
+          "type": "[Boolean,String]",
+          "default": "false"
+        },
+        {
+          "prop": "noPadding",
+          "attribute": "no-padding",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "full-bleed body (8px)"
+        },
+        {
+          "prop": "scrollable",
+          "attribute": "scrollable",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "fixed-height body with its own scroll"
+        },
+        {
+          "prop": "restrictWidth",
+          "attribute": "restrict-width",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "force 1020px (wide/compare modal)"
+        },
+        {
+          "prop": "escClosable",
+          "attribute": "esc-closable",
+          "type": "[Boolean,String]",
+          "default": "true"
+        },
+        {
+          "prop": "maskClosable",
+          "attribute": "mask-closable",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "product default: backdrop does NOT close"
+        }
+      ],
+      "events": [
+        "confirm",
+        "cancel",
+        "close",
+        "show",
+        "hide"
+      ],
+      "slots": [
+        "default",
+        "footer"
+      ]
+    },
+    "obs-metric-list": {
+      "element": "ObsMetricList",
+      "referenceOnly": false,
+      "attributes": [],
+      "events": [],
+      "slots": []
+    },
+    "obs-key-value": {
+      "element": "ObsKeyValue",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''"
+        },
+        {
+          "prop": "columns",
+          "attribute": "columns",
+          "type": "[Number,String]",
+          "default": "1",
+          "note": "1 | 2 — pairs per row"
+        },
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'card'",
+          "enum": [
+            "card",
+            "plain"
+          ],
+          "note": "card | plain"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-layout-appshell": {
+      "element": "ObsLayoutAppShell",
+      "referenceOnly": true,
+      "attributes": [
+        {
+          "prop": "sidebar",
+          "attribute": "sidebar",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "header",
+          "attribute": "header",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "overlay",
+          "attribute": "overlay",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "empty",
+          "attribute": "empty",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "anatomy",
+          "attribute": "anatomy",
+          "type": "Boolean",
+          "default": "false",
+          "note": "the annotated region-callout diagram"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-layout-grid": {
+      "element": "ObsLayoutGrid",
+      "referenceOnly": true,
+      "attributes": [
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "[String,Number]",
+          "default": "6"
+        },
+        {
+          "prop": "gutter",
+          "attribute": "gutter",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "autoSize",
+          "attribute": "auto-size",
+          "type": "Boolean",
+          "default": "false"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-layout-regions": {
+      "element": "ObsLayoutRegions",
+      "referenceOnly": true,
+      "attributes": [
+        {
+          "prop": "shape",
+          "attribute": "shape",
+          "type": "String",
+          "default": "'two-pane'",
+          "enum": [
+            "single",
+            "two-pane",
+            "master-detail",
+            "dashboard",
+            "three-pane",
+            "chart-over-grid"
+          ],
+          "note": "single|two-pane|master-detail|dashboard|three-pane|chart-over-grid"
+        },
+        {
+          "prop": "toolbar",
+          "attribute": "toolbar",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "footer",
+          "attribute": "footer",
+          "type": "Boolean",
+          "default": "false"
+        },
+        {
+          "prop": "callouts",
+          "attribute": "callouts",
+          "type": "Boolean",
+          "default": "false",
+          "note": "the annotated region-stack wireframe"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-layout-shells": {
+      "element": "ObsLayoutShells",
+      "referenceOnly": true,
+      "attributes": [],
+      "events": [],
+      "slots": []
+    },
+    "obs-layout-page-templates": {
+      "element": "ObsLayoutPageTemplates",
+      "referenceOnly": true,
+      "attributes": [],
+      "events": [],
+      "slots": []
+    },
+    "obs-layout-panels": {
+      "element": "ObsLayoutPanels",
+      "referenceOnly": true,
+      "attributes": [],
+      "events": [],
+      "slots": []
+    },
+    "obs-tabs": {
+      "element": "ObsTabs",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "tabs",
+          "attribute": "tabs",
+          "type": "String",
+          "default": "''",
+          "note": "JSON array of {key,label,count?,icon?,disabled?} OR \"A,B,C\""
+        },
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String",
+          "default": "''",
+          "note": "active key"
+        },
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "''",
+          "note": "'' | 'no-border' | 'sticky' | 'grey'"
+        },
+        {
+          "prop": "persistKey",
+          "attribute": "persist-key",
+          "type": "String",
+          "default": "''",
+          "note": "persist the active tab in localStorage under `${persistKey}-tab`"
+        },
+        {
+          "prop": "closable",
+          "attribute": "closable",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "a × per tab (only shown when there is MORE than one) → emits `close`"
+        },
+        {
+          "prop": "addable",
+          "attribute": "addable",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "a \"+\" at the far right of the bar → emits `add`"
+        }
+      ],
+      "events": [
+        "change",
+        "close",
+        "add"
+      ],
+      "slots": [],
+      "dynamicSlots": "one named content slot PER TAB — the slot name is that tab's `key` (e.g. <obs-tabs tabs='[{\"key\":\"overview\",…}]'><div slot=\"overview\">…</div></obs-tabs>). Only the active tab's pane shows."
+    },
+    "obs-steps": {
+      "element": "ObsSteps",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{label, description?, status?}] or [\"A\",\"B\",…]"
+        },
+        {
+          "prop": "active",
+          "attribute": "active",
+          "type": "[Number,String]",
+          "default": "0",
+          "note": "current step index (0-based)"
+        },
+        {
+          "prop": "direction",
+          "attribute": "direction",
+          "type": "String",
+          "default": "'horizontal'",
+          "enum": [
+            "horizontal",
+            "vertical"
+          ],
+          "note": "horizontal | vertical"
+        },
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'number'",
+          "note": "number (circle+index) | dot (compact)"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "String",
+          "default": "'default'",
+          "enum": [
+            "default",
+            "small"
+          ],
+          "note": "default | small"
+        },
+        {
+          "prop": "fill",
+          "attribute": "fill",
+          "type": "String",
+          "default": "'solid'",
+          "note": "solid (filled circle) | outline (lined circle)"
+        },
+        {
+          "prop": "connector",
+          "attribute": "connector",
+          "type": "String",
+          "default": "'line'",
+          "note": "line (default) | none (hide the connecting lines)"
+        },
+        {
+          "prop": "completed",
+          "attribute": "completed",
+          "type": "String",
+          "default": "'primary'",
+          "note": "completed-marker colour: primary (black/navy) | green"
+        },
+        {
+          "prop": "compact",
+          "attribute": "compact",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "hide labels/descriptions → a circles-only progress track"
+        },
+        {
+          "prop": "clickable",
+          "attribute": "clickable",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "done/current steps navigate on click (emits change)"
+        },
+        {
+          "prop": "status",
+          "attribute": "status",
+          "type": "String",
+          "default": "'process'",
+          "note": "status of the CURRENT step (process|error|finish|wait)"
+        }
+      ],
+      "events": [
+        "change"
+      ],
+      "slots": []
+    },
+    "obs-page-header": {
+      "element": "ObsPageHeader",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "heading",
+          "attribute": "heading",
+          "type": "String",
+          "default": "''",
+          "note": "the page title (not `title` — that sets a native tooltip)"
+        },
+        {
+          "prop": "subtitle",
+          "attribute": "subtitle",
+          "type": "String",
+          "default": "''",
+          "note": "optional secondary line under the title (detail/drawer headers)"
+        },
+        {
+          "prop": "count",
+          "attribute": "count",
+          "type": "[String,Number]",
+          "default": "null",
+          "note": "optional count pill next to the title"
+        },
+        {
+          "prop": "meta",
+          "attribute": "meta",
+          "type": "String",
+          "default": "''",
+          "note": "detail-header attribute strip: JSON [{label?,value,icon?,status?}]"
+        },
+        {
+          "prop": "accent",
+          "attribute": "accent",
+          "type": "String",
+          "default": "''",
+          "note": "left stripe colour: a severity level (up/critical/…) or a colour token"
+        },
+        {
+          "prop": "back",
+          "attribute": "back",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "show the back chevron button (fires `back` on click)"
+        },
+        {
+          "prop": "noDivider",
+          "attribute": "no-divider",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "remove the bottom rule (default: shown, per the 54× render)"
+        }
+      ],
+      "events": [],
+      "slots": [
+        "breadcrumb",
+        "back",
+        "before",
+        "title",
+        "default"
+      ]
+    },
+    "obs-app-header": {
+      "element": "ObsAppHeader",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "brand",
+          "attribute": "brand",
+          "type": "String",
+          "default": "''",
+          "note": "brand text; if empty AND no `brand` slot, the DEFAULT ObserveOps logo (obs-logo) renders"
+        },
+        {
+          "prop": "actions",
+          "attribute": "actions",
+          "type": "String",
+          "default": "''",
+          "note": "JSON [{icon,label,badge?,active?}] → circular icon buttons"
+        },
+        {
+          "prop": "build",
+          "attribute": "build",
+          "type": "String",
+          "default": "''",
+          "note": "BUILD version tag text, e.g. \"8.0.0\" → \"BUILD : 8.0.0\""
+        },
+        {
+          "prop": "user",
+          "attribute": "user",
+          "type": "String",
+          "default": "''",
+          "note": "user initials for the avatar (or use the `user` slot)"
+        }
+      ],
+      "events": [
+        "action",
+        "user"
+      ],
+      "slots": [
+        "brand",
+        "default",
+        "user"
+      ]
+    },
+    "obs-user-menu": {
+      "element": "ObsUserMenu",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "name",
+          "attribute": "name",
+          "type": "String",
+          "default": "''",
+          "note": "display name shown in the dropdown header"
+        },
+        {
+          "prop": "subtitle",
+          "attribute": "subtitle",
+          "type": "String",
+          "default": "''",
+          "note": "secondary header line (email / role)"
+        },
+        {
+          "prop": "avatar",
+          "attribute": "avatar",
+          "type": "String",
+          "default": "''",
+          "note": "avatar image src; if empty → initials"
+        },
+        {
+          "prop": "initials",
+          "attribute": "initials",
+          "type": "String",
+          "default": "''",
+          "note": "explicit initials (else derived from `name`)"
+        },
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "account links [{key,label,icon?,href?,danger?,divider?}]"
+        },
+        {
+          "prop": "themeToggle",
+          "attribute": "theme-toggle",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "show the Dark/Light/Auto theme switcher"
+        },
+        {
+          "prop": "theme",
+          "attribute": "theme",
+          "type": "String",
+          "default": "'auto'",
+          "enum": [
+            "dark",
+            "light",
+            "auto"
+          ],
+          "note": "current theme selection: dark | light | auto"
+        },
+        {
+          "prop": "manageTheme",
+          "attribute": "manage-theme",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "apply the chosen theme to <html> itself (built-in). false → emit-only"
+        },
+        {
+          "prop": "logout",
+          "attribute": "logout",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "show the danger Logout row"
+        },
+        {
+          "prop": "logoutLabel",
+          "attribute": "logout-label",
+          "type": "String",
+          "default": "'Logout'"
+        },
+        {
+          "prop": "placement",
+          "attribute": "placement",
+          "type": "String",
+          "default": "'bottom-end'",
+          "enum": [
+            "bottom-end",
+            "bottom-start"
+          ],
+          "note": "bottom-end | bottom-start"
+        }
+      ],
+      "events": [
+        "select",
+        "logout",
+        "theme",
+        "show",
+        "hide"
+      ],
+      "slots": []
+    },
+    "obs-notification-menu": {
+      "element": "ObsNotificationMenu",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "count",
+          "attribute": "count",
+          "type": "[Number,String]",
+          "default": "0",
+          "note": "unread count shown in the badge (0 → no badge)"
+        },
+        {
+          "prop": "title",
+          "attribute": "title",
+          "type": "String",
+          "default": "'Alerts & Notifications'",
+          "note": "panel header title"
+        },
+        {
+          "prop": "tabs",
+          "attribute": "tabs",
+          "type": "[String,Array]",
+          "default": "'Alerts",
+          "note": "tab labels (comma-list or JSON)"
+        },
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{tab?, severity?, text, time?, unread?}]"
+        },
+        {
+          "prop": "placement",
+          "attribute": "placement",
+          "type": "String",
+          "default": "'bottom-end'",
+          "enum": [
+            "bottom-end",
+            "bottom-start"
+          ],
+          "note": "bottom-end | bottom-start"
+        },
+        {
+          "prop": "clearLabel",
+          "attribute": "clear-label",
+          "type": "String",
+          "default": "'Clear all'"
+        },
+        {
+          "prop": "viewallLabel",
+          "attribute": "viewall-label",
+          "type": "String",
+          "default": "'View all'"
+        },
+        {
+          "prop": "emptyText",
+          "attribute": "empty-text",
+          "type": "String",
+          "default": "'You’re all caught up'"
+        }
+      ],
+      "events": [
+        "select",
+        "tab",
+        "clear",
+        "viewall",
+        "show",
+        "hide"
+      ],
+      "slots": []
+    },
+    "obs-command-palette": {
+      "element": "ObsCommandPalette",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "String",
+          "default": "''",
+          "note": "the query text"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String",
+          "default": "'Start Typing...'"
+        },
+        {
+          "prop": "categories",
+          "attribute": "categories",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "category picker options; empty → no picker"
+        },
+        {
+          "prop": "category",
+          "attribute": "category",
+          "type": "String",
+          "default": "''",
+          "note": "current category value"
+        },
+        {
+          "prop": "suggestions",
+          "attribute": "suggestions",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "autocomplete options (strings) → a dropdown while focused"
+        },
+        {
+          "prop": "executeLabel",
+          "attribute": "execute-label",
+          "type": "String",
+          "default": "'Execute'"
+        },
+        {
+          "prop": "error",
+          "attribute": "error",
+          "type": "String",
+          "default": "''",
+          "note": "a parse-error message → Execute becomes a red error icon"
+        },
+        {
+          "prop": "clearable",
+          "attribute": "clearable",
+          "type": "[Boolean,String]",
+          "default": "true"
+        },
+        {
+          "prop": "timeRange",
+          "attribute": "time-range",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "show the time-range picker (obs-date-time-picker) on the right"
+        },
+        {
+          "prop": "block",
+          "attribute": "block",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "wider bar (caps at 800); else the 680 default"
+        },
+        {
+          "prop": "align",
+          "attribute": "align",
+          "type": "String",
+          "default": "'left'",
+          "note": "left (default) | center — horizontal alignment of the bar"
+        },
+        {
+          "prop": "overlay",
+          "attribute": "overlay",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "render as a header search-icon trigger → a centered, blurred modal palette (Cmd+K)"
+        }
+      ],
+      "events": [
+        "execute",
+        "input",
+        "category",
+        "clear",
+        "suggest",
+        "open",
+        "close"
+      ],
+      "slots": []
+    },
+    "obs-toolbar": {
+      "element": "ObsToolbar",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "''",
+          "note": "'' (grid) | 'bulk' | 'widget'"
+        },
+        {
+          "prop": "count",
+          "attribute": "count",
+          "type": "[String,Number]",
+          "default": "null",
+          "note": "(bulk) number of selected rows → \"N items selected\""
+        },
+        {
+          "prop": "title",
+          "attribute": "title",
+          "type": "String",
+          "default": "''",
+          "note": "(widget) the widget title"
+        }
+      ],
+      "events": [
+        "clear"
+      ],
+      "slots": [
+        "default",
+        "start"
+      ]
+    },
+    "obs-divider": {
+      "element": "ObsDivider",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "type",
+          "attribute": "type",
+          "type": "String",
+          "default": "'horizontal'",
+          "note": "'horizontal' (default) | 'vertical'"
+        },
+        {
+          "prop": "dashed",
+          "attribute": "dashed",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "dashed instead of solid (real dashed — fixes product F1)"
+        },
+        {
+          "prop": "orientation",
+          "attribute": "orientation",
+          "type": "String",
+          "default": "''",
+          "note": "'' (center) | 'start' | 'end' — label position (with-text)"
+        },
+        {
+          "prop": "text",
+          "attribute": "text",
+          "type": "String",
+          "default": "''",
+          "note": "optional label → a with-text section rule"
+        },
+        {
+          "prop": "dark",
+          "attribute": "dark",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "tuned for a dark background (--neutral-light)"
+        }
+      ],
+      "events": [],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-banner": {
+      "element": "ObsBanner",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'info'",
+          "enum": [
+            "info",
+            "success",
+            "warning",
+            "error"
+          ],
+          "note": "info | success | warning | error"
+        },
+        {
+          "prop": "title",
+          "attribute": "title",
+          "type": "String",
+          "default": "''",
+          "note": "optional bold heading above the message"
+        },
+        {
+          "prop": "icon",
+          "attribute": "icon",
+          "type": "String",
+          "default": "''",
+          "note": "override the default per-variant icon (a library key)"
+        },
+        {
+          "prop": "closable",
+          "attribute": "closable",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "show a dismiss × (emits `close`, hides itself)"
+        }
+      ],
+      "events": [
+        "close"
+      ],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-sidebar": {
+      "element": "ObsSidebar",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "JSON [{key,label,icon,beta?}] → the module list"
+        },
+        {
+          "prop": "active",
+          "attribute": "active",
+          "type": "String",
+          "default": "''",
+          "note": "the active module key (highlighted --primary-alt)"
+        },
+        {
+          "prop": "brand",
+          "attribute": "brand",
+          "type": "String",
+          "default": "'ObserveOps'",
+          "note": "wordmark text shown when expanded"
+        },
+        {
+          "prop": "expanded",
+          "attribute": "expanded",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "pin the rail open (otherwise it hover-expands)"
+        }
+      ],
+      "events": [
+        "navigate"
+      ],
+      "slots": [
+        "logo"
+      ]
+    },
+    "obs-breadcrumbs": {
+      "element": "ObsBreadcrumbs",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "JSON [\"A\",\"B\"] or [{label,href?}]; or a \"A / B / C\" string"
+        },
+        {
+          "prop": "separator",
+          "attribute": "separator",
+          "type": "String",
+          "default": "'/'",
+          "note": "the divider between crumbs: any text, or 'chevron' for ›"
+        },
+        {
+          "prop": "back",
+          "attribute": "back",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "show a leading back chevron (emits `back`)"
+        },
+        {
+          "prop": "divider",
+          "attribute": "divider",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "a bottom rule under the trail (page-header context)"
+        }
+      ],
+      "events": [
+        "navigate",
+        "back"
+      ],
+      "slots": []
+    },
+    "obs-side-menu": {
+      "element": "ObsSideMenu",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "mode",
+          "attribute": "mode",
+          "type": "String",
+          "default": "'sections'",
+          "enum": [
+            "sections",
+            "categories",
+            "tree",
+            "list"
+          ],
+          "note": "sections | categories | tree | list"
+        },
+        {
+          "prop": "items",
+          "attribute": "items",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "recursive [{label,icon?,count?,favorite?,edit?,children?}]"
+        },
+        {
+          "prop": "active",
+          "attribute": "active",
+          "type": "String",
+          "default": "''"
+        },
+        {
+          "prop": "search",
+          "attribute": "search",
+          "type": "[Boolean,String]",
+          "default": "true"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String",
+          "default": "'Search'"
+        },
+        {
+          "prop": "tabs",
+          "attribute": "tabs",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{label,value}] or [\"A\",\"B\"]"
+        },
+        {
+          "prop": "tabStyle",
+          "attribute": "tab-style",
+          "type": "String",
+          "default": "'underline'",
+          "note": "underline (tree/list) | segmented (categories Dashboard/NOC)"
+        },
+        {
+          "prop": "activeTab",
+          "attribute": "active-tab",
+          "type": "String",
+          "default": "''"
+        }
+      ],
+      "events": [
+        "select",
+        "search",
+        "tab"
+      ],
+      "slots": [
+        "logo",
+        "tabs-action",
+        "search-action",
+        "default"
+      ]
+    },
+    "obs-logo": {
+      "element": "ObsLogo",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "name",
+          "attribute": "name",
+          "type": "String",
+          "default": "''",
+          "note": "monitor-type/logo key (case- & space-insensitive; aliases ok)"
+        },
+        {
+          "prop": "variant",
+          "attribute": "variant",
+          "type": "String",
+          "default": "'color'",
+          "note": "'color' (full-colour brand mark) | 'line' (monochrome, inherits text colour)"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "[String,Number]",
+          "default": "20",
+          "note": "px (number/plain digits) or any CSS length"
+        },
+        {
+          "prop": "label",
+          "attribute": "label",
+          "type": "String",
+          "default": "''",
+          "note": "accessible name; empty → decorative (aria-hidden)"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-metric-picker": {
+      "element": "ObsMetricPicker",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "monitors",
+          "attribute": "monitors",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "the monitor TABLE rows for the grid picker: [{id,name,ip,type,groups?,tags?,sev?}]"
+        },
+        {
+          "prop": "monitorColumns",
+          "attribute": "monitor-columns",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "grid columns; default MONITOR/IP/TYPE/GROUPS/TAGS"
+        },
+        {
+          "prop": "selected",
+          "attribute": "selected",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "the initial OPEN monitor tabs: ids [\"xen75\"] (one tab each)"
+        },
+        {
+          "prop": "active",
+          "attribute": "active",
+          "type": "String",
+          "default": "''",
+          "note": "the initially-active monitor id"
+        },
+        {
+          "prop": "counters",
+          "attribute": "counters",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "flat counter list for the active monitor: [\"ping.latency.ms\", …]"
+        },
+        {
+          "prop": "metrics",
+          "attribute": "metrics",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "alias: a grouped tree [{label,items}] → flattened"
+        },
+        {
+          "prop": "views",
+          "attribute": "views",
+          "type": "String",
+          "default": "'Metric",
+          "note": "the sub-tabs (comma list)"
+        },
+        {
+          "prop": "canAdd",
+          "attribute": "can-add",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "⊕ + drag per row (the explorer default = true)"
+        },
+        {
+          "prop": "embedded",
+          "attribute": "embedded",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "SCOPED to one already-known monitor: hide the monitor tabs"
+        },
+        {
+          "prop": "placeholder",
+          "attribute": "placeholder",
+          "type": "String",
+          "default": "'Search'"
+        }
+      ],
+      "events": [
+        "select-monitor",
+        "add-monitor",
+        "remove-monitor",
+        "view",
+        "add",
+        "drag",
+        "search"
+      ],
+      "slots": []
+    },
+    "obs-noc-player": {
+      "element": "ObsNocPlayer",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "dashboards",
+          "attribute": "dashboards",
+          "type": "[String,Array]",
+          "default": "''",
+          "note": "[{name}] or a JSON/comma list of names to rotate"
+        },
+        {
+          "prop": "current",
+          "attribute": "current",
+          "type": "[Number,String]",
+          "default": "0",
+          "note": "starting index"
+        },
+        {
+          "prop": "interval",
+          "attribute": "interval",
+          "type": "[Number,String]",
+          "default": "30",
+          "note": "seconds per dashboard"
+        },
+        {
+          "prop": "paused",
+          "attribute": "paused",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "start paused"
+        },
+        {
+          "prop": "logo",
+          "attribute": "logo",
+          "type": "String",
+          "default": "''",
+          "note": "brand logo image src (or use the `logo` slot)"
+        },
+        {
+          "prop": "fullscreen",
+          "attribute": "fullscreen",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "fixed full-viewport overlay (the real wallboard mode)"
+        }
+      ],
+      "events": [
+        "change",
+        "close",
+        "play",
+        "pause"
+      ],
+      "slots": [
+        "logo",
+        "default"
+      ]
+    },
+    "obs-timeline-scrollbar": {
+      "element": "ObsTimelineScrollbar",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "start",
+          "attribute": "start",
+          "type": "String",
+          "default": "''",
+          "note": "the window START time label"
+        },
+        {
+          "prop": "end",
+          "attribute": "end",
+          "type": "String",
+          "default": "''",
+          "note": "the window END time label"
+        },
+        {
+          "prop": "disabled",
+          "attribute": "disabled",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "disable all controls"
+        }
+      ],
+      "events": [
+        "shift"
+      ],
+      "slots": []
+    }
+  }
+}

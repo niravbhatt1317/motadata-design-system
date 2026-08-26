@@ -1,0 +1,148 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Button/Usage" />
+
+# Button — Usage
+
+A button makes an action **happen** (save, delete, apply, open). If it takes the user
+*somewhere*, that's a link, not a button.
+
+Written so **designers, developers, PMs — and AI tools — never have to guess**: start with the
+decision flow, then read the exact use cases for the type it points you to. Benchmarked
+against Atlassian, Material 3, Carbon, Polaris, and Spectrum; examples are real ObserveOps usage.
+
+## Pick the right button (decision flow)
+
+Answer in order. **The first match wins** — stop there.
+
+1. **Does it navigate** (go to another page/route/URL)? → it's a **link** (`FlotoLink`), not a button.
+2. **Is it destructive** (delete, remove, abort, reset data)? → **`error`** + a confirmation step.
+3. **Is it the single most important action on this view/form/dialog?** → **`primary`**
+   (use **`primary-alt`** if it's the confirm inside a modal).
+4. **Is it the Cancel / Reset / "secondary" sitting next to that primary?** → **`default`**.
+5. **Is it a quiet utility control** in a toolbar, list, grid, or filter bar? → **`neutral-lightest`**.
+6. **Is it an inline, text-like action** (Add, Create New, Clear All, in-content)? → **`transparent`**.
+7. **Is it icon-only** (no room/need for a label — row action, toolbar, close)? → **icon button**
+   (`class="squared-button"`, or `shape="circle"`).
+
+Modifiers, independent of the above: **`block`** = full width; **`outline`** = transparent
+fill + border; **`size`** = small/default. (Avoid `neutral`/`info` — they render navy, F1.)
+
+## Use cases by type
+
+### `primary` — the one main action
+
+- **Use when:** there is exactly **one** most-important action on the screen — **Save** a
+  form, **Apply** a filter, **Verify** on login, advance a wizard.
+- **Don't use when:** there's already a primary on the view (demote this to `default`/
+  `transparent`); the action is destructive (use `error`); it's a link (use `FlotoLink`).
+- **Example:** **Apply** on a filter panel; **Save** on a settings form.
+
+### `primary-alt` — confirm inside a dialog
+
+- **Use when:** the affirmative action **inside a modal/dialog** where full-navy primary feels
+  too heavy — **Save**, **Confirm**, **Restore**.
+- **Don't use when:** it's the page-level main action (use `primary`).
+- **Example:** **Restore** in the backup-restore dialog.
+
+### `default` — the secondary companion
+
+- **Use when:** the action that sits **next to a primary** — **Cancel**, **Reset**, **Clear**,
+  **Back**. The "no/escape/secondary" choice.
+- **Don't use when:** it's the main action (use `primary`) or destructive (use `error`).
+- **Example:** **Cancel** beside **Save**; **Reset** on a filter.
+
+### `neutral-lightest` — quiet utility
+
+- **Use when:** low-emphasis controls that shouldn't compete — **toolbar / list / grid**
+  buttons, view toggles, **Filter**, **Hide all**.
+- **Don't use when:** it's the main action, or an inline text action (use `transparent`).
+- **Example:** the **Filter** button on a list header.
+
+### `neutral-lighter` — subtle add/secondary (rare)
+
+- **Use when:** a slightly-stronger-than-transparent secondary, e.g. **Add New …** inside a
+  form section, **Export**.
+- **Don't use when:** unsure — prefer `transparent` (inline) or `default` (secondary); this one
+  is used sparingly.
+
+### `transparent` — inline / tertiary, text-like
+
+- **Use when:** lightweight inline actions that read like text — **Create New**, **+ Add**,
+  **Add Credential**, **Clear All**, actions inside cards/sidebars.
+- **Don't use when:** it's navigation (use `FlotoLink`) or needs more prominence (use `default`).
+- **Example:** **Create New** above a list; **Clear All** in a filter bar.
+
+### `error` — destructive
+
+- **Use when:** the action **deletes / removes / aborts / discards** — always paired with a
+  confirmation (`FlotoConfirmModal`).
+- **Don't use when:** it's just a normal save (use `primary`); for non-destructive "danger"
+  prefer a confirm step over color alone.
+- **Example:** **Delete Selected**, **Abort**.
+
+### `success` — affirmative approve (rare)
+
+- **Use when:** an explicit **approve / accept** in a review/approval flow.
+- **Don't use when:** it's a generic save (use `primary`) — reserve green for true approval.
+- **Example:** **Approve** in the sync-approval drawer.
+
+### `outline` (ghost) — bordered secondary
+
+- **Use when:** a secondary action that still needs a clear edge — e.g. on a **busy, colored,
+  or image background**, or a bordered alternative to a solid secondary. Has dedicated
+  `primary`/`error`/`success` ghost styles.
+- **Don't use when:** a plain `default`/`transparent` reads clearly on a plain surface.
+
+### Icon button — `class="squared-button"` (most common)
+
+- **Use when:** a **recognizable, repeated, space-tight** action with a well-understood icon —
+  **table row** edit/delete, **toolbar** tools, **modal close**. Fixed **35×35**.
+- **Must:** provide an **`aria-label`** (no text = no name).
+- **Don't use when:** the icon's meaning isn't obvious — use a labelled button.
+
+### Icon button — `shape="circle"`
+
+- **Use when:** an icon action where a circular/standalone affordance is wanted (overlays,
+  floating controls). ⚠️ Renders as a **4px rounded square** unless you add `:rounded="false"`
+  (finding F7). Also needs an **`aria-label`**.
+
+### `block` — full width
+
+- **Use when:** the button should **fill its container** — narrow **drawers**, **mobile**,
+  single-action **forms**, login.
+- **Don't use when:** the button sits in a row with others.
+
+### Link (`FlotoLink`) — not a button
+
+- **Use when:** the control **navigates** (route, external URL, anchor). Rule of thumb: if it
+  should still "go somewhere" without JS, it's a link.
+- **Note:** `transparent` buttons look link-like but are for inline **actions**, not navigation.
+
+## Size
+
+- **`default`** — everywhere, unless a reason below applies.
+- **`small`** — dense surfaces only: table rows, toolbars, inline filters. (≈24px, below the
+  44–48px touch target — desktop-fine, risky on touch; see *Accessibility*.)
+- **Avoid `large`** — renders the same height as `default` today (finding F5).
+
+## Placement, count & labels (the rules)
+
+- **One primary per view.** Competing primaries is the most common mistake.
+- **Order (product convention):** in dialogs, **Cancel (`default`) on the left, primary on the
+  right** (`FlotoConfirmModal`). Keep footers consistent.
+- **Separate destructive actions** from routine ones so Delete isn't clicked by reflex.
+- **Labels:** verb + object, specific over generic — **Save changes** / **Delete monitor**,
+  not **OK** / **Yes** / **Submit**. 1–3 words, **Title Case**, no trailing punctuation. Match
+  the dialog title ("Delete monitor?" → **Delete**).
+
+## Related
+
+`MConfirmBtn` · `MDropdown` (overflow/menu actions) · `FlotoGridActions` (row actions) ·
+`FlotoLink` (navigation) · segmented control (`MRadioGroup as-button`).
+
+---
+
+*Benchmarked against Atlassian, Material 3, Carbon, Polaris, and Spectrum; rules grounded in
+ObserveOps usage. The same rules are mirrored machine-readably in `registry/button.json`
+(`decisionFlow` + `usageRules`) so AI tools pick the same type — no guessing.*

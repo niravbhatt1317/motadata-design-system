@@ -1,0 +1,22 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Severity/Changelog" />
+
+# Severity — Changelog
+
+- **2026-06-17 (dot fidelity + shapes)** — Owner flagged the dot was inverted. Corrected to the product
+  structure (`severity.less`): a **2px `--severity-<level>` border (dark ring) + a light
+  `--severity-<level>-dot-box` centre** (`down` = solid, 0px border). Also added the other **shapes** the
+  same class set renders — **solid chip** (filled + white text), **coloured text** (numeric), **bg-fill
+  cell** (`-lighter` tint + coloured border) — in a new **Shapes** story, and documented severity's
+  chart-layer renderings (graph-node colour, RUM map markers, heatmap cells) as cross-refs.
+
+- **2026-06-17** — Added — the **Severity** indicator (`severity.vue`, **80×**), surfaced by the
+  generalization-suite Alert-detail test: alert severities (`major`/`warning`/`clear`) weren't covered by
+  `MStatusTag`, because the product renders **severity levels** via this dedicated component (a
+  `--severity-<level>` dot/badge), **not** the status tag. Stories: **Levels** (all 13), **Dot vs dot +
+  label**, **Stripe**. Family members noted: `severity-stripe` / `severity-picker` / `severity-count-box`.
+  Registry-complete with the level set + tokens; cross-referenced from **Tag** (`statusMap.severityNote`)
+  and the **detail-view** recipe. Findings F1 (emit typo `udpate:severity`), F2 (colour-only a11y).
+- **Reproduction note:** the live component resolves severity from a monitor via DB workers; the story is
+  driven by the `severity` prop with the real `--severity-*` tokens.

@@ -1,0 +1,24 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/App shell/Changelog" />
+
+# App shell — Changelog
+
+- **2026-06-18 (skeleton style)** — Switched the **Anatomy** and **Playground** from product-accurate
+  rendering (real module icons, brand logo, the "All Monitors" table) to a **skeleton** style consistent
+  with the rest of the foundation — grey blocks for icons/logo/avatar, skeleton bars for content, with
+  text kept only where it helps ("Page title"). Content area is white so the skeleton bars read clearly.
+- **2026-06-18 (interactive Playground)** — Added a **Playground** story (Elastic-EUI style) with
+  in-canvas toggle switches — **Sidebar · Header · Overlay · Empty content** — that add/remove the chrome
+  live (Sidebar + Header off ≈ `EmptyLayout`). The labelled **Anatomy** story stays as the reference.
+- **2026-06-17 (Usage page + Overlay relabel)** — Added the **Usage** page (region table with component
+  links, when-to-use, best practices). Relabelled the **Overlay** callout to **"Overlay layer (floats
+  above)"** to make clear it's a z-layer, not a spatial region.
+- **2026-06-17 (Atlassian-style callouts)** — Replaced the bottom symbol legend with **leader-line
+  callouts** (dot → line → labelled chip) pointing to each region in its real position, matching the
+  reference design.
+- **2026-06-17 (product-accurate rebuild)** — Rebuilt the anatomy to mirror the real product: real
+  module icons in the rail with the active pill, brand header (logo · search · notifications · user),
+  and a live "All Monitors" routed page. Corrected a factual error — the breadcrumb/back lives in the
+  *page* header, not the app header.
+- **2026-06-17 (created)** — Added the **App shell** anatomy of `main.vue`. Verified light + dark, deployed.

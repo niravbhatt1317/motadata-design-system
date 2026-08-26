@@ -1,0 +1,55 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Select/Usage" />
+
+# Select — Usage
+
+⚠️ **Low-use** · Atom — `MSelect` is the kit's raw Ant `a-select` wrapper, used **2×**. The
+product's real select is **`FlotoDropdownPicker`** (510×). This page mostly tells you **which
+select to use**. Rules mirrored in `registry/select.json`.
+
+## Which select do I use? (decision)
+
+First match wins:
+
+1. **A standard single/multi select** (search, virtualized list, custom trigger, inline-add)?
+   → **`FlotoDropdownPicker`** — the product norm. Don't use MSelect for this.
+2. **A free-form tag input** (type to create tags)? → **`LooseTags`**.
+3. **A tree / hierarchy** of options? → **`MTreeSelect`**.
+4. **Specifically need the raw Ant `a-select`** primitive? → **`MSelect`** (rare).
+
+> Rule of thumb: in this product, "a select" means **`FlotoDropdownPicker`**. `MSelect` is the
+> low-level primitive it (and a couple of tag inputs) sit on.
+
+## MSelect modes (for reference)
+
+- **`default`** — single select with optional `show-search` + `allow-clear`.
+- **`multiple`** — pick several; chips in the field.
+- **`tags`** — free-type to create values. *This is the only mode actually used* (inside
+  `LooseTags` and `object-tag-picker`) — and even then, **`LooseTags` is the better entry point**.
+
+Other props: `size` (small/default/large), `loading` (chevron → spinner), `disabled`,
+`max-tag-count`, `filter-option`. Wrap any of these in **`FlotoFormItem`** for a label + validation.
+
+> ⚠️ **`allow-clear` is broken in MSelect** — the clear × renders blank (`fas` icon not
+> registered, **F4**) and overlaps the dropdown chevron (**F5**). Remove via the chip × in
+> multiple/tags mode, or use **`FlotoDropdownPicker`** when you need a clearable select.
+
+## In the product
+
+**As seen in:** `MSelect mode="tags"` backs the tag inputs in **`LooseTags`** and the
+**object-tag-picker**. Everywhere else a dropdown is needed, the product uses
+**`FlotoDropdownPicker`** (column selector, severity picker, filter bars, monitor/group/tag
+selection, …).
+
+## Accessibility note
+
+`MSelect` (Ant) is a **proper combobox** (keyboard-openable, `aria-expanded`,
+`aria-activedescendant`) — ironically **more accessible** than the widely-used
+`FlotoDropdownPicker` (finding **SF-003**). It's a useful reference for what fixing that
+should look like.
+
+## Related
+
+`FlotoDropdownPicker` (the product select) · `LooseTags` (tag input) · `MTreeSelect` (tree) ·
+`FlotoFormItem` (label + validation).

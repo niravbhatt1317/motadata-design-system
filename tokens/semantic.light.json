@@ -1,0 +1,90 @@
+{
+  "$description": "TIER 2 — SEMANTIC (LIGHT mode). Roles that reference primitives. This is the SHARED CONTRACT with Figma. Property-first naming. SLICE for sign-off.",
+  "$status": "FUTURE / portable DTCG token layer (mds-*). NOT yet wired to the running product or component tokensUsed — the LIVE product uses tokens/variables.json (--vars). Do not emit mds-* for live output.",
+  "color": {
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.white}"
+      },
+      "brand": {
+        "bold": {
+          "$type": "color",
+          "$value": "{color.navy.950}"
+        }
+      },
+      "severity": {
+        "critical": {
+          "subtle": {
+            "$type": "color",
+            "$value": "{color.severity.critical.50}"
+          }
+        },
+        "clear": {
+          "subtle": {
+            "$type": "color",
+            "$value": "{color.severity.clear.50}"
+          }
+        }
+      }
+    },
+    "surface": {
+      "raised": {
+        "$type": "color",
+        "$value": "{color.white}"
+      }
+    },
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.navy.800}"
+      },
+      "brand": {
+        "$type": "color",
+        "$value": "{color.navy.900}"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.neutral.400}"
+      },
+      "inverse": {
+        "$type": "color",
+        "$value": "{color.white}"
+      },
+      "severity": {
+        "critical": {
+          "$type": "color",
+          "$value": "{color.severity.critical.500}"
+        },
+        "clear": {
+          "$type": "color",
+          "$value": "{color.severity.clear.500}"
+        }
+      },
+      "accent": {
+        "teal": {
+          "$type": "color",
+          "$value": "{color.teal.500}"
+        }
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.neutral.100}"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.neutral.100}"
+      },
+      "focused": {
+        "$type": "color",
+        "$value": "{color.cyan.500}"
+      }
+    },
+    "link": {
+      "$type": "color",
+      "$value": "{color.cyan.500}"
+    }
+  }
+}

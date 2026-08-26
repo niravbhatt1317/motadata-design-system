@@ -1,0 +1,65 @@
+{
+  "$description": "TIER 0 — STRUCTURAL LESS @vars (spacing, sizing, radii, border-width, shadow, typography). Complete sweep of @-prefixed structural vars defined across src/design/*.less (compile-time, not themed; distinct from the runtime CSS --vars in variables.json). LESS references/arithmetic are resolved to final values.",
+  "spacing": {
+    "@padding-lg": "24px",
+    "@padding-md": "16px",
+    "@padding-sm": "12px",
+    "@padding-xs": "8px",
+    "@common-padd-space": "15px",
+    "@collapse-content-padding": "10px 6px",
+    "@control-padding-horizontal": "12px",
+    "@control-padding-horizontal-sm": "8px",
+    "@input-padding-horizontal": "11px",
+    "@input-padding-horizontal-base": "11px",
+    "@input-padding-vertical-base": "4px",
+    "@layout-header-padding": "0 12px"
+  },
+  "sizing": {
+    "@navbar-height": "50px",
+    "@nav-icon-width": "50px",
+    "@nav-icon-height": "40px",
+    "@nav-icon-line-height": "40px",
+    "@nav-icon-size": "1.1rem",
+    "@nav-menu-height": "30px",
+    "@menu-collapsed-width": "70px",
+    "@input-height-base": "32px",
+    "@header-height": "55px",
+    "@layout-header-height": "55px",
+    "@header-drop-width": "320px",
+    "@search-height": "36px",
+    "@search-width": "18rem",
+    "@btn-height": "2.1rem",
+    "@tag-height": "24px",
+    "@tabs-card-height": "32px",
+    "@user-count-height": "23px",
+    "@pop-footer-height": "75px",
+    "@popover-arrow-width": "6px",
+    "@picker-popover-max-height": "35vh",
+    "@picker-popover-max-width": "80vw",
+    "@chat-height": "400px",
+    "@chat-width": "50vw"
+  },
+  "radius": {
+    "@btn-radius": "4px",
+    "@btn-raidus-full": "150px",
+    "@widget-border-radius": "7px"
+  },
+  "borderWidth": {
+    "@menu-item-active-border-width": "3px",
+    "@overlay-border-width": "4px"
+  },
+  "shadow": {
+    "@panel-side-box-shadow": "-1px 6px 6px 0 rgba(0, 0, 0, 0.2)"
+  },
+  "typography": {
+    "@font-family": "'Poppins', sans-serif",
+    "@text-lg": "1.5rem",
+    "@text-regular": "1rem",
+    "@text-sm": "0.8rem",
+    "@text-xs": "0.6rem",
+    "@font-size-base": "0.8rem",
+    "@font-size-lg": "1rem",
+    "@font-size-sm": "0.8rem",
+    "@font-size-10": "10px"
+  }
+}

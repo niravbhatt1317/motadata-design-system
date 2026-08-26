@@ -1,0 +1,45 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/Grid/Usage" />
+
+# Grid — Usage
+
+> **In plain terms:** lay out form fields on a **12-column** grid — `6` = half a row, `12` = full width —
+> with a **16px gutter** between fields. That's most of what you need.
+
+The product's **12-column grid** — `MRow` / `MCol` (wrappers over Ant `a-row`/`a-col`), used in
+**~540 / ~522 files**. Machine spec: [`layout/grid.json`](../../layout/grid.json).
+
+## When to use
+
+- **Any form field layout** — this is the default way to lay out fields.
+- Any place you need predictable column proportions (cards, summary rows, split panels).
+- For **page structure** (rail/header/content) the shell handles it — see
+  [**App shell**](?path=/docs/foundations-layout-app-shell-usage--page); for the region stack see
+  [**Screen regions**](?path=/docs/foundations-layout-screen-regions-usage--page).
+
+## The sizes
+
+| `:size` | Width | Use |
+| --- | --- | --- |
+| `12` | 100% | full width / single column |
+| `6` | 50% | **half — the default form field** |
+| `4` | 33% | three-up rows |
+| `3` | 25% | four-up / compact fields |
+| `2` | 16.6% | dense rows |
+| `auto-size` | content | action buttons / compact cells |
+
+## Best practices
+
+- **Default form layout is 6 / 6** (two-up). Use `12` for textareas and full-width fields.
+- **`:gutter="16"`** between form fields; **`:gutter="0"` only** for structural wrappers
+  (page headers, full-height containers) — never for form content.
+- Use **`auto-size`** for a button column beside a filling field; align inside a cell with flex
+  utilities (`flex items-center justify-between`).
+- Don't hand-roll a flex grid for forms; don't nest deep grids where one row of sized columns works.
+
+## Related
+
+- [**Molecules/FormItem**](?path=/docs/molecules-formitem-usage--page) — the fields that sit on the grid.
+- [**Foundations/Layout/Page templates**](?path=/docs/foundations-layout-page-templates-usage--page) —
+  where the grid is used per page type.

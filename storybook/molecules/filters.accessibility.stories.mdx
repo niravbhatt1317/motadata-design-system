@@ -1,0 +1,32 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Filters/Accessibility" />
+
+# Filters — Accessibility
+
+These are **compositions** of dropdowns, chips, and buttons — a11y is inherited.
+
+## Provided by the composed controls
+
+- **Selects** (field / operator / value, Groups / Severity / Tags) — `FlotoDropdownPicker` gives a
+  searchable, keyboard-navigable listbox.
+- **Buttons** — `+ Filter`, Add Condition / Add Group, Reset / Apply, Match toggle, Clear All are real
+  buttons/links.
+
+## Verify
+
+- ⚠️ **Focus-visible ring (SF-001)** on the chips, selects, and the `+ Filter` / Add buttons.
+- ⚠️ **Icon-only triggers** — the **thumbs-up** (Quick filters), the chip **×**, and the row **×** need
+  an `aria-label`.
+- ⚠️ **Expression builder structure** — the nested Group → Condition relationship should be conveyed
+  to assistive tech (group/region labels), not just visually.
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| Select keyboard nav | ✅ (FlotoDropdownPicker) |
+| Buttons / links | ✅ |
+| Focus-visible ring | ⚠️ verify (SF-001) |
+| Icon-only trigger names | ⚠️ add aria-label |
+| Nested group/condition semantics | ⚠️ verify |

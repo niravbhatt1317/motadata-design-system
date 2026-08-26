@@ -1,0 +1,25 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Modal/Accessibility" />
+
+# Modal — Accessibility
+
+## What works
+
+- Renders `role="dialog"`; Ant **traps focus** within the modal and **restores** it to the
+  trigger on close.
+- **Escape closes** the dialog (verified) — even though the × is hidden.
+
+## ⚠️ Gotchas
+
+- **No top-right × and no backdrop-close** (`closable` / `maskClosable` are hardcoded false —
+  finding F1). The **footer `Cancel` is the only *visible* dismiss**; always include one, or
+  mouse users who don't know Escape can get stuck.
+- **No visible focus ring** inside the dialog
+  ([SF-001](../../findings/SF-001-focus-visible.md)) — especially important here because focus
+  is trapped, so users must be able to see where they are.
+
+## Content
+
+- Give the dialog a clear **title**; for confirms, state the consequence in the message and name
+  the action verb on the button (**Delete**, not "Yes").

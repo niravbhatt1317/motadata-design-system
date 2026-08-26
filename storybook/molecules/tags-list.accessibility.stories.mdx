@@ -1,0 +1,16 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/TagsList/Accessibility" />
+
+# TagsList — Accessibility
+
+⚠️ **Unused (dead code)** — these notes would only matter if it were revived; prefer
+`SelectedItemPills`.
+
+## Notes
+
+- The chips are read-only `<span>` text — legible contrast in both themes.
+- ⚠️ **The overflow is hover-only.** The count chip isn't focusable or click-openable, so
+  keyboard and touch users can't reveal the full list. Any revived version should make the
+  trigger a focusable control that also opens on click/Enter.
+- No visible focus indicator system-wide ([SF-001](../../findings/SF-001-focus-visible.md)).

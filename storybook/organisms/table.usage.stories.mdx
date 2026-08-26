@@ -1,0 +1,120 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Table/Usage" />
+
+# Table (Grid) — Usage
+
+🟢 **Stable** · Organism — the product's primary **data table** (`MGrid`, 75×; usually via
+**`FlotoPaginatedCrud`**, 76×). Wraps the **Kendo Vue Grid** + web workers. Rules mirrored in
+`registry/table.json`.
+
+## MGrid or FlotoPaginatedCrud? (decision)
+
+First match wins:
+
+1. **Fetching + paginating + searching a list (a CRUD list view)?** → **`FlotoPaginatedCrud`** — it
+   wraps `MGrid` and owns fetch, paging, search, and filters. **The default for list pages.**
+2. **Data already in memory?** → **`MGrid`** with `:data` + `:columns`.
+3. **Large / server dataset?** → `MGrid` **server paging** (`external-take` / `external-skip` +
+   `total-count` + `@data-state-change`) — fetch only the visible page.
+4. **Just a handful of static key/values?** → a **definition list / cards**, *not* a grid.
+
+## States & options (each has a story)
+
+| Want | Prop / mechanism | Story |
+| --- | --- | --- |
+| Plain table | `:columns` + `:data` | **Basic** |
+| Row selection + bulk actions | `selectable` → `@selection-change` → bulk-action bar | **Selectable** |
+| Drill-down detail per row | `expandable` + `detailRow` slot | **Expandable** |
+| Rich cells | a **slot per column** (status, tags, sparkline, actions…) | **Cell types** |
+| Grouped rows | `default-group` | **Grouping** |
+| No data | (empty `data` / filtered) | **Empty state** |
+| Fetching | `FlotoContentLoader` (`processingData`) | **Loading** |
+| Pages | `paging` / server `external-take`/`skip` | **Pagination** |
+
+## Grid variants (the family is big)
+
+The standard grid has **many variants** — three axes:
+
+### Header UI (two distinct styles)
+
+- **Main `.k-grid` header** — **transparent · UPPERCASE · `letter-spacing:0.25px` · 600**, top + bottom
+  rule. The **data grids** (the default). See **Header styles** story.
+- **`.item-list-table` header** — a **tinted `--grid-header-bg` fill**, normal-case, 500. The
+  **selection / picker list tables**.
+
+### Style / density (classes)
+
+| Class | Effect |
+| --- | --- |
+| `.hide-header` | no header (compact widget grids) |
+| `.with-out-border` | borderless rows |
+| `.bordered` | full cell cage (dense data) |
+| `.horizontal-list` | vertical column dividers |
+| `.sticky-headers` | header pinned on scroll |
+| `.hide-expand-column` / `.hide-grouping` | hide the expand / grouping UI |
+
+See **Variants: borders & header visibility**.
+
+### Cell rendering / modes
+
+- **Color-coded cells** (`color-coded-cell.vue`) — threshold-driven cell **background/text** fill
+  (heatmap-style severity); **`relative-percent`** cells show an inline bar. See **Cells: color-coded**.
+- **Inline editing** (`FlotoPaginatedCrud :inline-editing`, 13×) — cells become **inputs + Save/Cancel**
+  in place (vs the drawer form). See **Mode: inline editing**.
+
+### Layout (transposed / vertical)
+
+- **`vertical-value-grid`** — value-left (number + unit) + label-right; metric/KPI widgets. See
+  **Layout: vertical-value**.
+- **`column-grid-view` / `overview-layout`** — **transposed**: columns become row labels (single
+  record detail). See **Layout: key-value**.
+- **Tree / hierarchical** (`tabular-content-grid`) — `expandable` with a `detailRow` of **nested
+  child rows** (chevron + indentation per level); SNMP OID/MIB trees. See **Variant: tree**.
+- **Pivot / report** (`report-pivot-group-header`) — metrics **grouped** with a **merged
+  group-header** row (1rem) spanning columns; report widgets. See **Variant: pivot**.
+
+### Structural / behavioral (different components, same chrome)
+
+| Component | What's different |
+| --- | --- |
+| **`MGrid`** | base — client data |
+| **`FlotoPaginatedCrud`** | fetch + paginate + search + **inline or drawer CRUD** |
+| **`_base-server-grid`** | **server-driven** paging/sort/filter (+ drawer form) |
+| **`virtual-table`** | **virtual scrolling** for large client lists |
+| **`api-socket-grid`** | **live** socket/widget-pushed data, no paging |
+| **`table-selection` / `_base-dropdown-grid-selector` / `instance-grid`** | a **grid inside a picker/drawer** (select rows) |
+| **`rediscovery-object-grid`** | **type-switched** column sets (Cloud/Wireless/Interface/…) |
+
+## Cells are slots
+
+Each column renders through a **named slot** (`status`, `name`, `tags`, `severity`, `value`,
+`duration`, `action`, `monitorType`, `timestamp`, `count`, …) — so a cell can be a **status tag**,
+a **severity dot**, **tags**, a **sparkline**, or a **row-actions kebab** (`FlotoGridActions`). See
+the **Cell types** story.
+
+## Selection → bulk actions
+
+`selectable` adds a checkbox column (header = select-all). A **selected row** gets
+`--neutral-lightest` background + a **`--primary` left-border accent**; the **"N items selected"**
+tag shows above (unless `hide-selection-info`). Selection drives the **bulk-action bar** (see
+**Popover → Kebab — bulk action bar**). Cap it with `max-allowed-selection`; lock rows with
+`selection-disabled-items` / `disable-pre-selected-item`.
+
+## Do
+
+- Use **`FlotoPaginatedCrud`** for fetched list pages (don't re-implement fetch/paging/search).
+- **Server-page** large datasets.
+- Put **row actions** in a kebab cell; use **`selectable` + the bulk bar** for multi-row ops.
+- Keep the **header visible** in empty / loading states.
+
+## Don't
+
+- Don't use a grid for a few static key/values — use a **list / cards**.
+- Don't **client-load** huge datasets — server-page.
+- Don't hand-roll selection / sorting / paging — `MGrid` / `FlotoPaginatedCrud` own them.
+
+## Related
+
+`FlotoPaginatedCrud` (fetch+paginate wrapper) · `FlotoGridActions` (row kebab) · the **bulk-action
+bar** · `MStatusTag` / `MTag` (cells) · `MCheckbox` (selection) · `FlotoDropdownPicker` (filters).

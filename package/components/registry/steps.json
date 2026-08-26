@@ -1,0 +1,324 @@
+{
+  "name": "steps",
+  "component": "MSteps",
+  "display": "Steps",
+  "tier": "molecule",
+  "family": "Navigation",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "A wizard/stepper — a numbered progress track through the ordered stages of a multi-step flow, showing which steps are done, which is current, and which remain.",
+  "selectHint": "Use for a linear multi-step flow (a create/import wizard, a guided form). NOT for switching between peer sections of one page (that is obs-tabs), and NOT for navigating between pages (obs-breadcrumbs / obs-sidebar).",
+  "whenToUse": "A task split into an explicit, ordered sequence of stages the user advances through — a wizard, a guided setup, a staged import — where showing progress and completed/remaining steps matters.",
+  "insteadOf": [
+    "a hand-built row of numbered circles + connector divs",
+    "tabs used to fake a sequential flow (tabs are non-linear peers)",
+    "a bare 'Step 2 of 4' text label"
+  ],
+  "variants": [
+    {
+      "name": "horizontal",
+      "what": "Numbered circle + label with a connector line, laid left-to-right (default). The Report wizard form.",
+      "usage": "report-steps.vue"
+    },
+    {
+      "name": "vertical",
+      "what": "A left-rail stepper: steps stack top-to-bottom with title + optional description. The compliance rules form.",
+      "usage": "rules-form.vue"
+    },
+    {
+      "name": "number",
+      "what": "The marker shows the step index (or a ✓ when finished / ✗ on error). Default marker style.",
+      "usage": "both product forms"
+    },
+    {
+      "name": "dot",
+      "what": "A compact state-dot track (Ant progressDot) — no number, just a coloured dot per state.",
+      "usage": "kit-supported"
+    },
+    {
+      "name": "outline",
+      "what": "Lined circles: a transparent circle with a coloured ring + number/✓ (fill=\"outline\"). A lighter treatment for dense pages.",
+      "usage": "DS style option"
+    },
+    {
+      "name": "circles-only",
+      "what": "Just the progress circles — no labels, no connector lines (compact + connector=\"none\"). A compact indicator; completed can be primary/black or green.",
+      "usage": "DS style option"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "32px marker",
+      "note": "Ant default marker; comfortable horizontal wizard."
+    },
+    {
+      "name": "small",
+      "value": "24px marker",
+      "note": "Matches the compliance form rail; denser vertical wizards."
+    }
+  ],
+  "states": [
+    {
+      "name": "wait",
+      "what": "A future step — muted marker + label; not yet reachable."
+    },
+    {
+      "name": "process",
+      "what": "The current step — --primary fill with an OUTER GREY RING (halo) so it stands out."
+    },
+    {
+      "name": "finish",
+      "what": "A completed step — --primary fill + ✓ marker. NOT green; the label + the connector after it stay grey."
+    },
+    {
+      "name": "error",
+      "what": "A failed step — --secondary-red marker + label (per-item status or the current step's `status`)."
+    }
+  ],
+  "props": {
+    "items": {
+      "type": "array|string",
+      "default": "",
+      "note": "the steps: [{label, description?, status?}] or a plain [\"A\",\"B\"] / comma-list. status overrides the derived state (e.g. 'error')."
+    },
+    "active": {
+      "type": "number",
+      "default": 0,
+      "note": "the current step index (0-based). Steps before it derive to finish, after it to wait."
+    },
+    "direction": {
+      "type": "string",
+      "default": "horizontal",
+      "enum": [
+        "horizontal",
+        "vertical"
+      ],
+      "note": "horizontal — a left-to-right wizard bar; vertical — a stacked left-rail stepper (with descriptions)."
+    },
+    "variant": {
+      "type": "string",
+      "default": "number",
+      "enum": [
+        "number",
+        "dot"
+      ],
+      "note": "number — index/✓ circle; dot — a compact coloured state dot."
+    },
+    "size": {
+      "type": "string",
+      "default": "default",
+      "enum": [
+        "default",
+        "small"
+      ],
+      "note": "default 32px marker; small 24px (the compliance form rail)."
+    },
+    "clickable": {
+      "type": "boolean",
+      "default": false,
+      "note": "when true, completed/current steps are navigable (pointer + hover); clicking emits `change` with the index. Future steps stay inert."
+    },
+    "status": {
+      "type": "string",
+      "default": "process",
+      "enum": [
+        "process",
+        "error",
+        "finish",
+        "wait"
+      ],
+      "note": "the status of the CURRENT (active) step — set 'error' to flag that the current stage failed validation."
+    },
+    "fill": {
+      "type": "string",
+      "default": "solid",
+      "enum": [
+        "solid",
+        "outline"
+      ],
+      "note": "solid — a filled circle marker (default); outline — a lined circle (transparent fill, the colour on the border + number/✓) for a lighter look."
+    },
+    "connector": {
+      "type": "string",
+      "default": "line",
+      "enum": [
+        "line",
+        "none"
+      ],
+      "note": "line — connecting lines between steps (default); none — hide the lines (e.g. a circles-only progress track)."
+    },
+    "completed": {
+      "type": "string",
+      "default": "primary",
+      "enum": [
+        "primary",
+        "green"
+      ],
+      "note": "colour of COMPLETED (finish) markers: primary (black/navy, default) or green (--secondary-green). The current step stays primary."
+    },
+    "compact": {
+      "type": "boolean",
+      "default": false,
+      "note": "hide the labels/descriptions → a compact circles-only progress track (pair with connector=\"none\" to drop the lines too)."
+    }
+  },
+  "events": [
+    {
+      "name": "change",
+      "detail": "number",
+      "note": "emitted when a clickable step is selected; payload is the step index (Vue custom-element wraps it — read detail[0])."
+    }
+  ],
+  "slots": {},
+  "decisionFlow": [
+    "Switching between independent peer sections of the SAME page (Overview / Metrics / Logs)? -> obs-tabs, NOT steps (steps imply an ordered sequence).",
+    "Navigating between different pages / a location trail? -> obs-breadcrumbs or obs-sidebar, NOT steps.",
+    "An ordered multi-step flow the user advances through (wizard, guided setup, staged import)? -> obs-steps.",
+    "Is it a compact horizontal bar at the top of a form? -> direction=\"horizontal\" (the default; the Report wizard).",
+    "A side rail with per-step descriptions and back-navigation? -> direction=\"vertical\" + clickable (the compliance form).",
+    "Dense/secondary flow where numbers add noise? -> variant=\"dot\".",
+    "State: set `active` to the current index; mark a failed stage with a per-item status:\"error\" (or the `status` prop for the current step).",
+    "Want a lighter, outlined circle instead of a solid fill? -> fill=\"outline\".",
+    "Want just the progress circles (no labels, no lines) — a compact indicator? -> compact + connector=\"none\" (set completed=\"green\" or \"primary\").",
+    "Should completed steps read GREEN instead of primary/black? -> completed=\"green\"."
+  ],
+  "usageRules": {
+    "horizontal": {
+      "useWhen": "a wizard with a handful of stages that reads well as a top-of-form progress bar",
+      "dontUse": "steps have long descriptions or there are many of them (use vertical), or the flow isn't ordered (use tabs)",
+      "example": "the Report builder: Report Properties -> Visualizations & Preview -> Schedule",
+      "asSeenIn": "report-steps.vue (the Report create/edit wizard)"
+    },
+    "vertical": {
+      "useWhen": "a form wizard with a side rail, where each step benefits from a description and the user can jump back",
+      "dontUse": "horizontal space is plentiful and steps are short (a horizontal bar is lighter)",
+      "example": "the compliance Rule form: General -> Rules -> Notification -> Review, in a left MCol rail",
+      "asSeenIn": "compliance-settings rules-form.vue (MMenu-based step rail)"
+    },
+    "dot": {
+      "useWhen": "a compact/secondary progress indicator where step numbers would be visual noise",
+      "dontUse": "the user needs to read step labels/numbers to know where they are (use number)",
+      "example": "a dense inline progress track (Ant progressDot style)"
+    },
+    "clickable": {
+      "useWhen": "the flow allows revisiting completed steps (edit an earlier answer) without losing state",
+      "dontUse": "steps must be completed strictly in order and cannot be revisited",
+      "example": "the compliance form lets you click a completed step to go back; future steps stay disabled"
+    },
+    "outline": {
+      "useWhen": "a lighter stepper on a dense page / when a solid filled circle is too heavy",
+      "dontUse": "the default filled circle reads fine (solid has more presence)",
+      "example": "fill=\"outline\" — a transparent circle with a coloured ring + number/✓"
+    },
+    "circles-only": {
+      "useWhen": "a compact progress indicator where labels + lines add noise (e.g. a tight header, a card corner)",
+      "dontUse": "the user needs step names to understand the flow (keep labels)",
+      "example": "compact connector=\"none\" completed=\"green\" — five circles, done ones green, no text/lines"
+    },
+    "number": {
+      "useWhen": "a wizard where users benefit from seeing the step index / a ✓ on completion (the default)",
+      "dontUse": "a dense/secondary track where numbers are noise (use dot) or a bare progress indicator (circles-only)",
+      "example": "variant=\"number\" — 1 / 2 / ✓ circles",
+      "asSeenIn": "report-steps.vue, compliance rules-form.vue"
+    },
+    "error": {
+      "useWhen": "a stage FAILED and the user must fix it before continuing (validation error, failed import)",
+      "dontUse": "the step is merely incomplete/pending (that is the wait state, not error)",
+      "example": "items=[{label,status:\"error\"}] for a specific step, or status=\"error\" for the current step",
+      "asSeenIn": "src/design/steps.less .counter-steps error connector colour"
+    },
+    "size": {
+      "useWhen": "small (24px) for a dense side rail (the compliance form) or a tight space; default (32px) for a top-of-form wizard bar",
+      "dontUse": "small on a spacious horizontal wizard (the markers look cramped)",
+      "example": "size=\"small\" — the vertical compliance rail"
+    },
+    "completed": {
+      "useWhen": "green when a done/success reading is wanted (a positive completion signal); primary/black for a neutral progress look",
+      "dontUse": "green if the flow is not really success-framed (primary is the safe default)",
+      "example": "completed=\"green\" — done steps read green, the current step stays primary"
+    },
+    "connector": {
+      "useWhen": "line (default) to show the sequence as a connected track; none to drop the lines for a circles-only / segmented look",
+      "dontUse": "none when the sequential relationship between steps must be visually obvious",
+      "example": "connector=\"none\" — used with compact for a circles-only indicator"
+    },
+    "compact": {
+      "useWhen": "space is tight and step names are not essential (a header, a card corner, a toolbar) — show circles only",
+      "dontUse": "the user needs the step labels to understand where they are",
+      "example": "compact connector=\"none\" — five circles, no text, no lines"
+    }
+  },
+  "usage": {
+    "total": 3,
+    "files": 3,
+    "byVariant": {
+      "horizontal": 1,
+      "vertical": 1,
+      "counter-steps (ant)": 1
+    },
+    "byModule": {
+      "report": 1,
+      "settings (compliance)": 1,
+      "product-setup": 1
+    },
+    "note": "Approximate — the product renders steppers as bespoke forms (report-steps.vue, rules-form.vue) plus the .counter-steps Ant-Steps style; obs-steps consolidates them into one contract. Counts are file-level, not instance-level."
+  },
+  "do": [
+    "Use steps only for an ordered, sequential flow — a wizard, not peer sections.",
+    "Keep `active` in sync with the current stage; let finished/remaining states derive from it.",
+    "Give each step a short, action-oriented label (Report Properties, Schedule) — add a description in the vertical form.",
+    "Mark a failed stage with status:\"error\" so the user sees where it broke.",
+    "Enable clickable only when revisiting a completed step is actually safe."
+  ],
+  "dont": [
+    "Don't use steps to switch between independent sections of one page (that's obs-tabs).",
+    "Don't use steps for page-to-page navigation (obs-breadcrumbs / obs-sidebar).",
+    "Don't let a user jump to a future/unreached step (keep them inert).",
+    "Don't hardcode the state colours — the green/primary/red derive from tokens."
+  ],
+  "a11y": {
+    "summary": "An ordered progress list: the track is role=\"list\", each step role=\"listitem\", and the current step carries aria-current=\"step\". State is conveyed by more than colour (a ✓ for done, the index for pending, ✗ for error), so it survives colour-blindness and greyscale.",
+    "issues": [],
+    "doc": "Molecules/Steps/Accessibility",
+    "notes": "Keyboard/pointer: when clickable, completed + current steps are actionable (click emits `change` with the index) and future steps are inert (cursor: not-allowed) — a consumer should make the actionable steps focusable + Enter/Space activatable and never let a user jump to an unreached step. Announce progress: keep aria-current on the active step and, in a live wizard, consider an aria-live \"Step N of M\" announcement on change. Do not rely on colour alone — the marker glyph (✓ / number / ✗) and the disabled affordance back up the primary/green/red. Contrast: the ✓/number uses --primary-button-text (the on-primary colour) so it stays legible on the marker fill in BOTH light and dark themes. In the dot / circles-only forms (no glyph), pair the dots with an adjacent text label or an aria-label so the current step is discernible without colour."
+  },
+  "knownIssues": [
+    "Fixed (2026-07-20): in DARK theme the completed ✓ (and the current-step number) were invisible — the marker fill resolves to a LIGHT colour in dark theme while the glyph was hardcoded #fff. Now the glyph uses --primary-button-text (the theme-aware on-primary colour), so it stays readable on the light circle in both themes.",
+    "Source-derived reproduction: obs-steps consolidates the product's three bespoke steppers (report-steps.vue horizontal wizard, rules-form.vue vertical rail, the .counter-steps Ant style) into one MSteps-aligned contract. There is no single isolated Storybook story to pixel-diff against, so the element was built to the transcribed source values (report-steps 50px circle / dashed --neutral-light connector / green+primary fills; rules-form 24px circle + ✓; steps.less status connector colours) and verified behaviourally + eyeballed. Marker default size is 32px (Ant default) rather than the report form's 50px, which reads oversized for a general stepper."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--neutral-light",
+    "--neutral-lighter",
+    "--neutral-lightest",
+    "--neutral-regular",
+    "--page-background-color",
+    "--page-text-color",
+    "--primary",
+    "--primary-button-text",
+    "--secondary-green",
+    "--secondary-red"
+  ],
+  "related": [
+    "tabs",
+    "breadcrumbs",
+    "sidebar",
+    "page-header",
+    "modal"
+  ],
+  "changelog": [
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves. Reuse (obs-* composition) / props / variants / a11y verified current — no drift. No API change.",
+    "2026-07-21 — Completeness pass: decision-grade Usage now has a card for EVERY option (number/dot, horizontal/vertical, solid/outline, line/none, primary/green, default/small, compact, clickable, error). a11y expanded with keyboard/focus + colour-independence + the dot/circles-only aria guidance. Playground gained a `status` control + Completed-green / current-step-error presets; gallery added vertical-outline + status-error examples. No element/behaviour change — docs + playground coverage only.",
+    "2026-07-20 — Added two style variants + a completed-colour + a DARK-theme fix. (1) fill=\"outline\" — lined circles (transparent fill, colour on the border + glyph). (2) compact + connector=\"none\" — a circles-only progress track (no labels, no lines); completed=\"primary\"|\"green\" tints the done circles. (3) FIX: the completed ✓ / current number was invisible in dark theme (hardcoded #fff on a light circle) — now uses --primary-button-text. All added to the playground + gallery.",
+    "2026-07-20 — Colour/connector overhaul (owner-reported, aligned to the Ant a-steps kit truth: 1px #e8e8e8 tail, primary process/finish, gray icon ring): (1) a completed circle is now --primary + ✓, NOT green; (2) the connector is a thin 1px GREY line, never green; (3) the CURRENT step gets an OUTER GREY RING (box-shadow halo); (4) the horizontal connector stretches to touch the next circle (no floating gap); line thinned to 1px. Green is fully removed from the stepper. Behaviours re-verified; light + dark eyeballed.",
+    "2026-07-20 — Horizontal fidelity fixes (owner-reported, matched to report-steps.vue): (1) the connector now sits AFTER the label (the product .step-text::before spans the text out to the next circle), not between the number and the label; (2) incomplete/wait circles are FILLED discs (--neutral-lightest, the product bg-neutral-lightest circle) instead of reading as an outline; (3) a completed step no longer recolours its LABEL green — only the circle + connector carry the green (the product keeps the label its normal colour); (4) connector thinned 2px -> 1.5px to match the product 1.5px rule. Behaviours re-verified; light + dark eyeballed.",
+    "2026-07-20 — Shipped obs-steps (the framework-agnostic wizard/stepper element): direction (horizontal/vertical) × variant (number/dot) × size (default/small); `active` drives the derived wait/process/finish states; per-item status:\"error\" + the `status` prop flag a failed step; `clickable` makes completed/current steps navigable (emits `change` with the index). Source-derived from report-steps.vue (numbered circle, dashed connector, --primary current / --secondary-green done + ✓) + compliance rules-form.vue (24px rail, ✓ icon, click-to-navigate, disabled future steps) + src/design/steps.less (green/primary/red connector colours). role=\"list\"/listitem + aria-current. Ledger flagged source-derived (no rendered Storybook diff). Decision-grade Usage authored + mirrored here (route-away to obs-tabs for peer sections, obs-breadcrumbs/obs-sidebar for page nav)."
+  ],
+  "storybook": "Molecules/Steps",
+  "figma": {
+    "status": "not-started",
+    "component": "Steps"
+  }
+}

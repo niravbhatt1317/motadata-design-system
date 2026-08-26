@@ -1,0 +1,92 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Radio/Usage" />
+
+# Radio — Usage
+
+🟢 **Stable** · Atom — a **one-of-many** selection control. Use `MRadioGroup` with `:options`
+and v-model the selected value. Used 225× (standalone `MRadio` is unused).
+
+Decision rules below are mirrored in `registry/radio.json` (`decisionFlow` + `usageRules`).
+
+## Is Radio the right control?
+
+First match wins:
+
+1. **Multi-select** (pick any number)? → **Checkbox**.
+2. **Instant on/off** (applies immediately)? → **Switch**.
+3. **Many options, or space is tight, or you need search?** → **DropdownPicker**.
+4. **Pick exactly one** from a few visible options? → **Radio**.
+
+## Which radio style? (decision)
+
+Within Radio, first match wins:
+
+1. **More than ~6 options?** → reconsider — use **DropdownPicker**, not radio.
+2. **Longer labels, or a vertical form field?** → **radio list** (default).
+3. **Alert severity filter** (Critical / Major / Warning, borderless + separators look)? →
+   **Severity switch** (`radio-toggle-shadow` + `alert-severity-buttons`, `as-button`).
+4. **Each option reads better with an icon** (view/mode toggle)? → **Segmented with icons**
+   (`as-button` + icon in the `option` slot).
+5. **Otherwise a small set (2–5), always visible, compact?** → **plain segmented**
+   (`as-button`).
+
+So: *list* for form fields / long labels, *plain segmented* for compact toggles, *segmented
+with icons* when an icon clarifies each choice, *severity switch* for the alert-severity look.
+
+## Use cases by type
+
+### Radio list (default)
+
+- **Use when:** pick one of a few options where each may have a longer label, in a form or
+  settings panel.
+- **Example:** severity **Low / Medium / High**; a mode chooser with descriptions.
+
+### Segmented control (`as-button`, 255×)
+
+- **Use when:** a small set of **always-visible, mutually-exclusive** choices that benefit
+  from being compact and side-by-side.
+- **Example:** time range **1h / 24h / 7d / 30d**; chart view toggles.
+- **Note:** this is also the Button family's "segmented control" — same component.
+- **Selected fill is context-dependent (F4):** standalone it's navy `#111c2c` @ 0.8; inside
+  forms/panels `form.less` makes it a solid `--primary` fill. Same markup renders the same in
+  Storybook as the product.
+
+### Segmented with icons (14×)
+
+- **Use when:** each segment reads better with an icon — view/mode toggles (grid/list/map).
+- **How:** put the icon in the `option` slot. See the **Segmented with icons** story.
+
+### Severity switch (toggle-shadow + separators)
+
+- **Use when:** the alert **severity switch** look — borderless segments with thin separators
+  and a tinted rounded selected chip.
+- **How:** `as-button` + `class="radio-toggle-shadow alert-severity-buttons"` (the real
+  `severity-switch.vue` combo). See the **Severity switch** story.
+
+### `disabled` / `option.disabled`
+
+- **Use when:** the whole group can't change (`disabled`), or a specific option isn't
+  available right now (`option.disabled`).
+
+### `size`
+
+- **Use when:** `small` for dense toolbars (segmented); `default` elsewhere.
+
+## Anatomy
+
+A radio per option (list), or joined buttons with one selected filling the brand color
+(segmented). Options are `{ value, text }`; v-model is the selected `value`.
+
+## Content
+
+Label the group (what's being chosen) and keep option labels parallel and short.
+
+## In the product
+
+**As seen in:** The **metric explorer** toolbars and the **anomaly / forecast / outlier** modals (segmented time-range and mode toggles).
+
+## Related
+
+`Checkbox` (multi-select) · `Switch` (instant on/off) · `DropdownPicker` (many options) ·
+the Button **segmented control** is this with `as-button`.

@@ -1,0 +1,101 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Data-Viz Tooltips/Usage" />
+
+# Data-Viz Tooltips — Usage
+
+The **chart & widget hover tooltips** — a family distinct from the UI `MTooltip`. They are
+rendered by the **charting layer** (Highcharts), **widget components**, or the **graph canvas**
+(topology / flame graph), not by a DS Vue component — so the catalog shows them as **reference
+reproductions** (real tokens).
+
+## 🔎 Which tooltip → where it's used (lookup)
+
+Find the **chart / graph / place** you're working on, read across for the **tooltip** it uses, its
+**renderer**, and the **surface token**. (This is the AI/designer lookup — "on *this*, use *that*.")
+
+| Tooltip type | Rendered by | **Used on — charts / graphs / places** | Surface | Story |
+| --- | --- | --- | --- | --- |
+| **MTooltip** (UI hover label) | `_base-tooltip.vue` (VTippy) | form-field **info hints** (settings forms — log parser, policy, monitor), toolbar / action icons, status indicators | `--tooltip-background-color` (dark) | Molecules/Tooltip |
+| **chart-like-tooltip** | MTooltip + overlay-class | info hints that sit **on a chart / light surface** (e.g. traceroute *Timeout* field) | `--chart-tooltip-background` (light) | Tooltip → *chart-like* |
+| **Native `title=""`** | the browser | **truncated grid cells**, icon-only buttons (filter / more), page headers, plain labels | OS native | — (native) |
+| **Chart — bar / line / area / column** | Highcharts `TooltipBuilder` | **metric trend**, top-N, time-series widgets; KPI-trend; `areasplinerange` | `hc-tooltip-bg` | Chart tooltip — bar |
+| **Chart — donut / pie** | Highcharts | **availability** & status **donut** widgets, distribution **pie** | `hc-tooltip-bg` | Chart tooltip — donut |
+| **Sparkline** | `sparkline-options.vue` | inline **sparkline** cells in grids & metric widgets | `hc-tooltip-bg` | Sparkline tooltip |
+| **Bubble** (packed-bubble) | `bubble-options.vue` | **packed-bubble** widgets (category / tag distribution) | `hc-tooltip-bg` | Chart tooltip — bubble |
+| **Map / geo** | `map-chart-options.vue` | **geo map** widgets (monitor distribution by location) | `hc-tooltip-bg` | Chart tooltip — map / geo |
+| **Radar** | `radar-chart-options.vue` | **radar** comparison widgets | `hc-tooltip-bg` | Chart tooltip — radar |
+| **Sankey / flow** | `sankey-options.vue` | **sankey / flow** widgets (traffic flow, dependency) | `hc-tooltip-bg` | Chart tooltip — sankey |
+| **Timeline / x-range** | `timeline-chart-options.vue` | **SLO timeline**, availability timeline | `hc-tooltip-bg` | Chart tooltip — timeline |
+| **Gauge / circular-progress** | `gauge.vue`, `circular-progress-options.vue` | **solid-gauge**, **circular-progress**, KPI gauge widgets | `hc-tooltip-bg` | Chart tooltip — gauge |
+| **Treemap** | `tree-map-with-levels.vue` | **treemap** widgets | `hc-tooltip-bg` | Chart tooltip — treemap |
+| **Scatter** | `type:'scatter'` | **scatter** widgets (x vs y per monitor) | `hc-tooltip-bg` | Chart tooltip — scatter |
+| **Anomaly / forecast band** | `areasplinerange` + `isAnomalySeries` | **anomaly** & **forecast** widgets, metric-explorer, metric-insight — actual value vs expected low–high band (out-of-range colored) | `hc-tooltip-bg` | Chart tooltip — anomaly band |
+| **Heatmap** | `heatmap-tooltip.vue` | **hex heatmap** widget — monitor status grid; SLO / APM / RUM heatmaps | `--chart-tooltip-background` + severity badge | Heatmap tooltip |
+| **Alert / availability segment** | `segmented-cell-tooltip.vue` | **alert / availability timeline bar** segment hover — start / end / duration + severity | `--chart-tooltip-background` + severity badge | Alert / availability segment |
+| **Availability bar segment** | `availability-bar.vue` (MTooltip) | stacked up/down **% bar** — `Status: %` | `--tooltip-background-color` | Availability bar segment |
+| **Live graph — monitor node** | topology / netroute node components | **Topology map**, **Netroute path** — monitor node hover | `--topology-graph-tooltip-bg` | Live graph — node |
+| **Live graph — edge (generic)** | `edge-tooltip.vue` | topology/netroute link — interface in/out, utilization | `--topology-graph-tooltip-bg` | Live graph — edge |
+| **Live graph — network interface edge** | `network-interface-edge-tooltip.vue` | topology **network** link — both-sides interface (alias/status/IP/speed/traffic) | `--topology-graph-tooltip-bg` | Live graph — network interface edge |
+| **Live graph — SDN tunnel edge** | `sdn-tunnel-edge-tooltip.vue` | **SD-WAN** tunnel — latency/loss/jitter KPIs + health/color/site | `--topology-graph-tooltip-bg` | Live graph — SDN tunnel edge |
+| **Live graph — Cisco ACI endpoint** | `cisco-aci-edge-tooltip.vue` | **ACI** leaf→endpoint — MAC/IPv4/IPv6/group | `--topology-graph-tooltip-bg` | Live graph — Cisco ACI endpoint |
+| **Live graph — Cisco ACI fabric link** | `cisco-aci-link-edge-tooltip.vue` | **ACI** leaf↔leaf — node/pod/role/state/interface | `--topology-graph-tooltip-bg` | Live graph — Cisco ACI fabric link |
+| **Live graph — APM service-map node** | `servicemap-tooltip.vue` | **APM service map** — throughput/latency/error | `--topology-graph-tooltip-bg` | Live graph — APM service-map node |
+| **Live graph — netroute hop node** | `netroute/node-tooltip.vue` | **Netroute** hop — latency min/avg/max + loss + alerts | `--topology-graph-tooltip-bg` | Live graph — netroute hop node |
+| **Live graph — netroute edge** | `netroute/edge-tooltip.vue` | **Netroute** edge — latency/loss + **transit likelihood** | `--topology-graph-tooltip-bg` | Live graph — netroute edge |
+| **Topology info / shortcuts** | `topology-map-info-tooltip`, `topology-shortcuts-tooltip` | topology map **legend** (L2 solid / L3 dashed) & keyboard-**shortcuts** panel | `--tooltip-background-color` | (help overlays — note) |
+| **Flame graph** | `d3-flame-graph.vue` (`flame-tooltip`) | **APM trace drill-down**, **RUM** view / action / long-task flame graphs (name + self/total + % of trace; long-task adds source URL + invoker) | `hc-tooltip-bg` | Flame graph tooltip |
+| **RUM resource waterfall** | `rum-resource-waterfall.vue` (x-range) | **RUM** session resource-timing waterfall — start/end/duration | `hc-tooltip-bg` | RUM resource waterfall |
+| **Geo map marker** | `apdex-rating-by-country-map.vue`, Leaflet `leaflet-map.vue` | **RUM apdex / demographics by country**, online map markers — region + severity + metrics | `hc-tooltip-bg` | Geo map marker |
+| **Log pattern distribution** | `log-pattern-detection-grid.vue` | **Log** pattern count hover — nested VALUE/COUNT/SHARE grid | `hc-tooltip-bg` (popover + MGrid) | Log pattern — value distribution |
+| **Topology info / shortcuts** | `topology-map-info-tooltip`, `topology-shortcuts-tooltip` | topology map **info** & keyboard-**shortcut** overlays | `--topology-graph-tooltip-bg` | (note) |
+
+> **Every type now has a story** under **Molecules → Data-Viz Tooltips → Examples** (17 stories).
+> The chart-type tooltips all share the **`hc-tooltip-bg` surface**; the live-graph ones share
+> **`--topology-graph-tooltip-bg`** — what differs per row is the **content** (which is what the
+> stories show). Pick your chart/graph/place in the left columns; the story reproduces its tooltip.
+
+## The renderers (3)
+
+- **Highcharts** — one shared **`TooltipBuilder`** (`src/components/chart/options/tooltip-builder.js`)
+  + per-chart-type formatters, all on the **`hc-tooltip-bg`** surface (`--chart-tooltip-background`
+  + `blur(15px)`). Covers every chart-type row above.
+- **Widget components** — `heatmap-tooltip.vue` (and similar) render their own Vue tooltip content.
+- **Graph canvas** — **topology / netroute / APM service-map** (15 node/edge components) and the
+  **d3 flame graph** draw tooltips directly on the canvas; surface `--topology-graph-tooltip-bg`
+  (graph) / `hc-tooltip-bg` (flame).
+
+## Chart tooltip structure (the shared row format)
+
+`TooltipBuilder` builds: a **title** (category / date-time) + one **row per series** — an **8×8
+color square** (series color) · the series name · the right-aligned **value** (unit-applied). Pie
+omits the header; bar/line keep it.
+
+**Value-format variants** (same row, different value cell — `tooltip-builder.js`):
+
+- **default** — a single value (`__getDefaultValueHtml`) — the **Chart — bar** story.
+- **low–high range** — anomaly / forecast band (`__getLowHighHtml`) — the **Anomaly band** story.
+- **from–to range** — histogram / range bins (`__getRangeHtml`, e.g. `40 – 60 : 12`).
+- **duration** — `value (duration)` (`__getDurationHtml`) — trace / timeline spans.
+
+**Shared / crosshair tooltip** — multi-series charts with `sharedTooltip: true` (`shared: true`)
+show **one tooltip listing every series** at the hovered x, with a vertical crosshair (e.g. a
+multi-metric trend, RUM demographics). The **Chart — bar** story already shows this multi-row
+form; single-series charts collapse it to one row.
+
+## Do / Don't
+
+- **Do** keep these consistent with the renderer's surface (`--chart-tooltip-background` /
+  `--topology-graph-tooltip-bg`) and the series/severity colors — changes belong in
+  `tooltip-builder.js` / the chart & graph LESS, not per-widget.
+- **Don't** confuse them with **`MTooltip`** — these are **not** the DS UI tooltip. For a UI hint
+  use `MTooltip`; for a truncation hint use native `title=`.
+
+## Related
+
+`MTooltip` (UI hover label) · `MPopover` (the heatmap tooltip is popover-anchored) · the chart &
+graph components (`src/components/chart/*`, `src/modules/topology|netroute|apm`).
+
+## Other variants
+
+Also available (see `registry/data-viz-tooltips.json` `usageRules` for the full when/why): **timeline-xrange**.

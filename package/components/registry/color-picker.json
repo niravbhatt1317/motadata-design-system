@@ -1,0 +1,96 @@
+{
+  "name": "color-picker",
+  "display": "Color Picker",
+  "tier": "molecule",
+  "family": "Form Controls",
+  "status": "stable",
+  "summary": "A colour picker (color-picker.vue) — a 20×20 swatch preview + chevron trigger opening an MPopover with a colour canvas (vue-color Sketch) + a 16-colour preset palette. Supports `transparent` (a swatch with a red diagonal line). Used for branding, widget, threshold and severity colour selection.",
+  "variants": [
+    {
+      "name": "color-picker",
+      "what": "swatch trigger + preset palette + canvas"
+    }
+  ],
+  "states": [
+    {
+      "name": "closed",
+      "what": "swatch trigger only"
+    },
+    {
+      "name": "open",
+      "what": "palette + canvas popover"
+    },
+    {
+      "name": "transparent",
+      "what": "swatch shows a red diagonal line"
+    }
+  ],
+  "decisionFlow": [
+    "Picking a COLOUR (branding, widget series, threshold)? -> Color Picker.",
+    "A fixed SEVERITY colour? -> use the --severity-* token, not a free picker.",
+    "Not a colour (any other value)? -> a Dropdown / Select / Input, not this."
+  ],
+  "do": [
+    "Use for free colour choice: brand/theme, widget series, threshold/gauge bands, dashboard background.",
+    "Offer the 16-colour preset palette for quick on-brand picks; allow a custom hex via the canvas.",
+    "Support transparent where no-fill is valid (renders a red diagonal swatch)."
+  ],
+  "dont": [
+    "Do not use for fixed severity/status colours — those come from --severity-* tokens for consistency.",
+    "Do not use for non-colour values (use a Dropdown/Select/Input).",
+    "Do not rely on colour alone to convey meaning — pair with a label/icon (a11y)."
+  ],
+  "element": "obs-color-picker",
+  "props": {
+    "value": {
+      "type": "string",
+      "note": "the selected colour (hex or 'transparent'); reflects to el.value on every pick"
+    },
+    "presets": {
+      "type": "string|array",
+      "note": "override the 16-colour preset palette (JSON string / array / comma list)"
+    },
+    "allow-transparent": {
+      "type": "boolean",
+      "default": "false",
+      "note": "offer a no-fill (transparent) option — renders a swatch with a red diagonal line"
+    },
+    "hide-arrow": {
+      "type": "boolean",
+      "default": "false",
+      "note": "hide the chevron next to the swatch"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": "false"
+    }
+  },
+  "events": [
+    "change — { detail: colour (hex or 'transparent') } (array-wrapped, unwrap detail[0])",
+    "show / hide — popover open/close"
+  ],
+  "usageRules": {
+    "color-picker": {
+      "useWhen": "the user picks a COLOUR — a swatch trigger that opens a canvas + the 16-colour preset palette",
+      "dontUse": "for non-colour values (use a Dropdown/Select). For a fixed severity colour, prefer the severity token, not a free picker.",
+      "example": "branding logo/theme colour, widget series colour, threshold/severity colour, dashboard background. Supports transparent."
+    }
+  },
+  "tokensUsed": [
+    "--border-color",
+    "--secondary-red",
+    "--primary",
+    "--page-background-color",
+    "--dropdown-background"
+  ],
+  "a11y": {
+    "summary": "The trigger is a clickable swatch; the palette cells should have accessible names (the hex/colour name) and keyboard focus. Ensure the current value is announced.",
+    "issues": []
+  },
+  "changelog": [
+    "2026-08-06 — Hardening: stop the internal native <input> `input` event from leaking out of the shadow DOM (@input.stop) so a stray composed native `input` (e.detail=0) can no longer reach consumer listeners on the host. Same class of fix as obs-input.",
+    "2026-07-11: shipped the real <obs-color-picker> web component — a 20×20 swatch + chevron trigger opening a top-layer popover with the 16-colour preset palette, a custom-colour canvas (native colour input; product uses vue-color Sketch) and a hex readout; supports `transparent` (red diagonal swatch) via allow-transparent. Reflects el.value + emits `change` on every pick. Top-layer Popover so it's correct inside animated ancestors.",
+    "2026-07-11: catalogued (Group C) — Storybook story with the swatch trigger + the real 16-colour preset palette + hex readout + transparent state."
+  ],
+  "storybook": "Molecules/Color Picker"
+}

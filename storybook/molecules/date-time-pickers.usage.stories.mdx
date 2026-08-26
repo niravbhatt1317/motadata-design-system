@@ -1,0 +1,87 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Date & Time Pickers/Usage" />
+
+# Date & Time Pickers — Usage
+
+🟢 **Stable** · Molecule — the **date/time selection family**. Rules mirrored in
+[`registry/date-time-pickers.json`](../../components/registry/date-time-pickers.json).
+
+## The family (and which to use)
+
+| Component | Usage | Job |
+| --- | --- | --- |
+| **`TimeRangePicker`** | **42×** (hero) | a chart/dashboard/log **time window** — relative presets + absolute custom |
+| **`TimeRangeSlider`** | 2× | a draggable **timeline scrubber** (dashboard + alert correlation drawer) |
+| **`MDatePicker`** | 10× | a **date-time** value in a form (always with `show-time`) |
+| **`MTimePicker`** / custom `TimePicker` | **0× standalone** | time-of-day — entered via `show-time` or inside the range custom view, never standalone |
+| **`DateTimePopover`** | 1× | a **custom-range-only** popover (no presets) |
+
+## Which picker? (decision)
+
+First match wins:
+
+1. **A time WINDOW for charts / dashboards / logs** (relative or absolute)? → **`TimeRangePicker`**.
+2. **…and absolute ranges shouldn't be allowed?** → `TimeRangePicker` **`:hide-custom-time-range`** (24×).
+3. **A single date or date+time value in a FORM**? → **`MDatePicker`** with **`:show-time`** (the norm).
+4. **Just a time of day** (a schedule)? → **`MTimePicker`**.
+5. **A custom absolute from/to as a form field, no presets**? → **`DateTimePopover`**.
+
+## TimeRangePicker — the hero
+
+- **Closed trigger:** a shortcut **pill** (`24h`, `1h`, or a computed duration `6d 23h`) + the range
+  label (`Last 24 Hours`); empty shows a **calendar-alt** icon + "Select Time".
+- **Presets (15):** Last 5/15/30 Mins · Last 1/6/12/24/48 Hours · Today · Last Day · Last/This Week ·
+  Last/This Month — each with its shortcut pill — plus **Custom**.
+- **Custom view:** a **dual-month range calendar** + From/To **time selects** (the custom dropdown-based
+  `TimePicker`, not an Ant spinner) + **Apply/Cancel** (validates end > start).
+- **Emit (v-model):** `{ selectedKey:'-24h'|'today'|'custom'|…, startDate:<ms>, endDate:<ms>,
+  startTime:'HH:mm:ss', endTime:'HH:mm:ss', dailyRollingData:false }`. Cleared → `undefined`.
+- **Key props:** `hide-custom-time-range` (presets-only, 24×) · `excluded-options` (drop specific
+  presets, 7×) · `hide-icon` (3×) · `max-selectable-range-days` (93; 365 for export) · `allow-clear` ·
+  `bordered` · `pill-style` · `hide-selected-time`. (`only-label` / `daily-rolling` are declared but 0×.)
+
+> **Reproduction note:** `TimeRangePicker` / `TimeRangeSlider` depend on the dashboard
+> **user-preference store** + the `datetime` filter + moment, so — like the Kendo grid — they're shown
+> here as **reference reproductions** with the real tokens, labels, and behavior, not the live
+> components. The **Time Range Picker** story is **fully interactive**: click the pill to open the
+> presets, choose **Custom** to **click two dates** for a range (navy endpoints + highlighted band),
+> use `‹ ›` (month) / `« »` (year) or click the month/year header to **drill into month/year grids**,
+> and the **From/To selects** open a time dropdown — **Apply** sets the range, **Cancel** returns to
+> presets. The **Time Range Slider** story is draggable (resize the window by its handles).
+
+## MDatePicker / MTimePicker
+
+- **`MDatePicker`** wraps `a-date-picker`; in the product it's **always** a date-*time* field
+  (`:show-time`, 12-hour `hh:mm A`), with a **calendar** icon. Constrain with `:min-date` (7×) /
+  `:disabled-date`; `:allow-clear` for an ×.
+- **`MTimePicker`** wraps `a-time-picker`, **12-hour**, **clock** icon, `allow-clear` default true —
+  but note **no standalone time picker is used** in the product (time comes via `show-time` or the
+  range custom view, which uses a custom dropdown-based `TimePicker`).
+
+## Theming (light & dark)
+
+The selection uses `--calendar-selected-day-background-color` (= `--primary`, which **flips light in
+dark theme**), so selected-cell text is `--page-background-color` (the inverse — readable in both).
+The in-range band uses `--timerange-background-color` (visible in both themes, unlike `--tag-bg` which
+collapses into the dark panel). The real `MDatePicker` calendar is **re-skinned to navy** in
+`ds-primitives.less` (Storybook otherwise shows the kit's precompiled Ant **cyan**).
+
+## Do
+
+- Use **TimeRangePicker** for chart/dashboard/log windows; `hide-custom-time-range` for presets-only.
+- Use **MDatePicker with `show-time`** for date-time form fields (the product norm).
+- Constrain selection with `max-selectable-range-days` / `min-date` where it matters.
+
+## Don't
+
+- Don't hand-roll a relative-range dropdown — that's `TimeRangePicker`.
+- Don't use a bare date picker for chart windows.
+- Don't pass an **empty string** to a picker value — moment parses `''` to **"Invalid date"**; use
+  `null`/`undefined` or a moment.
+- Don't assume inline/card calendar variants — the product uses the **popup** pickers only.
+
+## Related
+
+`FlotoDropdownPicker` (select) · `FlotoFormItem` (wraps date/time in forms) · `MPopover`
+(`DateTimePopover` is built on it).

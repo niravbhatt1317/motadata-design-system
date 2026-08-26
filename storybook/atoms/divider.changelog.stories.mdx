@@ -1,0 +1,16 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Divider/Changelog" />
+
+# Divider — Changelog
+
+- **2026-07-04** — **F1 (owner-caught):** `dashed` is a **no-op** — it renders solid because the DS override
+  `.ant-divider { background: var(--border-color) }` paints a solid line over Ant's dashed `border-top`
+  (verified by computed style). Flagged in the **Dashed** story + **Usage**; recorded in `registry` /
+  `spec` known-issues.
+- **2026-07-04** — Added to Storybook (first catalogue). Swept the product: **133 uses / 93 files** —
+  **126 horizontal** (default) + **7 vertical** (`type="vertical"`); **dashed** and **with-text** are
+  kit-supported but currently **unused** in the product, so they're shown as available options and
+  flagged in Usage. Base line verified as `background: var(--border-color)` (light + dark). Usage
+  authored decision-grade (decision flow + per-type cards + real "as seen in" references), mirrored
+  into `registry/divider.json`.

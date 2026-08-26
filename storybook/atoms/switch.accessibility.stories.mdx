@@ -1,0 +1,20 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Switch/Accessibility" />
+
+# Switch — Accessibility
+
+- **Semantics:** renders `role="switch"`; Space/Enter toggle. ✅
+- **State (on):** `aria-checked="true"` is set when on. ✅
+- **Target size:** ~22px tall × 44px wide — below the 44–48px touch-target guideline.
+
+## ⚠️ Known accessibility issues
+
+- **No visible focus indicator** — focused switches show `outline: none` and no focus
+  shadow (WCAG 2.4.7 risk). Fix: add a `:focus-visible` ring.
+- **`aria-checked` missing in the OFF state** — it's set to `"true"` when on but is
+  absent (null) when off, so assistive tech may not announce "off". Fix: ensure
+  `aria-checked="false"` is exposed for the unchecked state.
+- **On/off is signalled mainly by knob color** (gray → green) — the track color doesn't
+  change. The knob *position* also differs (good), but verify the state reads clearly for
+  low-vision/color-blind users and isn't color-only.

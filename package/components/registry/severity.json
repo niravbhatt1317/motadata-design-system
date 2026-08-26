@@ -1,0 +1,244 @@
+{
+  "name": "severity",
+  "component": "Severity",
+  "display": "Severity",
+  "tier": "atom",
+  "family": "Tag",
+  "source": "src/components/severity.vue (Severity) + severity-stripe.vue + severity-picker.vue + dashboard/severity-count-box.vue + severity-db.vue",
+  "status": "core",
+  "summary": "The severity INDICATOR — a coloured dot (+ optional label + tooltip) for a severity LEVEL (down / critical / major / warning / clear / up / maintenance / unreachable / unknown / …). Distinct from MStatusTag, which maps status STRINGS to tag-* pills. Used 80×. Renders --severity-<level>; can take `severity` directly or resolve it live from a monitor (objectId / instance / counter) via DB workers.",
+  "variants": [
+    {
+      "name": "dot",
+      "what": "2px --severity-<level> border + light --severity-<level>-dot-box centre (down = solid, 0px border)",
+      "usage": "default"
+    },
+    {
+      "name": "dot+label",
+      "what": "dot + Capitalize(level) text (displayText=true)",
+      "usage": ""
+    },
+    {
+      "name": "solid-chip",
+      "what": "filled pill: background --severity-<level> + white text (the plain mode)",
+      "usage": ""
+    },
+    {
+      "name": "text",
+      "what": "coloured numeric/value text in --severity-<level>, JetBrains Mono (.text mode)",
+      "usage": ""
+    },
+    {
+      "name": "bg-fill",
+      "what": "row/cell: --severity-<level>-lighter tint + 1px --severity-<level> border (generateSeverityBg / .bg)",
+      "usage": ""
+    },
+    {
+      "name": "stripe",
+      "what": "severity-stripe.vue — coloured left rule on a list row/card",
+      "usage": ""
+    },
+    {
+      "name": "picker",
+      "what": "severity-picker.vue / compliance-severity-picker — choose a level",
+      "usage": ""
+    },
+    {
+      "name": "count-box",
+      "what": "dashboard/severity-count-box.vue — count per severity",
+      "usage": ""
+    },
+    {
+      "name": "switch",
+      "what": "alert severity toggle — see Atoms/Radio (severity-switch)",
+      "usage": ""
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "small dot",
+      "note": "single size"
+    }
+  ],
+  "states": [
+    {
+      "name": "static",
+      "what": "`severity` prop set directly"
+    },
+    {
+      "name": "live",
+      "what": "resolves from objectId / instance / counter via severityDBWorker + the live EVENT_SEVERITY_COUNTER_DB_CHANGED bus event"
+    },
+    {
+      "name": "unknown",
+      "what": "default when unresolved → --severity-unknown grey"
+    }
+  ],
+  "severityLevels": {
+    "$note": "each level -> --severity-<level> (the dot/text colour) + --severity-<level>-dot-box (the halo). Resolve via tokens/variables.json. QUIRK (mirrored from severity.less): `up` = green ring (--severity-clear) + a critical/light-red centre (--severity-critical-dot-box); `down`/`disable` have no -dot-box (down renders solid).",
+    "levels": [
+      "up",
+      "clear",
+      "critical",
+      "down",
+      "major",
+      "warning",
+      "maintenance",
+      "unreachable",
+      "suspended",
+      "disable",
+      "stop",
+      "none",
+      "unknown"
+    ]
+  },
+  "props": {
+    "severity": "String — the level (else live-resolved)",
+    "objectId": "[Number,String] — monitor id / name / IP to live-resolve from the DB worker",
+    "instance": "String — for instance-level severity",
+    "counter": "String — for counter-level severity",
+    "displayText": "Boolean (false) — show the Capitalize(severity) label beside the dot",
+    "disableTooltip": "Boolean (false)",
+    "center": "Boolean (true)",
+    "shadow": "Boolean (true) — the dot halo (severity-dot-shadow)"
+  },
+  "events": {
+    "udpate:severity": "(sic — misspelled in source) the resolved level after live lookup"
+  },
+  "decisionFlow": [
+    "Showing a monitor/alert SEVERITY level (critical/major/warning/clear/up/down/…)? -> Severity (dot).",
+    "Showing a STATUS string (up/down/running/failed/poweredoff…) as a pill? -> MStatusTag (Tag family).",
+    "Need a coloured stripe down a list row/card? -> severity-stripe.",
+    "Let the user pick a severity level (policy/condition forms)? -> severity-picker.",
+    "Show counts per severity on a dashboard? -> severity-count-box."
+  ],
+  "do": [
+    "Use Severity for severity LEVELS; MStatusTag for status STRINGS.",
+    "Pass `severity` directly when you already have it; use objectId/instance/counter only for live resolution.",
+    "Resolve colours via --severity-<level> (+ --severity-<level>-dot-box for the halo)."
+  ],
+  "dont": [
+    "Don't route alert/monitor severity through MStatusTag — its TAG_MAP lacks major/warning/clear, so they render as a grey plain tag (F7).",
+    "Don't hardcode severity colours — use the --severity-* tokens.",
+    "Don't rely on the dot colour alone for a11y — set displayText or keep the tooltip."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "emit name is misspelled `udpate:severity` in source."
+    },
+    "F2": {
+      "severity": "Low",
+      "a11y": true,
+      "issue": "colour-dot only by default — set displayText / keep the tooltip so severity isn't colour-only (WCAG 1.4.1)."
+    }
+  },
+  "tokensUsed": [
+    "--severity-up",
+    "--severity-clear",
+    "--severity-critical",
+    "--severity-down",
+    "--severity-major",
+    "--severity-warning",
+    "--severity-maintenance",
+    "--severity-unreachable",
+    "--severity-suspended",
+    "--severity-disable",
+    "--severity-none",
+    "--severity-unknown",
+    "--severity-critical-dot-box",
+    "--severity-warning-dot-box",
+    "--severity-major-dot-box",
+    "--severity-critical-lighter",
+    "--severity-major-lighter",
+    "--severity-warning-lighter",
+    "--severity-clear-lighter",
+    "--severity-down-lighter"
+  ],
+  "related": [
+    "tag",
+    "filters",
+    "table"
+  ],
+  "storybook": "Atoms/Severity",
+  "figma": {
+    "status": "todo"
+  },
+  "renderShapesNote": "The same severity.less class set renders dot / solid-chip / text / bg-fill (mode = a class on the element). Severity is ALSO shown via the chart/graph layer using the same --severity-* tokens: topology graph-node colour, RUM apdex map markers, heatmap cells, availability segments (see data-viz-tooltips / table) — cross-referenced, not duplicated.",
+  "a11y": {
+    "summary": "Must NOT be colour-only (F2) — pair the dot with a label (displayText) or keep the tooltip; announce live changes meaningfully.",
+    "issues": [
+      "Colour-only by default (WCAG 1.4.1).",
+      "Verify dot vs halo contrast."
+    ],
+    "doc": "Atoms/Severity/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "slots": "none — presentational (renders the dot + optional label from props; no slots)",
+  "changelog": [
+    "2026-06-27: added to the Elements site — 13 severity levels in dot / dot+label / solid-chip / coloured-text / bg-fill shapes; source-accurate 11px dot (the Storybook reproduction enlarges to 14px).",
+    "2026-06-29: stripe shown in both real usages — the standalone bar AND the table/list left-rule row."
+  ],
+  "severityEnum": [
+    "down",
+    "critical",
+    "major",
+    "warning",
+    "clear",
+    "up",
+    "maintenance",
+    "unreachable",
+    "disable",
+    "unknown",
+    "suspended",
+    "none"
+  ],
+  "usageRules": {
+    "dot": {
+      "useWhen": "Default. You have a monitor/alert severity LEVEL (critical/major/warning/clear/up/down/maintenance/…) and need the compact colour indicator in a dense context — a grid cell, list row, topology node, or inline beside a name — where a coloured dot plus hover tooltip conveys the level without eating horizontal space. Pass `severity` directly, or `objectId`(+`instance`/`counter`) to live-resolve.",
+      "dontUse": "Don't use in an a11y-sensitive standalone context where the dot is the only signal (WCAG 1.4.1, F2) — add `displayText` (dot+label) or keep the tooltip. For a status STRING (running/failed/poweredoff) use MStatusTag, not this. For counts per level use count-box; for a left row rule use stripe.",
+      "example": "The severity dot beside each monitor in the Inventory monitor list and on topology graph nodes, resolving live from the monitor's objectId via the DB worker."
+    },
+    "dot+label": {
+      "useWhen": "You want the dot AND the capitalized level text — set `displayText=true`. Preferred for accessibility (satisfies WCAG 1.4.1 so severity isn't colour-only) and for standalone contexts with room for a word: detail panels, alert headers, cards where the reader shouldn't have to hover to learn the level.",
+      "dontUse": "Don't use in tight grid cells or icon rails where the label wraps or crowds the layout — use the bare `dot` (with tooltip) there. Don't use for choosing a level (that's picker) or for aggregate counts (count-box).",
+      "example": "The alert detail header showing the dot followed by 'Critical' / 'Major', so the level reads without hovering."
+    },
+    "solid-chip": {
+      "useWhen": "You need a filled pill — background `--severity-<level>` with white text (the plain/solid mode) — for a high-emphasis, standalone severity badge that must stand out on its own, e.g. a prominent alert-severity badge in a header or banner where a small dot would be too subtle.",
+      "dontUse": "Don't use in dense tables/lists where a filled pill per row is visually heavy — use `dot`. Don't confuse with MStatusTag's `tag-*` pills: those map status STRINGS; solid-chip is still the Severity component rendering a severity LEVEL. Don't hardcode the fill — use `--severity-<level>`.",
+      "example": "A filled critical/major severity badge in an alert banner or summary header, using the --severity-<level> background with white text."
+    },
+    "text": {
+      "useWhen": "You have a numeric or value string that should be tinted by severity — coloured `--severity-<level>` text in JetBrains Mono (`.text` mode). Use for metric values, thresholds, or counts whose colour must communicate the level while keeping the number readable, e.g. a monitored value shown in critical red.",
+      "dontUse": "Don't use for a categorical level indicator where a dot reads faster (`dot`/`dot+label`). Don't rely on colour alone for the number's meaning if the value must be understood by colour-blind users — pair with a label. Don't hardcode the colour; use the `--severity-<level>` token.",
+      "example": "A KPI/threshold metric value rendered in --severity-critical red monospaced text when it breaches the critical threshold."
+    },
+    "bg-fill": {
+      "useWhen": "You need to tint a whole row or cell by severity — `--severity-<level>-lighter` background tint + 1px `--severity-<level>` border (generateSeverityBg / `.bg`). Use to make an entire alert/monitor row scannable by severity at a glance in a grid or list.",
+      "dontUse": "Don't use when only the indicator needs colour (use `dot`) or when a left edge rule suffices (use `stripe`) — a full-cell tint is heavier. Avoid on already-dense tables where the tint fights other status colours. Don't hardcode; use the `-lighter` + border tokens.",
+      "example": "An alert grid where each critical/major row is tinted with the matching --severity-<level>-lighter background so operators triage by scanning colour."
+    },
+    "stripe": {
+      "useWhen": "You want a coloured left rule down a list row or card (`severity-stripe.vue`) to band items by severity without tinting the whole surface. Per the decisionFlow: 'Need a coloured stripe down a list row/card? → severity-stripe.' Shown both as a standalone bar and as a table/list left-rule row.",
+      "dontUse": "Don't use when the full row should be tinted (that's bg-fill) or when a compact inline mark is enough (dot). Don't use to pick a level (picker) or to show counts (count-box).",
+      "example": "The coloured left-edge rule on each alert/notification list row (and the standalone severity bar), banding rows by --severity-<level>."
+    },
+    "picker": {
+      "useWhen": "You need to let the USER choose a severity level — `severity-picker.vue` / `compliance-severity-picker`. Per the decisionFlow: 'Let the user pick a severity level (policy/condition forms)? → severity-picker.' Use in alert-policy and condition/threshold forms where an author sets which level a rule maps to.",
+      "dontUse": "Don't use to merely DISPLAY a resolved level (use `dot`/`dot+label`). Don't hand-roll a level dropdown — the picker already renders the --severity-* swatches.",
+      "example": "The severity selector in an alert-policy / threshold-condition form (and compliance-severity-picker in compliance rules) where the author assigns critical/major/warning to a condition."
+    },
+    "count-box": {
+      "useWhen": "You need to show COUNTS per severity on a dashboard — `dashboard/severity-count-box.vue`. Per the decisionFlow: 'Show counts per severity on a dashboard? → severity-count-box.' Use for the at-a-glance tally of how many objects sit at each level.",
+      "dontUse": "Don't use for a single object's level (that's `dot`/`dot+label`) or to pick a level (picker). Don't rebuild an aggregate tile from bare dots — count-box already pairs each --severity-<level> with its number.",
+      "example": "The dashboard summary box tallying counts of critical / major / warning / clear monitors across the environment."
+    },
+    "switch": {
+      "useWhen": "You need an alert-severity TOGGLE control (severity-switch) — a switch-style control for enabling/setting severity, catalogued under Atoms/Radio. Use where a form toggles severity handling rather than displaying or free-picking a level.",
+      "dontUse": "Don't use to display a resolved severity (use `dot`) or to pick from the full list of levels in a form (use `picker`). See Atoms/Radio for the switch's own variants/states — this is a cross-reference, not a distinct Severity render mode.",
+      "example": "The alert severity toggle (severity-switch) in alert/notification settings, cross-referenced from Atoms/Radio."
+    }
+  }
+}

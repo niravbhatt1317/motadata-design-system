@@ -1,0 +1,40 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Scheduler/Accessibility" />
+
+# Scheduler / Recurrence — Accessibility
+
+`ScheduleInput` is a **composition**, so its a11y is inherited from the primitives — there's little
+bespoke markup.
+
+## Provided by the composed primitives
+
+- **Scheduler Type** — `MRadioGroup` gives **radio semantics** (`role="radio"` group) with
+  **arrow-key** selection between Once / Daily / Weekly / Monthly.
+- **Start Date** — `MDatePicker` exposes a focusable input + a keyboard-navigable calendar; Escape
+  closes.
+- **Days / Months / Dates / Hours** — `FlotoDropdownPicker` provides a searchable, keyboard-navigable
+  listbox.
+- **Labels** — every field is wrapped in **`FlotoFormItem`** (visible label + `required` / validation
+  state), so each control has an associated label.
+
+## Verify
+
+- ⚠️ **Focus-visible ring (SF-001):** confirm a visible `:focus-visible` outline on the segmented
+  **type buttons** and on each select/date control (the catalog-wide `:focus { outline:none }` removal
+  can hide it).
+- ⚠️ **Required announcement:** the fields are `rules="required"`; ensure the required state and any
+  validation error are announced (not color-only).
+- ⚠️ **Type-change context:** switching the type swaps the visible fields — verify focus lands
+  sensibly after the swap (doesn't get lost).
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| Type control radio semantics + arrow keys | ✅ (MRadioGroup) |
+| Field labels (required) | ✅ (FlotoFormItem) |
+| Calendar / select keyboard nav | ✅ (MDatePicker / FlotoDropdownPicker) |
+| Focus-visible ring | ⚠️ verify (SF-001) |
+| Required / error announced | ⚠️ verify |
+| Focus after type swap | ⚠️ verify |

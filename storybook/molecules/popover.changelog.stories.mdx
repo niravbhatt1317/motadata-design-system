@@ -1,0 +1,42 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Popover/Changelog" />
+
+# Popover — Changelog
+
+- **2026-06-12 (kebab layout fidelity)** — Owner: the widget kebab looked off — **`⋮` on the first
+  row, items below**. Confirmed it's **not** a different kebab: `picker-action-dropdown` positions
+  the panel to **overlap its trigger** (`.ant-popover-inner { top:-40px }` + `padding-top:30px`), so
+  the `⋮` sits at the panel top. Fixed both kebab stories to that layout, corrected the widget items
+  to the real set (**Edit Widget · Clone Widget · Full Screen · Share · Remove Widget** [red]; +
+  Export as CSV for data widgets), and documented the shared positioning in Usage.
+- **2026-06-12 (kebab variants)** — Owner: "there are different kebab/action menus in the product."
+  Swept the action-menu family (`FlotoGridActions` 89× · `MMenu` 15× · overlay classes). Added the
+  **two missing kebab variants** beyond the widget one: **grid-row kebab** (Edit/Clone/Disable · a
+  **divider** · **Delete in red** via `isDanger`) and the **bulk-action bar** (`_base-bulk-action-bar.vue`
+  — selection toolbar with inline primary/danger actions + a **"More" overflow kebab**,
+  `bulk-action-bar-more`, opening upward). Renamed the original to *widget-header kebab*. Added a
+  Usage table comparing all three (where / items / distinguishing trait / story).
+- **2026-06-11 (kebab fidelity)** — Owner: "the kebab opens differently in the product." Matched
+  the **Action / kebab menu** story to the real `FlotoGridActions` (`_base-grid-actions.vue`): the
+  dark **`picker-action-dropdown`** panel (`--action-dropdown-backgroud` / `--action-dropdown-text`
+  / hover `--action-dropdown-hover-bg`), the real widget items **Full Screen · Share · Export as
+  CSV** with their icons, `transition-name="slide-up"`, and a hover row — replacing the generic
+  Edit/Duplicate/Delete div list.
+- **2026-06-11 (nth-level audit)** — Owner: "check every kind of popover + that opening/placement
+  match the product." Swept the real value distributions and found gaps the first pass missed:
+  **`trigger="hover"` (13×)** for "+N overflow" reveals, **`bottomLeft` as the most common
+  placement (11×)**, and **`transition-name="slide-up"` (16×)** — plus that MPopover uses **Ant**
+  placement names (`bottomLeft`) while Tooltip uses **VTippy** names. Added a **Behavior: hover
+  trigger (+N overflow)** story and a **Placements** story, corrected the placement vocabulary, and
+  documented the trigger/placement/transition distributions in Usage + registry.
+- **2026-06-11** — Added (decision-grade Usage) — the **Popover**, completing the
+  **Popover/Tooltip family**. Deep-dive of `Popover.vue` (35×, kit wrapper over Ant `a-popover`)
+  and `_base-popper.vue` (**MPopper**, the `v-popover` positioning primitive that powers
+  `FlotoDropdownPicker`). API: `trigger` / `title` / default slots, each with `{ hide, show,
+  toggle }`; props `trigger` (default `click`) · `placement` (default `bottom`) ·
+  `overlayClassName` · `overlayStyle` · `destroyTooltipOnHide`. Stories: **Basic** (title +
+  content) · **Action / kebab menu** (`_base-grid-actions` pattern) · **Rich panel** (color-picker
+  pattern) · **Playground** — verified click-open with title + items, no console errors. Findings:
+  **F1** (one-way `visible`), **F2** (no disclosure ARIA / focus move / focus trap), **F3** (no
+  focus ring → SF-001).

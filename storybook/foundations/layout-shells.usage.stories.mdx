@@ -1,0 +1,44 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/Layout shells/Usage" />
+
+# Layout shells — Usage
+
+> **In plain terms:** which page *frame* to use. **Almost always the default `Layout`** — only switch for
+> login, print/export, or system (upgrade/restore) pages. The two "content layouts" aren't frames; they
+> go *inside* `Layout` when you need a left tree or menu.
+
+**4 route shells** in `src/views/layouts/`, chosen by the switcher in `src/app.vue` (not logged in →
+`LoginLayout`; else `Layout`; then a `route.meta.layout` override wins). Plus **2 content layouts** that
+render *inside* `Layout`. Corrected per [`foundation/layout-shells.md`](../../foundation/layout-shells.md).
+Machine spec: [`layout/layouts.json`](../../layout/layouts.json) → `shells`.
+
+## Which route shell to use
+
+| Need | Shell | Chrome |
+| --- | --- | --- |
+| A normal in-app page | **Layout** (default) | NavBar + Header + content + overlays |
+| Unauthenticated auth screen (login, reset, forgot) | **LoginLayout** | bare — no chrome, no socket (also the unauth fallback) |
+| Full-bleed, no nav/header, still live (e.g. print/export) | **EmptyLayout** | padded content; keeps socket + DB |
+| Public / system page (upgrade, restore) | **PublicLayout** | full-bleed; socket with updating/restoring flag |
+
+## Content layouts (not route shells)
+
+| Layout | What | Where |
+| --- | --- | --- |
+| **MonitorHierarchyLayout** | two-pane: collapsible/affixable left **hierarchy tree** + content | log / inventory / topology (**0 route overrides** · 4 files) |
+| **Settings two-pane** | `splitpanes` left **menu** + content; hidden via `hideSettingsMenu` | all settings submodules |
+
+## When to use / best practices
+
+- **Don't override unless you must** — the default `Layout` is right for almost every authenticated page.
+- Set the shell with the route's **`layout` meta** (e.g. `meta: { layout: 'EmptyLayout' }`); the
+  `app.vue` switcher resolves it. **Auth pages must use LoginLayout** so they don't boot the socket/DB.
+- **`MonitorHierarchyLayout` is a content layout, not a route shell** — it has **0 `meta.layout`
+  overrides**; it's used as a `<MonitorHierarchyLayout>` component inside `Layout`. Use it (or the Settings
+  `splitpanes` two-pane) for a left tree/menu + content; don't try to select it via route meta.
+
+## Related
+
+- [**App shell**](?path=/docs/foundations-layout-app-shell-usage--page) — anatomy of the default `Layout`.
+- [**Screen regions**](?path=/docs/foundations-layout-screen-regions-usage--page) — the content layouts (two-pane, master-detail, dashboard).

@@ -1,0 +1,234 @@
+{
+  "name": "link",
+  "component": "FlotoLink",
+  "display": "Link",
+  "tier": "atom",
+  "category": "navigation",
+  "source": "app",
+  "sourceFile": "src/components/_base-app-link.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "Navigation control. Default renders a RouterLink (<a>); as-button renders an MButton that pushes the route on click. Only own prop is asButton; everything else passes through.",
+  "variants": [
+    {
+      "name": "text-link",
+      "what": "RouterLink text (default)",
+      "usage": "67×"
+    },
+    {
+      "name": "as-button",
+      "what": "MButton + route push",
+      "usage": ""
+    },
+    {
+      "name": "external",
+      "what": "<a target=_blank>",
+      "usage": "147×"
+    },
+    {
+      "name": "k-link",
+      "what": "subtle grid/pagination link class",
+      "usage": "25×"
+    },
+    {
+      "name": "muted",
+      "what": "[element] obs-link muted — secondary/subdued link (lighter --neutral-light text, keeps the dotted underline). For a secondary action link like Cancel next to a primary Save.",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "inherits text colour"
+    },
+    {
+      "name": "hover",
+      "what": "text underline"
+    },
+    {
+      "name": "focus",
+      "what": "no visible ring (SF-001)"
+    },
+    {
+      "name": "active",
+      "what": "current route (as-button)"
+    }
+  ],
+  "family": "Link",
+  "props": {
+    "asButton": {
+      "type": "boolean",
+      "default": false,
+      "note": "button-styled navigation (MButton + $router.push) vs a plain RouterLink"
+    },
+    "to": {
+      "type": [
+        "string",
+        "object"
+      ],
+      "note": "via $attrs — route location / path"
+    },
+    "target": {
+      "type": "string",
+      "note": "via $attrs"
+    },
+    "(MButton props)": {
+      "type": "passthrough",
+      "note": "when asButton: variant/size/etc. pass through"
+    },
+    "k-link": {
+      "type": "boolean",
+      "default": false,
+      "note": "[element] obs-link: subtle grid link — neutral text, no underline until hover"
+    },
+    "muted": {
+      "type": "boolean",
+      "default": false,
+      "note": "[element] obs-link: secondary/subdued link — lighter (--neutral-light) text, keeps the dotted underline. Use for a Cancel-style secondary action beside a primary Save."
+    }
+  },
+  "events": [
+    "(passthrough via $listeners)"
+  ],
+  "slots": [
+    "default (link/button content)"
+  ],
+  "modes": {
+    "default": "RouterLink -> real <a> (middle-click / open-in-new-tab work)",
+    "asButton": "MButton -> navigates via $router.push on click (no href)"
+  },
+  "anatomy": [
+    "text link (<a>, inherits color)",
+    "OR button-styled link (MButton)"
+  ],
+  "accessibility": {
+    "default": "real anchor — correct link role + keyboard + new-tab",
+    "asButton": "F1 — a <button>, not an anchor: no href, no middle-click/new-tab, announced as button",
+    "focus": "no visible ring (SF-001)"
+  },
+  "decisionFlow": [
+    "Performs an action (save/delete/change state)? -> Button, not a link.",
+    "External URL / opens in a new tab? -> plain <a href target=_blank rel=noopener noreferrer> (FlotoLink is internal-only).",
+    "Internal navigation (route)? -> FlotoLink.",
+    "Internal navigation that should look like a prominent CTA/button? -> FlotoLink as-button (with a variant).",
+    "Inline internal navigation in content / menus / breadcrumbs / a clickable value? -> FlotoLink (text link).",
+    "A subtle clickable text inside a table/grid? -> class k-link."
+  ],
+  "usageRules": {
+    "text-link(default)": {
+      "useWhen": "inline INTERNAL navigation in content, menus, breadcrumbs, logos, a clickable value",
+      "dontUse": "for actions (use Button) or external URLs (use a plain anchor)",
+      "example": "go to <the inventory list>; a breadcrumb segment"
+    },
+    "as-button": {
+      "useWhen": "a prominent INTERNAL navigation call-to-action that should look like a button",
+      "dontUse": "where users expect open-in-new-tab/middle-click (F1 — it's a button, no href)",
+      "example": "Go to settings CTA"
+    },
+    "external-link": {
+      "useWhen": "an external/help/doc URL or anything that opens in a new tab",
+      "must": "plain <a href target=_blank> with rel=noopener noreferrer (FlotoLink/RouterLink can't do external; SF-004)",
+      "example": "documentation/help links"
+    },
+    "k-link(class)": {
+      "useWhen": "subtle clickable text inside a table/grid",
+      "note": "--page-text-color, hover -> pagination-active; not brand-colored (25x)"
+    },
+    "text-link": {
+      "useWhen": "Inline INTERNAL navigation that takes the user somewhere via a route — links inside content/prose, menu items, breadcrumb segments, the app logo, or a clickable value that opens a detail view. First-match default of the FlotoLink decision flow once you've ruled out actions and external URLs. Add class=\"text-primary\" so it reads as a link (bare links inherit text color, F2).",
+      "dontUse": "Not for actions like save/delete/apply/change-state (use MButton) or for external/new-tab URLs (use a plain <a href target=_blank>, FlotoLink is internal-only). Use as-button instead when the internal nav must look like a prominent CTA, or k-link for subtle in-grid text.",
+      "example": "A breadcrumb segment, or 'go to the inventory list' inline in content; the navbar/header/user-menu logo and menu navigation links."
+    },
+    "external": {
+      "useWhen": "The destination is an external URL or should open in a new tab — documentation, help, or downloadable files. FlotoLink/RouterLink can't resolve external URLs, so hand-author a plain anchor: <a href target=\"_blank\" rel=\"noopener noreferrer\">. The rel is required (SF-004).",
+      "dontUse": "Don't use FlotoLink here (internal-only, can't resolve external URLs). For internal route navigation use text-link or as-button instead. Never omit rel=noopener noreferrer on a target=_blank link (reverse tabnabbing, SF-004).",
+      "example": "A documentation or help link that opens Motadata docs in a new tab."
+    },
+    "k-link": {
+      "useWhen": "A subtle clickable text inside a table/grid that shouldn't shout — neutral --page-text-color with a hover affordance instead of brand color, so it blends into dense grid rows and pagination. Applied as class=\"k-link\" (25× in the app).",
+      "dontUse": "Don't use for prominent or standalone inline links (use text-link with text-primary), for CTAs (as-button), or for actions (MButton). Not for external URLs.",
+      "example": "A subtle clickable cell value or pagination link inside a data grid."
+    }
+  },
+  "linkClasses": {
+    "k-link": 25,
+    "resource-link": "8 (mostly legacy/commented)",
+    "link-label": 5,
+    "completed-link": 3,
+    "admin-page-link": 1
+  },
+  "do": [
+    "Use for navigation (route/URL): inline links, menus, breadcrumbs, logos.",
+    "Use as-button for a prominent navigation CTA; pass a Button variant.",
+    "Name the destination in the link text; add text-primary affordance for inline links."
+  ],
+  "dont": [
+    "Don't use a link for an action (save/delete/apply) — use a Button.",
+    "Don't rely on as-button where open-in-new-tab matters (F1)."
+  ],
+  "whenToUse": "Anything that navigates the user somewhere (route, URL, anchor).",
+  "insteadOf": [
+    "raw RouterLink",
+    "a button styled as a link",
+    "an anchor for actions"
+  ],
+  "usage": {
+    "total": 67,
+    "files": 48,
+    "to": 9
+  },
+  "knownIssues": [
+    "F1 (medium, a11y/UX): as-button navigates via $router.push on an MButton (no href) — loses middle-click/open-in-new-tab and is announced as a button, not a link. Prefer a real anchor styled as a button for nav CTAs.",
+    "F2 (low): plain links inherit text color (no default link color/underline) — a bare link can look like text; most usages add text-primary. Consider a default link style.",
+    "F3 (low, security) -> SF-004: FlotoLink is internal-only (RouterLink), so external links are raw <a target=_blank> — 147x across the app, 0 with rel=noopener noreferrer (reverse tabnabbing; browser-mitigated). Add a shared external-link component + lint rule. See findings/SF-004."
+  ],
+  "related": [
+    "MButton",
+    "MDropdown",
+    "RouterLink"
+  ],
+  "changelog": [
+    "2026-07-14: as-button now paints ALL obs-button variants (owner, field-report C-item) — it only styled primary/primary-alt/default/transparent, so <obs-link as-button variant=\"error|success|ghost|danger|dashed|info|neutral|warning|neutral-lighter|neutral-lightest\"> rendered unstyled. Mirrored the full obs-button variant set into .as-btn.",
+    "2026-07-13: dark-mode muted-hover fix — the muted link hover used --neutral-dark (near-black in dark mode → invisible on hover). Switched to --page-text-color (emphasises correctly in both themes: darker in light, lighter in dark).",
+    "2026-07-13: added a `muted` variant to obs-link (secondary/subdued link — lighter --neutral-light text, keeps the dotted underline). Introduced so an inline Save (default) / Cancel (muted) pair in obs-table reads with a proper primary/secondary hierarchy while both stay DS links.",
+    "2026-06-07: added (decision-grade from the start). 67x/48 files; RouterLink default + as-button MButton route-push; only own prop asButton. Verified in SB (RouterLink + $router stubbed). F1 (as-button not a real link), F2 (no default affordance). Closes Button's navigation relative."
+  ],
+  "storybook": "Atoms/Link",
+  "figma": {
+    "status": "todo",
+    "component": "Link"
+  },
+  "tokensUsed": [
+    "--primary",
+    "--primary-alt",
+    "--page-text-color",
+    "--neutral-light",
+    "--border-color",
+    "--pagination-active-bg"
+  ],
+  "a11y": {
+    "summary": "True <a>/RouterLink — link role + keyboard focus. Use destination-naming text (not 'click here'); as-button variant announces as a button.",
+    "issues": [
+      "No visible focus ring (SF-001).",
+      "Plain links inherit text colour (F2) — add an affordance."
+    ],
+    "doc": "Atoms/Link/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "variantEnum": [
+    "primary",
+    "primary-alt",
+    "default",
+    "neutral-lighter",
+    "neutral-lightest",
+    "transparent",
+    "error",
+    "success",
+    "danger",
+    "info",
+    "neutral",
+    "neutral-light",
+    "warning"
+  ]
+}

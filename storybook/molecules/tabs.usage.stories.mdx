@@ -1,0 +1,78 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Tabs/Usage" />
+
+# Tabs — Usage
+
+🟢 **Stable** · Molecule — **in-page tabbed navigation** (`MTab` + `MTabPane`, wrapping Ant
+`a-tabs`, **86×** across 70 files) that switches between **sibling views of one context**. Rules
+mirrored in [`registry/tabs.json`](../../components/registry/tabs.json).
+
+## The one rule that matters: line / top / default only
+
+Although Ant `a-tabs` supports **card** & **editable-card** types, **vertical** position, **size**
+variants, and a **`tabBarExtraContent`** slot — **the product uses none of them.** Every real
+`<MTab>` is a **line** tab, **top**-positioned, **default** size. The genuine variants are
+**class-based**. Treat card/vertical/closable tabs as a *new pattern* needing a deliberate decision,
+not a default.
+
+## Which "pick one" control? (decision)
+
+First match wins:
+
+1. **Switching between sibling VIEWS of one context** (Overview / Performance / Logs)? → **Tabs**.
+2. **Navigating to separate pages**? → the **router / menu**, not tabs.
+3. **A compact two-to-four-way toggle inline in a form** (a setting)? → **`MRadioGroup as-button`**
+   (segmented control), not tabs.
+4. **Pick-from-many options for a field**? → **`FlotoDropdownPicker`**.
+
+## Variants & patterns (all in the product)
+
+| Pattern | How | Where | Story |
+| --- | --- | --- | --- |
+| **Basic** | `<MTab v-model><MTabPane key tab>` | the default everywhere | Basic |
+| **No border** (21×) | `class="no-border"` | tabs on a card/panel with its own edges | No border |
+| **Sticky** (8×) | `class="sticky-tab"` | long scrolling detail/settings panes | Sticky |
+| **Counts** | `:tab="\`Alerts (${count})\`"` | correlated Alerts/Logs/Metrics, notifications | With counts |
+| **Dynamic** | `<MTabPane v-for :key :tab>` | data-driven sets (widget editor) | Dynamic |
+| **Icons** | `<span slot="tab"><MIcon/> Label>` | view switchers; icon-only uses `topology-hierarchy-tab` | With icons |
+| **Persisted** | `<MPersistedTab module-key>` + `:value/@change` | module tabs the user returns to | Persisted |
+
+## Active / inactive / disabled (the visual contract)
+
+- **Active** — `--primary` (navy) text **and** a `--primary` underline / ink bar.
+- **Inactive** — `--tabs-text-color` (`#516381` light / `#8e9fbc` dark).
+- **Bar** — `--border-color` bottom rule (removed by `no-border`).
+- **Disabled** — `--neutral-light`.
+
+## Controlled vs uncontrolled
+
+- **Controlled** (dominant): `v-model="tab"` — i.e. `:value` + `@change`. 41× bind `@change`.
+- **Uncontrolled:** `default-active="overview"`.
+- **Persisted:** wrap with `MPersistedTab` (localStorage `${moduleKey}-tab`) and bind its scoped
+  `{ tab, setTab }` to `<MTab :value="tab" @change="setTab">`.
+
+## Labels
+
+- Short noun labels (Overview, Performance, Logs). Append a live count as **`Label (N)`** — it's part
+  of the label string, **not** a badge component. Don't punctuate or sentence-case.
+
+## Do
+
+- Use for **sibling views of one context**.
+- `class="no-border"` when the tabs sit on a card.
+- `sticky-tab` when the tabs head a long scrolling area.
+- Append `(N)` counts; build data-driven sets with `v-for`.
+- `MPersistedTab` where users return to a remembered tab.
+
+## Don't
+
+- Don't use tabs to navigate **pages** — that's routing.
+- Don't introduce **card / vertical / closable** tabs without a deliberate decision.
+- Don't build a **separate count badge** — append `(N)`.
+- Don't rely on **`tabBarExtraContent`** to match the product (it's unused there).
+
+## Related
+
+`FlotoDropdownPicker` (select) · Table/Grid (tabs often head a grid detail pane) · `MRadioGroup`
+`as-button` (segmented — a different "pick one").

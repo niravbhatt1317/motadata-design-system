@@ -1,0 +1,576 @@
+{
+  "name": "dropdown-picker",
+  "component": "FlotoDropdownPicker",
+  "display": "DropdownPicker",
+  "tier": "organism",
+  "source": "app",
+  "sourceFile": "src/components/_base-dropdown-picker.vue",
+  "status": "core",
+  "maturity": "stable-but-flawed",
+  "summary": "The product's custom select: popover-anchored, virtualized, searchable, single/multi-select, keyboard nav, optional inline-add. Not a native/Ant select.",
+  "variants": [
+    {
+      "name": "single",
+      "what": "pick one (default)",
+      "usage": ""
+    },
+    {
+      "name": "multiple",
+      "what": "checkboxes + Select All",
+      "usage": ""
+    },
+    {
+      "name": "not-searchable",
+      "what": "no search box",
+      "usage": "119×"
+    },
+    {
+      "name": "allow-clear",
+      "what": "× clear on hover",
+      "usage": "218×"
+    },
+    {
+      "name": "text-only",
+      "what": "plain-text trigger",
+      "usage": "15×"
+    },
+    {
+      "name": "read-only-pills",
+      "what": "multi+disabled → pills",
+      "usage": ""
+    },
+    {
+      "name": "inline-add",
+      "what": "add new option",
+      "usage": ""
+    },
+    {
+      "name": "two-pane",
+      "what": "menu + hovered description",
+      "usage": ""
+    },
+    {
+      "name": "use-popover",
+      "what": "MPopover trigger",
+      "usage": "26×"
+    },
+    {
+      "name": "grid-dropdown",
+      "what": "menu is a searchable table (FlotoDropdownGridSelector)",
+      "usage": "~70×"
+    },
+    {
+      "name": "icon-dot",
+      "what": "severity-dot / type icon per option (before-menu-text)",
+      "usage": "27×"
+    },
+    {
+      "name": "tree-select",
+      "what": "hierarchical expand/collapse tree in the menu",
+      "usage": "—"
+    },
+    {
+      "name": "avatar-picker",
+      "what": "user options with avatar + name",
+      "usage": "—"
+    },
+    {
+      "name": "rich-row-list",
+      "what": "virtualized tall multi-line rows (RecycleScroller)",
+      "usage": "16×"
+    },
+    {
+      "name": "column-chooser",
+      "what": "table show/hide-columns dropdown: COLUMNS header + draggable checkbox rows + Reset footer (column-selector.vue, 174×)",
+      "usage": "174×"
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "closed",
+      "what": "trigger only"
+    },
+    {
+      "name": "open",
+      "what": "menu + search"
+    },
+    {
+      "name": "disabled",
+      "what": "read-only pills"
+    },
+    {
+      "name": "empty",
+      "what": "placeholder"
+    },
+    {
+      "name": "selected",
+      "what": "value(s) in trigger"
+    }
+  ],
+  "family": "Form Controls",
+  "model": {
+    "prop": "value",
+    "event": "change"
+  },
+  "optionShape": {
+    "label": "text || name || label",
+    "value": "key || id || value",
+    "canonical": "{ key, text }",
+    "extra": [
+      "id",
+      "disable",
+      "status",
+      "icon (→ obs-icon)",
+      "severity (→ obs-severity dot; or a --severity-<level> `color`)",
+      "avatar (URL → img, else initials from label) + sublabel/email (people picker)",
+      "children[] (nested → tree-select, any depth)",
+      "description (two-pane)"
+    ]
+  },
+  "props": {
+    "value": {
+      "type": [
+        "number",
+        "string",
+        "object",
+        "array",
+        "boolean"
+      ],
+      "note": "v-model; key (single) or array of keys (multiple)"
+    },
+    "options": {
+      "type": "array",
+      "note": "passed via $attrs; { key, text } objects"
+    },
+    "externalOptions": {
+      "type": "array",
+      "default": []
+    },
+    "disabledOptions": {
+      "type": "array",
+      "default": []
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": false
+    },
+    "allowSelectAll": {
+      "type": "boolean",
+      "default": false
+    },
+    "allowClear": {
+      "type": "boolean",
+      "default": false,
+      "note": "218x"
+    },
+    "searchable": {
+      "type": "boolean",
+      "default": true,
+      "note": "defaults TRUE (F3); :searchable=false used 119x"
+    },
+    "asInput": {
+      "type": "boolean",
+      "default": true,
+      "note": "defaults TRUE (F3); trigger looks like an input. LEGACY — prefer the `trigger` enum."
+    },
+    "trigger": {
+      "type": "string",
+      "note": "[element] trigger style: input (default) | text | button | icon | chip. One enum consolidating asInput/textOnly + adding button + icon. Orthogonal to the menu content."
+    },
+    "triggerIcon": {
+      "type": "string",
+      "attr": "trigger-icon",
+      "note": "[element] the glyph (obs-icon name) for the `icon` trigger (default ellipsisV) and the leading caret of the `button` trigger (default chevronDown)."
+    },
+    "triggerLabel": {
+      "type": "string",
+      "attr": "trigger-label",
+      "note": "[element] a fixed label for the button/icon trigger (e.g. \"Columns\", \"Filter\") instead of the selection/placeholder."
+    },
+    "wrap": {
+      "type": "boolean",
+      "default": true,
+      "note": "defaults TRUE (F3)"
+    },
+    "textOnly": {
+      "type": "boolean",
+      "default": false
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Select"
+    },
+    "usePopover": {
+      "type": "boolean",
+      "default": false,
+      "note": "false=MPopper (v-tooltip), true=MPopover (kit); 26x"
+    },
+    "placement": {
+      "type": "string",
+      "default": "bottom-start"
+    },
+    "maxValues": {
+      "type": "number",
+      "default": 0,
+      "note": "the REAL selection cap (sliced in handleChange)"
+    },
+    "maxAllowedSelection": {
+      "type": "number",
+      "default": 0,
+      "note": "DEAD — declared but never used (F2); use maxValues"
+    },
+    "itemSize": {
+      "type": "number",
+      "default": 32
+    },
+    "itemsToShow": {
+      "type": "number",
+      "default": 10,
+      "note": "with hideAllDropdownOptions, caps rendered count"
+    },
+    "hideAllDropdownOptions": {
+      "type": "boolean",
+      "default": false
+    },
+    "canUserAddOptions": {
+      "type": "boolean",
+      "default": false,
+      "note": "inline add; emits add"
+    },
+    "addLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "useAfterMenuDescription": {
+      "type": "boolean",
+      "default": false,
+      "note": "two-pane: menu + hovered description"
+    },
+    "showHelp": {
+      "type": "boolean",
+      "default": false
+    },
+    "defaultOpen": {
+      "type": "boolean",
+      "default": false,
+      "note": "opens on mount"
+    },
+    "avoidKeyboardNavigation": {
+      "type": "boolean",
+      "default": false
+    },
+    "overlayClassName": {
+      "type": "string",
+      "default": "picker-overlay"
+    },
+    "overlayStyle": {
+      "type": "object",
+      "default": {}
+    },
+    "minWidth": {
+      "type": "number",
+      "default": 0
+    },
+    "removeClearBtn": {
+      "type": "boolean",
+      "default": false
+    },
+    "fixedPosition": {
+      "type": "boolean",
+      "default": false
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "columns": {
+      "type": "string",
+      "note": "COLUMN-CHOOSER mode — a JSON array of {key,label,checked?,locked?}. Renders a heading + draggable checkbox rows (drag-reorder; a locked column is pinned) instead of the option list. Opens from an eye icon trigger by default. Emits change/reorder/reset."
+    },
+    "heading": {
+      "type": "string",
+      "note": "(column-chooser) the section header at the top of the menu, e.g. \"COLUMNS\"."
+    },
+    "reset-label": {
+      "type": "string",
+      "note": "(column-chooser) the reset-footer text, e.g. \"Reset Column Preference\" (undo icon). Omit for no footer."
+    }
+  },
+  "events": [
+    "change",
+    "show",
+    "hide",
+    "search",
+    "add",
+    "active-item-index-change"
+  ],
+  "slots": [
+    "default (menu)",
+    "menu-item",
+    "before-menu-text",
+    "after-menu-text",
+    "after-menu",
+    "helpbox",
+    "hovered-menu-description",
+    "trigger"
+  ],
+  "triggers": {
+    "note": "The trigger slot ({ toggle }) controls HOW the dropdown opens — orthogonal to the menu content. Any menu variant can use any trigger.",
+    "options": {
+      "input": {
+        "useWhen": "a form field — the standard bordered box with the selection + chevron",
+        "example": "most form selects"
+      },
+      "text-only": {
+        "useWhen": "inline / embedded in a sentence or compact header — plain text + caret, no box",
+        "example": "\"showing X\" pickers, compact headers (15×)"
+      },
+      "button": {
+        "useWhen": "the opener reads as an ACTION with a label",
+        "example": "\"Columns\", \"Add filter\", \"Group by\" buttons"
+      },
+      "icon-only": {
+        "useWhen": "a compact toolbar / row where space is tight — an icon button (kebab / gear / filter)",
+        "example": "row kebab menus, toolbar option buttons"
+      },
+      "chip": {
+        "useWhen": "a compact token-like opener, often in a filter bar",
+        "example": "filter chips that open a value menu"
+      }
+    }
+  },
+  "dependencies": [
+    "MPopper (v-tooltip) or MPopover",
+    "RecycleScroller (vue-virtual-scroller)",
+    "arrayWorker (web worker search)",
+    "MInput",
+    "MMenu/MMenuItem",
+    "MCheckbox",
+    "MDivider",
+    "MButton",
+    "MIcon"
+  ],
+  "anatomy": [
+    "trigger (input/text/chip/pills)",
+    "search box (+ optional add)",
+    "Select All header (multi)",
+    "virtualized option rows",
+    "Clear footer (multi)",
+    "no-data illustration"
+  ],
+  "tokensUsed": [
+    "--dropdown-hover-background",
+    "--left-menu-text-color-hover",
+    "--main-tags-bg-color",
+    "--main-tags-text-color"
+  ],
+  "accessibility": {
+    "keyboardOpen": "ArrowUp/Down/Enter/Escape work only once open (window keydown)",
+    "gaps": "F1 — no combobox ARIA, not keyboard-openable (click-only), no focus ring (SF-001)"
+  },
+  "do": [
+    "Use as the standard select; options as { key, text }; v-model the key(s).",
+    "multiple + allow-select-all for multi; :searchable=false for short lists; trigger slot for custom triggers."
+  ],
+  "dont": [
+    "Don't rely on maxAllowedSelection to cap (F2 — use maxValues).",
+    "Don't assume keyboard/AT users can operate it today (F1). Don't forget searchable/asInput/wrap default true (F3)."
+  ],
+  "whenToUse": "The default select control anywhere in the product (single or multi).",
+  "decisionFlow": [
+    "Free-form typed tags? -> LooseTags, not the picker.",
+    "2-3 always-visible exclusive options? -> MRadio (segmented).",
+    "Simple on/off? -> MSwitch.",
+    "Picking a rich RECORD identified by MULTIPLE columns (name/IP/type/status), often multi-select with checkboxes? -> Grid Select (obs-grid-select), not this — its menu is a searchable TABLE, not an option list.",
+    "Choosing one/many from a simple {label} list? -> DropdownPicker.",
+    "Choosing several? -> multiple (+ allow-select-all).",
+    "Short fixed list? -> :searchable=false.",
+    "Clearable/none valid? -> allow-clear.",
+    "User can add missing options? -> can-user-add-options + add-label.",
+    "Options need a VISUAL cue to identify them (a status/severity dot, a type icon, a person's avatar)? -> [element] give each option `severity`/`icon`/`avatar`+`sublabel` (OPTION CONTENT — one rich option schema, NOT a separate component).",
+    "Options are HIERARCHICAL (parent/child, e.g. DC > Rack > Server)? -> [element] give options nested `children[]` (tree-select: expand/collapse, branch = subtree select).",
+    "How should it OPEN (orthogonal to the above)? -> [element] the `trigger` enum: input (default form field) | text (inline) | button (labelled action, e.g. Columns/Filter) | icon (compact toolbar/kebab/filter, with a count badge) | chip (filter-bar token).",
+    "Showing/hiding (and reordering) a TABLE’s columns? -> this Dropdown with a `columns` prop (the column-chooser mode: COLUMNS header + draggable checkbox rows + Reset)."
+  ],
+  "usageRules": {
+    "single(default)": {
+      "useWhen": "pick one value from a list (most common)",
+      "example": "monitor type, template, owner"
+    },
+    "multiple": {
+      "useWhen": "pick several values (checkboxes + Select-All + Clear); add allow-select-all",
+      "example": "filter by several tags/groups"
+    },
+    "searchable=false": {
+      "useWhen": "short fixed list where search is noise (119x)"
+    },
+    "allow-clear": {
+      "useWhen": "an empty/none state is valid and resettable (218x)"
+    },
+    "as-input": {
+      "useWhen": "trigger should look like a form field (default true); false for chip/inline trigger"
+    },
+    "can-user-add-options": {
+      "useWhen": "user may need a value not in the list (inline add -> emits add)"
+    },
+    "trigger-slot": {
+      "useWhen": "default input trigger doesn't fit (button, avatar, pills)"
+    },
+    "cap-selection": {
+      "useWhen": "limit count -> use maxValues, NOT maxAllowedSelection (dead, F2)"
+    },
+    "single": {
+      "useWhen": "Pick exactly one value from a list — the default and most common mode. Options are { key, text } and v-model binds the selected key. Trigger looks like a form field (asInput) unless overridden.",
+      "dontUse": "Don't use for choosing several values (use `multiple`), for free-form typed tags (use LooseTags), or for 2-3 always-visible exclusive options (use MRadio segmented) or a simple on/off (MSwitch).",
+      "example": "Choosing a monitor type, a template, or an owner; the severity picker; entity pickers like monitor-picker / user-picker / group-picker."
+    },
+    "not-searchable": {
+      "useWhen": "The list is short and fixed (≤ ~7 items) so the search box would just be noise — set `:searchable=\"false\"` (search defaults TRUE). Used 119×.",
+      "dontUse": "Don't disable search on long or dynamic lists where the user needs to filter — keep the default searchable behaviour there.",
+      "example": "A short fixed enum select such as a status or a small fixed set of options where scanning is faster than typing."
+    },
+    "text-only": {
+      "useWhen": "The trigger should be plain text rather than a form-field-looking input — set `textOnly` (asInput off). A lightweight, inline-looking trigger. Used 15×.",
+      "dontUse": "Don't use where the control should read as an editable form field (that's the default `asInput` input trigger). For fully custom triggers (button/avatar/pills) use the `trigger` slot instead.",
+      "example": "An inline, label-style select embedded in dense text or a toolbar where a boxed input would be visually heavy."
+    },
+    "read-only-pills": {
+      "useWhen": "A multi-select is disabled/read-only and you want to display the chosen values as teal SelectedItemPills instead of an editable trigger — the `multiple` + `disabled` presentation.",
+      "dontUse": "Don't use when the user still needs to edit the selection (keep the enabled `multiple` trigger). For an editable single value, use `single`.",
+      "example": "Monitoring Hours shown in a read-only/disabled state renders the selected hours as SelectedItemPills; any disabled multi-select summary."
+    },
+    "inline-add": {
+      "useWhen": "The user may need a value that isn't in the list yet — set `can-user-add-options` (+ `add-label`) to expose an inline add action in the search area that emits `add`.",
+      "dontUse": "Don't use for a closed/fixed set of options, or for truly free-form typed tags (use LooseTags for that).",
+      "example": "Pickers where the user can create a missing option on the fly (e.g. adding a tag/label that doesn't exist yet) and have it emitted via `add`."
+    },
+    "two-pane": {
+      "useWhen": "Options need explanatory context — set `useAfterMenuDescription` to render a two-pane layout: the option menu plus a description panel for the hovered item.",
+      "dontUse": "Don't use for simple lists where labels are self-explanatory; the extra description pane is wasted space there.",
+      "example": "A picker where each option needs a hovered-item description to disambiguate choices (e.g. selecting among options whose meaning isn't obvious from the label alone)."
+    },
+    "use-popover": {
+      "useWhen": "Anchor the dropdown with the kit's `MPopover` instead of the default `MPopper` (v-tooltip) — set `usePopover`. Used 26× where the MPopover overlay/positioning behaviour is needed.",
+      "dontUse": "Don't switch off the default unless you specifically need MPopover semantics; the standard trigger uses MPopper by default.",
+      "example": "Pickers embedded in contexts that already rely on the MPopover overlay kit for consistent positioning/stacking."
+    },
+    "grid-dropdown (table picker)": {
+      "useWhen": "The user picks from RICH RECORDS where each row needs multiple columns to identify it — name + IP + type + status — and often multi-select with checkboxes. The menu is a searchable TABLE, not a plain option list.",
+      "dontUse": "Not for simple {label} options (use the plain dropdown) or a short fixed list. Not for a menu of ACTIONS (that is a Menu / _base-grid-actions, not a picker).",
+      "example": "Select Agent / Select Monitor pickers (~70×): agent, monitor, device, interface, RUM service, integration/SNMP-trap profile, and user selection. Generic base = FlotoDropdownGridSelector (pass your own columns + rows); the monitor/agent variant adds async server-search + row virtualization. Columns: checkbox · Monitor (status ring + name) · IP · Type (product type icons) · Status (status tag). Header sortable; search box on top; selected-count badge + View-All/View-Selected toggles."
+    },
+    "icon-dot / severity dropdown": {
+      "useWhen": "each option needs a leading GLYPH to be recognised — a severity colour dot, a monitor-type icon, a status colour — shown both per-option and in the collapsed trigger.",
+      "dontUse": "plain text options (use the basic dropdown). If the glyph needs a whole column of context, use the grid dropdown.",
+      "example": "severity-picker (colour dot per severity), monitor-type picker (type icon), status pickers — via the before-menu-text (and after-menu-text) slot. 27 files."
+    },
+    "tree-select (hierarchy)": {
+      "useWhen": "the choices are HIERARCHICAL (parent → children) and the user navigates by expanding nodes — the codebase has no cascader, this is its equivalent.",
+      "dontUse": "a flat list (basic dropdown) or a multi-column record picker (grid dropdown).",
+      "example": "monitor-hierarchy-picker — Data Centers → sites → monitors, expand/collapse with counts; a leaf is selectable."
+    },
+    "avatar / people picker": {
+      "useWhen": "the options are PEOPLE — show an avatar (initials/photo) + name so the user is recognised at a glance.",
+      "dontUse": "non-user options. For bulk user assignment across many columns, use the grid-table mode of user-picker.",
+      "example": "owner / assignee / approver / notified-user selection (user-picker.vue, dual list + grid modes)."
+    },
+    "virtualized rich-row list": {
+      "useWhen": "each option is a multi-line CARD (title + meta + glyph) and there can be many — the menu virtualizes tall rows instead of single-line options.",
+      "dontUse": "simple single-line options (basic dropdown).",
+      "example": "notification dropdown (alert cards), widget selector (thumbnails), counter list. 16 files, RecycleScroller."
+    },
+    "trigger: input (default)": {
+      "useWhen": "a form field",
+      "example": "standard select"
+    },
+    "trigger: text-only": {
+      "useWhen": "inline/embedded, no box",
+      "example": "compact headers (15×)"
+    },
+    "trigger: button": {
+      "useWhen": "the opener is a labelled action",
+      "example": "Columns / Add filter buttons"
+    },
+    "trigger: icon-only": {
+      "useWhen": "compact toolbars/rows",
+      "example": "kebab / gear / filter icon menus"
+    },
+    "trigger: chip": {
+      "useWhen": "a compact token opener",
+      "example": "filter-bar value chips"
+    },
+    "column-chooser": {
+      "useWhen": "a table lets users show/hide (and reorder) columns.",
+      "dontUse": "a general value picker (the default select).",
+      "example": "columns=[{key,label,checked?,locked?}] heading=\"COLUMNS\" reset-label=\"Reset Column Preference\" — opens from an eye button."
+    }
+  },
+  "insteadOf": [
+    "native select",
+    "a-select",
+    "MSelect (for non-tag selects)"
+  ],
+  "usage": {
+    "total": 510,
+    "files": 241,
+    "allowClear": 218,
+    "searchableFalse": 119,
+    "multiple": 66,
+    "textOnly": 15,
+    "usePopover": 26
+  },
+  "knownIssues": [
+    "F1 (high, a11y) -> promoted to SF-003: not an accessible combobox — no role/aria-expanded/activedescendant, click-only open (not keyboard-openable), no focus ring (SF-001). Highest-impact a11y gap (510x). See findings/SF-003.",
+    "F2 (medium): maxAllowedSelection declared but never used; real cap is maxValues. Consumers (LooseTags asDropdown) pass it expecting a limit.",
+    "F3 (low): searchable/asInput/wrap default to true (against vue/no-boolean-default).",
+    "F4 (low): loose option schema (text||name||label, key||id||value). Document canonical { key, text }.",
+    "SB caveat (tooling): search needs the arrayWorker web worker (no-op in Storybook); no-data SVG needs an svg-component loader (absent in SB).",
+    "[product bug, FIXED] .dropdown-trigger-input input.ant-input used the padding shorthand with vertical/horizontal SWAPPED (padding: 11px-horizontal 4px-vertical => CSS reads it as 11px vertical + 4px left, tight and mis-centered). Fixed all 4 occurrences in src/design/dropdown.less to the correct order (4px vertical / 11px left = standard input). The same swap remains in src/design/input.less:351 (.rounded-background input) — flagged for owner review, broader scope."
+  ],
+  "related": [
+    "SingleTrigger",
+    "MultipleTrigger",
+    "SelectedItemPills",
+    "LooseTags",
+    "MSelect",
+    "MPopover",
+    "MPopper",
+    "MMenu",
+    "MCheckbox",
+    "toolbar",
+    "table"
+  ],
+  "changelog": [
+    {
+      "date": "2026-07-15",
+      "change": "Added the COLUMN-CHOOSER variant to the Dropdown (obs-select): a `columns` prop renders a COLUMNS header + draggable checkbox rows (drag-reorder via a 6-dot grip; locked columns pinned) + a Reset footer, opened from an eye icon trigger. Emits change/reorder/reset. Replaces the briefly-separate obs-column-chooser (folded into the Dropdown, per owner)."
+    },
+    "2026-07-14: Group B shipped on obs-select (owner) — the previously-documented-but-unbuilt variants are now real element features, modelled as TWO orthogonal axes + route-aways (not N components): (A) OPTION CONTENT — rich options render `icon`→obs-icon, `severity`(or a --severity color)→obs-severity dot, `avatar`+`sublabel/email`→a people row (this also fixed the old reuse violations: the option icon was v-html raw HTML and the dot was a hand-drawn span). (B) TRIGGER — a `trigger` enum input|text|button|icon|chip (button + icon are new; icon shows a multi-select count badge). (C) TREE-SELECT — options with nested `children[]` render a real N-level hierarchy (flattened list, per-level indent, expand/collapse chevron; branch checkbox = subtree select with indeterminate). ROUTE-AWAYS: multi-COLUMN rich rows / 'virtualized rich-row list' are obs-grid-select (composes obs-table), not this — a columnless rich list is option content here. Plain + one-level-group selects verified byte-identical (regression).",
+    "2026-07-11: added a decisionFlow ROUTE-AWAY to obs-grid-select — 'picking a rich record identified by multiple columns (name/IP/type/status), often multi-select? -> Grid Select, not this'. grid-select shipped as its own top-level component (its menu is a searchable table, not an option list), so an AI tool matching that use-case now resolves to it directly instead of a plain dropdown; the two registries cross-route both ways.",
+    "2026-06-07: added — full deep-dive of _base-dropdown-picker + dropdown-trigger family (510x/241 files); rendered real default mode in SB via v-tooltip/MPopper/RecycleScroller registration; F1-F4 + SB caveats.",
+    "2026-07-10: catalogued the GRID / TABLE dropdown variant (FlotoDropdownGridSelector + MonitorPicker/AgentPicker) — the \"Select Agent/Monitor\" table picker (~70×). Added the Storybook GridDropdown story (render-faithful reproduction with the real MStatusTag + product icons + .ds-grid chrome) + usageRule (when to use a grid picker vs a plain dropdown vs an action menu). One of 5 Group-A dropdown variants the product sweep found missing.",
+    "2026-07-10: grid-dropdown — added the selected-state affordances the first pass missed (owner-caught): a selected-count BADGE + View Selected/View All toggle + Clear Selected links appear beside the search when rows are checked, and a checked row gets the selected highlight + left accent (ds-grid-row-selected).",
+    "2026-07-10: grid-dropdown polish (owner-caught): TYPE cell white-gap fixed (a flex <td> lost display:table-cell so the selected-row bg did not fill — moved flex to an inner span); View Selected/Clear Selected restyled to navy underlined + light divider; the trigger now REFLECTS the selection (selected name / name +N) instead of the static placeholder; the search box is the REUSED product MInput (was a hand-rolled input).",
+    "2026-07-10: catalogued the remaining 4 Group-A dropdown variants (Storybook stories + usageRules): icon/severity-dot (before-menu-text, 27×), tree-select (monitor-hierarchy, the cascader equivalent), avatar/people picker (user-picker), and virtualized rich-row list (notification/widget, 16×). With the grid dropdown, all 5 Group-A missed variants from the product sweep are now in the DS.",
+    "2026-07-10: Group-A polish (owner-caught): grid — reduced the search↔actions gap (fixed-width search, not flex:1) and gave View/Clear Selected the product LINK treatment (dotted underline, per _base-app-link, not solid); tree — every PARENT node now shows a deep-dive chevron (inline SVG + rotate, incl. collapsed nodes); avatar — trigger gap between the initials circle and the name (via before-menu-text nbsp, since the .ant-tag trigger resets slot margins).",
+    "2026-07-10: avatar picker trigger overlap fixed (root cause): the trigger is an Ant input with a position:absolute prefix; its default padding-left was too small for the 22px avatar so the name overlapped it. Widened the input padding (a <style> in a Vue template is stripped; set via a mounted hook + !important + retry since the picker re-renders).",
+    "2026-07-10: documented the TRIGGER AXIS (Group B) — the trigger slot ({ toggle }) opens the SAME menu via input / text-only / button / icon-only / chip (130× via v-slot:trigger). Added a Triggers Storybook story + a triggers{} block + usageRules so AI tools pick the right opener independent of the menu content.",
+    "2026-07-11: fixed a product CSS bug (owner-found via inspect): the dropdown trigger input padding shorthand had vertical/horizontal SWAPPED (padding: 11px 4px → should be 4px 11px). Corrected all 4 occurrences in src/design/dropdown.less; the input now has standard 4px vertical / 11px left padding. Same swap noted in input.less:351 (broader, flagged for review)."
+  ],
+  "storybook": "Organisms/DropdownPicker",
+  "figma": {
+    "status": "todo",
+    "component": "DropdownPicker"
+  },
+  "a11y": {
+    "summary": "Once open: ↑/↓ move the active row, Enter selects, Esc closes.",
+    "issues": [
+      "Opens on click only — no Enter/Space/↓ on the trigger.",
+      "No combobox/listbox/option semantics.",
+      "No visible focus ring (SF-001)."
+    ],
+    "doc": "Organisms/DropdownPicker/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

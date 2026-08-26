@@ -1,0 +1,142 @@
+{
+  "name": "grid-select",
+  "display": "Grid Select",
+  "tier": "organism",
+  "family": "Form Controls",
+  "status": "stable",
+  "summary": "The grid / table dropdown (obs-grid-select) — a dropdown whose menu is a searchable TABLE, not an option list: columns · per-row checkboxes · sortable header · a search box · a selected-count badge + View Selected / Clear Selected. Rich cells via a column `type` (text · status · severity · type-icons). The product's 'Select Agent / Select Monitor' picker (FlotoDropdownGridSelector + MonitorPicker/AgentPicker, ~70×). The open table floors at 720px wide so the View Selected / Clear Selected actions sit on one line and more columns are visible.",
+  "element": "obs-grid-select",
+  "variants": [
+    {
+      "name": "single",
+      "what": "pick one row → closes + reflects el.value = row id"
+    },
+    {
+      "name": "multiple",
+      "what": "checkboxes + Select-All + selected badge + View/Clear Selected; el.value = JSON id array"
+    }
+  ],
+  "states": [
+    {
+      "name": "closed",
+      "what": "input-style trigger (selection or placeholder + chevron)"
+    },
+    {
+      "name": "open",
+      "what": "top-layer popover: search + table"
+    },
+    {
+      "name": "row hover",
+      "what": "--grid-header-hover-bg"
+    },
+    {
+      "name": "row selected",
+      "what": "--neutral-lightest bg + --primary left accent + checked box"
+    }
+  ],
+  "props": {
+    "columns": {
+      "type": "string|array",
+      "note": "[{key,title,width?,align?,sortable?,type?}] — JSON string or a JS array property. Passed straight to the inner obs-table, so ALL its cell `type`s work: text (default) · severity (obs-severity dot + name; level from the row's sev/severity field) · dot (obs-severity dot + level label) · status (obs-tag) · type (product type icons) · tags · sparkline · heat · bar."
+    },
+    "rows": {
+      "type": "string|array",
+      "note": "[{id, …}] — JSON string or a JS array property; each row keyed by `row-key`."
+    },
+    "value": {
+      "type": "string|array",
+      "note": "selected id (single) or JSON id array (multiple); reflects to el.value on every edit."
+    },
+    "multiple": {
+      "type": "boolean",
+      "default": "false",
+      "note": "checkbox multi-select + Select-All + badge + View/Clear Selected"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Select"
+    },
+    "row-key": {
+      "type": "string",
+      "default": "id"
+    },
+    "searchable": {
+      "type": "boolean",
+      "default": "true"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": "false"
+    },
+    "block": {
+      "type": "boolean",
+      "default": "false",
+      "note": "full-width"
+    }
+  },
+  "events": [
+    "change — { detail: id (single) | id[] (multiple) } (array-wrapped, unwrap detail[0])",
+    "search — the query string",
+    "show / hide — menu open/close"
+  ],
+  "decisionFlow": [
+    "Picking a rich RECORD that needs multiple columns to identify (name · IP · type · status), often multi-select? -> Grid Select.",
+    "Picking a simple {label} value from a list? -> the Dropdown picker / Select, not this.",
+    "A menu of ACTIONS (Edit/Delete)? -> a Menu, not this."
+  ],
+  "do": [
+    "Use for agent / monitor / device / interface / user / profile selection — records needing columns to tell apart.",
+    "Give a column a `type` (any obs-table cell type — severity/dot/status/type/tags/sparkline/heat/bar) for the DS severity dot (obs-severity), status tag (obs-tag), product type icons, etc.",
+    "Use multiple for bulk selection (checkboxes + Select-All + the selected badge + View/Clear Selected)."
+  ],
+  "dont": [
+    "Don't use for a short fixed {label} option list (use the plain Dropdown/Select).",
+    "Don't use for a menu of commands/actions (use a Menu)."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--grid-header-hover-bg",
+    "--neutral-lightest",
+    "--primary",
+    "--primary-alt",
+    "--secondary-red",
+    "--secondary-green",
+    "--neutral-regular",
+    "--page-background-color"
+  ],
+  "usageRules": {
+    "grid-select": {
+      "useWhen": "the user picks a rich RECORD identified by multiple columns (name/IP/type/status), often multi-select with checkboxes — the menu is a searchable table, not a plain list.",
+      "dontUse": "for simple {label} options (Dropdown/Select) or a menu of actions (Menu).",
+      "example": "Select Agent / Select Monitor pickers (~70×): agent, monitor, device, interface, RUM service, integration/SNMP-trap profile, user selection."
+    }
+  },
+  "a11y": {
+    "summary": "The trigger is a button with the selection/placeholder. The open menu is a table; give sortable headers aria-sort, selectable rows aria-selected, the header checkbox = select-all, arrow-key row nav, and announce the result/selected count. The menu renders in the top layer (Popover API).",
+    "issues": []
+  },
+  "knownIssues": [
+    "[element] obs-grid-select is FUNCTIONAL: pass columns + rows (JSON/array), single or multiple; it reflects el.value (single id / JSON id array) and emits change on every edit. Menu renders in the top layer (Popover API) so it's correct inside animated ancestors. Column `type` drives severity/status/type cells.",
+    "[element] The dropdown grid IS the DS <obs-table> (composed): grid-select owns the trigger + search + selected-actions and drives obs-table's selection via :selected + @change/@rowclick. It does NOT re-implement the table — sorting, checkboxes (obs-checkbox + select-all/indeterminate), status tags (obs-tag), sort icons (obs-icon long-arrows), and cell types all come from obs-table."
+  ],
+  "changelog": [
+    "2026-08-06 — Hardening: stop the internal native <input> `input` event from leaking out of the shadow DOM (@input.stop) so a stray composed native `input` (e.detail=0) can no longer reach consumer listeners on the host. Same class of fix as obs-input.",
+    "2026-07-22 — Width (owner): the open dropdown TABLE now floors at 720px (was 520) so the header actions — search + count + View Selected | Clear Selected — fit on one line with spare room, and more of the table columns are visible; still grows to a wider trigger.",
+    "2026-07-13: full docs treatment (owner) — added the prose spec (specs/grid-select.md) with the variants-and-when-to-use table, anatomy, props/events, a11y; rounded out the Elements gallery (single/multiple/no-search/block/disabled/rich-cells); refreshed the columns note (every obs-table cell type works) now that the grid IS obs-table. Severity cells render obs-severity (dot), status cells obs-tag.",
+    "2026-07-13: refactored to COMPOSE <obs-table> (owner) — grid-select was hand-rolling its own <table> (built before obs-table existed), which duplicated the grid chrome AND diverged: text-glyph sort arrows (↑/↓), a hand-rolled checkbox span, and a hand-rolled status pill instead of the DS primitives. It now renders <obs-table selectable sortable hide-selection-info> inside the dropdown and owns only the trigger/search/selected-actions, driving selection via :selected + @change/@rowclick. Deleted the duplicated table/checkbox/cell code; the glyph arrows are now obs-icon long-arrows, the checkbox is obs-checkbox, the status is obs-tag — verified render + multi/single selection + sort.",
+    "2026-07-11: shipped the real <obs-grid-select> web component (the grid/table dropdown, ~70×). Trigger reflects the selection; searchable table with sortable columns, checkbox multi-select + Select-All + selected badge + View/Clear Selected; rich cells via column type (severity ring / status tag / product type icons); value reflected to el.value + change event. Top-layer popover menu. Fixed a round-trip corruption (JSON id array was re-split as one literal) so selection highlights correctly."
+  ],
+  "storybook": "Organisms/DropdownPicker (Grid / table dropdown variant)",
+  "sizes": [
+    {
+      "name": "trigger",
+      "value": "36px tall; 280px default / block=100%",
+      "note": "the closed trigger (like an obs-select)."
+    },
+    {
+      "name": "menu",
+      "value": "min 720px (grows to the trigger width)",
+      "note": "the open dropdown table floors at 720px so the header — search + selected-count + View Selected | Clear Selected — fits on ONE line with room to spare, and more of the columns (MONITOR/IP/TYPE/GROUPS/TAGS) are visible; it still grows to match a wider trigger."
+    }
+  ]
+}

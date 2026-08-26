@@ -1,0 +1,259 @@
+{
+  "name": "radio",
+  "component": "MRadioGroup",
+  "display": "Radio",
+  "tier": "atom",
+  "source": "mkit",
+  "sourceFile": "ui/components/Radio/RadioGroup.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "One-of-many selection control. Use MRadioGroup with :options + v-model; as-button renders a segmented control. Standalone MRadio is unused.",
+  "variants": [
+    {
+      "name": "list",
+      "what": "vertical/inline radio list",
+      "usage": "225×"
+    },
+    {
+      "name": "segmented",
+      "what": "joined buttons (as-button)",
+      "usage": "255×"
+    },
+    {
+      "name": "segmented-with-icons",
+      "what": "segmented + icon per option",
+      "usage": "14×"
+    },
+    {
+      "name": "severity-switch",
+      "what": "borderless segmented w/ separators",
+      "usage": "2×"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "small",
+      "value": "dense",
+      "note": "segmented only"
+    },
+    {
+      "name": "default",
+      "value": "normal",
+      "note": ""
+    },
+    {
+      "name": "large",
+      "value": "expanded",
+      "note": ""
+    }
+  ],
+  "states": [
+    {
+      "name": "unchecked",
+      "what": "empty dot"
+    },
+    {
+      "name": "checked",
+      "what": "cyan dot (list) / navy fill (segmented)"
+    },
+    {
+      "name": "focus",
+      "what": "no visible ring (SF-001)"
+    },
+    {
+      "name": "disabled",
+      "what": "muted"
+    }
+  ],
+  "family": "Selection Controls",
+  "model": {
+    "prop": "value",
+    "event": "change"
+  },
+  "optionShape": {
+    "value": "value",
+    "label": "text || label || title",
+    "disabled": "option.disabled"
+  },
+  "props": {
+    "options": {
+      "type": "array",
+      "note": "{ value, text|label|title, disabled? }"
+    },
+    "value": {
+      "type": "any",
+      "note": "v-model — the selected value"
+    },
+    "asButton": {
+      "type": "boolean",
+      "default": false,
+      "note": "segmented control vs radio list; 255x"
+    },
+    "size": {
+      "type": "string",
+      "default": "default",
+      "enum": [
+        "small",
+        "default",
+        "large"
+      ],
+      "note": "mainly affects segmented buttons"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "whole group; per-option via option.disabled"
+    },
+    "buttonStyle": {
+      "type": "string",
+      "default": "solid",
+      "enum": [
+        "solid",
+        "outline"
+      ],
+      "note": "never set to outline in product (F2)"
+    },
+    "name": {
+      "type": "string"
+    },
+    "defaultValue": {
+      "type": "any"
+    },
+    "block": {
+      "type": "boolean",
+      "default": false,
+      "note": "full-width segmented control — segments split the container width evenly (as-button)."
+    }
+  },
+  "events": [
+    "change"
+  ],
+  "slots": [
+    "default (custom a-radio/a-radio-button)",
+    "option (custom row)"
+  ],
+  "anatomy": [
+    "radio list (a-radio per option)",
+    "OR segmented buttons (a-radio-button, selected fills brand)"
+  ],
+  "tokensUsed": [
+    "--primary",
+    "--border-color",
+    "@primary-color"
+  ],
+  "accessibility": {
+    "semantics": "native input type=radio grouped by name; Arrow keys move selection, Space selects",
+    "focus": "no visible ring (SF-001)",
+    "label": "give the group a field label or aria-label"
+  },
+  "decisionFlow": [
+    "Multi-select (pick any number)? -> Checkbox.",
+    "Instant on/off? -> Switch.",
+    "Many options or space-tight? -> DropdownPicker.",
+    "Pick exactly one from a few visible options? -> Radio.",
+    "[Radio style] >6 options? -> DropdownPicker instead.",
+    "[Radio style] Longer labels / vertical form field? -> radio list (default).",
+    "[Radio style] Alert severity filter (Critical/Major/Warning)? -> Severity switch (radio-toggle-shadow + alert-severity-buttons, as-button).",
+    "[Radio style] Each option clearer with an icon (view/mode toggle)? -> Segmented with icons (as-button + icon in option slot).",
+    "[Radio style] Otherwise small compact set (2-5)? -> plain segmented (as-button)."
+  ],
+  "usageRules": {
+    "radio-list(default)": {
+      "useWhen": "pick one of a few options with a vertical/inline list; longer labels OK",
+      "example": "severity Low/Medium/High on a form"
+    },
+    "segmented(as-button)": {
+      "useWhen": "a small set (2-5) of always-visible, mutually-exclusive choices; compact",
+      "example": "time range 1h/24h/7d/30d, view-mode toggle"
+    },
+    "segmented+icons": {
+      "useWhen": "segmented where each option reads better with an icon (icon via option slot; without-icon-margin context, 14x)",
+      "example": "grid/list/map view toggle"
+    },
+    "severity-switch": {
+      "useWhen": "borderless segmented with separators (real combo: radio-toggle-shadow + alert-severity-buttons, as-button)",
+      "example": "severity-switch.vue (Critical/Major/Warning)"
+    },
+    "disabled": {
+      "useWhen": "whole group not changeable; or option.disabled for one option"
+    },
+    "size=small": {
+      "useWhen": "dense toolbars (segmented)"
+    },
+    "list": {
+      "useWhen": "Pick exactly one from a few options where labels may be longer, inside a form or settings panel — the default radio style, laid out vertically or inline. Used for form fields and mode choosers with descriptions.",
+      "dontUse": "Don't use for a compact side-by-side toggle (use segmented), for multi-select (Checkbox), instant on/off (Switch), or more than ~6 options / tight space / needs search (DropdownPicker).",
+      "example": "Severity Low / Medium / High on a form; a mode chooser with per-option descriptions."
+    },
+    "segmented": {
+      "useWhen": "A small set (2-5) of always-visible, mutually-exclusive choices that benefit from being compact and side-by-side — rendered as joined buttons via as-button (255x). This is also the Button family's segmented control.",
+      "dontUse": "Don't use for long labels or vertical form fields (use list), when each option needs an icon to be clear (use segmented-with-icons), for the alert-severity look (use severity-switch), or for >6 options (DropdownPicker).",
+      "example": "Time range 1h / 24h / 7d / 30d and chart view toggles in the metric explorer toolbars and anomaly/forecast/outlier modals."
+    },
+    "segmented-with-icons": {
+      "useWhen": "A segmented control where each segment reads better with an icon — view/mode toggles. Put the icon in the option slot (as-button + icon; without-icon-margin context, 14x).",
+      "dontUse": "Don't use when text labels alone are clear (plain segmented), for form fields with long labels (list), or for the borderless separator alert-severity look (severity-switch).",
+      "example": "Grid / list / map view toggle."
+    }
+  },
+  "do": [
+    "Use MRadioGroup with :options for one-of-many; v-model the value.",
+    "Use as-button for a small set of always-visible exclusive choices.",
+    "Disable individual options with option.disabled."
+  ],
+  "dont": [
+    "Don't use radio for multi-select (Checkbox) or instant on/off (Switch).",
+    "Don't use radio for many options / tight space (DropdownPicker).",
+    "Don't render standalone MRadio — go through the group."
+  ],
+  "whenToUse": "Choosing exactly one option from a small, visible set.",
+  "insteadOf": [
+    "raw a-radio-group",
+    "standalone MRadio"
+  ],
+  "usage": {
+    "total": 225,
+    "files": 136,
+    "standaloneMRadio": 0,
+    "asButton": 255,
+    "buttonStyleOutline": 0
+  },
+  "knownIssues": [
+    "F1 (low): standalone MRadio + its variant=info/type=button are unused (0x); the group is the real API.",
+    "F2 (low): buttonStyle outline never used (always solid).",
+    "F3 (high, a11y): no visible focus indicator (SF-001).",
+    "F4 (medium): segmented selected style is context-dependent — standalone = kit .ant-radio-group-solid (navy #111c2c @0.8 opacity); inside form/panel contexts form.less overrides to solid --primary !important + 11px padding + icon spacing. Same markup renders the same in Storybook as the product; divergence is the missing form ancestor. Move the canonical segmented style into the component to make it consistent."
+  ],
+  "segmentedVariants": {
+    "plain": "as-button; selected navy #111c2c @0.8 (kit default)",
+    "with-icons": "icon per option via option slot (without-icon-margin, 14x)",
+    "severity-switch": "radio-toggle-shadow + alert-severity-buttons + as-button (severity-switch.vue): borderless, separators, tinted rounded selected chip",
+    "radio-list-dot": "cyan #099dd9 (Ant @primary-color) — matches product",
+    "outline": "buttonStyle=outline exists but unused"
+  },
+  "related": [
+    "MCheckbox",
+    "MSwitch",
+    "FlotoDropdownPicker",
+    "MButton (segmented = this with as-button)"
+  ],
+  "changelog": [
+    "2026-07-21 — Added a `block` prop: a full-width segmented control (as-button) whose segments split the width evenly. Used by obs-user-menu for the Dark/Light/Auto theme switcher.",
+    "2026-06-07: added (decision-grade from the start). 225x; standalone MRadio 0x; as-button 255x. Verified list + segmented light/dark. F1-F3. Closes Button's segmented-control relative."
+  ],
+  "storybook": "Atoms/Radio",
+  "figma": {
+    "status": "todo",
+    "component": "Radio"
+  },
+  "kitAccent": "the selected list-dot is painted with Ant's @primary-color = cyan #099dd9 (both themes) — NOT --primary (navy). Not in variables.json; see tokens/kit-accents.json.",
+  "$tokensNote": "Selected fill = --primary (#111c2c light / #e3e8f2 dark); the radio dot/check uses the kit Ant accent @primary-color (#099dd9, kit-accents.json), which is not in variables.json.",
+  "a11y": {
+    "summary": "Tab to the group, Arrow keys move selection; each option role=radio with label, shared name groups them. Selected segment = --primary fill.",
+    "issues": [
+      "No visible focus ring (SF-001)."
+    ],
+    "doc": "Atoms/Radio/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

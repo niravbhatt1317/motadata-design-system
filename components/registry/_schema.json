@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "observeops-ds/registry-entry",
+  "title": "ObserveOps DS — component registry entry",
+  "description": "The contract every components/registry/<id>.json must satisfy. Required fields are the AI-readable core; recommended fields (variants/sizes/states/props) are the machine API surface a codegen tool needs to configure a component. Component-specific extension keys (archetypes, members, overlayVariants, mechanisms, …) are allowed.",
+  "type": "object",
+  "required": ["name", "display", "tier", "family", "status", "summary", "decisionFlow", "do", "dont", "related", "knownIssues", "tokensUsed", "storybook", "variants", "sizes", "states"],
+  "additionalProperties": true,
+  "properties": {
+    "name": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Canonical kebab id == registry filename stem. Used as the component id everywhere (index.json, cross-refs)." },
+    "component": { "type": "string", "description": "The product component class (e.g. MButton, FlotoDrawer). Optional." },
+    "display": { "type": "string", "description": "Human-readable name." },
+    "tier": { "type": "string", "enum": ["atom", "molecule", "organism"] },
+    "family": { "type": "string", "enum": ["Button", "Form Controls", "Selection Controls", "Tag", "Link", "Navigation", "Tabs", "Menu", "Filters", "Date & Time Pickers", "Scheduler", "Popover & Tooltip", "Overlay", "Table", "Toolbars"] },
+    "status": { "type": "string", "description": "stable | core | beta | deprecated | unused." },
+    "summary": { "type": "string" },
+    "selectHint": { "type": "string", "description": "One-line 'use when' (else derived from decisionFlow[0])." },
+
+    "variants": {
+      "type": "array",
+      "description": "AI-critical. Every distinct visual/behavioural variant (kind/type/class-based). Empty array allowed only with a knownIssue/summary note that the component is single-variant.",
+      "items": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" }, "what": { "type": "string" }, "usage": { "type": "string" } } }
+    },
+    "sizes": {
+      "type": "array",
+      "description": "AI-critical. Every size token/value (e.g. small/default/large, or px/rem). Empty array means single-size (state that).",
+      "items": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" }, "value": { "type": "string" }, "note": { "type": "string" } } }
+    },
+    "states": {
+      "type": "array",
+      "description": "AI-critical. Every interactive/data state (default, hover, focus, active, disabled, loading, error, selected, readonly/is-view, indeterminate, checked, …).",
+      "items": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" }, "what": { "type": "string" } } }
+    },
+
+    "props": { "description": "Prop API (array or object). Recommended for buildability." },
+    "events": { "description": "Event/emit API. Recommended." },
+    "slots": { "description": "Slot API. Recommended." },
+    "decisionFlow": { "type": "array", "items": { "type": "string" }, "description": "Ordered 'choose this when…' branches." },
+    "do": { "type": "array", "items": { "type": "string" } },
+    "dont": { "type": "array", "items": { "type": "string" } },
+    "related": { "type": "array", "items": { "type": "string" }, "description": "Related component ids (kebab)." },
+    "knownIssues": { "description": "Object (F-keyed) or array of finding strings." },
+    "tokensUsed": { "type": "array", "items": { "type": "string" }, "description": "Product CSS --var names. Resolve to light/dark via tokens/variables.json (LESS @vars via tokens/structural.json)." },
+    "storybook": { "type": "string", "description": "Storybook sidebar path." },
+    "figma": { "type": "object" }
+  }
+}

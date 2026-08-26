@@ -1,0 +1,18 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Divider/Accessibility" />
+
+# Divider — Accessibility
+
+- **Semantics:** a plain divider is **decorative** — Ant renders it as `<div role="separator">`, which
+  correctly conveys a thematic break to assistive tech without adding interactive noise. ✅
+- **With-text dividers** expose their label as text inside the separator; keep the label short and
+  meaningful (it reads as the section name).
+- **Not a substitute for structure.** A rule is a *visual* break — it does not create a landmark or a
+  heading. If the section needs to be navigable by screen-reader users, give it a real heading
+  (`<h_>` / `FlotoFormItem` group), not just a divider.
+- **Contrast:** the line is `var(--border-color)` (`#e3e8f2` light / `#1d2a3e` dark) — a low-contrast
+  hairline by design. That's fine for a decorative separator, but **never rely on a divider alone** to
+  communicate meaning (e.g. "everything below is disabled") — pair it with text/state.
+
+No open accessibility issues. Verified: separator role, label text, contrast (light + dark).

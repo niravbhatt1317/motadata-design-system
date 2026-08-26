@@ -1,0 +1,48 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Table/Accessibility" />
+
+# Table (Grid) — Accessibility
+
+## Semantics
+
+- The grid must expose proper **table semantics** — `role="grid"`/`table`, `row`, `columnheader`,
+  `gridcell` (the Kendo grid renders these). ⚠️ **Custom cell slots can drop them** — keep cell
+  content inside the grid cell, don't replace the cell wrapper.
+
+## Sorting
+
+- Sortable column headers should expose **`aria-sort`** (`ascending` / `descending` / `none`) and
+  be **keyboard-activatable** (Enter/Space). Verify the header is a real button/`th[scope=col]`.
+
+## Selection
+
+- Selectable rows should set **`aria-selected`**; the header checkbox is **select-all** and needs
+  an accessible name. The **"N items selected"** tag should be announced (live region) when it
+  changes.
+
+## Keyboard
+
+- Grid cells should be reachable/navigable by keyboard (arrow keys in the Kendo grid). The
+  **row-actions kebab**, **expand chevron**, and **checkboxes** must each be focusable with a
+  visible focus ring — ties into catalog-wide **SF-001**.
+
+## Empty / loading
+
+- Announce **"No records found"** and **loading** via a live region so screen-reader users aren't
+  left on a silent empty table.
+
+## Contrast (both themes)
+
+- Header (`--grid-header-bg`), row dividers (`--border-color`), selected row (`--neutral-lightest` +
+  `--primary` accent), and status/severity cells must pass contrast in **light and dark**.
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| Table roles / cell semantics | ⚠️ verify custom cell slots preserve them (F2) |
+| `aria-sort` on sortable headers | ⚠️ verify |
+| `aria-selected` + select-all name | ⚠️ verify |
+| Focus ring on cell controls | ⚠️ SF-001 |
+| Empty / loading announced | ⚠️ verify live region |

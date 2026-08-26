@@ -1,0 +1,41 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Severity/Usage" />
+
+# Severity — Usage
+
+The **severity-LEVEL** indicator (`severity.vue`, 80×). Registry:
+[`registry/severity.json`](../../components/registry/severity.json).
+
+## Severity vs Status — pick the right one
+
+| You have… | Use | Renders |
+| --- | --- | --- |
+| A **severity level** (`critical / major / warning / clear / up / down / maintenance / …`) | **Severity** | a `--severity-<level>` dot (+ optional label) |
+| A **status string** (`up / down / running / failed / poweredoff …`) | **MStatusTag** (Tag) | a `tag-*` coloured pill |
+
+> ⚠️ **Don't route severity through MStatusTag** — its `TAG_MAP` lacks `major`/`warning`/`clear`, so
+> they fall through to a grey plain tag (F7). Severity levels belong on this component.
+
+## Forms
+
+- **Dot** (default) — colour + hover tooltip.
+- **Dot + label** — set `displayText` (preferred for accessibility).
+- **Stripe** (`severity-stripe`) — a coloured left rule on a list row/card.
+- **Picker** (`severity-picker`) — choose a level (policy/condition forms).
+- **Count box** (`severity-count-box`) — counts per severity on dashboards.
+
+## Data
+
+- Pass `severity` directly when you already have the level.
+- Pass `objectId` (+ optional `instance` / `counter`) to **live-resolve** a monitor's severity via the
+  DB worker (updates on the `EVENT_SEVERITY_COUNTER_DB_CHANGED` bus event).
+
+## Tokens
+
+Each level → `--severity-<level>` (dot/text) + `--severity-<level>-dot-box` (halo). Resolve to
+light/dark via [`tokens/variables.json`](../../tokens/variables.json).
+
+## Other variants
+
+Also available (see `registry/severity.json` `usageRules` for the full when/why): **dot+label, solid-chip, bg-fill, switch**.

@@ -1,0 +1,45 @@
+{
+  "name": "@mtdt/observeops-ds-spec",
+  "version": "0.1.208",
+  "description": "Machine-readable spec and AI operating contract for the Motadata ObserveOps design system — components, tokens, page recipes, layout structure, and the rules an AI tool follows to build ObserveOps UI faithfully.",
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "elements-api.json",
+    "AGENTS.md",
+    "llms.txt",
+    "authoring-playbook.md",
+    "spec.manifest.json",
+    "components/",
+    "tokens/",
+    "layout/",
+    "foundation/",
+    "conformance/",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./llms.txt": "./llms.txt",
+    "./AGENTS.md": "./AGENTS.md",
+    "./manifest": "./spec.manifest.json",
+    "./package.json": "./package.json",
+    "./*": "./*"
+  },
+  "keywords": [
+    "design-system",
+    "observeops",
+    "motadata",
+    "ai",
+    "llms",
+    "design-tokens",
+    "spec",
+    "agents"
+  ],
+  "scripts": {
+    "test": "echo \"spec validated at build time via design-system/scripts/validate-spec.js\" && exit 0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

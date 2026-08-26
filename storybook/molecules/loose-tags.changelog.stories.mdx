@@ -1,0 +1,24 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/LooseTags/Changelog" />
+
+# LooseTags — Changelog
+
+## 2026-06-16 (audit)
+
+- Surfaced the two known quirks in the **Default** story: **F1** — editable mode **ignores
+  `placeholder`** (hardcodes "Add Tags"; only `asDropdown` honours it); **F2** — editable mode
+  **lowercases** input while `asDropdown` **preserves case**.
+
+## 2026-06-07
+
+- Added to the design system. Full deep-dive of `src/components/loose-tags.vue`:
+  - Mapped the **three render modes** (editable `MSelect mode="tags"`, read-only
+    `SelectedItemPills`, `asDropdown` `FlotoDropdownPicker`).
+  - Verified the teal pills + **JetBrains Mono** font in **light and dark**.
+  - Logged findings **F1–F4** (placeholder ignored in editable mode; case handling differs
+    by mode; dead `sm`/`size`; suggestion fetch has no `.catch`).
+  - Classified as the **Tag family's input member** (decision D12) — filed under
+    Molecules / Forms, not under Tag.
+  - Storybook: Examples (Default · Read-only · Playground) + Usage / Accessibility /
+    Changelog pages.

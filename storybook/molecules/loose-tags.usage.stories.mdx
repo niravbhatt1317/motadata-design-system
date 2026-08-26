@@ -1,0 +1,75 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/LooseTags/Usage" />
+
+# LooseTags — Usage
+
+🟢 **Stable** · Molecule (form input) — a **tag input**: capture a list of tags. v-model is an
+**array of strings**. Used 94×/80 files.
+
+Decision rules below are mirrored in `registry/loose-tags.json` (`decisionFlow` + `usageRules`).
+
+## Is LooseTags even the right component?
+
+First match wins:
+
+1. **Just displaying tags** (a label, a count, status)? → use **`MTag`** / **`MStatusTag`**,
+   not LooseTags.
+2. **Capturing a list of tags on a form?** → **LooseTags**.
+3. **A free-form single value from a known list?** → a **`FlotoDropdownPicker`** (single) is
+   simpler.
+
+## Pick the mode
+
+Within LooseTags, first match wins:
+
+1. **Read-only display** of an existing list? → **`disabled`** (renders teal pills).
+2. **Choose from a known/suggested set with search?** → **`asDropdown`**.
+3. **Free-type to create new tags?** → **default** (editable).
+4. **Only one tag allowed?** → **`singleSelection`** (with `asDropdown`).
+
+## Use cases by mode/prop
+
+### Default (editable)
+
+- **Use when:** the user should **type values and press Enter** to add tags; existing tags are
+  suggested. Values are lowercased/trimmed/de-duped.
+- **Example:** adding free-form tags to a monitor.
+
+### `disabled` (read-only)
+
+- **Use when:** showing an existing tag list **without editing** (view-mode forms, detail
+  panels) — renders teal pills, truncated with "+N".
+
+### `asDropdown`
+
+- **Use when:** the user should **pick from known tags** (searchable picker) rather than free-
+  type. (Behaviour is the DropdownPicker's.)
+
+### `singleSelection`
+
+- **Use when:** only **one** tag may be selected — caps `asDropdown` to 1. (No effect in the
+  default editable mode.)
+
+### `:counter`
+
+- **Use when:** suggestions should be **scoped to a specific entity** — pass the counter so the
+  fetch returns the relevant tags (the dominant real-world usage).
+
+## Anatomy
+
+Teal pills (orange remove ×) + a free-text input + a suggestions dropdown (from the API).
+Pill font is **JetBrains Mono**.
+
+## Content
+
+Short, lowercase tag tokens (the default mode lowercases anyway).
+
+## In the product
+
+**As seen in:** **Monitor tags**, the grid **filter bars**, and the **monitor sidebar**.
+
+## Related
+
+`MTag` / `MStatusTag` (display) · `SelectedItemPills` (its read-only render) ·
+`FlotoDropdownPicker` (its `asDropdown` render).

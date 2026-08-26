@@ -1,0 +1,42 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Tabs/Accessibility" />
+
+# Tabs — Accessibility
+
+Tabs are one of the **better** Ant-provided components for a11y — most of the tab pattern is built
+in. The gaps are the catalog-wide focus ring and icon-only labels.
+
+## Provided by Ant `a-tabs` (good)
+
+- **Roles:** the bar is `role="tablist"`, each trigger `role="tab"`, each pane `role="tabpanel"`.
+- **State:** the active tab carries **`aria-selected="true"`**; disabled tabs `aria-disabled`.
+- **Keyboard:** **Left / Right arrow** keys move between tabs; Enter/Space activate; the active tab
+  is in the tab order, inactive ones are skipped (roving tabindex).
+
+## Gaps to verify / fix
+
+- ⚠️ **Focus ring (F1 → SF-001):** the catalog-wide `:focus { outline:none }` removal can hide the
+  keyboard focus indicator on a tab trigger. Confirm a visible **`:focus-visible`** ring on the
+  focused tab; adopt the shared SF-001 ring if it's missing.
+- ⚠️ **Icon-only tabs:** when a tab's label is **only** an icon (`topology-hierarchy-tab`), there's
+  no text for a screen reader. Add an `aria-label` (or visually-hidden text) to icon-only tabs.
+- ⚠️ **Count labels:** a label like `Alerts (12)` reads fine, but if the count updates while focused,
+  it isn't announced — acceptable for tabs (the user re-reads on focus), but don't rely on it for
+  critical live counts.
+
+## Tabpanel association
+
+- Ant links the active tab to its panel via `aria-controls` / `id` — verify this holds for
+  **dynamic** (`v-for`) panes where keys are data-driven.
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| `role=tablist/tab/tabpanel` | ✅ provided by Ant |
+| `aria-selected` on active | ✅ provided |
+| Arrow-key navigation | ✅ provided |
+| Focus-visible ring | ⚠️ verify (F1 → SF-001) |
+| Icon-only tab name | ⚠️ add `aria-label` |
+| tab ⇄ panel association (dynamic) | ⚠️ verify |

@@ -1,0 +1,23 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Select/Accessibility" />
+
+# Select — Accessibility
+
+## The good news (and the irony)
+
+`MSelect` wraps Ant `a-select`, so it **is a real combobox**:
+
+- `role="combobox"` + `aria-expanded` + `aria-activedescendant`, a listbox of `option`s.
+- **Keyboard-openable** (Enter / Space / ↓), type-ahead, arrow navigation, Escape to close.
+
+Ironically, this barely-used component is **more accessible than the product's actual select**,
+`FlotoDropdownPicker`, which has none of that ([SF-003](../../findings/SF-003-combobox-a11y.md)).
+When SF-003 is fixed, mirror what Ant `a-select` does here.
+
+## Gotchas
+
+- ⚠️ No visible keyboard focus ring system-wide
+  ([SF-001](../../findings/SF-001-focus-visible.md)).
+- Give the select a label (via `FlotoFormItem`) or an `aria-label`.
+- Empty search results render `MNoData` ("no data") — make sure that's announced.

@@ -1,0 +1,2120 @@
+{
+  "$description": "Machine index of the ObserveOps design system — load FIRST.",
+  "$contract": "../AGENTS.md — the AI Operating Contract. READ BEFORE BUILDING: use only catalogued components, resolve every colour to a token, compose pages from recipes/layout, and STOP-and-ASK before using anything not in this DS. This index is step 1 of that contract.",
+  "$howToUse": [
+    "1. Find by need (family/category/selectHint/summary or scan variants).",
+    "2. Open `registry` (machine spec) + `spec` (prose).",
+    "3. Resolve --var in tokensUsed via tokens/variables.json (LESS @vars: tokens/structural.json).",
+    "4. `storybook` = live demo; `selectHint` = one-line use-when.",
+    "5. To lay out a PAGE (not just a component): load `layout.spec` (layout/layouts.json) — shells (4 route + 2 content), screenRegions, contentLayouts (6), panels (10), pageTemplates (7, each → a recipe). Region→component blueprints are in `recipes` (recipes.json). `layout.grid` = the 12-col grid. `layout.coverage` (foundation/) = which product pages use each.",
+    "6. Styling a NEW element that isn't a catalogued component? DON'T hardcode colours — pick the token by PURPOSE in `tokens.purposeMap` (tokens/purpose-map.json): surface/text/border/brand/status/severity/shadow → token (+ light/dark), plus the structural spacing/sizing/radius/type scale."
+  ],
+  "tokens": {
+    "crosswalk": "tokens/variables.json",
+    "structural": "tokens/structural.json",
+    "kitAccents": "tokens/kit-accents.json",
+    "purposeMap": "tokens/purpose-map.json",
+    "drift": "--primary = navy #111c2c, NOT cyan",
+    "$use": "RESOLVE + EMIT runtime CSS vars: component tokensUsed -> tokens/variables.json (336 --vars, light/dark) + structural.json (LESS @vars: spacing/sizing/type) + kit-accents.json (@primary-color). This is the LIVE product token layer — use it.",
+    "$future": "tokens/{primitive,semantic.light,semantic.dark,component}.json define a FUTURE portable DTCG system (mds-* names). It is NOT yet wired to components or the running product — do NOT emit mds-* tokens for live output. Use --vars (variables.json) today."
+  },
+  "schema": "components/registry/_schema.json",
+  "recipes": "components/recipes/recipes.json",
+  "layout": {
+    "grid": "layout/grid.json",
+    "spec": "layout/layouts.json",
+    "coverage": "foundation/",
+    "$note": "The structural layer — the 12-col grid (MRow/MCol) + app shell, layout shells, screen regions & panel behaviours (layout/layouts.json; Storybook: Foundations/Layout/*). foundation/*.md = a page-by-page PRODUCT coverage sweep per element (which pages/flows use each variant + findings + best practices)."
+  },
+  "counts": {
+    "components": 49,
+    "families": 23,
+    "coverage": {
+      "props": 37,
+      "apis": 21,
+      "states": 43,
+      "sizes": 20,
+      "variants": 41,
+      "a11y": 45
+    }
+  },
+  "families": {
+    "Button": [
+      "button"
+    ],
+    "Date & Time Pickers": [
+      "date-time-pickers"
+    ],
+    "Divider": [
+      "divider"
+    ],
+    "Filters": [
+      "filters"
+    ],
+    "Form Controls": [
+      "dropdown-picker",
+      "form-item",
+      "input",
+      "select",
+      "color-picker",
+      "grid-select"
+    ],
+    "Link": [
+      "link"
+    ],
+    "Menu": [
+      "menu"
+    ],
+    "Navigation": [
+      "navigation",
+      "sidebar",
+      "breadcrumbs",
+      "side-menu",
+      "steps"
+    ],
+    "Overlay": [
+      "drawer",
+      "modal"
+    ],
+    "Popover & Tooltip": [
+      "data-viz-tooltips",
+      "popover",
+      "tooltip"
+    ],
+    "Scheduler": [
+      "scheduler"
+    ],
+    "Selection Controls": [
+      "checkbox",
+      "radio",
+      "switch"
+    ],
+    "Table": [
+      "table"
+    ],
+    "Tabs": [
+      "tabs"
+    ],
+    "Tag": [
+      "loose-tags",
+      "severity",
+      "tag",
+      "tags-list",
+      "selected-pills"
+    ],
+    "Toolbars": [
+      "toolbars",
+      "page-header",
+      "toolbar"
+    ],
+    "Data Visualization": [
+      "data-viz",
+      "metric-picker"
+    ],
+    "Data Display": [
+      "metric-list",
+      "key-value"
+    ],
+    "Logo": [
+      "logo"
+    ],
+    "App Chrome": [
+      "app-header",
+      "user-menu",
+      "notification-menu",
+      "command-palette"
+    ],
+    "Playback & Timeline": [
+      "noc-player",
+      "timeline-scrollbar"
+    ],
+    "Feedback": [
+      "banner"
+    ],
+    "Foundation": [
+      "icon"
+    ]
+  },
+  "components": [
+    {
+      "id": "button",
+      "display": "Button",
+      "tier": "atom",
+      "family": "Button",
+      "category": null,
+      "status": "core",
+      "summary": "Primary action control. Triggers an operation or navigation.",
+      "selectHint": "Navigates (route/URL/anchor)? -> link (FlotoLink), not a button.",
+      "variants": [
+        "primary",
+        "primary-alt",
+        "default",
+        "neutral-lighter",
+        "neutral-lightest",
+        "transparent",
+        "error",
+        "success",
+        "danger",
+        "icon-circle",
+        "squared-button",
+        "shape=circle",
+        "class=squared-button",
+        "contextual"
+      ],
+      "registry": "components/registry/button.json",
+      "spec": "components/specs/button.md",
+      "storybook": "Atoms/Button",
+      "related": [
+        "MConfirmBtn",
+        "MDropdown",
+        "FlotoGridActions",
+        "FlotoLink (link button, 67x)",
+        "MRadioGroup as-button (segmented control, 255x)"
+      ],
+      "knownIssueCount": 7,
+      "tokenCount": 4,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "checkbox",
+      "display": "Checkbox",
+      "tier": "atom",
+      "family": "Selection Controls",
+      "category": null,
+      "status": "core",
+      "summary": "Single boolean toggle, usually with a label. Functional, fully-controlled.",
+      "selectHint": "Mutually-exclusive (pick one)? -> MRadio.",
+      "variants": [],
+      "registry": "components/registry/checkbox.json",
+      "spec": "components/specs/checkbox.md",
+      "storybook": "Atoms/Checkbox",
+      "related": [
+        "MRadio",
+        "MSwitch",
+        "MCheckboxGroup (unused)"
+      ],
+      "knownIssueCount": 6,
+      "tokenCount": 4,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": false,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "data-viz-tooltips",
+      "display": "Data-Viz Tooltips",
+      "tier": "molecule",
+      "family": "Popover & Tooltip",
+      "category": null,
+      "status": "stable",
+      "summary": "The product's chart & widget hover tooltips — a distinct family from MTooltip, owned by the chart layer (Highcharts TooltipBuilder, graph canvases, widget Vue components), not DS components. ~28 reference reproductions cover every mechanism.",
+      "selectHint": "Hover detail on a CHART/graph/canvas mark? -> data-viz tooltip (owned by the chart layer, not MTooltip).",
+      "variants": [
+        "bar-series",
+        "donut-pie",
+        "bubble",
+        "map-geo",
+        "radar",
+        "timeline-xrange",
+        "gauge",
+        "sankey",
+        "treemap",
+        "scatter",
+        "anomaly-band",
+        "rum-waterfall",
+        "geo-marker",
+        "log-pattern",
+        "sparkline",
+        "heatmap",
+        "availability-segment",
+        "availability-bar",
+        "live-graph-node",
+        "live-graph-edge",
+        "apm-service-node",
+        "sdn-tunnel-edge",
+        "cisco-aci-endpoint",
+        "cisco-aci-link",
+        "network-interface-edge",
+        "netroute-node",
+        "netroute-edge",
+        "flame-graph-span",
+        "HighchartsTooltipBuilder",
+        "VueWidget",
+        "GraphCanvas",
+        "FlameGraph",
+        "Bar / series",
+        "Donut / pie",
+        "Bubble",
+        "Map / geo",
+        "Radar",
+        "Timeline / x-range",
+        "Gauge",
+        "Sankey",
+        "Treemap",
+        "Scatter",
+        "Anomaly / forecast band",
+        "RUM resource waterfall",
+        "Geo map marker",
+        "Log pattern distribution",
+        "Sparkline",
+        "Heatmap",
+        "Alert / availability segment",
+        "Availability bar segment",
+        "Live graph node",
+        "Live graph edge",
+        "APM service-map node",
+        "SDN tunnel edge",
+        "Cisco ACI endpoint",
+        "Cisco ACI fabric link",
+        "Network interface edge",
+        "Netroute hop node",
+        "Netroute edge",
+        "Flame graph span"
+      ],
+      "registry": "components/registry/data-viz-tooltips.json",
+      "spec": "components/specs/data-viz-tooltips.md",
+      "storybook": "Molecules/Data-Viz Tooltips",
+      "related": [
+        "tooltip",
+        "table"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 11,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "date-time-pickers",
+      "display": "Date & Time Pickers",
+      "tier": "molecule",
+      "family": "Date & Time Pickers",
+      "category": null,
+      "status": "stable",
+      "summary": "The product's date/time selection family. The hero is TimeRangePicker (42×) — the observability time-range control (relative presets + absolute custom range). MDatePicker (10×, wraps a-date-picker) is the form date-time field, in practice ALWAYS used with show-time. MTimePicker wraps a-time-picker (12-hour) but is rarely used standalone. DateTimePopover is a lighter custom-range-only popover.",
+      "selectHint": "Selecting a TIME WINDOW for charts/dashboards/logs (relative or absolute)? -> TimeRangePicker (the 42× hero).",
+      "variants": [
+        "TimeRangePicker",
+        "MDatePicker",
+        "MTimePicker",
+        "TimePicker (custom)",
+        "TimeRangeSlider",
+        "DateTimePopover",
+        "presets-only",
+        "excluded-options"
+      ],
+      "registry": "components/registry/date-time-pickers.json",
+      "spec": "components/specs/date-time-pickers.md",
+      "storybook": "Molecules/Date & Time Pickers",
+      "related": [
+        "dropdown-picker",
+        "form-item",
+        "popover"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 13,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      },
+      "referenceOnly": true
+    },
+    {
+      "id": "divider",
+      "display": "Divider",
+      "tier": "atom",
+      "family": "Divider",
+      "category": null,
+      "status": "core",
+      "summary": "A thin rule that marks a semantic break — horizontal between stacked sections, vertical between inline items.",
+      "selectHint": "Separate sections (horizontal) or inline items (vertical). If you only need space, use margin, not a divider.",
+      "variants": [
+        "horizontal",
+        "vertical",
+        "dashed",
+        "with-text",
+        "darkVariant"
+      ],
+      "registry": "components/registry/divider.json",
+      "spec": "components/specs/divider.md",
+      "storybook": "Atoms/Divider",
+      "related": [
+        "table",
+        "toolbars",
+        "form-item"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 5,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "drawer",
+      "display": "Drawer",
+      "tier": "organism",
+      "family": "Overlay",
+      "category": "overlay",
+      "status": "core",
+      "summary": "Slide-in side panel (from the right) for detail views, edit forms, and record-contextual content. The product's MOST-used overlay (FlotoDrawer 99x + FlotoDrawerForm 59x = 158x). Open via open prop or trigger slot.",
+      "selectHint": "Short yes/no or destructive confirmation? -> FlotoConfirmModal, not a drawer.",
+      "variants": [
+        "FlotoDrawer",
+        "FlotoDrawerForm"
+      ],
+      "registry": "components/registry/drawer.json",
+      "spec": "components/specs/drawer.md",
+      "storybook": "Organisms/Drawer",
+      "related": [
+        "MModal",
+        "FlotoConfirmModal",
+        "FlotoDrawerForm",
+        "FlotoForm",
+        "FlotoFormItem",
+        "MButton"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 3,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "dropdown-picker",
+      "display": "DropdownPicker",
+      "tier": "organism",
+      "family": "Form Controls",
+      "category": null,
+      "status": "core",
+      "summary": "The product's custom select: popover-anchored, virtualized, searchable, single/multi-select, keyboard nav, optional inline-add. Not a native/Ant select.",
+      "selectHint": "Free-form typed tags? -> LooseTags, not the picker.",
+      "variants": [
+        "single",
+        "multiple",
+        "not-searchable",
+        "allow-clear",
+        "text-only",
+        "read-only-pills",
+        "inline-add",
+        "two-pane",
+        "use-popover"
+      ],
+      "registry": "components/registry/dropdown-picker.json",
+      "spec": "components/specs/dropdown-picker.md",
+      "storybook": "Organisms/DropdownPicker",
+      "related": [
+        "SingleTrigger",
+        "MultipleTrigger",
+        "SelectedItemPills",
+        "LooseTags",
+        "MSelect",
+        "MPopover",
+        "MPopper",
+        "MMenu",
+        "MCheckbox"
+      ],
+      "knownIssueCount": 5,
+      "tokenCount": 4,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "filters",
+      "display": "Filters",
+      "tier": "molecule",
+      "family": "Filters",
+      "category": null,
+      "status": "stable",
+      "summary": "The product's filtering components, grouped by ARCHETYPE (not by the screen they sit in). Four distinct kinds: the Expression builder (nested AND/OR query builder), the Filter bar (inline chips), Quick filters (preset menu), and the Filter row (multi-selects + Reset/Apply). These are molecules; the Toolbars (organisms) compose them.",
+      "selectHint": "Complex AND/OR conditions across multiple groups? -> Expression builder (FiltersContainer, 32×).",
+      "variants": [
+        "ExpressionBuilder",
+        "FilterBar",
+        "QuickFilters",
+        "FilterRow",
+        "VerticalFilter",
+        "expression-builder",
+        "filter-bar",
+        "quick-filters",
+        "filter-row",
+        "vertical-filter"
+      ],
+      "registry": "components/registry/filters.json",
+      "spec": "components/specs/filters.md",
+      "storybook": "Molecules/Filters",
+      "related": [
+        "dropdown-picker",
+        "input",
+        "tag",
+        "table"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 8,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "form-item",
+      "display": "Form Field",
+      "tier": "molecule",
+      "family": "Form Controls",
+      "category": "form",
+      "status": "core",
+      "summary": "The form field: label + validation + control + error/help. MValidationProvider (vee-validate) -> MFormItem. Most-used component (1783x). required is derived from rules.",
+      "selectHint": "Building a form field (label + control + validation)? -> FlotoFormItem (always).",
+      "variants": [
+        "text",
+        "number",
+        "textarea",
+        "vertical",
+        "horizontal",
+        "custom-control"
+      ],
+      "registry": "components/registry/form-item.json",
+      "spec": "components/specs/form-item.md",
+      "storybook": "Molecules/FormItem",
+      "related": [
+        "MInput",
+        "MRadioGroup",
+        "MCheckbox",
+        "MSwitch",
+        "FlotoDropdownPicker",
+        "LooseTags",
+        "FlotoForm",
+        "MValidationObserver"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 3,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "input",
+      "display": "Input",
+      "tier": "atom",
+      "family": "Form Controls",
+      "category": "form-control",
+      "status": "core",
+      "summary": "Text input. A type-router (text/password/number/search/textarea/datetime). v-model is value+update. Almost always wrapped by FlotoFormItem for label+validation.",
+      "selectHint": "Multi-line text? -> type=textarea (or FlotoFormItem type=textarea).",
+      "variants": [
+        "text",
+        "password",
+        "number",
+        "search",
+        "textarea",
+        "material-input",
+        "no-border-input",
+        "full-border-text-area",
+        "full-bordered-addon-input",
+        "auto-height-input",
+        "text-lg-input",
+        "datetime"
+      ],
+      "registry": "components/registry/input.json",
+      "spec": "components/specs/input.md",
+      "storybook": "Atoms/Input",
+      "related": [
+        "FlotoFormItem",
+        "MInputNumber",
+        "MInputSearch",
+        "MInputGroup",
+        "LooseTags",
+        "date picker"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 7,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "link",
+      "display": "Link",
+      "tier": "atom",
+      "family": "Link",
+      "category": "navigation",
+      "status": "core",
+      "summary": "Navigation control. Default renders a RouterLink (<a>); as-button renders an MButton that pushes the route on click. Only own prop is asButton; everything else passes through.",
+      "selectHint": "Performs an action (save/delete/change state)? -> Button, not a link.",
+      "variants": [
+        "default",
+        "asButton",
+        "text-link",
+        "as-button",
+        "external",
+        "k-link",
+        "resource-link",
+        "link-label",
+        "completed-link",
+        "admin-page-link"
+      ],
+      "registry": "components/registry/link.json",
+      "spec": "components/specs/link.md",
+      "storybook": "Atoms/Link",
+      "related": [
+        "MButton",
+        "MDropdown",
+        "RouterLink"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 6,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "loose-tags",
+      "display": "LooseTags",
+      "tier": "molecule",
+      "family": "Tag",
+      "category": "form-input",
+      "status": "core",
+      "summary": "Free-form tag input (type to create tags) with async suggestions. The Tag family's input member; home of the teal pills.",
+      "selectHint": "Just displaying tags (label/count/status)? -> MTag/MStatusTag, not LooseTags.",
+      "variants": [
+        "default",
+        "disabled",
+        "asDropdown",
+        "editable"
+      ],
+      "registry": "components/registry/loose-tags.json",
+      "spec": "components/specs/loose-tags.md",
+      "storybook": "Molecules/LooseTags",
+      "related": [
+        "MTag",
+        "MStatusTag",
+        "SelectedItemPills",
+        "FlotoDropdownPicker",
+        "MSelect"
+      ],
+      "knownIssueCount": 4,
+      "tokenCount": 3,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "menu",
+      "display": "Menu",
+      "tier": "molecule",
+      "family": "Menu",
+      "category": null,
+      "status": "stable",
+      "summary": "The MMenu primitive (a vertical list of selectable icon+label rows, with dividers and danger/positive colours) catalogued in its own right, plus its action-surface usage: the Context/Action menu (FlotoGridActions — a '...' trigger opening an MMenu of actions).",
+      "selectHint": "A list of items to render inside something (nav, picker, dropdown)? -> Menu primitive.",
+      "variants": [
+        "Menu",
+        "ContextMenu",
+        "menu-primitive",
+        "context-menu"
+      ],
+      "registry": "components/registry/menu.json",
+      "spec": "components/specs/menu.md",
+      "storybook": "Molecules/Menu",
+      "related": [
+        "navigation",
+        "dropdownpicker",
+        "select",
+        "popover",
+        "toolbars",
+        "table"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 8,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "modal",
+      "display": "Modal",
+      "tier": "organism",
+      "family": "Overlay",
+      "category": "overlay",
+      "status": "core",
+      "summary": "The DS modal dialog (obs-modal) — a centered dialog over a blurred backdrop (native <dialog>); title + close ✕, footer, and confirm/hide-footer/no-padding/scrollable/restrict-width variants.",
+      "selectHint": "Yes/no or destructive confirmation? -> FlotoConfirmModal (variant=error for destructive).",
+      "variants": [
+        "MModal",
+        "FlotoConfirmModal",
+        "hide-footer",
+        "scrollable-modal",
+        "restrict-width",
+        "no-padding-modal",
+        "no-padding-modal / no-padding-confrim-modal",
+        "backdrop"
+      ],
+      "registry": "components/registry/modal.json",
+      "spec": "components/specs/modal.md",
+      "storybook": "Organisms/Modal",
+      "related": [
+        "FlotoConfirmModal",
+        "FlotoDrawer",
+        "FlotoDrawerForm",
+        "MButton",
+        "FlotoFormItem"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 3,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "navigation",
+      "display": "Navigation",
+      "tier": "molecule",
+      "family": "Navigation",
+      "category": null,
+      "status": "stable",
+      "summary": "The product's wayfinding components, by archetype: Primary nav (left module sidebar), Side menu (searchable collapsible section menu), Steps (wizard/stepper), Breadcrumb (back + trail), Back button. Tabs are their own family (Molecules/Tabs).",
+      "selectHint": "Switch between top-level product MODULES? -> Primary nav (left sidebar).",
+      "variants": [
+        "PrimaryNav",
+        "SideMenu",
+        "Steps",
+        "Breadcrumb",
+        "BackButton",
+        "Tabs",
+        "primary-nav",
+        "side-menu-section",
+        "side-menu-tree",
+        "side-menu-categories",
+        "side-menu-list",
+        "steps",
+        "breadcrumb",
+        "back-button",
+        "user-menu",
+        "notification-dropdown",
+        "omnibox",
+        "noc-player",
+        "timeline-scrollbar",
+        "graph-breadcrumb",
+        "metric-picker",
+        "UserMenu",
+        "NotificationDropdown",
+        "Omnibox",
+        "NocPlayer",
+        "TimelineScrollbar",
+        "GraphBreadcrumb"
+      ],
+      "registry": "components/registry/navigation.json",
+      "spec": "components/specs/navigation.md",
+      "storybook": "Molecules/Navigation",
+      "related": [
+        "tabs",
+        "toolbars",
+        "input",
+        "tag",
+        "table"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 9,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "popover",
+      "display": "Popover",
+      "tier": "molecule",
+      "family": "Popover & Tooltip",
+      "category": null,
+      "status": "stable",
+      "summary": "Click-triggered floating panel anchored to a trigger, holding interactive content (action menus, pickers, mini-forms). Slots trigger/title/default each get {hide,show,toggle}. MPopper is the lower-level v-popover positioning primitive that powers FlotoDropdownPicker.",
+      "selectHint": "Is the content a short non-interactive hint? -> Tooltip, not Popover.",
+      "variants": [
+        "click",
+        "hover",
+        "action-menu",
+        "grid-row-actions",
+        "rich-panel"
+      ],
+      "registry": "components/registry/popover.json",
+      "spec": "components/specs/popover.md",
+      "storybook": "Molecules/Popover",
+      "related": [
+        "tooltip",
+        "modal",
+        "dropdown-picker"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 3,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "radio",
+      "display": "Radio",
+      "tier": "atom",
+      "family": "Selection Controls",
+      "category": null,
+      "status": "core",
+      "summary": "One-of-many selection control. Use MRadioGroup with :options + v-model; as-button renders a segmented control. Standalone MRadio is unused.",
+      "selectHint": "Multi-select (pick any number)? -> Checkbox.",
+      "variants": [
+        "list",
+        "segmented",
+        "segmented-with-icons",
+        "severity-switch",
+        "plain",
+        "with-icons",
+        "radio-list-dot",
+        "outline"
+      ],
+      "registry": "components/registry/radio.json",
+      "spec": "components/specs/radio.md",
+      "storybook": "Atoms/Radio",
+      "related": [
+        "MCheckbox",
+        "MSwitch",
+        "FlotoDropdownPicker",
+        "MButton (segmented = this with as-button)"
+      ],
+      "knownIssueCount": 4,
+      "tokenCount": 3,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "scheduler",
+      "display": "Scheduler (Recurrence)",
+      "tier": "molecule",
+      "family": "Scheduler",
+      "category": null,
+      "status": "stable",
+      "summary": "A composite recurrence builder. A 'Scheduler Type' segmented control (MRadioGroup as-button: Once · Daily · Weekly · Monthly) swaps in a sub-form. Once/Daily = Start Date + Hours; Weekly adds Days (Mon-Sun); Monthly adds Months + Dates (1-31). Hours = the custom dropdown TimePicker (multi-select times); Days/Months/Dates = FlotoDropdownPicker multi-selects; Start Date = MDatePicker (date-only, min-date today). Used for backups, network discovery, compliance audits, monitor (re)discovery, reports, runbooks.",
+      "selectHint": "Need a RECURRING schedule (run X every day/week/month)? -> ScheduleInput.",
+      "variants": [
+        "Once",
+        "Daily",
+        "Weekly",
+        "Monthly"
+      ],
+      "registry": "components/registry/scheduler.json",
+      "spec": "components/specs/scheduler.md",
+      "storybook": "Molecules/Scheduler",
+      "related": [
+        "radio",
+        "date-time-pickers",
+        "dropdown-picker",
+        "form-item"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 5,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "select",
+      "display": "Select",
+      "tier": "atom",
+      "family": "Form Controls",
+      "category": "form-control",
+      "status": "low-use",
+      "summary": "Kit's raw Ant a-select wrapper. LOW-USE (2x, both mode=tags) — the product's select is FlotoDropdownPicker (510x). Modes default/multiple/tags; v-model value/change.",
+      "selectHint": "Need the product's standard select (single/multi/search/virtualized/custom trigger)? -> FlotoDropdownPicker (the norm, 510x).",
+      "variants": [
+        "single",
+        "multiple",
+        "tags"
+      ],
+      "registry": "components/registry/select.json",
+      "spec": "components/specs/select.md",
+      "storybook": "Atoms/Select",
+      "related": [
+        "FlotoDropdownPicker",
+        "LooseTags",
+        "MTreeSelect",
+        "MSelectOption",
+        "FlotoFormItem"
+      ],
+      "knownIssueCount": 5,
+      "tokenCount": 4,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "severity",
+      "display": "Severity",
+      "tier": "atom",
+      "family": "Tag",
+      "category": null,
+      "status": "core",
+      "summary": "The severity INDICATOR — a coloured dot (+ optional label + tooltip) for a severity LEVEL (down / critical / major / warning / clear / up / maintenance / unreachable / unknown / …). Distinct from MStatusTag, which maps status STRINGS to tag-* pills. Used 80×. Renders --severity-<level>; can take `severity` directly or resolve it live from a monitor (objectId / instance / counter) via DB workers.",
+      "selectHint": "Showing a monitor/alert SEVERITY level (critical/major/warning/clear/up/down/…)? -> Severity (dot).",
+      "variants": [
+        "dot",
+        "dot+label",
+        "solid-chip",
+        "text",
+        "bg-fill",
+        "stripe",
+        "picker",
+        "count-box",
+        "switch"
+      ],
+      "registry": "components/registry/severity.json",
+      "spec": null,
+      "storybook": "Atoms/Severity",
+      "related": [
+        "tag",
+        "filters",
+        "table"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 20,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "switch",
+      "display": "Switch",
+      "tier": "atom",
+      "family": "Selection Controls",
+      "category": null,
+      "status": "core",
+      "summary": "Instant on/off toggle for a setting that applies immediately. Controlled.",
+      "selectHint": "Mutually-exclusive options? -> MRadio.",
+      "variants": [],
+      "registry": "components/registry/switch.json",
+      "spec": "components/specs/switch.md",
+      "storybook": "Atoms/Switch",
+      "related": [
+        "MCheckbox",
+        "MRadio"
+      ],
+      "knownIssueCount": 5,
+      "tokenCount": 3,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": false,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "table",
+      "display": "Table (Grid)",
+      "tier": "organism",
+      "family": "Table",
+      "category": null,
+      "status": "stable",
+      "summary": "The DS data table (obs-table) — sortable columns, selection, rich cells (severity/status/type), row actions, pagination. The product Kendo Grid/VirtualTable, everywhere.",
+      "selectHint": "Need to fetch + paginate a list with CRUD? -> FlotoPaginatedCrud (wraps MGrid; handles fetch/paging/search/filters).",
+      "variants": [
+        "basic",
+        "selectable",
+        "expandable",
+        "grouping",
+        "cell-types",
+        "pagination",
+        "tree",
+        "pivot",
+        "hide-expand-column",
+        "hide-header",
+        "hide-grouping",
+        "tabular-content-grid",
+        "service-grid",
+        "rum-grid",
+        "mgrid-container"
+      ],
+      "registry": "components/registry/table.json",
+      "spec": "components/specs/table.md",
+      "storybook": "Organisms/Table",
+      "related": [
+        "popover (row-actions kebab + bulk-action bar)",
+        "tag (status cells)",
+        "checkbox (selection)",
+        "dropdown-picker (column filters)"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 7,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "tabs",
+      "display": "Tabs",
+      "tier": "molecule",
+      "family": "Tabs",
+      "category": null,
+      "status": "stable",
+      "summary": "In-page tabbed navigation that switches between sibling views of one context. MTab wraps Ant a-tabs; panes are MTabPane. The product uses ONLY line-style, top-positioned, default-size tabs — Ant's card/editable-card/vertical/size/tabBarExtraContent features are available but unused in-product. Active tab = --primary (text + underline + ink bar); inactive = --tabs-text-color; bar bottom border = --border-color. Real variants are class-based.",
+      "selectHint": "Switching between sibling VIEWS of one context (not navigating to other pages)? -> Tabs. (For page nav use the router/menu.)",
+      "variants": [
+        "line",
+        "no-border",
+        "sticky-tab",
+        "with-counts",
+        "with-icons",
+        "dynamic",
+        "persisted"
+      ],
+      "registry": "components/registry/tabs.json",
+      "spec": "components/specs/tabs.md",
+      "storybook": "Molecules/Tabs",
+      "related": [
+        "dropdown-picker",
+        "table",
+        "radio"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 6,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "steps",
+      "display": "Steps",
+      "tier": "molecule",
+      "family": "Navigation",
+      "category": null,
+      "status": "stable",
+      "summary": "A wizard/stepper — a numbered progress track through the ordered stages of a multi-step flow, showing which steps are done, which is current, and which remain.",
+      "selectHint": "Use for a linear multi-step flow (a create/import wizard, a guided form). NOT for switching between peer sections of one page (that is obs-tabs), and NOT for navigating between pages (obs-breadcrumbs / obs-sidebar).",
+      "variants": [
+        "horizontal",
+        "vertical",
+        "number",
+        "dot"
+      ],
+      "registry": "components/registry/steps.json",
+      "spec": null,
+      "storybook": "Molecules/Steps",
+      "related": [
+        "tabs",
+        "breadcrumbs",
+        "sidebar",
+        "page-header",
+        "modal"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 9,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "tag",
+      "display": "Tag",
+      "tier": "atom",
+      "family": "Tag",
+      "category": null,
+      "status": "core",
+      "summary": "Compact label for categorization or removable selections. Used as a plain tag; color variants are broken.",
+      "selectHint": "User types/adds tags? -> LooseTags (input), not Tag.",
+      "variants": [
+        "MTag",
+        "MStatusTag",
+        "SelectedItemPills",
+        "MultipleTrigger/SingleTrigger",
+        "LooseTags",
+        "TagsList",
+        "appClasses",
+        "tag-red",
+        "tag-green",
+        "tag-yellow",
+        "tag-orange",
+        "tag-purple",
+        "tag-unknown",
+        "tag-primary",
+        "used-count-pill",
+        "note",
+        "stateClasses"
+      ],
+      "registry": "components/registry/tag.json",
+      "spec": "components/specs/tag.md",
+      "storybook": "Atoms/Tag",
+      "related": [
+        "MStatusTag",
+        "loose-tags",
+        "tags-list",
+        "MIcon",
+        "severity"
+      ],
+      "knownIssueCount": 7,
+      "tokenCount": 3,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "tags-list",
+      "display": "TagsList",
+      "tier": "molecule",
+      "family": "Tag",
+      "category": "display",
+      "status": "dead-code",
+      "summary": "Read-only tag overflow display: up to maxLength neutral chips, else a count chip + hover popover. UNUSED in product (0 usages) — prefer SelectedItemPills.",
+      "selectHint": "Tag overflow display (show some, +N rest)? -> SelectedItemPills (or LooseTags :disabled), NOT TagsList.",
+      "variants": [],
+      "registry": "components/registry/tags-list.json",
+      "spec": "components/specs/tags-list.md",
+      "storybook": "Molecules/TagsList",
+      "related": [
+        "SelectedItemPills",
+        "MTag",
+        "MPopover",
+        "LooseTags"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 3,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": false,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "toolbars",
+      "display": "Toolbars",
+      "tier": "organism",
+      "family": "Toolbars",
+      "category": null,
+      "status": "stable",
+      "summary": "The product's toolbar compositions, as variants of one family. A toolbar is an organism that arranges molecules/atoms (title, search, filters, actions). Variants: Page header, Widget header, Bulk action bar, Grid toolbar, Column chooser.",
+      "selectHint": "Top of a list/detail page (title + actions)? -> Page header.",
+      "variants": [
+        "app-header",
+        "page-header",
+        "widget-header",
+        "bulk-action-bar",
+        "grid-toolbar",
+        "column-chooser"
+      ],
+      "registry": "components/registry/toolbars.json",
+      "spec": "components/specs/toolbars.md",
+      "storybook": "Organisms/Toolbars",
+      "related": [
+        "filters",
+        "table",
+        "dropdown-picker",
+        "popover",
+        "date-time-pickers"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 9,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "tooltip",
+      "display": "Tooltip",
+      "tier": "molecule",
+      "family": "Popover & Tooltip",
+      "category": null,
+      "status": "stable",
+      "summary": "Transient hover/focus label anchored to a trigger. The kit MTooltip is excluded and this Floto override ships instead, rendering through VTippy (not a-tooltip). trigger slot = anchor, default slot = content. Non-interactive — for interactive panels use Popover.",
+      "selectHint": "Is the content interactive (buttons, inputs, links)? -> use Popover, NOT a tooltip.",
+      "variants": [
+        "default",
+        "chart-like-tooltip",
+        "placements"
+      ],
+      "registry": "components/registry/tooltip.json",
+      "spec": "components/specs/tooltip.md",
+      "storybook": "Molecules/Tooltip",
+      "related": [
+        "popover",
+        "modal",
+        "dropdown-picker"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 5,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "data-viz",
+      "display": "Data Visualization",
+      "tier": "organism",
+      "family": "Data Visualization",
+      "category": null,
+      "status": "stable",
+      "summary": "The product's charts, stat tiles, topology graph and dashboard grid — a decision GUIDE, not a web component. Charts are Highcharts v10, topology is Cytoscape, the dashboard grid is vue-grid-layout: all app-rendered and licensed/heavy, so the DS does not ship an obs-* for them. Use this to pick the RIGHT visualisation type and colour/token it on-brand, then render it with the product's Chart/Graph/Widgets component (in-repo) or STOP-and-ASK (standalone).",
+      "selectHint": "Any CHART / graph / gauge / KPI tile / heatmap / topology map / dashboard grid: pick the type via decisionFlow, colour from chart-palette, then render with the product's Chart/Graph/Widgets component. No obs-* — standalone => STOP and ASK.",
+      "variants": [
+        "trend-line",
+        "area",
+        "bar-column",
+        "pie-donut",
+        "gauge",
+        "kpi-tile",
+        "sparkline",
+        "heatmap",
+        "topn",
+        "scatter-bubble",
+        "sankey-flow",
+        "treemap",
+        "timeline-xrange",
+        "geo-map",
+        "flame-graph",
+        "anomaly-forecast",
+        "topology-graph",
+        "widget-grid"
+      ],
+      "registry": "components/registry/data-viz.json",
+      "spec": "components/specs/data-viz.md",
+      "storybook": "Organisms/Data Visualization",
+      "related": [
+        "data-viz-tooltips",
+        "table",
+        "toolbars",
+        "severity"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 5,
+      "has": {
+        "props": false,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "color-picker",
+      "display": "Color Picker",
+      "tier": "molecule",
+      "family": "Form Controls",
+      "category": null,
+      "status": "stable",
+      "summary": "A colour picker: a swatch trigger opening a colour canvas + a 16-colour preset palette (color-picker.vue). Supports transparent. For branding/widget/threshold/severity colours."
+    },
+    {
+      "id": "grid-select",
+      "display": "Grid Select",
+      "tier": "organism",
+      "family": "Form Controls",
+      "category": null,
+      "status": "stable",
+      "summary": "The grid/table dropdown (obs-grid-select) — a dropdown whose menu is a searchable TABLE (columns, checkboxes, sort, badge, View/Clear Selected, rich cells). The Select Agent/Monitor picker (~70×)."
+    },
+    {
+      "id": "metric-list",
+      "display": "Metric List",
+      "tier": "molecule",
+      "family": "Data Display",
+      "category": null,
+      "status": "stable",
+      "summary": "The DS metric/KPI list (obs-metric-list) — a prominent value + unit + label per row (dashboard KPI widgets). Split from the Table vertical-value variant."
+    },
+    {
+      "id": "key-value",
+      "display": "Key-Value",
+      "tier": "molecule",
+      "family": "Data Display",
+      "category": null,
+      "status": "stable",
+      "summary": "The DS key-value / description list (obs-key-value) — a tinted label cell + value per row (a record detail view). Split from the Table key-value variant."
+    },
+    {
+      "id": "page-header",
+      "display": "Page Header",
+      "tier": "organism",
+      "family": "Toolbars",
+      "category": null,
+      "status": "stable",
+      "summary": "The list/detail PAGE HEADER at the top of a page: an optional back button + the title (--primary-alt, weight 500) + an optional count pill on the left, and right-side actions (search / export / primary Add) via the default slot, over a --border-color bottom rule. Split from the product's Toolbars family. NOT the strip above a list/table (that is obs-toolbar) and NOT between-page navigation (obs-sidebar / obs-breadcrumbs). Supports an optional subtitle, a detail-header metadata strip (meta=[{label,value,icon?,status?}] with an accent stripe — the RUM/APM span-detail header), (detail/drawer header pattern) and a breadcrumb slot (drop obs-breadcrumbs). The global app top-bar (logo/search/notifications/user) is a SEPARATE archetype, not a page-header variant.",
+      "selectHint": "Title + primary actions at the TOP of a page (list or detail)? -> obs-page-header.",
+      "variants": [
+        "default",
+        "back",
+        "with-count",
+        "no-divider",
+        "with-subtitle",
+        "with-breadcrumb",
+        "detail-meta"
+      ],
+      "registry": "components/registry/page-header.json",
+      "spec": null,
+      "storybook": "Organisms/Toolbars/Examples (PageHeader)",
+      "related": [
+        "toolbars",
+        "tabs",
+        "sidebar",
+        "breadcrumbs",
+        "button",
+        "input"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 9,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "app-header",
+      "display": "App Header",
+      "tier": "organism",
+      "family": "App Chrome",
+      "category": null,
+      "status": "stable",
+      "summary": "The GLOBAL top bar present on every authenticated page: the brand/logo on the left, and on the right a row of circular action icon-buttons (global search / health monitoring / approval / notifications with a count badge), a BUILD version tag, and the user avatar/menu. App CHROME — a SEPARATE archetype from obs-page-header (the per-page title bar); it pairs with obs-sidebar (the left module nav). Bar: 50px tall, --page-background-color, a --border-color bottom rule. Circular buttons 36×36 (--neutral-light; --primary when the route is active); notification badge --secondary-red; avatar --primary.",
+      "selectHint": "The GLOBAL bar at the very top of every page (logo + global search + notifications + user)? -> obs-app-header.",
+      "variants": [
+        "default",
+        "with-badge",
+        "active-route",
+        "logo"
+      ],
+      "registry": "components/registry/app-header.json",
+      "spec": null,
+      "storybook": "Organisms/Toolbars/Examples (AppHeader)",
+      "related": [
+        "page-header",
+        "sidebar",
+        "breadcrumbs",
+        "menu",
+        "tabs",
+        "toolbars"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 9,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "user-menu",
+      "display": "User Menu",
+      "tier": "molecule",
+      "family": "App Chrome",
+      "category": null,
+      "status": "stable",
+      "summary": "The interactive header ACCOUNT menu — an avatar/initials trigger that opens a dropdown with a user header, account links, an optional theme toggle, and a danger Logout. Self-contained (renders its own trigger + top-layer popover) so it drops into obs-app-header's `user` slot, or stands alone. The turnkey form of the `user-menu` recipe.",
+      "selectHint": "The header avatar + account dropdown (My Profile / Setup / Docs / theme / Logout)? -> obs-user-menu in the app-header `user` slot. For a generic action menu use obs-menu; for nav use obs-sidebar/obs-side-menu.",
+      "variants": [
+        "default",
+        "avatar-image",
+        "minimal"
+      ],
+      "registry": "components/registry/user-menu.json",
+      "spec": null,
+      "storybook": "Molecules/User Menu",
+      "related": [
+        "app-header",
+        "menu",
+        "switch",
+        "sidebar",
+        "notification-menu"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 9,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "notification-menu",
+      "display": "Notification Menu",
+      "tier": "molecule",
+      "family": "App Chrome",
+      "category": null,
+      "status": "stable",
+      "summary": "The interactive header NOTIFICATION panel — a bell + unread-count badge trigger that opens a dropdown with a title, Alerts/System tabs, a scrollable list of notification rows (severity dot + text + time), and a View all / Clear all footer. Self-contained (renders its own trigger + top-layer popover) so it drops into obs-app-header, or stands alone. The turnkey form of the `notification-dropdown` recipe.",
+      "selectHint": "The header bell + notification panel (alerts/system, badge count)? -> obs-notification-menu in the app-header action area. For a generic action menu use obs-menu; the account dropdown is obs-user-menu.",
+      "variants": [
+        "default",
+        "single-list",
+        "empty"
+      ],
+      "registry": "components/registry/notification-menu.json",
+      "spec": null,
+      "storybook": "Molecules/Notification Menu",
+      "related": [
+        "app-header",
+        "user-menu",
+        "tabs",
+        "drawer",
+        "severity"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 13,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "command-palette",
+      "display": "Command Palette",
+      "tier": "molecule",
+      "family": "App Chrome",
+      "category": null,
+      "status": "stable",
+      "summary": "The interactive header GLOBAL SEARCH / omnibox — a single search bar with a leading category picker, a query field, and an Execute action (+ a parse-error state + clear). For cross-app search / a command surface, NOT a plain list filter. Composes obs-select (category) + obs-input (query) + obs-icon. The turnkey form of the `command-palette` recipe.",
+      "selectHint": "A GLOBAL / cross-app search or command surface (category + query + Execute) in the header? -> obs-command-palette. A plain search of a single list/table? -> the obs-input `search` type, NOT this.",
+      "variants": [
+        "default",
+        "no-category",
+        "error"
+      ],
+      "registry": "components/registry/command-palette.json",
+      "spec": null,
+      "storybook": "Molecules/Command Palette",
+      "related": [
+        "app-header",
+        "select",
+        "input",
+        "modal",
+        "user-menu",
+        "notification-menu"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 8,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "toolbar",
+      "display": "Toolbar",
+      "tier": "organism",
+      "family": "Toolbars",
+      "category": null,
+      "status": "stable",
+      "summary": "The control strip that frames a LIST/TABLE or a widget. Three compositions via `variant`: grid (default) — a strip ABOVE a grid with search (start slot) on the left and filter / column-chooser / primary Add (default slot) on the right; bulk — the floating SELECTION pill (a clear checkbox + \"N items selected\" + a divider + the bulk actions), shown once rows are selected, emits `clear`; widget — a widget header (title + a time-range pill + a kebab of actions) with rounded-top chrome. NOT the page title bar (obs-page-header) and NOT the global top bar (obs-app-header). Compose the contents from DS elements (obs-input, obs-button, obs-checkbox, obs-icon, obs-select).",
+      "selectHint": "A search / filter / column / Add strip ABOVE a list or table? -> obs-toolbar (variant=grid, the default).",
+      "variants": [
+        "grid",
+        "bulk",
+        "widget"
+      ],
+      "registry": "components/registry/toolbar.json",
+      "spec": null,
+      "storybook": "Organisms/Toolbars/Examples (GridToolbar · BulkActionBar · WidgetHeader)",
+      "related": [
+        "page-header",
+        "app-header",
+        "filters",
+        "table",
+        "grid-select",
+        "button",
+        "input"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 6,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "sidebar",
+      "display": "Sidebar",
+      "tier": "organism",
+      "family": "Navigation",
+      "category": null,
+      "status": "stable",
+      "summary": "The product's PRIMARY navigation — the left vertical MODULE rail (FlotoNavBar). Collapsed to 65px (brand mark + module icons) by default; HOVER-expands to 170px (ObserveOps wordmark + labels), or pin it open with `expanded`. Data-driven module list (icon + label, optional BETA tag); the active module highlights --primary on --nav-panel-bg, a hovered non-active item gets a --nav-hover-bg pill. Theme-aware. Pairs with obs-app-header (the horizontal top bar). NOT an in-module section menu (side-menu) and NOT sibling-view switching (obs-tabs).",
+      "selectHint": "Switch between top-level product MODULES (Dashboards / Monitors / Alerts / …)? -> obs-sidebar (the left module rail).",
+      "variants": [
+        "collapsed",
+        "expanded",
+        "active-item",
+        "with-beta"
+      ],
+      "registry": "components/registry/sidebar.json",
+      "spec": null,
+      "storybook": "Molecules/Navigation (PrimaryNav)",
+      "related": [
+        "app-header",
+        "tabs",
+        "page-header",
+        "toolbar",
+        "breadcrumbs"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 6,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "breadcrumbs",
+      "display": "Breadcrumbs",
+      "tier": "molecule",
+      "family": "Navigation",
+      "category": null,
+      "status": "stable",
+      "summary": "The location TRAIL (+ an optional back chevron): a path of crumbs (Reports / Compliance / PCI-DSS Audit) with the current (last) crumb in weight 500 and the ancestors as muted links. Shows where the user is and gives a one-click way up one or many levels. Data-driven `items`; separator is `/` (default) or a chevron. Lives in a page header (obs-page-header has a `breadcrumb` slot). NOT module switching (obs-sidebar), NOT sibling views (obs-tabs), NOT a graph-expansion trail.",
+      "selectHint": "Show the user's LOCATION plus a way up one or MANY levels? -> obs-breadcrumbs (the trail).",
+      "variants": [
+        "trail",
+        "with-back",
+        "chevron-separator",
+        "divider",
+        "back-button"
+      ],
+      "registry": "components/registry/breadcrumbs.json",
+      "spec": null,
+      "storybook": "Molecules/Navigation (Breadcrumb · BackButton)",
+      "related": [
+        "page-header",
+        "sidebar",
+        "tabs",
+        "app-header"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 4,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "side-menu",
+      "display": "Side Menu",
+      "tier": "organism",
+      "family": "Navigation",
+      "category": null,
+      "status": "stable",
+      "summary": "The in-module SECTION navigation panel — a searchable, collapsible left menu. ONE element with a `mode` axis folding the product's four side-menu forms: sections (settings sub-nav, 20×), categories (dashboard picker, count tags), tree (Log/Topology N-level hierarchy with type icon + count badge), and list (report/saved-views flat list, optional ★ favourite). Data-driven via a recursive `items` model; optional top segmented `tabs` + a search box. The active leaf highlights --primary on --code-tag-background-color (sections adds a --primary left rule). NOT the module rail (obs-sidebar), NOT sibling views (obs-tabs), NOT the faceted checkbox filter (a vertical Filter).",
+      "selectHint": "Navigate SECTIONS within a module (Settings sub-nav; expand to sub-items)? -> obs-side-menu mode=\"sections\".",
+      "variants": [
+        "sections",
+        "categories",
+        "tree",
+        "list",
+        "with-tabs",
+        "with-search"
+      ],
+      "registry": "components/registry/side-menu.json",
+      "spec": null,
+      "storybook": "Molecules/Navigation (SideMenu · Tree · Categories · List)",
+      "related": [
+        "sidebar",
+        "tabs",
+        "breadcrumbs",
+        "dropdown-picker",
+        "filters"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 9,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "logo",
+      "display": "Logo",
+      "tier": "atom",
+      "family": "Logo",
+      "category": null,
+      "status": "stable",
+      "summary": "Renders a product monitor-type LOGO by name (Router, Linux, Windows, MySQL, Docker, AWS, …) — the full-colour brand/technology marks from the product logo library (Assets → Logos). The logo counterpart of obs-icon: use a LOGO for a technology / vendor / monitor-type (they carry brand colour); use an ICON for a UI affordance (monochrome, inherits text colour). Names are case/space-insensitive and alias-friendly (docker → dockercontainer, aws → aws-cloud, vmware → vmware-esxi); an unknown name falls back to the generic `no-icon`. A CURATED common set (~114) is bundled; the full 242 live on the Assets → Logos page.",
+      "selectHint": "A technology / vendor / monitor-type mark that carries BRAND COLOUR (Linux, Docker, AWS, MySQL)? -> obs-logo.",
+      "variants": [
+        "os",
+        "network",
+        "cloud",
+        "virtualization",
+        "containers",
+        "database",
+        "web-app",
+        "language",
+        "app",
+        "fallback"
+      ],
+      "registry": "components/registry/logo.json",
+      "spec": null,
+      "storybook": "Assets/Logos",
+      "related": [
+        "icon",
+        "side-menu",
+        "table",
+        "tag"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 0,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": false,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "metric-picker",
+      "display": "Metric Picker",
+      "tier": "molecule",
+      "family": "Data Visualization",
+      "category": null,
+      "status": "core",
+      "summary": "The two-part METRIC selection panel — a 'Select Monitor' dropdown on top (reuses obs-select) + a searchable, grouped metric/counter TREE below (categories → counters, each optionally with a unit/instances). It LOOKS like a side menu (a hierarchical tree), but its job is selecting a VALUE (a counter to plot/query), not navigation — so it lives with the Form Controls, as a turnkey preset over obs-select's tree-select. Data-driven: give it `monitors` + a `metrics` tree; it emits `select-monitor` and `select`. Source-derived from metric-explorer/metric-picker.vue (MonitorPicker + CounterSelector).",
+      "selectHint": "Selecting a METRIC/counter (monitor → grouped, searchable counter tree) to plot or query? -> obs-metric-picker. A generic dropdown -> obs-select. NAVIGATING sections -> obs-side-menu (it looks similar but navigates; this selects a value).",
+      "variants": [
+        "full",
+        "no-monitor",
+        "searchable",
+        "no-search",
+        "selected"
+      ],
+      "registry": "components/registry/metric-picker.json",
+      "spec": null,
+      "storybook": "Molecules/Metric Picker",
+      "related": [
+        "dropdown-picker",
+        "select",
+        "input",
+        "side-menu",
+        "data-viz",
+        "drawer"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 7,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "noc-player",
+      "display": "NOC Player",
+      "tier": "organism",
+      "family": "Playback & Timeline",
+      "category": null,
+      "status": "core",
+      "summary": "The NOC / wallboard ROTATOR chrome — a top bar that auto-cycles a set of dashboards on a countdown: logo (left) · ‹ prev · current title · next › (center) · countdown + play/pause + exit (right), over a body slot that holds the current dashboard. Self-contained playback: an internal countdown timer auto-advances; ← / → step, space pauses, Esc exits. Data-agnostic: it owns the rotation and emits `change`/`close`; the consumer renders the actual dashboard (a widget grid — a data-viz gap) in the default slot. Part of the Playback & Timeline family. Source-derived from dashboard/noc-player.vue.",
+      "selectHint": "A full-screen wallboard that rotates DASHBOARDS on a timer (NOC mode)? -> obs-noc-player. To step a time WINDOW under a chart -> obs-timeline-scrollbar. The normal app top bar -> obs-app-header.",
+      "variants": [
+        "rotating",
+        "with-logo",
+        "single",
+        "empty",
+        "fullscreen"
+      ],
+      "registry": "components/registry/noc-player.json",
+      "spec": null,
+      "storybook": "Organisms/NOC Player",
+      "related": [
+        "timeline-scrollbar",
+        "app-header",
+        "data-viz",
+        "logo",
+        "button"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 8,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "timeline-scrollbar",
+      "display": "Timeline Scrollbar",
+      "tier": "molecule",
+      "family": "Playback & Timeline",
+      "category": null,
+      "status": "core",
+      "summary": "The temporal NAVIGATOR bar — batch (« ») and single-step (‹ ›) controls around a START–END time WINDOW of bucketed snapshots. Left: batch-back + step-back + the window start; right: the window end + step-forward + batch-forward. Data/behaviour-agnostic: it renders the controls + times and emits `shift {direction, batch}`; the consumer moves its data window. Part of the Playback & Timeline family. Source-derived from netroute/timeline-scrollbar.vue.",
+      "selectHint": "A stepper to move a TIME WINDOW back/forward over bucketed snapshots (netroute history / a temporal chart)? -> obs-timeline-scrollbar. To PICK an absolute date/range -> obs-date-time-picker. To rotate DASHBOARDS -> obs-noc-player.",
+      "variants": [
+        "default",
+        "disabled"
+      ],
+      "registry": "components/registry/timeline-scrollbar.json",
+      "spec": null,
+      "storybook": "Molecules/Timeline Scrollbar",
+      "related": [
+        "noc-player",
+        "date-time-pickers",
+        "data-viz",
+        "toolbars",
+        "button"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 7,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "banner",
+      "display": "Banner",
+      "tier": "molecule",
+      "family": "Feedback",
+      "category": null,
+      "status": "core",
+      "summary": "An inline notice / callout — a tinted surface with a status icon and a message. Intents: info (default), success, warning, error.",
+      "selectHint": "A persistent inline message tied to a section (form hint, visibility notice). For transient feedback use a toast; for a blocking decision use obs-modal.",
+      "variants": [
+        "info",
+        "note",
+        "success",
+        "warning",
+        "error"
+      ],
+      "registry": "components/registry/banner.json",
+      "spec": null,
+      "storybook": "Molecules/Banner",
+      "related": [
+        "modal",
+        "severity",
+        "tag",
+        "icon"
+      ],
+      "knownIssueCount": 0,
+      "tokenCount": 9,
+      "has": {
+        "props": true,
+        "states": false,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "icon",
+      "display": "Icon",
+      "tier": "atom",
+      "family": "Foundation",
+      "category": null,
+      "status": "stable",
+      "summary": "The reusable icon element (<obs-icon>) — renders a real product glyph from the shared library (_icons.js, extracted from src/assets/icons/icons.js; ~548 glyphs) by `name`. Accepts kebab (chevron-double-left) or camelCase (chevronDoubleLeft). Reactive: change `name` and the glyph swaps. Inherits the surrounding text color (currentColor) and takes a px/CSS-length `size`. Renders per-icon fill-rule/clip-rule, so glyphs with holes/overlaps (e.g. the theme-auto half-circle) draw correctly. Decorative by default; pass `label` for an accessible name. This is how any icon should be used across the DS — never hand-drawn/inlined SVG.",
+      "selectHint": "Any GLYPH (search, chevron, status/action icon)? -> obs-icon name=\"…\". A brand / monitor-type LOGO (Motadata, Citrix, Router, Kubernetes…)? -> obs-logo, NOT obs-icon. A coloured severity dot? -> obs-severity.",
+      "variants": [],
+      "registry": "components/registry/icon.json",
+      "spec": null,
+      "storybook": "Atoms/Icon",
+      "related": [
+        "logo",
+        "button",
+        "tag",
+        "side-menu",
+        "table"
+      ],
+      "knownIssueCount": 2,
+      "tokenCount": 1,
+      "has": {
+        "props": true,
+        "states": false,
+        "sizes": false,
+        "variants": false,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "selected-pills",
+      "display": "Selected Pills",
+      "tier": "molecule",
+      "family": "Tag",
+      "category": null,
+      "status": "stable",
+      "summary": "Teal key:value pills for a current selection inside a picker/multi-select trigger. Truncates to max-items, then a \"+N\" pill opens a popover listing the rest. Display-only (the home of the teal pills, read-only mode).",
+      "variants": [
+        "read-only-pills",
+        "overflow-popover"
+      ],
+      "registry": "components/registry/selected-pills.json",
+      "spec": null,
+      "storybook": "Molecules/TagsList",
+      "related": [
+        "loose-tags",
+        "dropdown-picker",
+        "tag"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 5,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    }
+  ]
+}

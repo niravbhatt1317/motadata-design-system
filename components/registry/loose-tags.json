@@ -1,0 +1,221 @@
+{
+  "name": "loose-tags",
+  "component": "LooseTags",
+  "display": "LooseTags",
+  "tier": "molecule",
+  "category": "form-input",
+  "source": "app",
+  "sourceFile": "src/components/loose-tags.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "Free-form tag input (type to create tags) with async suggestions. The Tag family's input member; home of the teal pills.",
+  "variants": [
+    {
+      "name": "editable",
+      "what": "mode=tags + suggestions",
+      "usage": "default"
+    },
+    {
+      "name": "disabled",
+      "what": "SelectedItemPills (read-only)",
+      "usage": ""
+    },
+    {
+      "name": "asDropdown",
+      "what": "FlotoDropdownPicker searchable multi",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "editable"
+    },
+    {
+      "name": "disabled",
+      "what": "read-only pills"
+    }
+  ],
+  "family": "Tag",
+  "model": {
+    "prop": "value",
+    "event": "change"
+  },
+  "props": {
+    "type": {
+      "type": "string",
+      "default": "loose",
+      "note": "[element] obs-tags: loose (free-create teal pills — type + Enter; optional `suggestions`) | select (pick only from a fixed `options` list → neutral chips)"
+    },
+    "options": {
+      "type": "string|array",
+      "note": "[element] obs-tags (type=select): the fixed option list — `value:Label,…` comma string or JSON [{value,label}]"
+    },
+    "suggestions": {
+      "type": "string|array",
+      "note": "[element] obs-tags (type=loose): optional autocomplete suggestions — comma string or JSON array"
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false,
+      "note": "[element] obs-tags (type=select): chevron → spinner while options load"
+    },
+    "value": {
+      "type": "array",
+      "default": [],
+      "note": "v-model — array of tag strings"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "read-only mode → SelectedItemPills teal pills"
+    },
+    "asDropdown": {
+      "type": "boolean",
+      "default": false,
+      "note": "searchable FlotoDropdownPicker mode (covered by DropdownPicker spec)"
+    },
+    "singleSelection": {
+      "type": "boolean",
+      "default": false,
+      "note": "caps to 1 — ONLY effective in asDropdown"
+    },
+    "counter": {
+      "type": "object",
+      "default": "undefined",
+      "note": "{ key } scopes suggestion fetch; watched (refetch on change)"
+    },
+    "tagType": {
+      "type": "string",
+      "note": "filters suggestion fetch"
+    },
+    "userTagOnly": {
+      "type": "boolean",
+      "default": false,
+      "note": "filters suggestion fetch"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": " ",
+      "note": "ONLY used in asDropdown (F1); editable mode hardcodes 'Add Tags'"
+    },
+    "sm": {
+      "type": "boolean",
+      "default": true,
+      "note": "DEAD — drives size computed that is never bound (F3)"
+    }
+  },
+  "events": [
+    "change"
+  ],
+  "slots": [
+    "clearIcon (set to times-circle)"
+  ],
+  "modes": {
+    "default": "MSelect mode=tags + .loose-tags-input — type-to-create + suggestions; normalizes lowercase+trim+dedupe",
+    "disabled": "SelectedItemPills teal pills (read-only, no API)",
+    "asDropdown": "FlotoDropdownPicker as-input searchable multiple (DropdownPicker spec); trims, preserves case"
+  },
+  "anatomy": [
+    "teal pills (orange ×)",
+    "free-text input",
+    "suggestions dropdown (from API)"
+  ],
+  "styling": {
+    "pill": "--main-tags-bg-color/--main-tags-text-color teal, 22px, radius 4px",
+    "removeIcon": "--secondary-orange",
+    "font": "JetBrains Mono (.loose-tags-input)"
+  },
+  "tokensUsed": [
+    "--main-tags-bg-color",
+    "--main-tags-text-color",
+    "--secondary-orange"
+  ],
+  "accessibility": {
+    "semantics": "Ant Select mode=tags (combobox); Enter add, Backspace remove last, Arrows navigate",
+    "focus": "no visible ring (SF-001)",
+    "clear": "native clear hidden via CSS (selection__clear display:none)"
+  },
+  "do": [
+    "Use to capture a list of free-form or known tags (v-model an array).",
+    "Pass :counter to scope suggestions; use disabled for read-only display."
+  ],
+  "dont": [
+    "Don't rely on placeholder in editable mode (F1) or sm for sizing (F3).",
+    "Don't assume case is preserved — default mode lowercases (F2)."
+  ],
+  "whenToUse": "Capturing a list of tags on a form (free-form or from known suggestions).",
+  "decisionFlow": [
+    "Just displaying tags (label/count/status)? -> MTag/MStatusTag, not LooseTags.",
+    "Read-only display of an existing list? -> disabled.",
+    "Pick from a known/suggested set with search? -> asDropdown.",
+    "Free-type to create new tags? -> default (editable).",
+    "Only one tag allowed? -> singleSelection (with asDropdown)."
+  ],
+  "usageRules": {
+    "editable(default)": {
+      "useWhen": "user types values + Enter to add; suggestions offered; lowercased/trimmed/deduped",
+      "example": "free-form tags on a monitor"
+    },
+    "disabled": {
+      "useWhen": "show an existing tag list read-only (view-mode forms, detail panels)"
+    },
+    "asDropdown": {
+      "useWhen": "pick from known tags (searchable picker) instead of free-typing"
+    },
+    "singleSelection": {
+      "useWhen": "only one tag may be selected (caps asDropdown to 1)",
+      "note": "no effect in default editable mode"
+    },
+    "counter": {
+      "useWhen": "scope suggestions to a specific entity (dominant real usage)"
+    },
+    "editable": {
+      "useWhen": "The user should free-type values and press Enter to create tags on a form; existing tags are offered as suggestions. This is the default mode. Values are lowercased, trimmed, and de-duped. v-model is an array of strings.",
+      "dontUse": "Don't use to pick from a fixed known set with search (use asDropdown), to show a list read-only (use disabled), or just to display a single label/count/status (use MTag / MStatusTag).",
+      "example": "Adding free-form tags to a monitor (the Monitor tags input)."
+    }
+  },
+  "usage": {
+    "total": 94,
+    "files": 80,
+    "counter": 69,
+    "asDropdown": 10,
+    "tagType": 24,
+    "userTagOnly": 4,
+    "singleSelection": 2
+  },
+  "knownIssues": [
+    "F1 (medium): placeholder prop ignored in editable mode (hardcoded 'Add Tags'); only used in asDropdown. Bind it on MSelect too.",
+    "F2 (low): default mode lowercases tags; asDropdown preserves case — inconsistent normalization.",
+    "F3 (low): sm prop + size computed are dead (size never bound) — input always default size.",
+    "F4 (low): getAllTagsApi().then() has no .catch — failed/offline fetch is an unhandled rejection (404 pageerror in Storybook). Add .catch → tagOptions=[]."
+  ],
+  "related": [
+    "MTag",
+    "MStatusTag",
+    "SelectedItemPills",
+    "FlotoDropdownPicker",
+    "MSelect"
+  ],
+  "changelog": [
+    "2026-07-14: completeness pass (owner) — surfaced the ELEMENT props (obs-tags: `type` loose|select, `options`, `suggestions`, `loading`) in the registry alongside the product LooseTags contract, and added the element 'two types & when to use' table (loose free-create teal pills vs select fixed-list neutral chips) + the decision routing to the prose spec. Playground/gallery already cover both types + empty/disabled/loading.",
+    "2026-06-07: added — 3 render modes mapped; teal pills + JetBrains Mono verified light+dark; F1-F4; classified as Tag family input member (D12); Option B pages.",
+    "2026-06-29: rebuilt as the unified Tags Input — type=\"loose\" (free-create teal pills) + type=\"select\" (pick-from-list chips); added the suggestion menu + chevron, select disabled/loading states (FA spinner-third), and fixed the loading placeholder + field width."
+  ],
+  "storybook": "Molecules/LooseTags",
+  "figma": {
+    "status": "todo",
+    "component": "LooseTags"
+  },
+  "a11y": {
+    "summary": "Type + Enter to add a pill; Backspace removes the last; Arrow keys navigate suggestions, Enter selects. Exposes a combobox/listbox.",
+    "issues": [
+      "No visible focus ring (SF-001).",
+      "Remove × is small — ensure hit target."
+    ],
+    "doc": "Molecules/LooseTags/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

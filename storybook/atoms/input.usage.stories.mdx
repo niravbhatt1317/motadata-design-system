@@ -1,0 +1,114 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Input/Usage" />
+
+# Input — Usage
+
+🟢 **Stable** · Atom — the text input (`MInput`, 293×). One control, many `type`s. In real
+forms it's wrapped by **`FlotoFormItem`** (label + validation, 1783×) — that pairing is how
+~every field in the product is built.
+
+Decision rules are mirrored in `registry/input.json` (`decisionFlow` + `usageRules`).
+
+## Which input? (decision)
+
+First match wins:
+
+1. **Multi-line text?** → `type="textarea"` (in a form: `FlotoFormItem type="textarea"`).
+2. **A number (with steppers / min-max)?** → `type="number"` → `MInputNumber` (used directly 70×).
+3. **A secret / password?** → `type="password"` (use **`PasswordInput`** for a show/hide eye —
+   `type=password` has none, F2).
+4. **A search box** (Enter to search, optional clear)? → `type="search"` → `MInputSearch`.
+5. **A date / time?** → a **date picker**, not a text input.
+6. **Otherwise single-line text** → `type="text"` (default).
+
+Then wrap it in **`FlotoFormItem`** to get the label + validation (the standard form pattern).
+
+## Each type — what, when, examples
+
+### Text (`type="text"`, default)
+
+- **What:** a single-line free-text field with a full box border (`--field-border-color`).
+- **Use for:** names, labels, identifiers, free-form values.
+- **Product examples:** monitor name, policy name, a tag value, a display label.
+- **Key bits:** `placeholder` for a hint; `maxlength` to cap length; `allow-clear` for an ×.
+
+### Password (`type="password"`)
+
+- **What:** a masked single-line field (`a-input[type=password]`).
+- **Use for:** passwords, secrets, tokens, community strings.
+- ⚠️ **No show/hide toggle** — if revealing the value helps (most credential forms), use the
+  dedicated **`PasswordInput`** instead (F2).
+
+### Number (`type="number"` → `MInputNumber`, 70×)
+
+- **What:** a numeric field with up/down steppers; supports `min` / `max` / `step` / `precision`.
+- **Use for:** ports, thresholds, intervals, counts, timeouts.
+- **Product examples:** SNMP port, polling interval (seconds), a severity threshold.
+- **Tip:** set sensible `min`/`max` so the steppers can't produce invalid values.
+
+### Search (`type="search"` → `MInputSearch`)
+
+- **What:** a text field that emits **`search`** on Enter and shows an enter/search button.
+- **Use for:** filtering a list/grid, searching a picker.
+- **Product examples:** the grid search bar, the dropdown's in-menu search (`dropdown-search`).
+- **Tip:** pair with `allow-clear` so users can reset the query.
+
+### Autocomplete (search + live suggestions)
+
+- **What:** a **search-as-you-type** field whose suggestion list is derived from **what the user types**
+  (`auto-complete-list.vue` / omnibox), keyboard-navigable (ArrowUp/Down + Enter) and hoverable.
+- **Use when:** the suggestions come from the **query**, not a fixed list.
+- **Don't use / use instead:** picking from a **known list** → the **Dropdown picker / Select**; just filtering a
+  list shown **elsewhere** → a plain `type="search"` with no suggestion list.
+- **Product examples:** the global **omnibox** search, metric/counter search-ahead, host/monitor name suggestions.
+
+### Textarea (`type="textarea"` → `a-textarea`)
+
+- **What:** multi-line text. In forms use `FlotoFormItem type="textarea"` (project convention —
+  don't add a separate textarea component).
+- **Use for:** descriptions, notes, comments, scripts, multi-line config.
+- **Style note:** `full-border-text-area` (17×) gives a padded, fully-bordered textarea;
+  `auto-height-input` grows with content.
+
+## Adornments (slots)
+
+- **prefix / suffix** — an icon **inside** the field for context: a **search** glass prefix,
+  a unit/currency suffix, a status icon. Keep it to one small icon.
+- **addonBefore / addonAfter** — attached fixed **segments** outside the field, e.g.
+  `https://` … `.com`, or a unit like `ms` / `%`. Use for protocol/unit affixes, not actions.
+
+## Styles & states
+
+- **`.material-input` (62×):** strips the box to a single **bottom border** (Material
+  underline) — for dense/inline fields (toolbars, filter rows) where a full box is too heavy.
+- **`allow-clear` (218× incl. pickers):** shows an **×** to clear — for optional filters/search.
+- **Disabled vs read-only:** `disabled` = can't interact (greyed); `read-only` = shows a value
+  the user can select/copy but not edit (view modes).
+- **Error state:** during validation, `FlotoFormItem` adds `.has-error` → a **red border**
+  (`#f04e3e`). Always pair with an inline message; don't signal errors by color alone.
+- **Size:** Ant `small`/`default`/`large` exist but the product effectively uses **one height**
+  (`@input-height-base` 32px; search is 36px) — don't reach for size variants without reason.
+
+## Binding & content
+
+- v-model binds `value` + **`update`** — use `v-model` or `:value` + `@update` (⚠️ `@input`
+  alone won't update; F1).
+- The `placeholder` is a hint, **not** a label — the label comes from `FlotoFormItem`. Don't
+  put the field's name only in the placeholder (it vanishes on typing).
+
+## Real usages worth knowing (re-homed here by component type)
+
+These are **usages of the Input**, not separate components — catalogued here rather than as their own
+feature entries:
+
+- **Search box** (`MInputSearch`, **181×**) — the **`search` type** of the Input; everywhere a list
+  is filtered by text. The most common Input usage in the product.
+- **Poll Time (sec)** (`MetricPollTime`, 3×) — a **number Input** (`type=number`) with validation
+  `numeric · required · min = the metric's own min poll-time · max = 30 days`. A metric-collection
+  *setting* — the reusable part is just the number input.
+
+## Related
+
+`FlotoFormItem` (field wrapper — label + validation; own entry next) · `MInputNumber` ·
+`MInputSearch` · `MInputGroup` · `LooseTags` (tag input) · `PasswordInput` · date picker.

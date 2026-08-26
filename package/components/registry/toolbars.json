@@ -1,0 +1,272 @@
+{
+  "name": "toolbars",
+  "display": "Toolbars",
+  "tier": "organism",
+  "family": "Toolbars",
+  "status": "stable",
+  "summary": "The product's toolbar compositions, as variants of one family. A toolbar is an organism that arranges molecules/atoms (title, search, filters, actions). Variants: Page header, Widget header, Bulk action bar, Grid toolbar, Column chooser.",
+  "variants": [
+    {
+      "name": "app-header",
+      "what": "global top bar",
+      "usage": ""
+    },
+    {
+      "name": "page-header",
+      "what": "back + title + actions",
+      "usage": "54×"
+    },
+    {
+      "name": "widget-header",
+      "what": "title + time pill + kebab",
+      "usage": "58×"
+    },
+    {
+      "name": "bulk-action-bar",
+      "what": "N-selected + actions",
+      "usage": ""
+    },
+    {
+      "name": "grid-toolbar",
+      "what": "search/filter/columns/Add",
+      "usage": ""
+    },
+    {
+      "name": "column-chooser",
+      "what": "eye-button show/hide",
+      "usage": "174×"
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "visible",
+      "what": "displayed"
+    },
+    {
+      "name": "bulk-visible",
+      "what": "bulk bar when selectedCount≥min"
+    }
+  ],
+  "renders": "REFERENCE REPRODUCTIONS with real tokens; built from real MButton/MIcon/MStatusTag/MCheckbox.",
+  "decisionFlow": [
+    "Top of a list/detail page (title + actions)? -> Page header.",
+    "A dashboard widget's title + actions? -> Widget header.",
+    "Acting on N selected rows? -> Bulk action bar.",
+    "Controls above a data grid (search/filter/columns/add)? -> Grid toolbar.",
+    "Show/hide grid columns? -> Column chooser."
+  ],
+  "do": [
+    "Use the Page header for every list/detail page (title + actions).",
+    "Compose toolbars from the Filters molecules + search + actions — don't re-implement filters.",
+    "Use the Bulk action bar for multi-select operations.",
+    "Put destructive bulk actions in --secondary-red."
+  ],
+  "dont": [
+    "Don't duplicate a filter inside a toolbar — compose the Molecules/Filters component.",
+    "Don't create a per-screen toolbar component — use these variants.",
+    "Don't rely on the column chooser to reorder columns in the product (that's grid-header drag)."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "Reference reproductions; the live Page/Widget headers use the router / widget store."
+    },
+    "F2": {
+      "severity": "Low",
+      "a11y": true,
+      "issue": "Verify focus-visible ring (SF-001) and aria-labels on icon-only toolbar buttons (export, kebab, More, ×)."
+    }
+  },
+  "tokensUsed": [
+    "--primary",
+    "--primary-alt",
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--neutral-light",
+    "--secondary-red",
+    "--common-widget-bg",
+    "--timerange-background-color"
+  ],
+  "composedFrom": {
+    "FlotoGridActions": "the row action KEBAB (Edit/Clone/Delete ⋮, 88×) — the action-menu archetype, catalogued under POPOVER; it is the kebab inside the Widget header and the Bulk action bar's 'More'.",
+    "Filters": "the filter button/bar inside the Grid toolbar",
+    "Input": "the search box (search type) inside App/Page/Grid toolbars",
+    "DropdownPicker / Date & Time Pickers": "selects + the widget time-range pill"
+  },
+  "scopedOut": {
+    "Detail headers (RUM drill-down ×7, guide-header)": "Page-header VARIANTS for detail/drill-down views — title + context + actions; a usage, not a new component.",
+    "bulk-provision-toolbar (2×)": "a domain VARIANT of the Bulk action bar (rediscover provisioning).",
+    "Action footer (result-footer; modal/drawer footers)": "bottom action bars — covered by the Modal / Drawer families.",
+    "overlay-controls (metric-explorer)": "a feature-specific chart/explorer control strip — not a reusable toolbar.",
+    "rule-group-header / permission-section-header": "in-content SECTION labels, not toolbars.",
+    "FlotoNavBar / left menu / breadcrumb / tabs": "NAVIGATION archetypes (vertical/secondary nav), not toolbars — candidate for a future Navigation family."
+  },
+  "storybook": "Organisms/Toolbars",
+  "related": [
+    "filters",
+    "table",
+    "dropdown-picker",
+    "popover",
+    "date-time-pickers"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "apis": {
+    "BulkActionBar": {
+      "source": "src/components/_base-bulk-action-bar.vue",
+      "props": {
+        "selectedCount": "Number",
+        "minSelection": "Number (default 2) — bar shows at >=",
+        "actions": "Array<{key,name,icon?,isDanger?,greenAction?,type?:'divider'}>",
+        "directKeys": "Array — actions rendered inline (not in More)",
+        "createPermissionKeys/editPermissionKeys/deletePermissionKeys": "Array",
+        "createPermissionName/editPermissionName/deletePermissionName": "String"
+      },
+      "events": {
+        "clear": "deselect all",
+        "selected": "(action)",
+        "<actionKey>": "per action key"
+      },
+      "note": "role=toolbar; inline primary/danger actions + a 'More' overflow (Menu/context-menu, picker-action-dropdown). Danger separated by a __danger-zone divider."
+    },
+    "AppHeader": {
+      "source": "src/components/layout/header.vue (Header)",
+      "what": "global top bar — a COMPOSITION, not a propful component. Comes from the layout.",
+      "contains": [
+        "logo (FlotoLink -> home, appliedIconLogo)",
+        "global search (MButton -> omnibox; navigation/omnibox)",
+        "health-monitoring + NCM approval (permission-gated icon buttons)",
+        "NotificationDropdown (navigation/notification-dropdown)",
+        "BUILD : <version> tag",
+        "UserDropdown (navigation/user-menu)"
+      ]
+    },
+    "PageHeader": {
+      "source": "src/components/_base-page-header.vue (FlotoPageHeader)",
+      "props": {
+        "backLink": "[String,Object] — router link/path for back",
+        "title": "String",
+        "mainHeader": "Boolean (false) — main vs inner title-panel style",
+        "useDivider": "Boolean (false)"
+      },
+      "events": {},
+      "slots": {
+        "back-button": "replaces default FlotoBackButton",
+        "before-title": "",
+        "title": "appended next to title",
+        "title-append": "below title (e.g. count)",
+        "after-title": "",
+        "default": "main content (actions)",
+        "additional-rows": "rows below the header"
+      },
+      "note": "slot-driven; no emits"
+    },
+    "WidgetHeader": {
+      "source": "src/components/widgets/views/components/widget-title.vue",
+      "props": {
+        "widget": "Object — widget meta (name/category/timeRange/type)",
+        "guid": "String (required)",
+        "title": "String — overrides widget.name",
+        "disabled": "Boolean",
+        "isPreview": "Boolean",
+        "isFullscreen": "Boolean",
+        "hideTitle": "Boolean",
+        "hideTimeline": "Boolean",
+        "headerFontSize": "String (11px)",
+        "backgroundColor": "String — tints time pill + text",
+        "excludedActions": "Array — action keys to hide",
+        "additionalActions": "Array — prepend custom actions"
+      },
+      "events": {
+        "edit": "",
+        "clone": "",
+        "remove": "",
+        "share": "",
+        "fullscreen": "",
+        "exit-fullscreen": "",
+        "csv-export": "grid",
+        "chart-csv-export": "{widgetName,onSuccess,onError,onNoData}"
+      },
+      "slots": {
+        "flip-toggle": "optional toggle control"
+      },
+      "note": "title + time pill + kebab (FlotoGridActions) + metric-analysis"
+    },
+    "ColumnChooser": {
+      "source": "src/components/column-selector.vue",
+      "props": {
+        "value": "Array — column objs {key,hidden?}",
+        "columns": "Array — all available columns",
+        "hideResetOption": "Boolean — hides Reset Column Preference",
+        "maxAllowedSelection": "Number — cap (toast on exceed)",
+        "errorMessage": "String"
+      },
+      "events": {
+        "change": "updated column array (hidden flags)"
+      },
+      "slots": {
+        "trigger": "{ toggle, isOpen } — replaces eye button"
+      },
+      "note": "FlotoDropdownPicker multi-select; filters out action columns; v-model=change"
+    },
+    "GridToolbar": {
+      "source": "COMPOSITION (default-grid.vue) — not a single component",
+      "props": "inherited from FlotoWidgetView/widget config; no dedicated props",
+      "events": "row-click, column-change, sort-change",
+      "slots": "sparklineHeader, defaultCell",
+      "composedOf": [
+        "MInput(search)",
+        "filter MButton",
+        "ColumnSelector (in MPersistedColumns — persists to localStorage by widget id)",
+        "WidgetGridFilters panel",
+        "VirtualTable grid"
+      ],
+      "note": "assemble from the named parts; not a propful wrapper"
+    }
+  },
+  "a11y": {
+    "summary": "Bulk-action bar = role=toolbar + aria-label; page titles are real <h4> headings.",
+    "issues": [
+      "SF-001 focus ring on toolbar buttons.",
+      "Icon-only buttons (export, kebab, More, ×) need aria-label.",
+      "Announce bulk-bar appearance; kebab needs aria-haspopup/expanded + Esc."
+    ],
+    "doc": "Organisms/Toolbars/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "usageRules": {
+    "app-header": {
+      "useWhen": "You need the global top bar that appears on every authenticated screen — the layout-level chrome carrying the logo (home link), global omnibox search, permission-gated health-monitoring/NCM-approval icons, the notification dropdown, the BUILD:<version> tag, and the user menu. It comes from the layout (header.vue), not per-page.",
+      "dontUse": "Don't hand-build or duplicate it inside a page — it's a layout composition, not a propful component. For a specific list/detail page's title + actions use the Page header; for a dashboard widget's chrome use the Widget header.",
+      "example": "The persistent ObserveOps top bar with the Motadata logo, the omnibox global search button, notification bell, BUILD version tag, and the user avatar dropdown — rendered once by src/components/layout/header.vue across the whole app."
+    },
+    "page-header": {
+      "useWhen": "At the top of any list or detail page that needs a back link + title + right-side action buttons (FlotoPageHeader). Use it for every list/detail page (54× in product); use mainHeader for the main title-panel style vs an inner panel, and the slots (title-append for counts, additional-rows) for context rows.",
+      "dontUse": "Don't use it for a dashboard widget's title strip (use Widget header) or for controls sitting directly above a data grid like search/filter/columns/Add (use Grid toolbar). Don't create a bespoke per-screen header component.",
+      "example": "A resource-detail or list page top bar: a back button returning to the list, the page title with a count appended below it, and right-aligned primary actions like an Add/Create button — e.g. the Monitors or Alerts list page header."
+    },
+    "widget-header": {
+      "useWhen": "For a dashboard widget's chrome (widget-title.vue): the widget title + a time-range pill + the kebab of widget actions (edit/clone/remove/share/fullscreen/CSV-export) plus metric-analysis. Use it inside dashboard widgets (58× in product); tune with excludedActions/additionalActions, hideTimeline, backgroundColor to tint the time pill.",
+      "dontUse": "Don't use it as a page-level header (use Page header) or for bulk row operations (use Bulk action bar). The kebab itself is the FlotoGridActions action-menu archetype catalogued under Popover — don't re-implement it.",
+      "example": "The title strip of a dashboard chart widget: the widget name on the left, a time-range pill (e.g. 'Last 24 Hours') and a ⋮ kebab exposing Edit / Clone / Remove / Fullscreen / Export CSV on the right."
+    },
+    "bulk-action-bar": {
+      "useWhen": "When the user has selected N rows in a grid and you need a floating toolbar (role=toolbar) showing the selected count, a Clear control, and inline primary actions plus a 'More' overflow menu (_base-bulk-action-bar). It appears once selectedCount ≥ minSelection (default 2). Put destructive bulk actions in --secondary-red, separated by the __danger-zone divider.",
+      "dontUse": "Don't use it for single-row row actions (that's the FlotoGridActions kebab) or for the always-visible grid controls like search/filter/columns/Add (use Grid toolbar). Don't scatter bulk actions without the danger-zone separation for destructive ones.",
+      "example": "Selecting multiple monitors in a grid surfaces a floating bar reading 'N selected' with a Clear (×), inline actions like Enable/Disable, and a 'More' overflow — with Delete rendered as a red danger action below a divider (e.g. the rediscover bulk-provision toolbar variant)."
+    },
+    "grid-toolbar": {
+      "useWhen": "For the always-visible control strip directly above a data grid: search (MInput), a filter button, the Column chooser, and an Add/Create action. It's a composition (default-grid.vue), assembled from the named parts — compose the Molecules/Filters component for filtering rather than re-implementing it.",
+      "dontUse": "Don't build it as a single propful wrapper — assemble MInput + filter MButton + ColumnSelector + WidgetGridFilters. Don't duplicate a filter inside it (compose Filters). For selection-driven operations use the Bulk action bar; for page title/actions use the Page header.",
+      "example": "The controls above a list grid: a search box, a Filter button opening the quick-filter/filter-bar molecule, the eye-icon column chooser, and an 'Add' button — e.g. above the Monitors or Alerts VirtualTable grid."
+    },
+    "column-chooser": {
+      "useWhen": "To let users show/hide grid columns via the eye-button dropdown (column-selector.vue, a FlotoDropdownPicker multi-select) — the most-used toolbar piece (174×). Use maxAllowedSelection to cap selections, hideResetOption to hide 'Reset Column Preference', and the trigger slot to replace the eye button; persist via MPersistedColumns.",
+      "dontUse": "Don't rely on it to reorder columns — reordering is grid-header drag, not the chooser. It only toggles visibility. Don't use it for the broader grid controls (search/filter/Add) — that's the Grid toolbar it lives inside.",
+      "example": "The eye-icon button above a grid opening a checklist of available columns so the user can hide/show fields; selections persist to localStorage per widget id via MPersistedColumns (e.g. customizing the Alerts grid columns)."
+    }
+  }
+}

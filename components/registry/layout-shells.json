@@ -1,0 +1,75 @@
+{
+  "name": "layout-shells",
+  "component": "views/layouts/*",
+  "display": "Layout shells",
+  "tier": "foundation",
+  "section": "Foundations",
+  "family": "Layout",
+  "status": "stable",
+  "summary": "The 4 route shells (chosen by the src/app.vue switcher + route.meta.layout override) + 2 content layouts that render inside Layout. They differ by chrome: Layout (nav + header + content, the default) · LoginLayout (bare sign-in) · EmptyLayout / PublicLayout (no chrome, padded) · MonitorHierarchyLayout (tree + content) · Settings two-pane (menu + content).",
+  "decisionFlow": [
+    "Pick the SHELL = the page's top-level skeleton once you know the screen type: list-with-detail, full-page form/record, dashboard canvas, or a centered auth/empty layout.",
+    "High-complexity record you must deep-link to / keep in browser history? -> full-page shell (route), NOT a drawer or modal.",
+    "Editing a row while keeping the list visible behind? -> keep the list shell + open a drawer (see drawer.json), don't navigate to a new shell.",
+    "A quick confirm / small focused task? -> stay on the current shell + modal (see modal.json). Reserve a new shell/route for a whole screen, not an overlay."
+  ],
+  "props": {
+    "shell": {
+      "type": "string",
+      "default": "layout",
+      "enum": [
+        "layout",
+        "login",
+        "empty",
+        "public",
+        "monitor-hierarchy",
+        "settings"
+      ],
+      "note": "which shell to preview"
+    }
+  },
+  "do": [
+    "Use Layout for in-app pages (default — no route override).",
+    "Use LoginLayout for auth screens; it's also the not-logged-in fallback.",
+    "MonitorHierarchyLayout / Settings two-pane render INSIDE Layout — they are content layouts, not route shells."
+  ],
+  "dont": [
+    "Don't treat MonitorHierarchyLayout as a route shell (0 meta.layout overrides).",
+    "Don't add a route layout override unless you need EmptyLayout / PublicLayout."
+  ],
+  "tokensUsed": [
+    "--nav-panel-bg",
+    "--border-color",
+    "--page-background-color",
+    "--primary",
+    "--code-tag-background-color",
+    "--nav-hover-bg",
+    "--neutral-shadow-light"
+  ],
+  "related": [
+    "layout-app-shell",
+    "layout-screen-regions",
+    "layout-page-templates"
+  ],
+  "storybook": "Foundations/Layout/Layout shells",
+  "a11y": {
+    "summary": "Shell chrome reference. Each shell wraps the routed page; landmarks + focus order follow the App shell. LoginLayout is a bare, focus-trapped auth screen.",
+    "issues": []
+  },
+  "knownIssues": [
+    "MonitorHierarchyLayout is a content layout, NOT a route shell (0 meta.layout overrides) — a common misclassification.",
+    "[element] The obs-layout-* WEB COMPONENT is a fixed visual demo, not a slotted layout primitive — you can't put a real page inside it. Use the layout GUIDANCE (decisionFlow/regions) + compose the shell from atoms + the 12-col grid + tokens."
+  ],
+  "changelog": [
+    "2026-06-29: added — the 4 route shells + 2 content layouts, with a recognizable per-shell preview.",
+    "2026-06-29: Usage enriched — when-to-use + where-it's-used."
+  ],
+  "whenToUse": "Which page frame to use — almost always the default Layout; switch only for login, print/export, or system (upgrade/restore) pages.",
+  "usedIn": [
+    "Layout — ~all authenticated routes (the default).",
+    "LoginLayout — login / reset / forgot + disk-full + the unauth fallback.",
+    "EmptyLayout — print-safe report export · PublicLayout — upgrade / restore.",
+    "MonitorHierarchyLayout — log / inventory / topology (inside Layout) · Settings two-pane — all settings submodules."
+  ],
+  "referenceOnly": true
+}

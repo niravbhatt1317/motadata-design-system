@@ -1,0 +1,71 @@
+{
+  "name": "metric-list",
+  "display": "Metric List",
+  "tier": "molecule",
+  "family": "Data Display",
+  "status": "stable",
+  "element": "obs-metric-list",
+  "summary": "The DS metric / KPI list (obs-metric-list) — the product's vertical-value-grid. Each row is a PROMINENT value (a large number + a unit, right-aligned) followed by its label; no column header. Used by dashboard metric / KPI widgets. NOT a data table (it only shares the grid chrome) — for rows-of-records use obs-table.",
+  "element_note": "Split out of the Storybook Table 'vertical-value' variant — it's a metric LAYOUT, not a data table.",
+  "variants": [
+    {
+      "name": "default",
+      "what": "value + unit + label rows"
+    },
+    {
+      "name": "color-coded",
+      "what": "[element] a threshold-coloured value — an optional 4th item field / `color` key is a --severity token (the product ColorCodedCell colouring), e.g. --severity-critical → the value renders red"
+    }
+  ],
+  "props": {
+    "items": {
+      "type": "string|array",
+      "note": "[[value, unit, label], …] or [[value, unit, label, color], …] or [{value, unit, label, color?}] — JSON string or a JS array. `color` is a --severity token (e.g. \"--severity-critical\") that colours the value (the product ColorCodedCell threshold colouring)."
+    }
+  },
+  "decisionFlow": [
+    "Showing a few prominent metrics/KPIs (a big number + unit + label each)? -> Metric List.",
+    "Rows of records with columns? -> the Table (obs-table).",
+    "Label→value pairs describing ONE record? -> Key-Value (obs-key-value)."
+  ],
+  "do": [
+    "Use for dashboard KPI / metric widgets (availability, throughput, latency).",
+    "Give each item a value + unit + label.",
+    "Colour a threshold value with a --severity token (the item's 4th field / `color` key), never a hex."
+  ],
+  "dont": [
+    "Don't use for tabular records (use obs-table).",
+    "Don't use for a record's key/value detail (use obs-key-value)."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--neutral-light",
+    "--page-text-color"
+  ],
+  "usageRules": {
+    "metric-list": {
+      "useWhen": "a small set of headline metrics/KPIs, each a big value + unit + label",
+      "dontUse": "for tabular records (obs-table) or key/value record detail (obs-key-value)",
+      "example": "a dashboard widget: 99.98% Availability, 1.2 k/s Requests, 142 ms p95 latency"
+    },
+    "color-coded": {
+      "useWhen": "a metric's value should signal severity/threshold state (over budget, critical, healthy) — pass an optional `color` (a --severity token) as the 4th item field or object key",
+      "dontUse": "don't hardcode a hex — always a --severity token; don't colour a value that has no threshold meaning",
+      "example": "CPU 94% in --severity-critical (red), Memory 61% in --severity-warning, Disk 12% in --severity-clear (green)"
+    }
+  },
+  "a11y": {
+    "summary": "A borderless table of value/label rows; ensure the value+unit reads as one figure. Consider a <dl> if it's semantically key/value.",
+    "issues": []
+  },
+  "knownIssues": [
+    "[element] obs-metric-list is FUNCTIONAL: pass items ([value,unit,label] tuples/objects). Split from the Storybook Table 'vertical-value' variant since it's a metric layout, not a data table."
+  ],
+  "changelog": [
+    "2026-07-13: color-coded values + playground (owner) — an optional `color` (a --severity token) on an item colours the value (the product ColorCodedCell threshold colouring; e.g. --severity-critical → red). Added the Details-tab dataset playground (KPIs / color-coded / utilization presets) and gallery examples (tuples, color-coded, objects). Documented the full surface in the new prose spec.",
+    "2026-07-13: row hover (owner) — added a real row-hover highlight (`tr:hover td` → --neutral-lighter, 0.12s ease). Earlier this was wrongly dismissed as an Inspect-mode artifact; the owner wanted an actual hover affordance, matching the product list-row convention.",
+    "2026-07-13: width fix (owner) — the playground was shrink-wrapping the widget to ~208px (labels wrapped); changed :host to display:block, widened the max-width, and gave the element full stage width so labels/values sit on one line.",
+    "2026-07-13: shipped <obs-metric-list> — the DS metric/KPI list (vertical-value-grid). Split out of the Storybook Table variant set (it's a metric LAYOUT, not a table)."
+  ],
+  "storybook": "Organisms/Table (vertical-value variant)"
+}

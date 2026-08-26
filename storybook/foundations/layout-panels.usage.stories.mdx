@@ -1,0 +1,56 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/Panel behaviours/Usage" />
+
+# Panel behaviours — Usage
+
+> **In plain terms:** how a surface shows up. Editing a record → **Drawer**. Quick confirm → **Modal**.
+> Optional detail → **Collapsible** / **Expandable rows**. The rest (resize, pin, tiles, bulk bar,
+> popover, full-screen) are for specific jobs — see the table.
+
+How panels open, move and resize — the dynamic layer over the static
+[Screen regions](?path=/docs/foundations-layout-screen-regions-usage--page). Machine spec:
+[`layout/layouts.json`](../../layout/layouts.json) → `panels`.
+
+## Which behaviour to use
+
+Counts are from the product sweep ([`foundation/panel-behaviours.md`](../../foundation/panel-behaviours.md)).
+
+| Behaviour | Use when | Component / source |
+| --- | --- | --- |
+| **Drawer (slide-over)** | create/edit/detail beside a list without leaving the page | [Organisms/Drawer](?path=/docs/organisms-drawer-usage--page) (FlotoDrawer) — 146 files |
+| **Modal** | confirm/collect a small thing; form-in-modal | [Organisms/Modal](?path=/docs/organisms-modal-usage--page) (`a-modal` / FlotoConfirmModal) — 37 files |
+| **Collapsible** | optional/secondary sections; the collapsible left tree | `MCollapse` — 19 files |
+| **Expandable rows** | reveal a row's detail inline without a drawer/modal | [Organisms/Table](?path=/docs/organisms-table-usage--page) row expansion — 9 files |
+| **Resizable / split** | two panes the user should rebalance (settings, topology, explorers) | **`splitpanes` library** — ~3 true splits |
+| **Affix / sticky** | keep a toolbar/sidebar visible on scroll | CSS/JS sticky (no `<a-affix>` widget) |
+| **Dashboard tiles** | drag + resize widget tiles on a canvas | `vue-grid-layout` — 5 files (+ masonry) |
+| **Bulk-action bar** | act on a multi-selection | [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → BulkActionBar (fixed bottom) — 2 files |
+| **Popover** | small contextual menu/info without blocking | [Molecules/Popover](?path=/docs/molecules-popover-usage--page) — 20+ |
+| **Full-screen / OmniBox** | global search / immersive overlay above everything | OmniBox (portal) · NOC-player full-screen |
+
+> **Note:** table **resizable columns** (Ant `minResizableWidth`, 50+ tables) are a grid feature, not a
+> panel — see [Organisms/Table](?path=/docs/organisms-table-usage--page).
+
+## Best practices
+
+- **Drawer is the default record surface** — prefer it over a full page navigation for edit/detail off a
+  list (the master-detail content layout). Always give it a backdrop and **ESC to close**. Width is
+  semantic: ~40% for forms, **90% for deep drill-downs**.
+- **Modal vs Drawer:** small confirm/collect → Modal (`variant=error` for destructive); panel-sized,
+  scrollable record → Drawer; high-complexity record → a full page/route.
+- Use **Collapsible** / **Expandable rows** for *optional* detail, not core content; don't hide required
+  fields collapsed by default.
+- **Resizable** (`splitpanes`) panes need a sensible min-width and a remembered default; don't let a pane
+  collapse to zero. True drag-splits are rare — don't reach for one where a fixed two-pane works.
+- **Affix** sparingly — only pin things that stay useful while scrolling (filters, a hierarchy sidebar,
+  a wizard footer).
+- **Dashboard tiles**: snap to the grid; persist size/position per board; use masonry only when tile
+  heights genuinely vary.
+- **Bulk-action bar** appears only on selection (fixed, bottom); **Popover** is non-blocking (interact
+  behind it) whereas **Modal**/**Full-screen** block.
+
+## Related
+
+- [**Screen regions**](?path=/docs/foundations-layout-screen-regions-usage--page) — the regions these behaviours act on (master-detail uses Drawer; two-pane uses collapse/affix).
+- [**Page templates**](?path=/docs/foundations-layout-page-templates-usage--page) — which template uses which behaviour.

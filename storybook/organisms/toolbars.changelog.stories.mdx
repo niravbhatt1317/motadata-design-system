@@ -1,0 +1,31 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Toolbars/Changelog" />
+
+# Toolbars — Changelog
+
+- **2026-06-16 (sweep recheck — nothing else missed)** — Census of every header / toolbar / action-bar
+  / `role="toolbar"`. The 6 archetypes hold; the rest are variants/compositions/other families
+  (recorded in the spec's "Checked & scoped out"): **`FlotoGridActions`** (88×, the row action kebab) is
+  the action-menu archetype under **Popover** — and the kebab *composed into* the Widget header & Bulk
+  bar; **detail headers** (RUM drill-downs ×7) are **Page-header variants**; **`bulk-provision-toolbar`**
+  is a Bulk-bar variant; **footers** belong to Modal/Drawer; section headers aren't toolbars; the left
+  **`FlotoNavBar`** / breadcrumb / tabs are **navigation** (a future family). Only `role="toolbar"` in
+  the codebase is the Bulk action bar.
+- **2026-06-16 (recheck — added the App header)** — Owner flagged a miss: the **App header**
+  (`layout/header.vue`, `Header`) — the product's **global top bar** (logo · global search · Health /
+  Approval · Notifications · BUILD tag · User menu) — wasn't catalogued. Added it as the first Toolbars
+  variant. (The left **`FlotoNavBar`** module nav is a separate *navigation* archetype, noted, not a
+  toolbar.) Verified the header icons are in the curated set.
+- **2026-06-16 (new family — toolbars by variant)** — Consolidated the product's toolbars into one
+  organism family and surfaced the two **missing** big ones. Variants: **Page header**
+  (`FlotoPageHeader`, **54×** — back + title + actions), **Widget header** (`widget-title`, **58×** —
+  title + time-range pill + a kebab of Edit/Clone/Full Screen/Share/Export), **Bulk action bar**
+  (`_base-bulk-action-bar` — floating N-selected toolbar with primary + danger actions), **Grid
+  toolbar** (search + filter + columns + Add), and **Column chooser** (`column-selector`, 174×).
+- **Folded in** the former *Grid Toolbar* entry (Grid toolbar + Column chooser became variants here);
+  its filter molecules (Filter bar, Quick filters) moved to **Molecules/Filters**.
+- Reproductions with real tokens (the live Page/Widget headers use the router / widget store). Verified
+  render + the Widget-header kebab opens, no console errors. Part of the taxonomy correction:
+  toolbars are *compositions* of the Filters molecules + search + actions.
+- Related: **Filters** · **Table** · **DropdownPicker** · **Popover** (kebabs) · **Date & Time Pickers**.

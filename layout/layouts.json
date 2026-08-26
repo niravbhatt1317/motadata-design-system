@@ -1,0 +1,310 @@
+{
+  "$description": "The product's STRUCTURE layer above the grid — the app shell, the layout shells (4 route + 2 content), the page-level screen regions, the content layouts, and the panel behaviours. Pairs with layout/grid.json (the 12-col grid that fills these regions). Storybook: Foundations/Layout/*.",
+  "appShell": {
+    "$note": "The authenticated app frame — src/views/layouts/main.vue (component `Layout`). Nesting: MLayout(root, flex) > NavBar (left rail) + MLayout.contentContainer > Header (top) + MLayout.main-content-panel > FlotoScrollView > MLayoutContent (the page slot). Plus a global overlay layer.",
+    "regions": [
+      {
+        "region": "NavBar",
+        "where": "left",
+        "size": "@nav-icon-width 50px",
+        "component": "NavBar (layout/navbar.vue)",
+        "what": "primary icon rail — modules, logo, collapse; see Navigation/PrimaryNav",
+        "fixed": true
+      },
+      {
+        "region": "Header",
+        "where": "top",
+        "size": "@header-height 55px",
+        "component": "Header (layout/header.vue)",
+        "what": "breadcrumb / back · global search trigger · notifications · user menu",
+        "fixed": true
+      },
+      {
+        "region": "Content panel",
+        "where": "fill",
+        "size": "flex-1, scrolls",
+        "component": "MLayoutContent inside FlotoScrollView",
+        "what": "the routed page (the <slot/>); the only scrolling region",
+        "fixed": false
+      },
+      {
+        "region": "Overlay layer",
+        "where": "portals / fixed",
+        "size": "—",
+        "component": "OmniBox · CustomNotification · AlertNotification · *ExpireNotification · PortalTarget(omnibox, interface-template)",
+        "what": "global, shell-level, above the content panel",
+        "fixed": true
+      }
+    ]
+  },
+  "$shellsNote": "4 ROUTE shells (selected by the app.vue switcher: not-logged-in → LoginLayout; else Layout; then route.meta.layout override wins) + 2 CONTENT layouts that render inside Layout. Corrected per foundation/layout-shells.md — MonitorHierarchyLayout has 0 route overrides.",
+  "shells": [
+    {
+      "name": "Layout",
+      "kind": "route",
+      "file": "views/layouts/main.vue",
+      "chrome": "NavBar + Header + scroll content + overlays",
+      "use": "every authenticated app page (the DEFAULT — no `layout` route override needed)",
+      "usage": "default for ~all routes",
+      "select": "Standard in-app page."
+    },
+    {
+      "name": "LoginLayout",
+      "kind": "route",
+      "file": "views/layouts/login-layout.vue",
+      "chrome": "bare — MLayout > MLayoutContent > slot; no socket, no chrome",
+      "use": "login / reset / forgot-password + disk-full error; also the not-logged-in fallback",
+      "usage": "meta + unauth fallback",
+      "select": "Unauthenticated auth screen."
+    },
+    {
+      "name": "EmptyLayout",
+      "kind": "route",
+      "file": "views/layouts/empty-layout.vue",
+      "chrome": "NO nav, NO header — padded (p-4) scroll content; keeps socket + local-DB",
+      "use": "full-bleed flow that still needs live data but not the chrome (print-safe report export)",
+      "usage": "1 route override · /reports/export/:id",
+      "select": "Full-screen flow, no nav/header, still authenticated + live."
+    },
+    {
+      "name": "PublicLayout",
+      "kind": "route",
+      "file": "views/layouts/public-layout.vue",
+      "chrome": "like EmptyLayout, full-bleed (-m-4); socket + DB; isMotadataUpdatingOrRestoring",
+      "use": "public / system pages — upgrade or restore in progress",
+      "usage": "2 route overrides · /upgrade /restore",
+      "select": "Public/system page, no chrome."
+    },
+    {
+      "name": "MonitorHierarchyLayout",
+      "kind": "content",
+      "file": "views/layouts/monitor-hierarchy-layout.vue",
+      "chrome": "a CONTENT layout (renders inside Layout): two-pane — left hierarchy tree (collapsible, affixable, transition-width) + content via MRow/MCol gutter 0",
+      "use": "monitor / inventory / topology screens with a tree on the left",
+      "usage": "0 route overrides · component in 4 files",
+      "select": "Tree/hierarchy on the left + detail on the right (NOT a route shell)."
+    },
+    {
+      "name": "Settings two-pane",
+      "kind": "content",
+      "file": "modules/settings/views/main.vue",
+      "chrome": "a CONTENT layout (inside Layout): splitpanes — left menu (MCollapse+MMenu, 15%) + RouterView (85%); hidden via meta.hideSettingsMenu",
+      "use": "every settings submodule",
+      "usage": "settings/views/main.vue",
+      "select": "Settings/admin: left menu + content."
+    }
+  ],
+  "screenRegions": {
+    "$note": "Inside the content panel, a standard page is composed of these regions (top → bottom). Reproduced as the Foundations/Layout/Screen regions story; map to components via index.json.",
+    "regions": [
+      {
+        "region": "Page header",
+        "component": "PageHeader (Toolbars) — title + breadcrumb + primary actions",
+        "usage": "page-header in 54 files",
+        "optional": false
+      },
+      {
+        "region": "Toolbar / filter bar",
+        "component": "GridToolbar · FilterBar · BulkActionBar (Toolbars / Filters)",
+        "usage": "",
+        "optional": true
+      },
+      {
+        "region": "Body",
+        "component": "Table · form (MRow/MCol grid) · dashboard grid · detail panes",
+        "usage": "MRow 541 · MCol 522",
+        "optional": false
+      },
+      {
+        "region": "Footer / pagination",
+        "component": "FlotoPaginatedCrud pager · form action bar (Save/Cancel)",
+        "usage": "",
+        "optional": true
+      }
+    ]
+  },
+  "contentLayouts": [
+    {
+      "name": "Single column",
+      "what": "header + toolbar + body fill the content panel",
+      "use": "list views, simple forms",
+      "grid": "MRow/MCol gutter 16"
+    },
+    {
+      "name": "Two-pane (tree/menu + content)",
+      "what": "left hierarchy/list/menu panel + right detail; left is collapsible/affixable",
+      "use": "explorers, settings (left menu + content)",
+      "grid": "MonitorHierarchyLayout · Settings splitpanes · left-side-list-view-panel (8 files)"
+    },
+    {
+      "name": "Master-detail (list + drawer)",
+      "what": "list/table + a FlotoDrawer slide-over for the record",
+      "use": "alert / inventory record views",
+      "grid": "Drawer (146 files)"
+    },
+    {
+      "name": "Dashboard grid",
+      "what": "draggable/resizable widget tiles on a canvas (+ masonry variant)",
+      "use": "dashboards",
+      "grid": "vue-grid-layout (5 files), --dashboard-background"
+    },
+    {
+      "name": "Three-pane",
+      "what": "saved-views rail + metric-picker + chart",
+      "use": "metric / apm explorers",
+      "grid": "metric-explorer (saved-views + MTab/MCollapse picker + chart)",
+      "$found": "product sweep"
+    },
+    {
+      "name": "Chart-over-grid",
+      "what": "a fixed chart region above a grid",
+      "use": "trap viewer, log dashboards",
+      "grid": "trap-viewer (30% chart / 70% grid)",
+      "$found": "product sweep"
+    }
+  ],
+  "leftPanelVariants": [
+    "hierarchy tree (log)",
+    "saved-views sidebar (metric/apm)",
+    "metric-picker MTab+MCollapse",
+    "vertical filter (ncm)"
+  ],
+  "pageTemplates": {
+    "$note": "The canonical page types (Storybook: Foundations/Layout/Page templates). Full region→component blueprints live in components/recipes/recipes.json — load the recipe id in parens.",
+    "templates": [
+      {
+        "name": "List view",
+        "recipe": "list-view",
+        "what": "paginated collection: header + toolbar + table + pager"
+      },
+      {
+        "name": "Form view",
+        "recipe": "form-view",
+        "what": "create/edit one record on the MRow/MCol grid; often in a drawer"
+      },
+      {
+        "name": "Detail view",
+        "recipe": "detail-view",
+        "what": "one record: header + status/severity + tabs + panels/charts"
+      },
+      {
+        "name": "Dashboard view",
+        "recipe": "dashboard-view",
+        "what": "widget grid + global time range"
+      },
+      {
+        "name": "Explorer view",
+        "recipe": "explorer-view",
+        "what": "left panel + query/filter + results"
+      },
+      {
+        "name": "Wizard flow",
+        "recipe": "wizard-flow",
+        "what": "stepper + step body + Back/Next"
+      },
+      {
+        "name": "Graph / Canvas view",
+        "recipe": "graph-canvas",
+        "what": "hierarchy tree + interactive Cytoscape node graph (Topology)"
+      }
+    ],
+    "variants": [
+      "utility-tool form",
+      "system/status page",
+      "live-tail / streaming",
+      "list⇄dashboard view-toggle",
+      "detail-as-template-swapper",
+      "two wizard shapes (multi-route stateful / single-view stepped)"
+    ],
+    "flows": [
+      "bulk-action-flow",
+      "inline-edit-flow",
+      "search-filter-flow",
+      "export-flow",
+      "confirm-delete-flow (all in recipes.json)"
+    ]
+  },
+  "panels": {
+    "$note": "Panel/overlay BEHAVIOURS — how surfaces open/move/resize. Reproduced as the Foundations/Layout/Panel behaviours story. Counts from foundation/panel-behaviours.md.",
+    "behaviours": [
+      {
+        "behaviour": "Drawer (slide-over)",
+        "component": "FlotoDrawer / a-drawer",
+        "usage": "146 files / 30",
+        "what": "right/left overlay for create/edit/detail; ~40% forms, ~90% deep drill-downs; backdrop; ESC to close"
+      },
+      {
+        "behaviour": "Modal",
+        "component": "a-modal / FlotoConfirmModal / MModal",
+        "usage": "37 files",
+        "what": "centered blocking overlay; confirm/collect; form-in-modal; variant=error for destructive"
+      },
+      {
+        "behaviour": "Collapsible panel",
+        "component": "MCollapse / a-collapse",
+        "usage": "19 files",
+        "what": "accordion sections; left-tree collapse (transition-width)"
+      },
+      {
+        "behaviour": "Expandable rows",
+        "component": "grid row expansion",
+        "usage": "9 files",
+        "what": "inline row→detail disclosure (alert stream, log-grid, apm tree-list)"
+      },
+      {
+        "behaviour": "Resizable / split",
+        "component": "splitpanes (library)",
+        "usage": "~3 true splits",
+        "what": "drag-to-resize panes (settings menu+content, topology tree+graph, apm trace)"
+      },
+      {
+        "behaviour": "Affix / sticky",
+        "component": "CSS/JS sticky (no <a-affix>)",
+        "usage": "scattered",
+        "what": "pin a panel/toolbar/footer on scroll (hierarchy sidebar, wizard footer, time-range)"
+      },
+      {
+        "behaviour": "Dashboard tiles",
+        "component": "vue-grid-layout (+ VueMasonryWall)",
+        "usage": "5 files",
+        "what": "drag + resize widget grid; masonry variant for varying tile heights"
+      },
+      {
+        "behaviour": "Bulk-action bar",
+        "component": "_base-bulk-action-bar",
+        "usage": "2 files",
+        "what": "fixed-bottom bar, appears on multi-selection"
+      },
+      {
+        "behaviour": "Popover",
+        "component": "floating-vue / _base-popper",
+        "usage": "20+",
+        "what": "small contextual, non-blocking overlay (menus, column selectors, sub-tabs)"
+      },
+      {
+        "behaviour": "Full-screen / OmniBox",
+        "component": "OmniBox (portal) · NOC-player",
+        "usage": "few",
+        "what": "global search / immersive overlay above everything"
+      }
+    ],
+    "$notPanel": "Table resizable columns (Ant minResizableWidth, 50+ tables) are a GRID feature, not a panel behaviour."
+  },
+  "tokens": {
+    "@nav-icon-width": "50px (left rail)",
+    "@header-height": "55px (top header)",
+    "@navbar-height": "50px",
+    "@padding-md": "16px (content padding / gutter)",
+    "--nav-panel-bg": "left rail bg",
+    "--common-main-bg": "content area bg",
+    "--dashboard-background": "dashboard canvas bg",
+    "--border-color": "region dividers"
+  },
+  "storybook": {
+    "appShell": "Foundations/Layout/App shell",
+    "shells": "Foundations/Layout/Layout shells",
+    "screenRegions": "Foundations/Layout/Screen regions",
+    "panels": "Foundations/Layout/Panel behaviours",
+    "templates": "Foundations/Layout/Page templates (recipes.json)"
+  }
+}

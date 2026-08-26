@@ -1,0 +1,65 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Checkbox/Usage" />
+
+# Checkbox — Usage
+
+🟢 **Stable** · Atom — a boolean choice, usually committed when a form is saved. The product
+ships a functional **controlled** override (`src/components/_base-checkbox.vue`); the kit's
+`MCheckbox` is excluded. Bind `v-model` (or `:checked` + `@change`).
+
+Decision rules below are mirrored in `registry/checkbox.json` (`decisionFlow` + `usageRules`).
+
+## Pick the right control (Checkbox vs Radio vs Switch)
+
+First match wins:
+
+1. **One of several mutually-exclusive options?** → **Radio**.
+2. **Does it apply immediately** (no Save)? → **Switch**.
+3. **Opt-in / consent / multi-select committed on Save?** → **Checkbox**.
+4. **A parent over a partially-selected group?** → **Checkbox with `indeterminate`**.
+
+## Use cases by type
+
+### Checkbox (default)
+
+- **Use when:** opt-in choices, **multi-select** lists (pick any number), terms/consent — the
+  value is committed when the form is saved.
+- **Don't use when:** the choice is exclusive (use **Radio**) or applies instantly (use
+  **Switch**).
+- **Example:** "Send me updates", selecting rows/permissions in a list.
+
+### `indeterminate` (parent / select-all)
+
+- **Use when:** a **parent** checkbox represents a group that is **partially** selected —
+  shows a dash, not a check.
+- **Example:** a "select all" header over permission groups, hierarchy/tree pickers, the NOC
+  picker (~5 sites).
+
+### `:disabled`
+
+- **Use when:** the option is visible but not selectable in the current state/permission.
+
+### Grouping
+
+- **Use when:** several related checkboxes — lay them out together with a group label. (Note:
+  the kit `MCheckboxGroup` is **unused** here, 0×; the product composes individual checkboxes.)
+
+> Don't expect `variant` or `defaultChecked` — the product override doesn't have them.
+
+## Anatomy
+
+Wrapper `<label>` · 19px box · navy checkmark (dash when `indeterminate`) · hidden `<input>`
+· label text.
+
+## Content
+
+Label the **positive** choice ("Send me updates"); avoid negatives ("Don't…").
+
+## In the product
+
+**As seen in:** **Selection lists** (group / tag / log-parser selection), the **anomaly modal**, and **select-all** headers over permission groups / tree pickers (using `indeterminate`).
+
+## Related
+
+`MRadio` (one-of-many) · `MSwitch` (instant settings).

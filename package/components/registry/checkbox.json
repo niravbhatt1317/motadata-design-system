@@ -1,0 +1,177 @@
+{
+  "name": "checkbox",
+  "component": "MCheckbox",
+  "display": "Checkbox",
+  "tier": "atom",
+  "family": "Selection Controls",
+  "source": "floto",
+  "sourceFile": "src/components/_base-checkbox.vue",
+  "status": "core",
+  "summary": "Single boolean toggle, usually with a label. Functional, fully-controlled.",
+  "variants": [],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "19x19px",
+      "note": "single size"
+    }
+  ],
+  "states": [
+    {
+      "name": "unchecked",
+      "what": "empty box"
+    },
+    {
+      "name": "checked",
+      "what": "navy check + border"
+    },
+    {
+      "name": "indeterminate",
+      "what": "dash (mixed group)"
+    },
+    {
+      "name": "disabled",
+      "what": "muted"
+    },
+    {
+      "name": "disabled-checked",
+      "what": "disabled + checked"
+    }
+  ],
+  "model": {
+    "prop": "checked",
+    "event": "change"
+  },
+  "props": {
+    "checked": {
+      "type": "boolean",
+      "default": false,
+      "note": "v-model"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "indeterminate": {
+      "type": "boolean",
+      "default": false
+    },
+    "value": {
+      "type": "boolean|string",
+      "note": "passthrough id for grouping"
+    }
+  },
+  "notPresent": [
+    "variant",
+    "defaultChecked",
+    "autoFocus"
+  ],
+  "events": [
+    "change"
+  ],
+  "slots": [
+    "default (label)"
+  ],
+  "styling": {
+    "box": "19x19px, radius 3px",
+    "checkedFill": "--checkbox-bg (#fff light / #2b394f dark)",
+    "checkmark": "--primary (navy)",
+    "border": "--checkbox-checked-border-color"
+  },
+  "do": [
+    "Provide a label via the default slot (omit for a bare box).",
+    "Bind with v-model (controlled; parent owns state).",
+    "Use indeterminate for a parent over a mixed group."
+  ],
+  "dont": [
+    "Using variant/defaultChecked (the product override has neither).",
+    "Using a checkbox for mutually-exclusive choices (MRadio) or instant settings (MSwitch)."
+  ],
+  "whenToUse": "Opt-in choices, multi-select lists, terms acceptance.",
+  "decisionFlow": [
+    "Mutually-exclusive (pick one)? -> MRadio.",
+    "Applies immediately (no Save)? -> MSwitch.",
+    "Opt-in/consent/multi-select committed on Save? -> Checkbox.",
+    "Parent over a partially-selected group? -> Checkbox + indeterminate."
+  ],
+  "usageRules": {
+    "checkbox": {
+      "useWhen": "opt-in / multi-select / consent committed when the form is saved",
+      "dontUse": "for exclusive choices (radio) or instant settings (switch)",
+      "example": "Send me updates; select rows/permissions"
+    },
+    "indeterminate": {
+      "useWhen": "a parent checkbox represents a partially-selected group (shows a dash)",
+      "example": "select-all over permission groups, tree/NOC pickers"
+    },
+    "disabled": {
+      "useWhen": "option visible but not selectable in current state/permission"
+    },
+    "group": {
+      "useWhen": "several related checkboxes laid out together (note: kit MCheckboxGroup is unused 0x; compose individual checkboxes)"
+    }
+  },
+  "insteadOf": [
+    "kit MCheckbox (excluded in main.js)",
+    "raw a-checkbox"
+  ],
+  "tokensUsed": [
+    "--checkbox-bg",
+    "--checkbox-checked-border-color",
+    "--primary",
+    "--neutral-lighter"
+  ],
+  "usage": {
+    "total": 76,
+    "files": 59,
+    "MCheckboxGroup": 0,
+    "indeterminate": "~5 sites (select-all permission groups, hierarchy/tree pickers, NOC picker)"
+  },
+  "knownIssues": [
+    "F1 (medium): product MCheckbox is the Floto override _base-checkbox.vue; the kit's (variant/defaultChecked) is excluded in main.js and dead. Document the override's API.",
+    "F2 (low): checked state relies on the navy checkmark + border, not a colored fill (--checkbox-bg white in light) — subtler than typical.",
+    "F3 (high, a11y): the override never binds :checked on the <input>, so input.checked stays false even when visually checked — screen readers announce the wrong state (WCAG 4.1.2). Fix: bind :checked=props.checked on the input.",
+    "F4 (medium, a11y): indeterminate is CSS-only; the input lacks the indeterminate DOM property / aria-checked=mixed, so AT can't announce mixed. Fix: set inputEl.indeterminate.",
+    "F5 (low): 19px box is a small touch target when used without a label.",
+    "F6 (low): unused .checkbox-info variant (info-blue checked) exists in the kit override (0x); not part of the Floto override API. Parallel to radio-info. Context re-check 2026-06-07 found no other hidden/context variants (table/label rules are layout only)."
+  ],
+  "maturity": "stable",
+  "anatomy": [
+    "wrapper label",
+    "box (.ant-checkbox-inner, 19px)",
+    "checkmark (::after, navy)",
+    "hidden input",
+    "label text"
+  ],
+  "accessibility": {
+    "labelAssociation": "input nested in label (implicit)",
+    "keyboard": "Space toggles (native)",
+    "screenReaderState": "F3 — input.checked not bound (wrong state)",
+    "indeterminate": "F4 — not exposed to AT",
+    "targetSize": "19px box (F5)"
+  },
+  "related": [
+    "MRadio",
+    "MSwitch",
+    "MCheckboxGroup (unused)"
+  ],
+  "changelog": [
+    "2026-06-05: added to real Floto-override API; preview fixed to exclude kit MCheckbox + register override (F1); light/dark verified.",
+    "2026-06-06: documented indeterminate usage; enhanced standard — anatomy/behaviors/content/accessibility surfacing F3 (SR state) + F4 (indeterminate), related, changelog."
+  ],
+  "storybook": "Atoms/Checkbox",
+  "figma": {
+    "status": "todo",
+    "component": "Checkbox"
+  },
+  "kitAccent": "the check mark is painted with Ant's @primary-color = cyan #099dd9 (both themes) — NOT --primary (navy). Not in variables.json; see tokens/kit-accents.json.",
+  "a11y": {
+    "summary": "Native input implicitly associated (nested in <label>); Space toggles, Tab focuses. 19px box (sub-24; label extends hit area).",
+    "issues": [
+      "SR state wrong — override doesn't bind :checked to the input.",
+      "Indeterminate is CSS-only (not exposed)."
+    ],
+    "doc": "Atoms/Checkbox/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

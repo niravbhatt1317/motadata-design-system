@@ -1,0 +1,219 @@
+{
+  "name": "noc-player",
+  "component": "dashboard/components/noc-player.vue",
+  "display": "NOC Player",
+  "tier": "organism",
+  "family": "Playback & Timeline",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The NOC / wallboard ROTATOR chrome — a top bar that auto-cycles a set of dashboards on a countdown: logo (left) · ‹ prev · current title · next › (center) · countdown + play/pause + exit (right), over a body slot that holds the current dashboard. Self-contained playback: an internal countdown timer auto-advances; ← / → step, space pauses, Esc exits. Data-agnostic: it owns the rotation and emits `change`/`close`; the consumer renders the actual dashboard (a widget grid — a data-viz gap) in the default slot. Part of the Playback & Timeline family. Source-derived from dashboard/noc-player.vue. Reuses obs-button (the prev/next/play-pause/exit controls) + obs-icon (glyphs); the brand `logo` slot takes an obs-logo (theme-aware).",
+  "selectHint": "A full-screen wallboard that rotates DASHBOARDS on a timer (NOC mode)? -> obs-noc-player. To step a time WINDOW under a chart -> obs-timeline-scrollbar. The normal app top bar -> obs-app-header.",
+  "whenToUse": "NOC / wallboard mode — a fullscreen presentation that cycles a set of dashboards on a countdown with prev/next/pause/exit, for a wall display.",
+  "insteadOf": [
+    "a hand-built fullscreen rotator (logo + prev/next + countdown + play/pause + exit)",
+    "obs-app-header (that is the interactive app chrome, not a rotating presentation shell)",
+    "a bespoke setInterval slideshow"
+  ],
+  "variants": [
+    {
+      "name": "rotating",
+      "what": "multiple dashboards -> prev/title/next + a countdown that auto-advances + play/pause + exit.",
+      "usage": "the standard wallboard"
+    },
+    {
+      "name": "with-logo",
+      "what": "a brand logo on the left (the `logo` src prop or the `logo` slot).",
+      "usage": "branded wall displays"
+    },
+    {
+      "name": "single",
+      "what": "one dashboard -> no prev/next, no countdown, no play/pause — just the title + exit.",
+      "usage": "a single pinned dashboard"
+    },
+    {
+      "name": "empty",
+      "what": "no dashboards -> a friendly placeholder.",
+      "usage": "an unconfigured NOC"
+    },
+    {
+      "name": "fullscreen",
+      "what": "fullscreen=\"true\" -> a fixed full-viewport overlay (the real wallboard mode; keyboard ←/→/space/Esc active).",
+      "usage": "the actual wall display"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "48px bar + body",
+      "note": "the bar is ~48px (0.75rem padding) with 32×32 squared buttons + a countdown pill; the body fills the rest. fullscreen makes the whole thing a fixed full-viewport overlay."
+    }
+  ],
+  "states": [
+    {
+      "name": "playing",
+      "what": "the countdown ticks down each second and auto-advances at 0; the button shows pause."
+    },
+    {
+      "name": "paused",
+      "what": "the timer is stopped; the button shows play; prev/next still work."
+    },
+    {
+      "name": "empty",
+      "what": "no dashboards -> the placeholder body."
+    }
+  ],
+  "props": {
+    "dashboards": {
+      "type": "array|string",
+      "default": "",
+      "note": "the dashboards to rotate: [{name}] or a JSON/comma list of names. 0 -> empty; 1 -> no rotation controls; >1 -> the full rotator."
+    },
+    "current": {
+      "type": "number",
+      "default": 0,
+      "note": "the starting index."
+    },
+    "interval": {
+      "type": "number",
+      "default": 30,
+      "note": "seconds each dashboard is shown before auto-advancing (min 1)."
+    },
+    "paused": {
+      "type": "boolean",
+      "default": false,
+      "note": "start paused (the timer does not run until Play)."
+    },
+    "logo": {
+      "type": "string",
+      "default": "",
+      "note": "brand logo image src (or use the `logo` slot)."
+    },
+    "fullscreen": {
+      "type": "boolean",
+      "default": false,
+      "note": "render as a fixed full-viewport overlay (the real wallboard mode); also enables the ← / → / space / Esc keyboard shortcuts."
+    }
+  },
+  "events": [
+    {
+      "name": "change",
+      "detail": "{index, name}",
+      "note": "the current dashboard changed (auto-advance, prev, or next)."
+    },
+    {
+      "name": "close",
+      "detail": "none",
+      "note": "the exit (✕) control or Esc was pressed — the consumer leaves NOC mode."
+    },
+    {
+      "name": "play",
+      "detail": "none",
+      "note": "playback resumed."
+    },
+    {
+      "name": "pause",
+      "detail": "none",
+      "note": "playback paused."
+    }
+  ],
+  "slots": {
+    "default": "the current dashboard body (render the product Widgets grid / a chart here — a data-viz gap).",
+    "logo": "a custom brand logo (replaces the `logo` img src)."
+  },
+  "decisionFlow": [
+    "A fullscreen wallboard that rotates DASHBOARDS on a timer (NOC mode)? -> obs-noc-player.",
+    "The normal interactive app top bar (search / notifications / user)? -> obs-app-header, NOT this.",
+    "Step a time WINDOW under a temporal chart? -> obs-timeline-scrollbar.",
+    "Rendering the dashboard itself (widgets grid, charts)? -> put the product Widgets / a chart in the default slot — that is a data-viz gap, not part of this element.",
+    "Real wall display vs an inline demo? -> fullscreen=\"true\" for the fixed overlay + keyboard; default is an inline block."
+  ],
+  "usageRules": {
+    "rotating": {
+      "useWhen": "a NOC wall display cycling several dashboards on a countdown",
+      "dontUse": "for the normal app chrome (obs-app-header) or a single static dashboard",
+      "example": "dashboards=['Network','Servers','Apps'] interval=30 -> auto-rotates with prev/next/pause",
+      "asSeenIn": "dashboard/components/noc-player.vue"
+    },
+    "with-logo": {
+      "useWhen": "the wall display should carry the tenant/product brand",
+      "dontUse": "an unbranded internal display",
+      "example": "logo=\"/branding/logo.png\""
+    },
+    "single": {
+      "useWhen": "only one dashboard is pinned — show it with just a title + exit",
+      "dontUse": "when there are several to rotate (pass them all)",
+      "example": "dashboards=['Network Overview'] -> no rotation chrome"
+    },
+    "empty": {
+      "useWhen": "always handle an unconfigured NOC (no dashboards)",
+      "dontUse": "never show a blank body",
+      "example": "dashboards=[] -> 'No dashboards available in this NOC'"
+    },
+    "fullscreen": {
+      "useWhen": "the actual wall display — a fixed full-viewport overlay with keyboard control",
+      "dontUse": "an inline demo/preview (leave fullscreen off so it sits in the page)",
+      "example": "fullscreen -> fixed inset:0 overlay; Esc exits, ←/→ step, space pauses"
+    }
+  },
+  "usage": {
+    "total": 1,
+    "files": 1,
+    "byModule": {
+      "dashboard": 1
+    },
+    "note": "One per NOC session (dashboard module). The DS element owns the rotation chrome + timer; the dashboard body (widget grid) is a data-viz gap the consumer fills via the default slot."
+  },
+  "do": [
+    "Use for NOC / wallboard mode — a rotating fullscreen dashboard presentation.",
+    "Put the actual dashboard (product Widgets grid / charts) in the default slot.",
+    "Wire `change` to load the next dashboard's data and `close` to exit NOC mode.",
+    "Use fullscreen=\"true\" for the real wall display (enables the keyboard shortcuts)."
+  ],
+  "dont": [
+    "Don't use it as the normal app top bar — that's obs-app-header.",
+    "Don't try to render charts/widgets inside it — that's a data-viz gap; use the slot.",
+    "Don't hardcode colours — it uses --page-background-color / --border-color / --neutral-* / --primary."
+  ],
+  "a11y": {
+    "summary": "Prev/next/play-pause/exit REUSE obs-button (keyboard-operable) with aria-labels (the obs-icon glyphs are decorative); the countdown carries a title. In fullscreen mode the keyboard shortcuts (←/→ step, space play/pause, Esc exit) are wired on the document. The title is an <h3>. Announce dashboard changes via an aria-live region for screen-reader users on a wall display.",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "Auto-advancing content moves without user action — provide the pause control (it does) and consider respecting prefers-reduced-motion / a longer interval so users aren't disoriented."
+      }
+    ],
+    "doc": "Organisms/NOC Player/Accessibility",
+    "notes": "The pause control satisfies WCAG 2.2.2 (pause/stop/hide for auto-updating content). Move focus sensibly on exit. The countdown should also be announced or at least have a title (it does)."
+  },
+  "knownIssues": [
+    "The dashboard BODY is a data-viz gap — obs-noc-player renders the rotator chrome + timer + keyboard, and the consumer renders the actual widget grid (product Widgets) in the default slot. The product version fetches dashboards by id via the API; the DS element is data-driven (pass the dashboard names/bodies)."
+  ],
+  "tokensUsed": [
+    "--page-background-color",
+    "--page-text-color",
+    "--border-color",
+    "--neutral-lighter",
+    "--neutral-light",
+    "--primary"
+  ],
+  "related": [
+    "timeline-scrollbar",
+    "app-header",
+    "data-viz",
+    "logo",
+    "button"
+  ],
+  "changelog": [
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to what the element resolves (dropped stale --neutral-lightest / --common-main-bg — the controls now reuse obs-button, and the skeleton bg lives in the showcase, not the element); a11y + summary now note the obs-button / obs-icon / obs-logo composition. Props/variants/knownIssues verified current — no drift. No API change.",
+    "2026-07-22 — Reuse + theme (owner): the brand now REUSES obs-logo (the DS logo element) in the `logo` slot instead of a raw <img>; the motadata mark is theme-legible (renders on light and dark). The `logo` src prop remains for an arbitrary tenant image.",
+    "2026-07-22 — Reuse pass (owner): the prev/next/play-pause/exit controls now REUSE obs-button (variant neutral-lightest, squared) instead of hand-built buttons. The tenant-logo <img> stays native (obs-logo renders named DS logos, not an arbitrary branding src).",
+    "2026-07-22 — Refinement (owner): shrank the countdown box; the showcase playground now renders a full-height skeleton dashboard body so fullscreen (⛶) reads like the product wallboard (bar on top + skeleton widget grid filling the screen) + a with-logo playground preset.",
+    "2026-07-22 — Shipped obs-noc-player (new Playback & Timeline family): the NOC / wallboard rotator chrome — logo + prev/title/next + countdown + play/pause + exit over a dashboard body slot, with an internal auto-advance timer and ←/→/space/Esc keyboard control (fullscreen mode). Reuses obs-icon + obs-logo. Emits change/close/play/pause. Source-derived from dashboard/components/noc-player.vue (closes the nocPlayer known-gap)."
+  ],
+  "storybook": "Organisms/NOC Player",
+  "figma": {
+    "status": "not-started",
+    "component": "NOC Player"
+  }
+}

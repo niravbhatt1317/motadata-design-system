@@ -1,0 +1,208 @@
+{
+  "name": "scheduler",
+  "display": "Scheduler (Recurrence)",
+  "tier": "molecule",
+  "family": "Scheduler",
+  "source": "src/components/schedule-input/index.vue (ScheduleInput) + once-input.vue / weekly-input.vue / monthly-input.vue (the sub-forms).",
+  "status": "stable",
+  "summary": "A composite recurrence builder. A 'Scheduler Type' segmented control (MRadioGroup as-button: Once · Daily · Weekly · Monthly) swaps in a sub-form. Once/Daily = Start Date + Hours; Weekly adds Days (Mon-Sun); Monthly adds Months + Dates (1-31). Hours = the custom dropdown TimePicker (multi-select times); Days/Months/Dates = FlotoDropdownPicker multi-selects; Start Date = MDatePicker (date-only, min-date today). Used for backups, network discovery, compliance audits, monitor (re)discovery, reports, runbooks.",
+  "variants": [
+    {
+      "name": "Once",
+      "what": "single run",
+      "usage": ""
+    },
+    {
+      "name": "Daily",
+      "what": "every day",
+      "usage": ""
+    },
+    {
+      "name": "Weekly",
+      "what": "Days + Start + Hours",
+      "usage": ""
+    },
+    {
+      "name": "Monthly",
+      "what": "Months + Dates + Start + Hours",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "segmented type control"
+    },
+    {
+      "name": "disabled",
+      "what": "fields not interactive"
+    }
+  ],
+  "usage": {
+    "total": 16,
+    "consumers": [
+      "backup-profile-form",
+      "device-inventory-schedule-backup",
+      "discovery-schedules",
+      "compliance-audit-schedules",
+      "monitor-schedule-form",
+      "rediscover custom-schedule-form",
+      "topology-scanner schedule-form",
+      "runbook-schedules",
+      "report-form",
+      "policy-form basic-info"
+    ],
+    "renders": "REFERENCE REPRODUCTION in Storybook — importing the real ScheduleInput pulls the local DB (lokijs -> Node fs), so it can't render live (like TimeRangePicker / the Kendo grid). Reproduced from the REAL primitives (MRadioGroup as-button + MDatePicker + FlotoDropdownPicker)."
+  },
+  "scheduleTypes": {
+    "Once": "single run — Start Date + Hours",
+    "Daily": "every day — Start Date + Hours (same sub-form as Once)",
+    "Weekly": "Days (Mon-Sun multi) + Start Date + Hours",
+    "Monthly": "Months (Jan-Dec multi) + Dates (1-31 multi) + Start Date + Hours"
+  },
+  "props": {
+    "ScheduleInput": {
+      "value": {
+        "type": "object",
+        "note": "v-model (model event=change): { scheduleType, scheduleInfo }"
+      },
+      "excludedScheduleOptions": {
+        "type": "array",
+        "default": [],
+        "note": "drop schedule types from the segmented control, e.g. ['Weekly','Monthly'] (1x)"
+      },
+      "showOnlyOnce": {
+        "type": "boolean",
+        "default": false,
+        "note": "collapse to the Once type only (no recurrence) (1x)"
+      },
+      "disabled": {
+        "type": "boolean",
+        "note": "passthrough ($attrs) — disables the fields (2x)"
+      },
+      "$attrs": "passed to the sub-form: disabled (2x), time-options (2x), use-single-selection (1x), hide-date-time (1x), multiple"
+    },
+    "subForms": {
+      "value": "object (scheduleInfo)",
+      "hideDateTime": "bool — hide Start Date + Hours",
+      "timeOptions": "array — override the Hours options (external-options on the TimePicker)",
+      "multiple": "bool — allow multiple Hours (use-single-selection caps to 1)"
+    }
+  },
+  "emit": "change -> { scheduleType:'Once'|'Daily'|'Weekly'|'Monthly', scheduleInfo: { startDate:<ms>, times:[…], days:[…](weekly), months:[…]+dates:[…](monthly) } }. On type change, scheduleInfo resets to { startDate: now }.",
+  "builtFrom": [
+    "MRadioGroup (as-button / segmented) — the type control",
+    "MDatePicker (show-time:false, min-date today) — Start Date",
+    "custom TimePicker (time-picker.vue, a FlotoDropdownPicker of times, multiple) — Hours",
+    "FlotoDropdownPicker (multiple, searchable) — Days / Months / Dates",
+    "FlotoFormItem (rules='required') — each field"
+  ],
+  "decisionFlow": [
+    "Need a RECURRING schedule (run X every day/week/month)? -> ScheduleInput.",
+    "Only certain recurrences valid? -> :excluded-schedule-options=['Weekly','Monthly'].",
+    "A single, one-off run (no recurrence)? -> :show-only-once.",
+    "Just a date or date+time value (not a recurrence)? -> MDatePicker (Date & Time Pickers family), not this.",
+    "A chart/dashboard TIME WINDOW? -> TimeRangePicker, not this."
+  ],
+  "usageRules": {
+    "recurring": {
+      "useWhen": "a job runs on a recurrence",
+      "how": "<ScheduleInput v-model>",
+      "example": "nightly backup, weekly compliance audit, monthly report"
+    },
+    "restrictTypes": {
+      "useWhen": "only some recurrences make sense",
+      "how": ":excluded-schedule-options",
+      "example": "a feature that only supports Daily/Weekly"
+    },
+    "oneOff": {
+      "useWhen": "a single scheduled run",
+      "how": ":show-only-once",
+      "example": "a one-time discovery run"
+    },
+    "Once": {
+      "useWhen": "The job runs exactly one time at a chosen Start Date and Hours, with no recurrence. Reach it either from the segmented type control or by collapsing the whole component to this type with :show-only-once when recurrence never applies.",
+      "dontUse": "Don't use when the job should repeat on any cadence (use Daily/Weekly/Monthly), and don't use it as a plain date/time value picker inside a form — that's MDatePicker.",
+      "example": "A one-time, non-recurring network discovery run in discovery-schedules (ScheduleInput with :show-only-once collapsing to the Once sub-form: Start Date + Hours)."
+    },
+    "Daily": {
+      "useWhen": "The job repeats every day at one or more selected Hours from the Start Date onward — the simplest recurring cadence (same sub-form as Once: Start Date + Hours).",
+      "dontUse": "Don't use when the job should only run on certain weekdays (use Weekly) or on specific calendar dates/months (use Monthly), and don't use for a single non-repeating run (use Once / :show-only-once).",
+      "example": "A nightly device-config backup in backup-profile-form / device-inventory-schedule-backup, set to run every day at the chosen hour."
+    },
+    "Weekly": {
+      "useWhen": "The job repeats on specific weekdays — adds a Days (Mon–Sun) multi-select (FlotoDropdownPicker) on top of Start Date + Hours.",
+      "dontUse": "Don't use when the job runs every day regardless of weekday (use Daily) or when it must land on specific calendar dates within chosen months (use Monthly).",
+      "example": "A weekly compliance audit in compliance-audit-schedules that runs on selected weekdays (e.g. Mon/Wed/Fri) at a set hour."
+    },
+    "Monthly": {
+      "useWhen": "The job repeats on specific calendar dates within chosen months — adds Months (Jan–Dec) and Dates (1–31) multi-selects (FlotoDropdownPicker) on top of Start Date + Hours.",
+      "dontUse": "Don't use when a weekday cadence is enough (use Weekly) or a plain every-day/one-off run suffices (use Daily/Once); don't overload it for chart time windows (that's TimeRangePicker).",
+      "example": "A monthly compliance/report run in report-form or compliance-audit-schedules scheduled for specific dates (e.g. the 1st) across selected months."
+    }
+  },
+  "do": [
+    "Use for recurring jobs (backups, discovery, audits, reports).",
+    "Drop unsupported recurrences with :excluded-schedule-options.",
+    "Use :show-only-once for a single non-recurring run.",
+    "Keep it inside a form (FlotoFormItem fields are required)."
+  ],
+  "dont": [
+    "Don't use it for a plain date/time value — that's MDatePicker.",
+    "Don't use it for a chart time window — that's TimeRangePicker.",
+    "Don't hand-roll a Once/Daily/Weekly/Monthly switcher — reuse ScheduleInput."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "The three sub-forms (once/weekly/monthly-input.vue) all carry name:'OnceForm' — a copy-paste leftover; harmless but should be unique."
+    },
+    "F2": {
+      "severity": "Low",
+      "issue": "ScheduleInput pulls the local DB (lokijs) transitively, so it can't render in Storybook — reproduced from primitives."
+    }
+  },
+  "accessibility": {
+    "providedBy": "MRadioGroup (radio semantics / arrow-key selection for the type), MDatePicker / FlotoDropdownPicker (their own a11y), FlotoFormItem (labels + required/validation).",
+    "verify": "Each field has a visible label (it does, via FlotoFormItem); focus-visible ring (SF-001) on the segmented buttons + selects."
+  },
+  "scopedOut": {
+    "MetricPollTime / metric-collection-time": "metric POLLING-FREQUENCY config (a separate monitoring sub-system) — not a job recurrence; candidate for a future Monitoring-config entry.",
+    "MonitoringHourPicker (_base-monitoring-hour-picker.vue)": "a monitoring-hours selector — separate.",
+    "monitor-schedules.vue (MonitorSchedule)": "a CRUD LIST view of schedules (on/off windows); edits via monitor-schedule-form which uses ScheduleInput — a consumer, not a new component.",
+    "'Hourly' type": "a granularity dropdown in policy anomaly/forecast conditions (aggregation period), NOT a ScheduleInput recurrence type. ScheduleInput types are Once/Daily/Weekly/Monthly only.",
+    "NotifyTimePicker / date-remark-pairs": "notification-timing / holiday-list composites — out of scope."
+  },
+  "storybook": "Molecules/Scheduler",
+  "related": [
+    "radio",
+    "date-time-pickers",
+    "dropdown-picker",
+    "form-item"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "tokensUsed": [
+    "--primary",
+    "--neutral-lightest",
+    "--border-color",
+    "--page-text-color",
+    "--neutral-light"
+  ],
+  "events": {
+    "ScheduleInput.change": "(value) — emits the full schedule object `{ scheduleType, scheduleInfo }`; this is the v-model event."
+  },
+  "slots": "none — a segmented schedule-type control (Once / Daily / Weekly / Monthly) + the matching sub-form; no slots.",
+  "a11y": {
+    "summary": "Type = MRadioGroup (radio semantics); date = MDatePicker (input + calendar, Esc); dropdowns = FlotoDropdownPicker (searchable/keyboard); every field wrapped in FlotoFormItem (label + required).",
+    "issues": [
+      "SF-001 focus-visible on the segmented control.",
+      "Announce the required state.",
+      "Type change swaps fields — verify focus lands sensibly."
+    ],
+    "doc": "Molecules/Scheduler/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

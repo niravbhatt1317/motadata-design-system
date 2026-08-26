@@ -1,0 +1,72 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Data Visualization/Usage" />
+
+# Data Visualization — Usage
+
+🟢 **Stable** · a decision **guide**, not a web component. Charts render through the real `Chart`
+(Highcharts v10) — **38 files** mount `<Chart>` (11 import it directly), across **22** widget view
+renderers; the topology map is Cytoscape (**6** mounts) and the dashboard grid is vue-grid-layout (**5**).
+Because these engines are commercially licensed / heavy / app-coupled, the DS ships **no `obs-*`** for them:
+pick the right type here, colour it on-brand, then render with the **product's** component (in-repo) or
+**STOP-and-ASK** (standalone).
+
+## Pick the right visualization (decision flow — first match wins)
+
+1. A single **number**? → `kpi-tile` (metro/KPI). Only meaningful **against a threshold/range**? → `gauge`.
+2. Change over **time**? → `trend-line` (default) · `area` (volume / stacked over time) · `sparkline`
+   (inline in a table cell).
+3. **Compare** discrete categories? → `bar-column` (long/many labels → horizontal bar; few → column;
+   stack for sub-parts). Just the leaders? → `topn`.
+4. Part-to-**whole**? → `pie-donut` (≤5 slices) · `treemap` (hierarchy / many parts).
+5. **Density** across two dimensions (host × time)? → `heatmap`. **Correlation** of two metrics? →
+   `scatter-bubble`.
+6. **Flow** between nodes? → `sankey-flow` (volume) · `topology-graph` (a pan/zoom network/dependency map).
+7. **Status / duration** over time (SLO, availability)? → `timeline-xrange`. By **geography**? → `geo-map`.
+   A trace / call-stack? → `flame-graph`.
+8. A trend with anomaly / forecast bands (licensed AI/ML)? → `anomaly-forecast`.
+9. A whole **dashboard** of these? → `widget-grid` (resizable tiles).
+10. **How to render:** in the product repo → the real component — `Chart` (`src/components/chart`), `Graph`
+    (`src/components/monitor-graph`), `Widgets` (`src/components/widgets`); colour series from
+    `tokens/chart-palette.json` (categorical, **never** `--primary`), status/threshold from severity tokens.
+    Standalone → **STOP-and-ASK**.
+
+## The types
+
+Each row = a `usageRules` card (mirrored word-for-word in `registry/data-viz.json`), grounded **as seen in
+the product**.
+
+| Type | Use when | Instead / don't | As seen in the product |
+| --- | --- | --- | --- |
+| `trend-line` | a metric over time (one/few series) — the default | not for comparing unrelated categories (→ `bar-column`) | metric-explorer & monitor-sidebar metric charts |
+| `area` | a trend where volume matters, or stacked composition over time | many overlapping series (fills occlude → line) | inbound/outbound traffic widgets |
+| `bar-column` | compare a value across discrete categories | a continuous time trend (→ `trend-line`) | alert-count-by-severity widgets |
+| `pie-donut` | part-to-whole with ≤5 slices | >5 slices / precise compare (→ bar); hierarchy (→ `treemap`) | monitors-by-status donut on dashboards |
+| `gauge` | a single value read against a threshold/range | a trend (→ line); a plain number (→ `kpi-tile`) | utilisation gauge widgets (`gauge-view`) |
+| `kpi-tile` | a single headline number (± a trend) | a value that needs a range (→ `gauge`) | metro tiles + APM/RUM/SLO KPI views |
+| `sparkline` | an inline micro-trend inside a table cell/tile | a standalone chart with axes (→ `trend-line`) | trend cells in grid widgets |
+| `heatmap` | density across two dims (host × time) | a single series over time (→ line) | response-time heatmap dashboards |
+| `topn` | a ranked list of the top N by value | the full distribution (→ bar/heatmap) | Top-N widgets (`topn-view`) |
+| `scatter-bubble` | correlation of two metrics (bubble adds size) | a time trend (→ line) | latency-vs-throughput views |
+| `sankey-flow` | volume of flow between nodes/stages | a pan/zoom network (→ `topology-graph`) | flow widgets (`sankey-view`) |
+| `treemap` | hierarchical part-to-whole by area | a flat few-slice composition (→ pie) | storage-by-hierarchy (`tree-map-with-levels`) |
+| `timeline-xrange` | status/duration bars over time (SLO, gantt) | a numeric trend (→ line) | SLO windows (`slo-x-range-trend`), status-timeline |
+| `geo-map` | a value by geography (choropleth or markers) | non-geographic categories (→ bar) | RUM sessions by country (`map-view`) |
+| `flame-graph` | trace / call-stack profiling (d3, not Highcharts) | anything that isn't a call/span tree | APM/RUM traces (`flam-graph`) |
+| `anomaly-forecast` | a trend with anomaly/forecast bands (licensed) | a plain trend with no ML overlay (→ line) | AI/ML overlays (`ai-ml-chart-view`) |
+| `topology-graph` | a pan/zoom node-edge network/dependency map | a flow diagram (→ sankey); a hierarchy tree (→ navigation) | the Topology map + APM/NetRoute maps |
+| `widget-grid` | a whole dashboard of draggable/resizable tiles | a single chart on a page; a static form (→ 12-col grid) | every dashboard (`widgets.vue`) |
+
+The **Examples** page renders **every type**: the 12 Highcharts types mount the real `Chart`; `geo-map`
+(Highmaps), `topology-graph` (Cytoscape), `widget-grid` (vue-grid-layout) and `flame-graph` (d3-flame-graph)
+mount their **real engine**; `topn` and `kpi-tile` are faithful **static references** (their product components
+`topn-view` / `metro-tile` fire app-API / socket calls on import, so they can't render standalone).
+
+## Colour, theme & state
+
+- Multi-series → the **categorical palette** (`tokens/chart-palette.json`, applied by `Chart`), by series
+  order. **Never** colour a chart with the brand navy `--primary`.
+- Status / threshold → severity / `--secondary-*` tokens. Chrome → `--common-widget-bg`, `--page-text-color`,
+  `--border-color` (theme-aware).
+- Every chart needs a **loading**, **empty** (Highcharts *no-data*) and **error** state — not a blank box.
+- Hover detail is the **Data-Viz Tooltips** family, not `MTooltip`.

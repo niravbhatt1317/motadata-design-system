@@ -1,0 +1,130 @@
+{
+  "$description": "TIER 1 — PRIMITIVES. Raw values only, never themed, never used directly by components. SLICE for sign-off; values extracted verbatim from src/design/variable.less.",
+  "$status": "FUTURE / portable DTCG token layer (mds-*). NOT yet wired to the running product or component tokensUsed — the LIVE product uses tokens/variables.json (--vars). Do not emit mds-* for live output.",
+  "color": {
+    "white": {
+      "$type": "color",
+      "$value": "#ffffff"
+    },
+    "navy": {
+      "950": {
+        "$type": "color",
+        "$value": "#07101f"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#111c2c"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#1d2a3e"
+      }
+    },
+    "neutral": {
+      "50": {
+        "$type": "color",
+        "$value": "#ecf1f9"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#e3e8f2"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#7186a8"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#2b394f"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#172336"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#000000"
+      }
+    },
+    "cyan": {
+      "500": {
+        "$type": "color",
+        "$value": "#099dd9"
+      }
+    },
+    "teal": {
+      "500": {
+        "$type": "color",
+        "$value": "#0d9488"
+      }
+    },
+    "severity": {
+      "critical": {
+        "50": {
+          "$type": "color",
+          "$value": "#fef5f5"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#ec5b5b"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#310c0c"
+        }
+      },
+      "clear": {
+        "50": {
+          "$type": "color",
+          "$value": "#d1fae0"
+        },
+        "500": {
+          "$type": "color",
+          "$value": "#14b053"
+        },
+        "950": {
+          "$type": "color",
+          "$value": "#0d3a1f"
+        }
+      }
+    }
+  },
+  "space": {
+    "100": {
+      "$type": "dimension",
+      "$value": "8px"
+    },
+    "200": {
+      "$type": "dimension",
+      "$value": "12px"
+    },
+    "300": {
+      "$type": "dimension",
+      "$value": "16px"
+    },
+    "400": {
+      "$type": "dimension",
+      "$value": "24px"
+    }
+  },
+  "font": {
+    "size": {
+      "100": {
+        "$type": "dimension",
+        "$value": "0.6rem"
+      },
+      "200": {
+        "$type": "dimension",
+        "$value": "0.8rem"
+      },
+      "300": {
+        "$type": "dimension",
+        "$value": "1rem"
+      },
+      "500": {
+        "$type": "dimension",
+        "$value": "1.5rem"
+      }
+    }
+  }
+}

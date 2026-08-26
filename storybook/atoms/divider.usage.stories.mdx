@@ -1,0 +1,85 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Divider/Usage" />
+
+# Divider — Usage
+
+A divider is a thin rule that marks a **semantic break** between content — the boundary between two
+sections, or between two inline items. If you only want breathing room, that's **spacing**, not a
+divider. Written so designers, developers, PMs — and AI tools — never have to guess.
+
+> 🟢 **Stable** · used **133×** across **93** files — **126 horizontal** (default) + **7 vertical**
+> (`type="vertical"`). With-text is kit-supported but unused; **`dashed` is currently a no-op** (renders solid — see F1).
+
+## Pick the right divider (decision flow)
+
+Answer in order. **The first match wins** — stop there.
+
+1. **Do you just want space between elements** (no real section boundary)? → use **margin / spacing**,
+   **not** a divider. Overusing dividers makes a page look noisy and boxed-in.
+2. **Are you separating items sitting in a row** (inline metadata, toolbar actions, compare columns)? →
+   **`type="vertical"`**.
+3. **Does the section below the rule need a label** (a titled group)? → a **with-text** divider
+   (slot text + `orientation` to place the label). *(Available; the product doesn't use this today.)*
+4. **Otherwise, separating stacked blocks/sections?** → the default **horizontal** rule.
+
+Modifiers, independent of the above: **`darkVariant`** = tuned for a dark background. (**`dashed`** is a
+no-op today — see F1 — so don't reach for it.)
+
+## Use cases by type
+
+### `horizontal` — separate stacked sections (the default)
+
+- **Use when:** two vertically-stacked groups need a clear boundary — form sections, card regions,
+  a header above a body.
+- **Don't use when:** you only need spacing (use margin), or the groups are already in separate cards.
+- **Example:** the rule between **Connection details** and **Advanced options** in a settings form.
+- **As seen in:** settings forms — log-parser forms (`custom-plugin-form`, `regex-form`), NCM
+  `device-template-form`, integration `lama-profile-form`.
+
+### `vertical` (`type="vertical"`) — separate inline items
+
+- **Use when:** items sit **in a row** and need a light separator — inline metadata, compare columns,
+  a small action group.
+- **Don't use when:** the items are stacked (use horizontal), or a gap/`•` reads clearly enough.
+- **Example:** separating status · version · "updated 2h ago" on one line.
+- **As seen in:** NCM `backup-compare-form` and `device-policy-breakdown`, alert `ncm-compare-diff`,
+  flow `flow-analytics-card`.
+
+### `dashed` — ⚠️ currently a no-op (F1)
+
+- **Status:** the `dashed` prop **renders solid** in this product. The DS override
+  `.ant-divider { background: var(--border-color) }` (general.less / form.less) paints a solid 1px line
+  over Ant's dashed `border-top`, so `:dashed="true"` has **no visible effect**.
+- **Use when:** — don't rely on it today. If a dashed rule is genuinely needed, fix F1 first (drop the
+  `background` fill so Ant's dashed border shows, or paint a dashed line explicitly).
+- **As seen in:** — (0× in the product; the no-op is why.)
+
+### with-text (slot + `orientation`) — a labelled section rule
+
+- **Use when:** the rule also **titles the group** below it, and a full heading is too heavy.
+- **Don't use when:** the section already has a heading (the label would duplicate it).
+- **Example:** — *(supported; not currently used in the product. `orientation="start"|"end"` moves the label.)*
+
+### `darkVariant` — on a dark surface
+
+- **Use when:** the divider sits on a **dark background** and the default line is too faint.
+- **Don't use when:** on the normal page surface (the default already resolves per theme).
+
+## Placement & density (the rules)
+
+- **Don't stack dividers.** One rule per boundary; never a divider immediately followed by another.
+- **Prefer whitespace first.** A divider is a *semantic* break, not a spacer — most "needs separation"
+  cases are solved by margin. The product leans on plain horizontal rules and reserves vertical for
+  genuinely inline groupings.
+- **Let it inherit the theme.** The line is `var(--border-color)`; don't hardcode a colour.
+
+## Related
+
+`Card` (a bounded region — an alternative to a rule) · `Toolbars` (inline action groups that often use
+a vertical divider) · spacing tokens (the first thing to try instead of a divider).
+
+---
+
+*Rules grounded in ObserveOps usage (133× swept). The same rules are mirrored machine-readably in
+`registry/divider.json` (`decisionFlow` + `usageRules`) so AI tools pick the same option — no guessing.*

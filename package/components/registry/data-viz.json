@@ -1,0 +1,211 @@
+{
+  "name": "data-viz",
+  "display": "Data Visualization",
+  "tier": "organism",
+  "family": "Data Visualization",
+  "status": "stable",
+  "summary": "The product's charts, stat tiles, topology graph and dashboard grid — a decision GUIDE, not a web component. Charts are Highcharts v10, topology is Cytoscape, the dashboard grid is vue-grid-layout: all app-rendered and licensed/heavy, so the DS does not ship an obs-* for them. Use this to pick the RIGHT visualisation type and colour/token it on-brand, then render it with the product's Chart/Graph/Widgets component (in-repo) or STOP-and-ASK (standalone). The one SHIPPABLE element in this family is obs-metric-picker — the metric SELECTOR that AUTHORS a visualization (pick/drag an entity’s counters onto a chart/widget); the charts it feeds stay app-rendered guides.",
+  "selectHint": "Any CHART / graph / gauge / KPI tile / heatmap / topology map / dashboard grid: pick the type via decisionFlow, colour from chart-palette, then render with the product's Chart/Graph/Widgets component. No obs-* — standalone => STOP and ASK.",
+  "decisionFlow": [
+    "Rendering DATA as a visual? First pick the TYPE by the question you're answering, THEN render it (see the 'how' note below).",
+    "A single NUMBER? -> kpi-tile / metro tile. The number only means something vs a threshold/range? -> gauge.",
+    "Change over TIME? -> trend-line (default), area (volume / stacked-over-time), or sparkline (inline in a table cell/tile).",
+    "COMPARE discrete categories? -> bar-column (long/many labels -> horizontal bar; few -> column; stack for sub-parts). Just the leaders? -> topn.",
+    "Part-to-WHOLE? -> pie-donut (<=5 slices) or treemap (hierarchy / many parts).",
+    "DENSITY across two dimensions (host x time)? -> heatmap. CORRELATION between two metrics? -> scatter-bubble.",
+    "FLOW between nodes? -> sankey-flow (volume) or topology-graph (a pan/zoom network/dependency map).",
+    "STATUS / duration over time (SLO, availability)? -> timeline-xrange. By GEOGRAPHY? -> geo-map. A trace/call-stack? -> flame-graph.",
+    "A whole DASHBOARD of these? -> widget-grid (resizable tiles).",
+    "HOW to render (important): these are drawn by the PRODUCT'S engines (Highcharts v10 for charts, Cytoscape for topology-graph, vue-grid-layout for widget-grid) — NOT framework-agnostic obs-* components. In the product repo -> use the product's Chart / Graph / Widgets components with the type above; colour series from tokens/chart-palette.json (categorical, NOT --primary navy); use severity tokens for status/threshold colours; theme with DS tokens; use data-viz-tooltips for hover. STANDALONE (outside the repo) -> the DS ships NO chart/graph web component: STOP and ASK."
+  ],
+  "variants": [
+    "trend-line",
+    "area",
+    "bar-column",
+    "pie-donut",
+    "gauge",
+    "kpi-tile",
+    "sparkline",
+    "heatmap",
+    "topn",
+    "scatter-bubble",
+    "sankey-flow",
+    "treemap",
+    "timeline-xrange",
+    "geo-map",
+    "flame-graph",
+    "anomaly-forecast",
+    "topology-graph",
+    "widget-grid"
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "loading",
+      "what": "data pending — show the widget/chart skeleton or spinner, keep the tile chrome"
+    },
+    {
+      "name": "empty",
+      "what": "no data for the range — the Highcharts no-data-to-display message / an empty-state, not a blank box"
+    },
+    {
+      "name": "error",
+      "what": "query failed — an inline error in the tile, not a broken chart"
+    }
+  ],
+  "props": {},
+  "usageRules": {
+    "trend-line": {
+      "useWhen": "a metric changing over time (one or a few series) — the default trend",
+      "dontUse": "comparing unrelated discrete categories (-> bar-column); a single headline number (-> kpi-tile)",
+      "example": "CPU % over the last 24h"
+    },
+    "area": {
+      "useWhen": "a trend where magnitude/volume matters, or stacked composition over time",
+      "dontUse": "many overlapping series (fills occlude — use line)",
+      "example": "stacked inbound/outbound traffic over time"
+    },
+    "bar-column": {
+      "useWhen": "compare a value across discrete categories; many/long labels -> horizontal bar, few -> vertical column; stack for sub-parts",
+      "dontUse": "a continuous time trend (-> line/area)",
+      "example": "alert count by severity"
+    },
+    "pie-donut": {
+      "useWhen": "part-to-whole with a SMALL number of slices (<=5)",
+      "dontUse": ">5 slices or comparing precise values (-> bar); a hierarchy (-> treemap)",
+      "example": "monitors by status (up/down/maintenance)"
+    },
+    "gauge": {
+      "useWhen": "a single value read against a threshold/range (solid gauge / radial)",
+      "dontUse": "a trend over time (-> line); a plain number with no threshold (-> kpi-tile)",
+      "example": "disk utilisation vs a 90% threshold"
+    },
+    "kpi-tile": {
+      "useWhen": "a single headline number (optionally with a trend arrow / sparkline) — metro tile / KPI card",
+      "dontUse": "a value that only makes sense against a range (-> gauge)",
+      "example": "'1,204 active monitors' tile"
+    },
+    "sparkline": {
+      "useWhen": "an inline micro-trend inside a table cell or a tile (no axes)",
+      "dontUse": "a standalone chart needing axes/legend (-> line)",
+      "example": "a 7-day trend in each row of a monitors table"
+    },
+    "heatmap": {
+      "useWhen": "density/intensity across TWO dimensions (e.g. host x time)",
+      "dontUse": "a single series over time (-> line)",
+      "example": "response-time intensity per host across the day"
+    },
+    "topn": {
+      "useWhen": "a ranked list of the top N items by a value (with inline bars)",
+      "dontUse": "the full distribution (-> bar/heatmap)",
+      "example": "Top 10 hosts by CPU"
+    },
+    "scatter-bubble": {
+      "useWhen": "correlation / distribution between two metrics; bubble adds a third (size)",
+      "dontUse": "a time trend (-> line)",
+      "example": "latency vs throughput per endpoint"
+    },
+    "sankey-flow": {
+      "useWhen": "volume of flow/relationships between nodes/stages",
+      "dontUse": "a network topology you can pan/zoom (-> topology-graph)",
+      "example": "traffic flow between zones"
+    },
+    "treemap": {
+      "useWhen": "hierarchical part-to-whole sized by area; many parts",
+      "dontUse": "a flat few-slice composition (-> pie/donut)",
+      "example": "storage used by folder hierarchy"
+    },
+    "timeline-xrange": {
+      "useWhen": "status/duration bars over time (SLO windows, gantt, availability segments)",
+      "dontUse": "a continuous numeric trend (-> line)",
+      "example": "SLO up/down segments across a month"
+    },
+    "geo-map": {
+      "useWhen": "a value by geography (choropleth via Highmaps, or markers via Leaflet tiles)",
+      "dontUse": "non-geographic categories (-> bar)",
+      "example": "RUM sessions by country"
+    },
+    "flame-graph": {
+      "useWhen": "trace / call-stack profiling (APM/RUM) — rendered with d3-flame-graph, not Highcharts",
+      "dontUse": "anything that isn't a call/span hierarchy",
+      "example": "an APM transaction trace"
+    },
+    "anomaly-forecast": {
+      "useWhen": "a trend line overlaid with anomaly and/or forecast bands (licensed AI/ML)",
+      "dontUse": "a plain trend with no ML overlay (-> line)",
+      "example": "predicted CPU with a forecast band"
+    },
+    "topology-graph": {
+      "useWhen": "a pan/zoom node-edge NETWORK or dependency map (Cytoscape) — topology, APM service map, NetRoute path",
+      "dontUse": "a flow volume diagram (-> sankey); a hierarchy tree (that's navigation/side-menu-tree)",
+      "example": "the L2/L3 device topology canvas"
+    },
+    "widget-grid": {
+      "useWhen": "a whole DASHBOARD: a draggable/resizable grid of widget tiles (vue-grid-layout)",
+      "dontUse": "a single chart on a page (just place the chart); a static form layout (-> the 12-col grid)",
+      "example": "an infra overview dashboard of charts + KPI tiles"
+    }
+  },
+  "do": [
+    "Pick the type by the question the viewer is answering (decisionFlow), not by looks.",
+    "Colour multi-series charts from tokens/chart-palette.json IN ORDER; use severity tokens for status/threshold.",
+    "Render with the product's component: Chart (src/components/chart/chart.vue), Graph (monitor-graph/graph.vue), or Widgets (components/widgets). Reuse, don't re-engine.",
+    "Give every chart a loading, empty and error state; use data-viz-tooltips for hover detail.",
+    "Theme with DS tokens (--common-widget-bg tile surface, --page-text-color, --border-color) so it flips light/dark."
+  ],
+  "dont": [
+    "Don't build a framework-agnostic obs-chart / obs-graph — the engines are licensed/heavy and app-coupled.",
+    "Don't colour a chart with the brand navy --primary; series must stay distinguishable (use the categorical palette).",
+    "Don't improvise a chart in a standalone prototype — STOP and ASK (the DS has no chart component).",
+    "Don't hand-roll a topology canvas or a widget grid — reuse Graph / Widgets."
+  ],
+  "a11y": {
+    "summary": "Charts must not rely on colour alone — pair series with labels/legend and expose the data as a table alternative where possible. Keyboard: the widget grid and topology canvas provide their own focus/zoom controls.",
+    "issues": [
+      "Colour-only encoding fails colour-blind users — always label series and provide a legend.",
+      "Canvas-rendered charts/graphs are not screen-reader legible — offer the underlying data as a grid (ChartWithGrid) for critical views."
+    ]
+  },
+  "knownIssues": [
+    "App-coupled: charts (Highcharts v10), topology (Cytoscape.js), dashboard grid (vue-grid-layout) are rendered by product components, not by the DS — there is intentionally no obs-* for them.",
+    "Highcharts is a COMMERCIALLY LICENSED engine — do not vendor it into a standalone prototype; that's why standalone chart requests are a STOP-and-ASK.",
+    "The categorical chart palette (chart-palette.json) is separate from the brand/token palette — don't conflate."
+  ],
+  "tokensUsed": [
+    "--common-widget-bg",
+    "--page-text-color",
+    "--border-color",
+    "--neutral-light",
+    "--neutral-lighter"
+  ],
+  "related": [
+    "data-viz-tooltips",
+    "table",
+    "toolbars",
+    "severity"
+  ],
+  "storybook": "Organisms/Data Visualization",
+  "figma": null,
+  "changelog": [
+    "2026-07-23 — obs-metric-picker joined this family (owner): the charts/topology/grid stay decision GUIDES (no obs-*), but the metric SELECTOR that feeds them is a real shippable element and now lives here — the buildable authoring side of the data-viz workflow.",
+    {
+      "date": "2026-07-06",
+      "change": "Examples charts now render through the product's real config pipeline (default-config + getWidgetChartCommonOptions) so they match the product (gridlines/legend/tooltip/palette) and theme with light/dark. Added the 6 non-Highcharts types via their real engines + static refs; hardened the gate with a theme-awareness probe."
+    },
+    {
+      "date": "2026-07-05",
+      "change": "Catalogued the data-viz family as a decision GUIDE (charts/stat-tiles/topology/widget-grid) — engine-backed, no obs-* by design. Added chart-palette tokens + type-selection decisionFlow + per-type usageRules."
+    }
+  ],
+  "usage": {
+    "total": 38,
+    "files": 38,
+    "$note": "38 files mount <Chart> (Highcharts); 11 import chart.vue directly. Chart TYPES are config-driven (one Chart, many Highcharts `type`s), not distinct Vue components — counts are by render FAMILY, approximate.",
+    "byFamily": {
+      "charts (Chart/highchart)": 38,
+      "widget view renderers": 22,
+      "topology-graph (Cytoscape)": 6,
+      "widget-grid (vue-grid-layout)": 5
+    }
+  }
+}

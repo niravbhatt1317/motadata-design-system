@@ -1,0 +1,305 @@
+{
+  "name": "sidebar",
+  "component": "FlotoNavBar",
+  "display": "Sidebar",
+  "tier": "organism",
+  "family": "Navigation",
+  "group": "Structure & Navigation",
+  "source": "src/components/layout/navbar.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The product's PRIMARY navigation — the left vertical MODULE rail (FlotoNavBar). Collapsed to 65px (brand mark + module icons) by default; HOVER-expands to 170px (ObserveOps wordmark + labels), or pin it open with `expanded`. Data-driven module list (icon + label, optional BETA tag); the active module highlights --primary-alt on --nav-selected-text-color, a hovered non-active item gets a --nav-hover-bg pill. Theme-aware. Pairs with obs-app-header (the horizontal top bar). NOT an in-module section menu (side-menu) and NOT sibling-view switching (obs-tabs).",
+  "variants": [
+    {
+      "name": "collapsed",
+      "what": "65px icon-only rail (default) — brand mark + module icons",
+      "usage": "default"
+    },
+    {
+      "name": "expanded",
+      "what": "170px — hover-expands (or `expanded` pins it): ObserveOps wordmark + module labels",
+      "usage": "on hover"
+    },
+    {
+      "name": "active-item",
+      "what": "the current module highlighted --primary-alt on --nav-selected-text-color, radius 6px (aria-current)",
+      "usage": "always"
+    },
+    {
+      "name": "with-beta",
+      "what": "a module carrying a BETA tag (e.g. SLO)",
+      "usage": "occasional"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "collapsed",
+      "value": "65px",
+      "note": "icon-only rail width"
+    },
+    {
+      "name": "expanded",
+      "value": "170px",
+      "note": "hover/pinned width (labels shown)"
+    }
+  ],
+  "states": [
+    {
+      "name": "rest",
+      "what": "collapsed icon rail"
+    },
+    {
+      "name": "hover-panel",
+      "what": "the whole rail expands to 170px"
+    },
+    {
+      "name": "hover-item",
+      "what": "a non-active item shows a --nav-hover-bg pill"
+    },
+    {
+      "name": "active",
+      "what": "the current module: --primary-alt background, --nav-selected-text-color text, 6px radius"
+    }
+  ],
+  "props": {
+    "items": {
+      "type": "string",
+      "default": "",
+      "note": "the module list — a JSON array of {key,label,icon,beta?}. `icon` is an obs-icon name (the product module glyph); `beta:true` adds a BETA tag. For the ObserveOps rail, DO NOT guess icons — copy the canonical 16-module mapping from this registry's `productModules.items` (verified against the product; e.g. Topology = \"topology\", not \"networkTopology\")."
+    },
+    "active": {
+      "type": "string",
+      "default": "",
+      "note": "the active module `key` — highlighted --primary-alt + aria-current=\"page\"."
+    },
+    "brand": {
+      "type": "string",
+      "default": "ObserveOps",
+      "note": "the wordmark text shown when expanded (or use the `brand` slot for a logo image)."
+    },
+    "expanded": {
+      "type": "boolean",
+      "default": false,
+      "note": "pin the rail open at 170px; otherwise it hover-expands and collapses."
+    }
+  },
+  "events": {
+    "navigate": "({key,label}) — a module was clicked (wire it to your router: push the module route)."
+  },
+  "slots": {
+    "brand": "OPTIONAL wordmark text shown when expanded (default: ObserveOps). Only change it when the user explicitly asks for a different brand name.",
+    "logo": "OPTIONAL override for the mark. By DEFAULT the sidebar already renders the built-in ObserveOps / Motadata brand mark — do NOT fill this slot unless the user explicitly wants a different logo."
+  },
+  "decisionFlow": [
+    "Switch between top-level product MODULES (Dashboards / Monitors / Alerts / …)? -> obs-sidebar (the left module rail).",
+    "Navigate SECTIONS within one module (e.g. Settings sub-nav)? -> a side-menu, NOT the sidebar.",
+    "Switch between sibling VIEWS of the SAME page? -> obs-tabs.",
+    "Show location + a way up a hierarchy? -> obs-breadcrumbs.",
+    "The horizontal global bar (logo / search / notifications / user)? -> obs-app-header (the sidebar's top-bar counterpart).",
+    "A step-through create/setup flow? -> a stepper (steps), not the sidebar."
+  ],
+  "usageRules": {
+    "collapsed": {
+      "useWhen": "the default resting rail — maximise content width; icons carry the modules, labels appear on hover",
+      "dontUse": "when labels must always be visible (pin it with `expanded`)",
+      "example": "the 65px ObserveOps rail on a Monitors list page"
+    },
+    "expanded": {
+      "useWhen": "labels should stay visible (wider viewports, onboarding) — set `expanded` to pin 170px",
+      "dontUse": "on narrow layouts where content width matters (leave it collapsed / hover-expand)",
+      "example": "the pinned 170px rail showing Dashboards · Monitors · Alerts · …"
+    },
+    "active-item": {
+      "useWhen": "always — set `active` to the current module key so the rail reflects the route",
+      "dontUse": "never leave `active` unset on a real page (the rail should always show where you are)",
+      "example": "active=\"inventory\" highlights Monitors as a --primary-alt pill"
+    },
+    "with-beta": {
+      "useWhen": "a module is in beta — add beta:true to its item",
+      "dontUse": "for GA modules",
+      "example": "SLO carries a BETA tag"
+    },
+    "logo": {
+      "useWhen": "the user has EXPLICITLY asked to show a different brand — then override slot=\"logo\" with their image and set the brand wordmark to their name.",
+      "dontUse": "by default. The sidebar ships with the ObserveOps / Motadata brand mark built in; an AI tool must NOT replace, remove, or blank it unless the user explicitly requests a custom logo.",
+      "must": "keep the default ObserveOps brand logo unless the user asks to swap it.",
+      "example": "default (no slot) → the built-in Motadata donut mark. Custom brand only on request: <obs-sidebar ...><img slot=\"logo\" src=\"acme.png\"></obs-sidebar>."
+    }
+  },
+  "do": [
+    "Keep the default ObserveOps / Motadata brand logo — it ships built-in. Only override slot=\"logo\" (and `brand`) when the user EXPLICITLY asks for a different logo.",
+    "Feed the role/license-gated module set via `items`; set `active` to the current route's module key.",
+    "Pair it with obs-app-header (the horizontal top bar) for the full app chrome.",
+    "Let it hover-expand by default; only pin `expanded` when labels must always show.",
+    "Reuse the module glyphs from the product icon library (obs-icon names)."
+  ],
+  "dont": [
+    "Don’t replace, remove, or blank the default logo — the sidebar comes with the ObserveOps brand mark by default; swap it only on explicit user request.",
+    "Don't use it for in-module section navigation (that's a side-menu) or sibling views (obs-tabs).",
+    "Don't hand-roll a module rail — reuse obs-sidebar.",
+    "Don't hardcode the panel colours — they're theme tokens (--nav-panel-bg / --nav-text-color).",
+    "Don't leave `active` unset on a real page."
+  ],
+  "a11y": {
+    "summary": "A <nav aria-label=\"Primary\"> landmark; each module is a link with aria-current=\"page\" on the active one. Labels are visually hidden when collapsed but the link text remains in the accessibility tree (icons are decorative). Keyboard: links are tabbable and activate on Enter.",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "SF-001 — a visible focus ring on nav items should be verified against the --nav-panel-bg / --nav-hover-bg surfaces in both themes."
+      },
+      {
+        "severity": "low",
+        "issue": "The rail hover-expands on pointer hover; keyboard/touch users rely on the collapsed icons (labels stay in the a11y tree) — pin `expanded` where always-on labels matter."
+      }
+    ]
+  },
+  "knownIssues": [
+    {
+      "severity": "info",
+      "issue": "obs-sidebar is a render-faithful reproduction of the primary nav (FlotoNavBar). The real rail is router/store-bound and permission/role-gated (visibleMenuItems); wiring `navigate` to the router, the active-route binding, and the module gating are the consumer's."
+    }
+  ],
+  "tokensUsed": [
+    "--code-tag-background-color",
+    "--nav-hover-bg",
+    "--nav-panel-bg",
+    "--nav-selected-text-color",
+    "--nav-text-color",
+    "--neutral-shadow-light",
+    "--page-text-color",
+    "--primary",
+    "--primary-alt",
+    "--secondary-green",
+    "--secondary-orange",
+    "--secondary-yellow"
+  ],
+  "related": [
+    "app-header",
+    "tabs",
+    "page-header",
+    "toolbar",
+    "breadcrumbs"
+  ],
+  "changelog": [
+    {
+      "date": "2026-08-12",
+      "change": "Published the canonical module→icon mapping (productModules.items) — all 16 ObserveOps modules with their real key/label/icon, verified against the product navbar + render-checked, so the rail is built by copy not by guess (G23). Fixes the ambiguity that let Topology ship as networkTopology (a switch) instead of topology (a node tree)."
+    },
+    {
+      "date": "2026-08-12",
+      "change": "Decorative mask-group blobs now render the real product SVG (two gradient circles, green→blue + yellow→orange) at opacity 0.5 per circle so the overlap composites like the product; exact product colors; position right:-75 / bottom:-90 / 200×200."
+    },
+    "2026-08-12 — Decorative bottom mark (owner): replaced the CSS-gradient blobs with the real product \"Mask Group\" SVG — a green→blue circle + a yellow→orange circle at the bottom-right (right:-75/bottom:-100/200×200, matching the product), clipped by the rail. Stop colours are DS tokens (--secondary-green/--primary/--secondary-yellow/--secondary-orange), so it is theme-aware and hardcode-free.",
+    "2026-08-12 — Sidebar tuning (owner): module icons 22→21.5px; removed the logo mark row bottom margin (was 8px); the rail is now 64px content + a 1px right border (--border-color) = 65px total footprint (crisp divider). Also: obs-icon now accepts decimal sizes (e.g. 21.5).",
+    "2026-08-12 — Product-match sizing (owner): logo mark 26→30px (product img is 30×30), module icons 18→22px, and the inter-item vertical gap 8→4px (tighter stack, matching the product; left/right inset unchanged). Logo + icons stay centre-aligned on the same axis.",
+    "2026-08-06 — Logo guidance (owner): the sidebar ships with the ObserveOps / Motadata brand mark by DEFAULT and AI tools must NOT replace or blank it unless the user explicitly asks. Reframed slots.logo / slots.brand as OPTIONAL overrides, added a `logo` usageRule + do/dont so generated sidebars keep our brand.",
+    "2026-08-06 — Behaviour + shadow fix (owner): (1) hover/pin expansion now OVERLAYS the page — the host reserves only the 65px rail in the layout and the panel widens on top (z-index) instead of pushing/squeezing the content beside it. (2) Softened the drop shadow (2px 0 8px, lower-alpha var(--nav-shadow-color, rgba(70,70,70,0.08))) — the old 3px 10px 10px rgba(70,70,70,0.15) read too dark.",
+    "2026-07-26 — Fix (owner): softened the decorative bottom blobs to match the product — removed the --primary (blue) mix that made the green read murky/dark, made them solid-cored pastel green + amber, and added a blur so they are soft/diffuse (not hard-edged circles with a straight bottom clip).",
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves. Reuse (obs-* composition) / props / variants / a11y verified current — no drift. No API change.",
+    "2026-07-21 — Icon-reuse cleanup (surfaced once obs-sidebar was added to the elements-api MAP → guards scanned it): the default logo mark now composes <obs-logo name=\"motadata\"> instead of a hand-drawn donut <svg>; the decorative corner blobs are CSS radial-gradients on brand tokens (--secondary-green/--primary/--secondary-yellow/--secondary-orange) instead of an inlined gradient <svg>; the rail box-shadow uses var(--neutral-shadow-light) instead of a raw rgba. No visual/behaviour change intended. Structural guard + full deploy preflight now clean.",
+    {
+      "date": "2026-07-16",
+      "change": "Fidelity pass (owner review vs product): the logo mark is smaller (26px) and centred on the SAME vertical axis as the module icons; the ObserveOps wordmark is normal weight (was 600) at 13px (was 15px); added the panel drop-shadow (box-shadow 3px 10px 10px rgba(0,0,0,0.1)) in both modes; and the decorative blobs now sit BEHIND the menu items (z-index) instead of over them."
+    },
+    {
+      "date": "2026-07-16",
+      "change": "Pixel-matched to the product (nav.less + navbar.vue): ACTIVE pill is now --primary-alt on --nav-selected-text-color (was --primary/--nav-panel-bg), radius 6px (was 8px), item height 40px / padding-left 17px expanded (centred collapsed), logo row 53px (header-height − 2). Added the decorative mask-group blobs (green-blue + yellow-orange) bottom-right, and a `logo` slot using the real Motadata donut mark (brand-logo.png). Showcase now lists all 16 real modules."
+    },
+    {
+      "date": "2026-07-16",
+      "change": "Added obs-sidebar — the primary module rail (FlotoNavBar): collapsed 65px icon rail hover-expanding to 170px (or pinned via `expanded`), data-driven `items` [{key,label,icon,beta?}], `active` module highlighted --primary (aria-current), BETA tags, brand mark + wordmark (or brand slot). Emits `navigate`. Composes obs-icon for module glyphs. Source-derived from the rendered Navigation/PrimaryNav story + layout/navbar.vue (nav is router/store-bound). Pairs with obs-app-header."
+    }
+  ],
+  "storybook": "Molecules/Navigation (PrimaryNav)",
+  "figma": {
+    "status": "not-started",
+    "component": "Sidebar"
+  },
+  "productModules": {
+    "$note": "The CANONICAL ObserveOps module rail — all 16 product modules with their REAL key/label/icon, extracted and verified against the product navbar (src/components/layout/navbar.vue) and render-checked. COPY these straight into obs-sidebar `items` to build the product-faithful rail — do NOT pick icons by eye from the 553-glyph library. Trap example: Topology is icon \"topology\" (a hierarchical node tree), NOT \"networkTopology\" (a network switch/hub) — both exist and both are plausible from the name alone. Set `active` to the current module key.",
+    "count": 16,
+    "items": [
+      {
+        "key": "dashboard",
+        "label": "Dashboards",
+        "icon": "dashboard"
+      },
+      {
+        "key": "inventory",
+        "label": "Monitors",
+        "icon": "navbar-monitor"
+      },
+      {
+        "key": "alert",
+        "label": "Alerts",
+        "icon": "alert"
+      },
+      {
+        "key": "slo",
+        "label": "SLO",
+        "icon": "slo",
+        "beta": true
+      },
+      {
+        "key": "reports",
+        "label": "Reports",
+        "icon": "report"
+      },
+      {
+        "key": "topology",
+        "label": "Topology",
+        "icon": "topology"
+      },
+      {
+        "key": "nccm",
+        "label": "NCCM",
+        "icon": "ncm"
+      },
+      {
+        "key": "netroute",
+        "label": "NetRoute",
+        "icon": "netroute"
+      },
+      {
+        "key": "metric-explorer",
+        "label": "Metric Explorer",
+        "icon": "metric-explorer"
+      },
+      {
+        "key": "log",
+        "label": "Log Explorer",
+        "icon": "log"
+      },
+      {
+        "key": "apm",
+        "label": "APM Explorer",
+        "icon": "apm"
+      },
+      {
+        "key": "rum",
+        "label": "RUM Explorer",
+        "icon": "rum"
+      },
+      {
+        "key": "flow",
+        "label": "Flow Explorer",
+        "icon": "flow"
+      },
+      {
+        "key": "trap-viewer",
+        "label": "Trap Explorer",
+        "icon": "trap-viewer"
+      },
+      {
+        "key": "audit",
+        "label": "Audits",
+        "icon": "audit"
+      },
+      {
+        "key": "settings",
+        "label": "Settings",
+        "icon": "settings"
+      }
+    ]
+  }
+}

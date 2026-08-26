@@ -1,0 +1,20 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Select/Changelog" />
+
+# Select — Changelog
+
+## 2026-06-07
+
+- Added — badged **⚠️ low-use** (the owner chose a full page anyway). Deep-dive of
+  `ui/components/Select/Select.vue`: the kit's raw Ant `a-select` wrapper.
+- **Reality check:** `MSelect` is used **2×** (both `mode="tags"`, in `LooseTags` /
+  `object-tag-picker`); the product's real select is **`FlotoDropdownPicker` (510×)**.
+  `MTreeSelect` is 0×.
+- API: modes (default / multiple / tags), `show-search`, `allow-clear` (default true), `size`,
+  `loading`, rich slots (`notFoundContent` → `MNoData`); v-model `value`/`change`. Verified
+  single / multiple / tags render.
+- Findings: **F1** (superseded by DropdownPicker), **F2** (ironically MSelect *is* an accessible
+  combobox while the widely-used DropdownPicker isn't — SF-003), **F3** (no focus ring → SF-001).
+- Usage page is mostly a **"which select do I use?"** decision (→ FlotoDropdownPicker for selects,
+  LooseTags for tag inputs).

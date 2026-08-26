@@ -1,0 +1,177 @@
+{
+  "name": "switch",
+  "component": "MSwitch",
+  "display": "Switch",
+  "tier": "atom",
+  "family": "Selection Controls",
+  "source": "mkit",
+  "sourceFile": "ui/components/Switch/Switch.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "Instant on/off toggle for a setting that applies immediately. Controlled.",
+  "variants": [],
+  "sizes": [
+    {
+      "name": "small",
+      "value": "~20x44px",
+      "note": ""
+    },
+    {
+      "name": "default",
+      "value": "22x44px",
+      "note": ""
+    }
+  ],
+  "states": [
+    {
+      "name": "off",
+      "what": "gray knob"
+    },
+    {
+      "name": "on",
+      "what": "green knob"
+    },
+    {
+      "name": "disabled",
+      "what": "no toggle"
+    },
+    {
+      "name": "loading",
+      "what": "spinner in knob"
+    }
+  ],
+  "model": {
+    "prop": "checked",
+    "event": "change"
+  },
+  "props": {
+    "checked": {
+      "type": "boolean",
+      "default": false,
+      "note": "v-model"
+    },
+    "size": {
+      "type": "string",
+      "default": "default",
+      "enum": [
+        "small",
+        "default"
+      ]
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false
+    },
+    "defaultChecked": {
+      "type": "boolean",
+      "note": "NO-OP (F1) — overridden by :checked"
+    },
+    "autoFocus": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "events": [
+    "change"
+  ],
+  "slots": [
+    "checked (on label, unused)",
+    "unchecked (off label, unused)"
+  ],
+  "anatomy": [
+    "track",
+    "knob (gray off → green on)",
+    "optional on/off label slots"
+  ],
+  "styling": {
+    "trackOff": "#fff light / #172336 dark",
+    "trackOn": "same as off (no change)",
+    "knobOff": "#a5bad0 (neutral-light)",
+    "knobOn": "#14b053 (green)",
+    "size": "22x44px default"
+  },
+  "accessibility": {
+    "role": "switch",
+    "keyboard": "Space/Enter toggle",
+    "ariaChecked": "true when on; MISSING when off (F4)",
+    "focus": "no visible ring (F3)",
+    "targetSize": "~22px (F5)"
+  },
+  "do": [
+    "Use for immediate on/off settings; show :loading while persisting.",
+    "Control via v-model / :checked."
+  ],
+  "dont": [
+    "Using a switch in a form that needs explicit Save (use MCheckbox).",
+    "Relying on :defaultChecked (no-op, F1)."
+  ],
+  "whenToUse": "Immediate on/off settings (enable feature, toggle status).",
+  "decisionFlow": [
+    "Mutually-exclusive options? -> MRadio.",
+    "Applies immediately (no Save)? -> Switch.",
+    "Committed only on form Save (opt-in/consent/multi-select)? -> MCheckbox."
+  ],
+  "usageRules": {
+    "switch": {
+      "useWhen": "single binary setting that applies the moment you toggle it",
+      "dontUse": "if saved with a form (use checkbox) or one-of-many (use radio)",
+      "example": "Enable notifications; monitor on/off"
+    },
+    "loading": {
+      "useWhen": "the toggle triggers an async persist; block re-toggle until resolved"
+    },
+    "disabled": {
+      "useWhen": "setting exists but can't change in current state/permission"
+    },
+    "size=small": {
+      "useWhen": "dense rows/tables"
+    }
+  },
+  "insteadOf": [
+    "raw a-switch"
+  ],
+  "tokensUsed": [
+    "--white-regular",
+    "--neutral-light",
+    "--secondary-green"
+  ],
+  "usage": {
+    "total": 136,
+    "files": 88,
+    "labelSlots": 0
+  },
+  "knownIssues": [
+    "F1 (medium): defaultChecked is a no-op — MSwitch always passes :checked (default false) which overrides it. Use :checked/v-model.",
+    "F2 (medium): on/off changes only the knob color (gray→green) + position; the track color never changes — subtler, color-leaning signal.",
+    "F3 (high, a11y): no visible focus ring (outline:none) — WCAG 2.4.7. Add :focus-visible.",
+    "F4 (medium, a11y): aria-checked is set when on but missing when off — AT may not announce off. Ensure aria-checked=false.",
+    "F5 (low, a11y): ~22px height below the 44px touch target."
+  ],
+  "related": [
+    "MCheckbox",
+    "MRadio"
+  ],
+  "changelog": [
+    "2026-06-05: added (Playground/States/Sizes).",
+    "2026-06-06: full deep-dive — examples fixed to :checked (F1); on/off measured; enhanced standard + Option B pages; a11y F3/F4/F5."
+  ],
+  "storybook": "Atoms/Switch",
+  "figma": {
+    "status": "todo",
+    "component": "Switch"
+  },
+  "a11y": {
+    "summary": "role=switch; Space/Enter toggle; aria-checked=true when on. ~22×44px (sub-44 target).",
+    "issues": [
+      "No visible focus ring.",
+      "aria-checked missing in the OFF state.",
+      "On/off signalled mainly by knob colour — add a non-colour cue."
+    ],
+    "doc": "Atoms/Switch/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

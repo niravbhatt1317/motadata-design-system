@@ -1,0 +1,85 @@
+{
+  "name": "layout-grid",
+  "component": "MRow / MCol",
+  "display": "Grid",
+  "tier": "foundation",
+  "section": "Foundations",
+  "family": "Layout",
+  "status": "stable",
+  "summary": "The product's 12-column layout grid — MRow / MCol (wrappers over Ant a-row/a-col), ~540/~522 files. MCol :size is a span out of 12: 6 = half (the default form field), 12 = full, 3 = quarter, 4 = third, 2 = sixth. :gutter=\"16\" for form rows; :gutter=\"0\" only for structural wrappers; auto-size shrinks a column to its content.",
+  "decisionFlow": [
+    "Use the 12-col MRow/MCol grid for FORM and content column layout inside a screen region (6 = half, 12 = full, gutter 16).",
+    "Laying out the whole SCREEN (header / body / side panel)? -> that's layout-screen-regions, not the form grid.",
+    "A dashboard of resizable widget tiles? -> that's the widget GridLayout (a known gap — STOP-and-ASK), NOT this form grid.",
+    "One field per row full-width, or two half-width fields side by side -> 12 / 6+6. Action buttons -> auto-size col."
+  ],
+  "props": {
+    "size": {
+      "type": "number",
+      "default": "6",
+      "enum": [
+        "12",
+        "6",
+        "4",
+        "3",
+        "2"
+      ],
+      "note": "column span (out of 12); the row fills with 12/size equal columns"
+    },
+    "gutter": {
+      "type": "boolean",
+      "default": "false",
+      "note": "16px gutter between columns (the form-row default)"
+    },
+    "auto-size": {
+      "type": "boolean",
+      "default": "false",
+      "note": "show the 'filling field + content-width action buttons' row"
+    }
+  },
+  "do": [
+    "Use MRow/MCol for all form field layouts.",
+    "Sizes: 6 = half, 12 = full, 3 = quarter, 4 = third.",
+    "gutter 16 for form rows; gutter 0 only for structural wrappers.",
+    "auto-size for action/compact cells; align inside a cell with flex utilities."
+  ],
+  "dont": [
+    "Don't hand-roll a flex grid for form layouts.",
+    "Don't put a gutter on full-height structural wrappers (use gutter 0).",
+    "Don't nest deep grids where a single MRow of sized MCols works."
+  ],
+  "tokensUsed": [
+    "@padding-md",
+    "--border-color",
+    "--code-tag-background-color",
+    "--page-background-color",
+    "--primary"
+  ],
+  "related": [
+    "layout-app-shell",
+    "layout-screen-regions"
+  ],
+  "storybook": "Foundations/Layout/Grid",
+  "a11y": {
+    "summary": "Layout primitive — no semantics of its own; MRow/MCol are presentational wrappers. The fields/controls placed inside carry the semantics and tab order.",
+    "issues": []
+  },
+  "knownIssues": [
+    "Diagram reproduces the visual grid with CSS; the product uses MRow/MCol (wrappers over Ant a-row/a-col).",
+    "[element] The obs-layout-* WEB COMPONENT is a fixed visual demo, not a slotted layout primitive — you can't put a real page inside it. Use the layout GUIDANCE (decisionFlow/regions) + compose the shell from atoms + the 12-col grid + tokens."
+  ],
+  "changelog": [
+    "2026-06-29: added — the 12-column splits + interactive size/gutter/auto-size; render-first from the story.",
+    "2026-06-29: examples width fixed (cells were collapsing to content width).",
+    "2026-06-29: Usage enriched — when-to-use + where-it's-used.",
+    "2026-07-01: primary button weight 600→500 to match the product Button; native-control font reset.",
+    "2026-07-01: button font-weight 500→400 (product Button is 400)."
+  ],
+  "whenToUse": "The default way to lay out form fields and any content needing predictable column proportions — 6 = half a row, 12 = full, with a 16px gutter.",
+  "usedIn": [
+    "Every form field layout (MRow ~540 files · MCol ~522 files).",
+    "Cards, summary rows, split panels — anywhere needing column proportions.",
+    "Default form layout is 6 / 6 (two-up); size 12 for textareas / full-width fields."
+  ],
+  "referenceOnly": true
+}

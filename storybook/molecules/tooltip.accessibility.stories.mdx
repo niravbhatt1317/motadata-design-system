@@ -1,0 +1,38 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Tooltip/Accessibility" />
+
+# Tooltip — Accessibility
+
+## Keyboard
+
+- The tooltip appears on **focus** as well as hover (good — keyboard users can reach it if the
+  trigger is focusable).
+- ⚠️ **Icon-only triggers are often not focusable** and have **no accessible name**. Make the
+  trigger a real focusable element with an `aria-label` (e.g. `<MIcon name="info-circle"
+  aria-label="Polling interval help" tabindex="0" />`).
+
+## Screen readers / ARIA
+
+- ⚠️ **The bubble content is not linked to the trigger** via `aria-describedby` (**F3**), so a
+  screen reader announces the trigger but not the hint. Recommended: generate a bubble id and set
+  `aria-describedby` on the trigger while the tooltip is open.
+
+## Focus ring
+
+- ⚠️ The overlay removes the focus outline (`:focus { outline:none }` in `_base-popper.less`) —
+  this is the catalog-wide **SF-001** (`:focus-visible` ring) recommendation (**F2**).
+
+## Target size & contrast
+
+- Keep the trigger target ≥ 24px. Tooltip text uses `--tooltip-text-color` on
+  `--tooltip-background-color` — verify contrast in **both** themes.
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| Appears on focus | ✅ |
+| Trigger accessible name | ⚠️ add `aria-label` to icon triggers |
+| `aria-describedby` wiring | ⚠️ missing (F3) |
+| Focus ring | ⚠️ missing (F2 → SF-001) |

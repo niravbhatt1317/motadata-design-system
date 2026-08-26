@@ -1,0 +1,29 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Radio/Accessibility" />
+
+# Radio — Accessibility
+
+Built on native `<input type="radio">` grouped by `name`, so it inherits correct semantics.
+
+## Keyboard
+
+- **Tab** moves focus to the group; **Arrow keys** move the selection between options;
+  **Space** selects the focused option. (Native radio behavior.)
+
+## Screen reader
+
+- Each option exposes a radio role and its label; the shared `name` groups them so AT
+  announces "n of m". Give the **group** a name — a field label or `aria-label` describing
+  what's being chosen (e.g. "Severity").
+
+## Known a11y gotcha
+
+- ⚠️ **No visible keyboard focus indicator** system-wide
+  ([SF-001](../../findings/SF-001-focus-visible.md)) — applies to both the radio list and the
+  segmented buttons.
+
+## Contrast
+
+- The selected segment fills the brand color (navy `#111c2c` light / `#e3e8f2` dark) with
+  contrasting text — verify in both themes if you customize.

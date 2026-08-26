@@ -1,0 +1,272 @@
+{
+  "name": "notification-menu",
+  "component": "MPopover + MBadge + MTab (notification-dropdown.vue)",
+  "display": "Notification Menu",
+  "tier": "molecule",
+  "family": "App Chrome",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The interactive header NOTIFICATION panel — a bell + unread-count badge trigger that opens a dropdown with a title, Alerts/System tabs, a scrollable list of notification rows (severity dot + text + time), and a View all / Clear all footer. Self-contained (renders its own trigger + top-layer popover) so it drops into obs-app-header, or stands alone. The turnkey form of the `notification-dropdown` recipe.",
+  "selectHint": "The header bell + notification panel (alerts/system, badge count)? -> obs-notification-menu in the app-header action area. For a generic action menu use obs-menu; the account dropdown is obs-user-menu.",
+  "whenToUse": "The top-right notification control of the app shell — the bell with an unread count that opens recent alerts/system notifications with tabs and a scrollable list. One per app chrome.",
+  "insteadOf": [
+    "a hand-built bell + badge + absolutely-positioned panel",
+    "obs-menu configured from scratch (this is the turnkey version with tabs + list + footer)",
+    "putting notifications in a page instead of the chrome"
+  ],
+  "variants": [
+    {
+      "name": "default",
+      "what": "Bell + badge -> title + Alerts/System tabs + list + View all / Clear all.",
+      "usage": "the standard header notification panel"
+    },
+    {
+      "name": "single-list",
+      "what": "One tab (or none) -> a flat list with no tab strip.",
+      "usage": "when there is only one notification stream"
+    },
+    {
+      "name": "empty",
+      "what": "A tab with no items shows a friendly ‘all caught up’ placeholder.",
+      "usage": "empty state"
+    },
+    {
+      "name": "severity-coded",
+      "what": "each row carries a coloured LEFT accent bar from item.severity (--severity-<name>: critical/major/warning/clear/…).",
+      "usage": "alert streams where severity is the primary signal"
+    },
+    {
+      "name": "with-tags",
+      "what": "rows carry a right-side tag chip (item.tag, via obs-tag) — e.g. Trap / Threshold — to classify the source.",
+      "usage": "when the notification source/type matters at a glance"
+    },
+    {
+      "name": "with-counts",
+      "what": "tab labels show a count — 'Alerts (191)' / 'System Notification (1822)' — from an explicit tab `count` or computed from items.",
+      "usage": "the product default; conveys backlog size per stream"
+    },
+    {
+      "name": "placement-start",
+      "what": "placement=\"bottom-start\" aligns the panel to the LEFT of the bell (default is bottom-end / right).",
+      "usage": "when the bell sits near the right edge’s opposite side"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "36px bell / 340px panel",
+      "note": "bell matches the app-header circular action button; the list scrolls at ~320px max-height."
+    }
+  ],
+  "states": [
+    {
+      "name": "closed",
+      "what": "just the bell + badge (aria-expanded=false)."
+    },
+    {
+      "name": "open",
+      "what": "the top-layer panel is shown; click-outside / Esc closes it."
+    },
+    {
+      "name": "unread",
+      "what": "an unread row gets a subtle --code-tag-background-color highlight."
+    },
+    {
+      "name": "empty",
+      "what": "no rows for the active tab -> the placeholder."
+    }
+  ],
+  "props": {
+    "count": {
+      "type": "number",
+      "default": 0,
+      "note": "unread count in the badge; 0 hides the badge, >99 shows 99+."
+    },
+    "title": {
+      "type": "string",
+      "default": "Alerts & Notifications",
+      "note": "the panel header title."
+    },
+    "tabs": {
+      "type": "array|string",
+      "default": "Alerts,System",
+      "note": "tab labels (comma-list or JSON). JSON items may carry a `count` -> the label shows 'Label (N)' (product: Alerts (191) / System Notification (1822)); else the count is computed from items in that tab. One/zero tabs -> no tab strip."
+    },
+    "items": {
+      "type": "array|string",
+      "default": "",
+      "note": "notifications: [{tab?, severity?, text, detail?, time?, tag?, unread?}]. `severity` colours the LEFT ACCENT BAR (--severity-<name>); `tag` renders a small chip on the right (e.g. Trap); `time` is a full timestamp on a second line. `detail` is an optional middle line (e.g. an IP)."
+    },
+    "placement": {
+      "type": "string",
+      "default": "bottom-end",
+      "enum": [
+        "bottom-end",
+        "bottom-start"
+      ],
+      "note": "align the panel right (default) or left of the bell."
+    },
+    "clear-label": {
+      "type": "string",
+      "default": "Clear all",
+      "note": "the header clear action label (emits `clear`)."
+    },
+    "viewall-label": {
+      "type": "string",
+      "default": "View all",
+      "note": "the footer link label (emits `viewall`)."
+    },
+    "empty-text": {
+      "type": "string",
+      "default": "You’re all caught up",
+      "note": "placeholder text when a tab has no notifications."
+    }
+  },
+  "events": [
+    {
+      "name": "select",
+      "detail": "{index, ...item}",
+      "note": "a notification row was clicked."
+    },
+    {
+      "name": "tab",
+      "detail": "{value}",
+      "note": "the active tab changed."
+    },
+    {
+      "name": "clear",
+      "detail": "{tab}",
+      "note": "Clear all was clicked (for the active tab)."
+    },
+    {
+      "name": "viewall",
+      "detail": "{tab}",
+      "note": "View all was clicked; the consumer navigates to the full page."
+    },
+    {
+      "name": "show",
+      "detail": "none",
+      "note": "the panel opened."
+    },
+    {
+      "name": "hide",
+      "detail": "none",
+      "note": "the panel closed."
+    }
+  ],
+  "slots": {},
+  "decisionFlow": [
+    "The header bell + notification panel (alerts/system, unread badge)? -> obs-notification-menu, in the obs-app-header action area.",
+    "The header account control (avatar -> profile/theme/logout)? -> obs-user-menu, NOT the notification menu.",
+    "Streams of different kinds (Alerts vs System)? -> tabs=\"Alerts,System\" and tag each item with a `tab`.",
+    "Only one stream? -> tabs=\"Notifications\" (or one label) -> a flat list, no tab strip.",
+    "A very long / interactive notification centre? -> open it in an obs-drawer instead (route-away); this element is the compact popover.",
+    "Colour a row by severity? -> item.severity (critical/major/warning/clear/up/…) drives the LEFT accent bar via --severity-<name>.",
+    "Classify a row's source/type at a glance? -> item.tag renders a right-side chip (Trap / Threshold / Anomaly).",
+    "Show backlog size per stream? -> give each tab a `count` (or let it compute from items) → 'Alerts (191)'.",
+    "Panel overflowing the right edge? -> placement=\"bottom-start\" anchors it left of the bell."
+  ],
+  "usageRules": {
+    "default": {
+      "useWhen": "the standard header notification dropdown — a bell + badge, Alerts/System tabs, recent items, View all / Clear all",
+      "dontUse": "for a generic action menu (obs-menu) or the account menu (obs-user-menu)",
+      "example": "obs-app-header action area: 3 unread -> Alerts (critical/major/…) + System tabs",
+      "asSeenIn": "components/layout/notification-dropdown.vue"
+    },
+    "single-list": {
+      "useWhen": "there is only one notification stream and tabs add no value",
+      "dontUse": "you have genuinely distinct streams (use tabs)",
+      "example": "tabs=\"Notifications\" -> one flat list"
+    },
+    "empty": {
+      "useWhen": "always handle the empty state — a tab with no items",
+      "dontUse": "never leave an empty panel blank",
+      "example": "empty-text=\"You’re all caught up\""
+    },
+    "severity-coded": {
+      "useWhen": "the stream is alerts and severity is the primary signal — colour the left accent bar per row",
+      "dontUse": "purely informational system messages with no severity (leave severity unset → a neutral bar)",
+      "example": "items=[{severity:'critical', text:'trap alert', …}] → a red left bar"
+    },
+    "with-tags": {
+      "useWhen": "the source/type of a notification matters at a glance (Trap, Threshold, Anomaly)",
+      "dontUse": "when the title already says it — an extra chip is noise",
+      "example": "items=[{text:'trap alert', tag:'Trap'}] → a small chip on the right"
+    },
+    "with-counts": {
+      "useWhen": "the product default — show the backlog size on each tab so users see volume before opening",
+      "dontUse": "counts are unknown or misleading (omit the tab `count`)",
+      "example": "tabs=[{label:'Alerts',count:191},{label:'System Notification',count:1822}]"
+    },
+    "placement-start": {
+      "useWhen": "the bell is positioned so a right-aligned panel would overflow — anchor it left",
+      "dontUse": "the standard top-right chrome (bottom-end is correct there)",
+      "example": "placement=\"bottom-start\""
+    }
+  },
+  "usage": {
+    "total": 1,
+    "files": 1,
+    "byModule": {
+      "layout": 1
+    },
+    "note": "One per app shell (the header bell). Turnkey element for the notification-dropdown recipe."
+  },
+  "do": [
+    "Place it in obs-app-header's action area (next to search / before the user menu).",
+    "Keep `count` in sync with real unread; wire `clear` + `viewall` to your flows.",
+    "Tag each item with a `tab` and a `severity` so it colours + filters correctly.",
+    "Handle the empty state (empty-text)."
+  ],
+  "dont": [
+    "Don't use it as a generic action menu — that's obs-menu.",
+    "Don't cram a full notification centre in the popover — route long/interactive lists to an obs-drawer.",
+    "Don't rely on the severity colour alone — the text carries the meaning too."
+  ],
+  "a11y": {
+    "summary": "The bell is a button with aria-label \"Notifications\" (include the unread count) + aria-expanded. The panel is a role=dialog; it opens in the top layer and closes on click-outside + Esc. Rows are a list of buttons; severity is conveyed by the dot AND the text, not colour alone.",
+    "issues": [],
+    "doc": "Molecules/Notification Menu/Accessibility",
+    "notes": "Announce new notifications via an aria-live region if the count changes while open. Move focus into the panel on open and back to the bell on close. The tab strip reuses obs-tabs (keyboard-navigable). Ensure the badge count is in the bell's accessible name (e.g. \"Notifications, 3 unread\")."
+  },
+  "knownIssues": [
+    "The list is a simple scroll region (max-height 320px), not a virtualised RecycleScroller like the product — fine for the recent-N popover; for a large/interactive notification centre, route to an obs-drawer (decisionFlow)."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--neutral-lightest",
+    "--neutral-lighter",
+    "--neutral-light",
+    "--neutral-shadow-light",
+    "--secondary-red",
+    "--white-regular",
+    "--code-tag-background-color",
+    "--severity-critical",
+    "--severity-major",
+    "--severity-warning",
+    "--severity-clear"
+  ],
+  "related": [
+    "app-header",
+    "user-menu",
+    "tabs",
+    "drawer",
+    "severity",
+    "link"
+  ],
+  "changelog": [
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves (dropped stale/typography vars, added the overlay/theme tokens it uses). a11y / props / variants / usage verified current against the shipped component — no content drift. No API change.",
+    "2026-07-22 — Docs completeness pass: promoted the row/tab features to first-class variants — `severity-coded` (left accent bar), `with-tags` (right chip), `with-counts` (per-tab backlog counts), `placement-start` — each with a usage card + a decisionFlow branch. No API change.",
+    "2026-07-21 — Refinement (owner): rows support an optional `detail` middle line (3-line: title / detail / timestamp); NO resting row background (hover-only, per product); wider panel (420px); tighter header + footer padding; footer View All / Clear All now REUSE obs-link; tags use obs-tag (tag-primary, rounded).",
+    "2026-07-21 — Product-match redesign of the panel (matching notification-dropdown.vue): header title 'Alerts & Notifications' on a subtle tinted bar; tabs show COUNTS (Alerts (191) / System Notification (1822)); each row is a coloured LEFT SEVERITY BAR + a 2-line body (title + full timestamp) + an optional right TAG (e.g. Trap, via obs-tag); footer is 'View All | Clear All' centred on a tinted bar (Clear all moved out of the header). Default title changed to 'Alerts & Notifications'.",
+    "2026-07-21 — Shipped obs-notification-menu (App Chrome family): a self-contained bell + unread-badge trigger + top-layer panel (title + Alerts/System tabs + scrollable list with severity dot + text + time + View all / Clear all). Reuses obs-icon + obs-tabs; popover pattern mirrors obs-menu (Popover API, composedPath click-outside, Esc). Drops into obs-app-header to make the bell interactive. Emits select/tab/clear/viewall/show/hide. The turnkey form of the notification-dropdown recipe. Source-derived from components/layout/notification-dropdown.vue."
+  ],
+  "storybook": "Molecules/Notification Menu",
+  "figma": {
+    "status": "not-started",
+    "component": "Notification Menu"
+  }
+}

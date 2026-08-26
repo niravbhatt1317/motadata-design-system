@@ -1,0 +1,38 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/App shell/Usage" />
+
+# App shell — Usage
+
+> **In plain terms:** every signed-in page lives in this frame — a **left nav rail**, a **top header**,
+> one **scrolling content area** (your page), and a **floating overlay layer** (toasts, search, drawers)
+> above it.
+
+The authenticated app frame — `src/views/layouts/main.vue` (component `Layout`), the default for every
+in-app page. Machine spec: [`layout/layouts.json`](../../layout/layouts.json) → `appShell`.
+
+## The regions
+
+| Region | What it is | Size | Components |
+| --- | --- | --- | --- |
+| **NavBar** | full-height left rail; 16 module icons, active = `--primary` pill | `@nav-icon-width` 50px | [Molecules/Navigation](?path=/docs/molecules-navigation-usage--page) → PrimaryNav |
+| **Header** | brand logo · global search · notifications · user menu | `@header-height` 55px | [Molecules/Navigation](?path=/docs/molecules-navigation-usage--page) (UserMenu, Omnibox) |
+| **Content panel** | the routed page `<slot/>` — the **only scrolling region** | flex-1 | the page (see [Screen regions](?path=/docs/foundations-layout-screen-regions-usage--page)) |
+| **Overlay layer** | toasts, OmniBox, `PortalTarget`s — float **above** content | — | notifications · OmniBox · portals |
+
+## When to use / best practices
+
+- This shell is the **default** — you don't opt in; pages render into its content slot. To drop the
+  chrome (login, full-screen, public) pick a different shell — see
+  [**Layout shells**](?path=/docs/foundations-layout-layout-shells-usage--page).
+- **The breadcrumb/back lives in the *page* header, not the app header.** The app header is logo +
+  global actions only.
+- Only the **content panel scrolls**; the rail and header are fixed. Don't add a second scroll container
+  around the whole page.
+- **Overlay is a z-layer, not a position** — toasts/search/drawers mount at the shell level and float
+  above content; don't try to place them inside a region.
+
+## Related
+
+- [**Layout shells**](?path=/docs/foundations-layout-layout-shells-usage--page) — the 4 route shells (+ 2 content layouts) and when to use each.
+- [**Screen regions**](?path=/docs/foundations-layout-screen-regions-usage--page) — how the content panel is composed.

@@ -1,0 +1,46 @@
+{
+  "name": "@mtdt/observeops-ds-mcp",
+  "version": "0.4.5",
+  "description": "MCP server for the Motadata ObserveOps design system — serves @mtdt/observeops-ds-spec to AI agents as tools + resources (search/get components with resolved token values, resolve tokens, get theme, recipes, layout, validate usage, the operating contract).",
+  "license": "UNLICENSED",
+  "type": "module",
+  "bin": {
+    "observeops-ds-mcp": "dist/stdio.js",
+    "observeops-ds-mcp-http": "dist/http.js"
+  },
+  "main": "dist/server.js",
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/stdio.js",
+    "start:http": "node dist/http.js",
+    "smoke": "node test/smoke.mjs",
+    "smoke:http": "node test/http-smoke.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "design-system",
+    "observeops",
+    "motadata",
+    "ai"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@mtdt/observeops-ds-spec": "^0.1.206",
+    "express": "^4.21.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0"
+  }
+}

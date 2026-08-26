@@ -1,0 +1,36 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Popover/Accessibility" />
+
+# Popover — Accessibility
+
+## Disclosure semantics
+
+- ⚠️ **The trigger isn't announced as a disclosure (F2):** no `aria-haspopup` / `aria-expanded`.
+  Add both to the trigger and toggle `aria-expanded` with open state.
+
+## Focus management
+
+- ⚠️ On open, focus is **not moved into the panel**, and there is **no focus trap** — keyboard/SR
+  users aren't guided into the content. Recommended: move focus to the first focusable element on
+  open, **restore focus to the trigger on close**, and ensure **Escape** closes.
+- Because a Popover holds **interactive** content, focus handling matters more than for a Tooltip.
+
+## Focus ring
+
+- ⚠️ The overlay removes the focus outline (`:focus { outline:none }` in `_base-popper.less`) —
+  catalog-wide **SF-001** (`:focus-visible` ring) (**F3**).
+
+## Dismissal
+
+- Outside-click / Escape come from `a-popover`; verify Escape both **closes** and **returns focus**
+  to the trigger.
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| `aria-haspopup` / `aria-expanded` | ⚠️ missing (F2) |
+| Focus move into panel + trap | ⚠️ missing (F2) |
+| Escape returns focus | ⚠️ verify |
+| Focus ring | ⚠️ missing (F3 → SF-001) |

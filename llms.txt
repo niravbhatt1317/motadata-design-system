@@ -1,0 +1,72 @@
+# ObserveOps Design System
+
+> The design system of Motadata ObserveOps (a Vue 2.6 enterprise network-monitoring SPA).
+> Machine-readable: components, tokens, page recipes, layout structure, and product coverage —
+> everything an AI tool needs to build ObserveOps UI faithfully instead of guessing.
+
+Any AI tool building ObserveOps UI must follow the operating contract below, then load the spec
+in the given order. All paths are relative to this file (`design-system/`).
+
+## Install first — PUBLIC on npm
+
+The real components + tokens + spec are published, installable packages (public, no auth). Install before building:
+
+```bash
+npm install @mtdt/observeops-ds-elements @mtdt/observeops-ds-css @mtdt/observeops-ds-spec
+```
+
+`@mtdt/observeops-ds-elements` registers the real `<obs-*>` web components (atoms + molecules). Organisms
+(table/drawer/modal/menu/toolbars/pagination) are not shipped yet — compose those and declare them. The MCP
+`get_setup` tool returns this snippet.
+
+## Start here (required reading)
+
+- [AI Operating Contract](AGENTS.md): the rules — use only catalogued components, resolve every
+  colour to a token, compose from recipes/layout, and STOP-and-ASK before using anything not in
+  this DS. Read this before generating anything.
+
+## Spec (load in this order)
+
+- [components/index.json](components/index.json): the machine index — load FIRST. Every component
+  (family, `selectHint`, `summary`, `variants`), plus pointers to tokens, recipes, and layout.
+- [components/registry/](components/registry/): per-component spec — `props` / `events` / `slots` /
+  `apis`, `decisionFlow`, `variants`, `sizes`, `states`, `do` / `dont`, `tokensUsed`, `a11y`.
+- [components/recipes/recipes.json](components/recipes/recipes.json): 7 page templates + 5 flows,
+  each mapping screen regions → components.
+- [layout/layouts.json](layout/layouts.json): app shell, 4 route shells + 2 content layouts,
+  screen regions, 6 content layouts, 10 panel behaviours, 7 page templates.
+- [layout/grid.json](layout/grid.json): the 12-column MRow/MCol grid.
+- [foundation/](foundation/): product page-by-page coverage — which real pages/flows use each
+  layout element (grounding/best practices).
+
+## Tokens (never hardcode a colour)
+
+- [tokens/variables.json](tokens/variables.json): the runtime CSS `--vars` crosswalk (336 vars,
+  light + dark) — the LIVE product token layer. Emit these.
+- [tokens/structural.json](tokens/structural.json): LESS `@vars` — spacing, sizing, radius, type.
+- [tokens/kit-accents.json](tokens/kit-accents.json): Ant 1.x LESS accents (`@primary-color` cyan).
+- [tokens/purpose-map.json](tokens/purpose-map.json): purpose → token (surface / text / border /
+  brand / status / severity / shadow + structural scale) for styling a NEW element by intent.
+- Note: `--primary` = navy `#111c2c` (light) / `#e3e8f2` (dark), NOT cyan. The cyan `@primary-color`
+  `#099dd9` is the Ant form-control accent only. Do NOT emit `mds-*` tokens (a future/unwired layer).
+
+## Live reference
+
+- Storybook (visual catalogue): <https://niravbhatt1317.github.io/motadata-design-system/>
+
+## Key rules (full list in AGENTS.md)
+
+- Use only components in `index.json`; configure only with documented props/events/slots/apis.
+- Resolve every colour/space to a token; never hardcode hex/rgb/rgba/hsl.
+- Compose pages from `recipes` + `layout`; forms use the 12-col MRow/MCol grid. Recipes are examples,
+  not an allow-list — for an undocumented screen (signup, etc.), COMPOSE it from DS parts, don't ask.
+- Never branch on theme — tokens are theme-aware. Honour each component's `a11y`.
+- ASK only when you'd need a BUILDING BLOCK not in the DS (a component/token/primitive that doesn't
+  exist, e.g. charts) — then STOP and ASK before substituting. Never ask permission to combine parts
+  already in the DS.
+
+## Known gaps (expect to ASK here)
+
+- Charts / data-viz / widget tiles / topology graph — only tooltips (`data-viz-tooltips`) are
+  catalogued; the chart/graph components themselves are not in the DS yet.
+- Figma library — not built.

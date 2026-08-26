@@ -1,0 +1,231 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/Page templates/Usage" />
+
+# Page templates — Usage
+
+> **In plain terms:** pick the page type by **what the page is for**, then build it from the linked
+> components. Browsing → **List** · editing one record → **Form** · reading one record → **Detail** ·
+> metrics → **Dashboard** · querying a dataset → **Explorer** · guided steps → **Wizard** · a node graph
+> → **Graph/Canvas**.
+
+The canonical page shapes ObserveOps repeats. Pick the template that matches **what the page is for**,
+then assemble it from the linked components. Each template below lists **where it is used in the
+product**, **when to use it / best practices**, and the **components per region** (with links — click to
+open that component's stories).
+
+Machine spec: composition recipes live in
+[`components/recipes/recipes.json`](../../components/recipes/recipes.json); the region grammar is in
+[**Screen regions**](?path=/docs/foundations-layout-screen-regions-usage--page); the frame is
+[**App shell**](?path=/docs/foundations-layout-app-shell-usage--page).
+
+---
+
+## List view
+
+A searchable, filterable, paginated collection of records — the product's most common page.
+
+**Used in:** Inventory → **Monitors**, **Alerts** list, **Reports** list, **NCM** config list,
+**Log → pipelines/sources**, and most of **Settings** (Users, Roles, Notification profiles, Credential
+profiles, Discovery profiles, SLAs). Almost every `FlotoPaginatedCrud` screen.
+
+### List view · when to use
+
+- Browsing/managing **many records**; the row is the unit, click-through goes to a detail or a drawer.
+- Title **+ live count** in the page header; the **primary action (Add)** sits top-right.
+- Keep filters in the toolbar; reveal a **bulk action bar** only when rows are selected.
+- Show state with **Severity** dots / **Tag** pills — never raw coloured text.
+- Always paginate (`FlotoPaginatedCrud`); don't render unbounded lists.
+
+### List view · components
+
+| Region | Component(s) |
+| --- | --- |
+| Page header (title · search · export · add) | [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → PageHeader |
+| Toolbar / filter bar | [Molecules/Filters](?path=/docs/molecules-filters-usage--page) → FilterBar · [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → GridToolbar |
+| Body — table | [Organisms/Table](?path=/docs/organisms-table-usage--page) |
+| Row state | [Atoms/Severity](?path=/docs/atoms-severity-usage--page) · [Atoms/Tag](?path=/docs/atoms-tag-usage--page) |
+| Row actions (⋯) | [Molecules/Menu](?path=/docs/molecules-menu-usage--page) → context-menu |
+| Bulk actions | [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → BulkActionBar |
+| Footer — pagination | [Organisms/Table](?path=/docs/organisms-table-usage--page) → FlotoPaginatedCrud pager |
+
+---
+
+## Form view
+
+Create or edit a single record on a field grid.
+
+**Used in:** Add/Edit **Monitor**, **Alert policy**, **Notification profile**, **User** / **Role**,
+**Credential** / **Discovery profile**, **SLA**, **Runbook**. Frequently hosted inside a **Drawer**.
+
+### Form view · when to use
+
+- A single record's fields with **validation**.
+- Two-up grid: `MRow :gutter="16"` of `MCol :size="6"`; full-width (`size="12"`) for textareas — see
+  [**Grid**](?path=/docs/foundations-layout-grid-usage--page).
+- **Back-button + title** in the header; **Save (primary) + Cancel** as the footer/action.
+- Validate with `MValidationObserver` / `MValidationProvider`; confirm destructive saves with a Modal.
+
+### Form view · components
+
+| Region | Component(s) |
+| --- | --- |
+| Header — back · title · actions | [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → PageHeader · [Molecules/Navigation](?path=/docs/molecules-navigation-usage--page) → BackButton |
+| Body — field grid | [Molecules/FormItem](?path=/docs/molecules-formitem-usage--page) (FlotoForm) |
+| Field controls | [Atoms/Input](?path=/docs/atoms-input-usage--page) · [Atoms/Select](?path=/docs/atoms-select-usage--page) · [Organisms/DropdownPicker](?path=/docs/organisms-dropdownpicker-usage--page) · [Molecules/Date & Time Pickers](?path=/docs/molecules-date-time-pickers-usage--page) |
+| Host (optional) | [Organisms/Drawer](?path=/docs/organisms-drawer-usage--page) |
+| Confirm | [Organisms/Modal](?path=/docs/organisms-modal-usage--page) |
+
+---
+
+## Detail view
+
+Read a single record — status/severity, tabs, then panels and charts.
+
+**Used in:** **Monitor** detail, **Alert** detail, **Topology** node, **Report** output, **NCM** device.
+
+### Detail view · when to use
+
+- A single record with sub-sections and live data.
+- Header: back · title · a **status/severity indicator** · actions.
+- Use **Severity** (the dot) for severity *levels* (critical/major/warning/clear); use **Tag** for status
+  *strings* (up/down/running). They are not interchangeable.
+- Split sections with **Tabs**; render metrics with the data-viz layer.
+
+### Detail view · components
+
+| Region | Component(s) |
+| --- | --- |
+| Header — back · title · indicator · actions | [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → PageHeader · [Atoms/Severity](?path=/docs/atoms-severity-usage--page) / [Atoms/Tag](?path=/docs/atoms-tag-usage--page) |
+| Tabs | [Molecules/Tabs](?path=/docs/molecules-tabs-usage--page) |
+| Body — panels / charts | [Organisms/Table](?path=/docs/organisms-table-usage--page) · [Molecules/Data-Viz Tooltips](?path=/docs/molecules-data-viz-tooltips-usage--page) |
+
+---
+
+## Dashboard view
+
+An at-a-glance widget grid driven by a global time range.
+
+**Used in:** **Dashboards**, **NOC**.
+
+### Dashboard view · when to use
+
+- Summarising many metrics/widgets on one canvas.
+- A **dashboard/NOC picker** (tabs + categories) selects the board; a **global time range** scopes
+  every widget.
+- Tiles are draggable/resizable (`vue-grid-layout`) — see
+  [**Panel behaviours**](?path=/docs/foundations-layout-panel-behaviours-usage--page).
+
+### Dashboard view · components
+
+| Region | Component(s) |
+| --- | --- |
+| Dashboard / NOC picker | [Molecules/Navigation](?path=/docs/molecules-navigation-usage--page) → side-menu-categories |
+| Global time range | [Molecules/Date & Time Pickers](?path=/docs/molecules-date-time-pickers-usage--page) → TimeRangePicker |
+| Widgets | [Molecules/Data-Viz Tooltips](?path=/docs/molecules-data-viz-tooltips-usage--page) · [Atoms/Severity](?path=/docs/atoms-severity-usage--page) (count boxes) |
+
+---
+
+## Explorer view
+
+Query/filter a large dataset from a left panel into a results area.
+
+**Used in:** **Log Explorer**, **Metric Explorer**, **APM / RUM / Flow / Trap Explorers**, **Topology**.
+
+### Explorer view · when to use
+
+- Exploring a big dataset interactively (search → filter → drill).
+- Left panel = a **hierarchy tree**, a **metric picker**, or a **vertical filter**, depending on module.
+- Panes are usually **resizable/split** — see
+  [**Panel behaviours**](?path=/docs/foundations-layout-panel-behaviours-usage--page).
+
+### Explorer view · components
+
+| Region | Component(s) |
+| --- | --- |
+| Left panel | [Molecules/Navigation](?path=/docs/molecules-navigation-usage--page) → side-menu-tree / metric-picker · [Molecules/Filters](?path=/docs/molecules-filters-usage--page) → vertical-filter |
+| Query / search bar | [Molecules/Filters](?path=/docs/molecules-filters-usage--page) · [Atoms/Input](?path=/docs/atoms-input-usage--page) → search |
+| Results — table / charts | [Organisms/Table](?path=/docs/organisms-table-usage--page) · [Molecules/Data-Viz Tooltips](?path=/docs/molecules-data-viz-tooltips-usage--page) |
+
+---
+
+## Wizard flow
+
+A multi-step guided task with a stepper.
+
+**Used in:** **Report builder** (horizontal steps), **Setup guide** (vertical), **Discovery** wizard,
+**2FA** setup.
+
+### Wizard flow · when to use
+
+- A task that must be completed in **ordered steps**, validating each before advancing.
+- The step body is a **Form view** for the current step's fields.
+- Footer = **Back / Next / Finish**; don't let users skip required steps.
+
+### Wizard flow · components
+
+| Region | Component(s) |
+| --- | --- |
+| Stepper | [Molecules/Navigation](?path=/docs/molecules-navigation-usage--page) → steps |
+| Step body | [Molecules/FormItem](?path=/docs/molecules-formitem-usage--page) |
+| Footer — Back / Next / Finish | [Atoms/Button](?path=/docs/atoms-button-usage--page) |
+
+---
+
+## Graph / Canvas view
+
+An interactive node graph — a 7th archetype surfaced by the product sweep
+([`foundation/page-templates.md`](../../foundation/page-templates.md)). Neither a Dashboard nor an Explorer.
+
+**Used in:** **Topology** (`modules/topology/views/topology-map.vue`) — a Cytoscape canvas with pan/zoom,
+node-drag (saved positions), minimap, Full-View vs Tree-View, and keyboard navigation.
+
+### Graph / Canvas view · when to use
+
+- Relationships/topology matter more than rows or tiles — nodes + edges the user pans, zooms and rearranges.
+- Provide a **minimap** + zoom controls, **keyboard** nav, and persist node positions per view.
+- Colour nodes by **severity** (the level dot tokens), label status with **Tag**.
+
+### Graph / Canvas view · components
+
+| Region | Component(s) |
+| --- | --- |
+| Left panel — hierarchy tree | [Molecules/Navigation](?path=/docs/molecules-navigation-usage--page) → side-menu-tree |
+| Canvas — interactive graph | [Molecules/Data-Viz Tooltips](?path=/docs/molecules-data-viz-tooltips-usage--page) (Cytoscape topology-graph) |
+| Node state | [Atoms/Severity](?path=/docs/atoms-severity-usage--page) (node colour) · [Atoms/Tag](?path=/docs/atoms-tag-usage--page) |
+
+---
+
+## Other archetypes & variants
+
+The sweep also found these — document them, but they don't each need a full wireframe:
+
+- **Utility-tool form** — `settings/utility` (`ping`, `dns-resolver`, `snmp-walk`, `telnet`, `cli`): a
+  stateless input form + results, no CRUD. A **Form** sub-type.
+- **System / status page** — disk-full, upgrade/restore progress, 404/unauthorized, report-renderer
+  (under Login/Public/Empty shells). A message/print page.
+- **Live-tail / streaming** — `log/live-tail`, `trap-viewer/live-trap-viewer`: a streaming variant of
+  List/Explorer.
+- **List ⇄ Dashboard view-toggle** — apm services / rum / netroute toggle one page between an `MGrid`
+  table and a `vue-grid-layout` board.
+- **Detail-as-template-swapper** — `inventory/device-template`: the tab bar swaps entire templates, not
+  just content sections.
+- **Two wizard shapes** — multi-route stateful (report builder, discovery) vs single-view stepped
+  (integration setup).
+
+---
+
+## Choosing a template
+
+| If the page is for… | Use |
+| --- | --- |
+| Browsing/managing many records | **List view** |
+| Creating/editing one record | **Form view** |
+| Reading one record in depth | **Detail view** |
+| At-a-glance metrics | **Dashboard view** |
+| Interactive querying of a dataset | **Explorer view** |
+| A guided multi-step task | **Wizard flow** |
+| Relationships / a node graph | **Graph / Canvas view** |
+
+> Flows that aren't full pages — e.g. **confirm-delete** (context-menu/bulk → error Modal) — are
+> documented as recipes in [`recipes.json`](../../components/recipes/recipes.json).

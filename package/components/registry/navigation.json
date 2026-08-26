@@ -1,0 +1,508 @@
+{
+  "name": "navigation",
+  "display": "Navigation",
+  "tier": "molecule",
+  "family": "Navigation",
+  "status": "stable",
+  "summary": "The product's wayfinding components, by archetype: Primary nav (left module sidebar), Side menu (searchable collapsible section menu), Steps (wizard/stepper), Breadcrumb (back + trail), Back button. Tabs are their own family (Molecules/Tabs).",
+  "variants": [
+    {
+      "name": "primary-nav",
+      "what": "left module sidebar 65↔170px",
+      "usage": "global"
+    },
+    {
+      "name": "side-menu-section",
+      "what": "MCollapse sections (Settings)",
+      "usage": "20×"
+    },
+    {
+      "name": "side-menu-tree",
+      "what": "infinite-tree hierarchy",
+      "usage": "many"
+    },
+    {
+      "name": "side-menu-categories",
+      "what": "Dashboard categories + counts",
+      "usage": "many"
+    },
+    {
+      "name": "side-menu-list",
+      "what": "Report/saved-views list + inline edit",
+      "usage": "many"
+    },
+    {
+      "name": "steps",
+      "what": "report/setup/2FA wizards (bespoke)",
+      "usage": "3 flows"
+    },
+    {
+      "name": "breadcrumb",
+      "what": "back + path trail",
+      "usage": ""
+    },
+    {
+      "name": "back-button",
+      "what": "chevron-left FlotoLink",
+      "usage": "3×"
+    },
+    {
+      "name": "user-menu",
+      "what": "avatar → profile/theme/logout",
+      "usage": ""
+    },
+    {
+      "name": "notification-dropdown",
+      "what": "bell → Alerts/System tabs",
+      "usage": ""
+    },
+    {
+      "name": "omnibox",
+      "what": "global search palette",
+      "usage": ""
+    },
+    {
+      "name": "noc-player",
+      "what": "wallboard rotator",
+      "usage": ""
+    },
+    {
+      "name": "timeline-scrollbar",
+      "what": "temporal navigator",
+      "usage": ""
+    },
+    {
+      "name": "graph-breadcrumb",
+      "what": "expanded-node tags",
+      "usage": ""
+    },
+    {
+      "name": "metric-picker",
+      "what": "⊕-add + drag picker (cross-ref)",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "active",
+      "what": "selected (--primary)"
+    },
+    {
+      "name": "hover",
+      "what": "over item (--nav-hover-bg)"
+    },
+    {
+      "name": "collapsed",
+      "what": "primary-nav 65px"
+    },
+    {
+      "name": "expanded",
+      "what": "primary-nav 170px"
+    },
+    {
+      "name": "completed",
+      "what": "stepper ✓"
+    },
+    {
+      "name": "current",
+      "what": "stepper filled+ring"
+    },
+    {
+      "name": "remaining",
+      "what": "stepper grey"
+    }
+  ],
+  "renders": "REFERENCE REPRODUCTIONS — the live nav is router/store-bound (visibleMenuItems, FlotoLink :to, MCollapse). Built with real tokens + MIcon.",
+  "archetypes": {
+    "PrimaryNav": {
+      "source": "src/components/layout/navbar.vue (FlotoNavBar)",
+      "what": "the left vertical MODULE sidebar (MLayoutSider) — collapsed 65px by default (brand mark + module icons), hover-expands to 170px (mouseover -> pinned) showing the ObserveOps logo + labels. 16 modules from visibleMenuItems (role/license-gated): Dashboards, Monitors, Alerts, SLO (BETA), Reports, Topology, NCCM, NetRoute, Metric Explorer, Log Explorer, APM Explorer, RUM Explorer, Flow Explorer, Trap Explorer, Audits, Settings. Active module highlights --primary on --code-tag-background-color with an inset left rule when expanded.",
+      "variants": "collapsed (65px) <-> expanded (170px) is the primary variant",
+      "builtFrom": "MLayoutSider + MMenu theme=dark / MMenuItem + FlotoLink (router)"
+    },
+    "SideMenu": {
+      "source": "settings/components/left-menu.vue + log/components/hierarchy/* + topology-hierarchy.vue + dashboard/components/dashboard-dropdown.vue + report/components/report-sidebar.vue + ExplorerSavedViewList",
+      "usage": "many (per-module left-panels)",
+      "what": "the LEFT-PANEL nav archetype — one shell (optional tabs + search + scrollable list) in FOUR forms",
+      "forms": {
+        "section": "settings/left-menu.vue (20×) — MCollapse accordion of sections -> sub-items; active --primary left rule",
+        "tree": "Log Explorer hierarchy + Topology (shared components/hierarchy/infinite-tree.vue) — tabs (Type/Group/Saved Query), virtualised hierarchy: chevron + type icon/severity + name + count badge, nested",
+        "categoryList": "Dashboard dashboard-dropdown.vue — segmented Dashboard/NOC tabs + round + button, MCollapse categories with count badges + favourite star",
+        "listSavedViews": "Report report-sidebar.vue + ExplorerSavedViewList (APM/RUM/Metric/Log saved query) — tabs + search + flat MMenu list, Favorites star, active highlight, per-row pencil inline-rename"
+      },
+      "builtFrom": "MInput + MCollapse + MMenu + infinite-tree (tree form)",
+      "notInFamily": "faceted checkbox sidebar (vertical-filter/filters.vue) is a FILTER (see filters registry); Metric Explorer picker is a PICKER (see dropdown-picker); Flow Result-By is a config panel"
+    },
+    "Steps": {
+      "source": "BESPOKE — no MSteps in the product. report/components/report-steps.vue (ReportSteps, horizontal wizard) + product-setup/components/guide-section-step.vue (vertical guide steps) + auth/two-factor-verification.vue (Step 1/2/3)",
+      "usage": "3 flows",
+      "what": "a numbered wizard/stepper — count circle + label per step in states completed (✓ filled) · current (filled + ring) · remaining (grey); connectors fill --primary up to current",
+      "realUsages": {
+        "ReportBuilder": "report-steps.vue — horizontal 3-step: Report Properties -> Visualizations & Preview -> Schedule (the reproduction models this)",
+        "ProductSetupGuide": "product-setup guide-sections / guide-section-step — vertical numbered steps, completed shows green check; Log/Metric/Flow setup guides",
+        "TwoFactorSetup": "auth/two-factor-verification.vue — Step 1/2/3 indicator with dividers"
+      }
+    },
+    "Breadcrumb": {
+      "source": "e.g. src/modules/report/components/compliance-breadcrumb.vue",
+      "what": "back chevron + a path trail (Reports / Compliance / PCI-DSS Audit), current crumb bold. Some product breadcrumbs are a back + title/subtitle context header rather than a full trail."
+    },
+    "BackButton": {
+      "source": "src/components/_base-back-button.vue (FlotoBackButton)",
+      "usage": "3×",
+      "what": "a chevron-left MIcon in a FlotoLink (router :to); the smallest nav atom — also the Page header's back-button slot"
+    },
+    "Tabs": {
+      "note": "in-page tab navigation — its OWN family (Molecules/Tabs, MTab 86×). Cross-referenced, not duplicated here."
+    }
+  },
+  "appChromeAndNavigators": {
+    "UserMenu": {
+      "source": "components/layout/user-dropdown.vue",
+      "what": "header avatar -> MPopover: My Profile / Product Setup Guide / Documentation + theme toggle + Logout",
+      "recipe": "user-menu"
+    },
+    "NotificationDropdown": {
+      "source": "components/layout/notification-dropdown.vue",
+      "what": "header bell + MBadge count -> Alerts / System Notification tabs (MTab) + RecycleScroller list + View all / Clear all",
+      "recipe": "notification-dropdown"
+    },
+    "Omnibox": {
+      "source": "components/omnibox/searchbar.vue",
+      "what": "global search / command palette: category picker + CodeMirror query editor + Execute (enter) / parse-error + clear",
+      "recipe": "command-palette"
+    },
+    "NocPlayer": {
+      "source": "dashboard/components/noc-player.vue",
+      "what": "wallboard rotator: logo + prev/next around current dashboard title + countdown + play/pause",
+      "gap": "nocPlayer"
+    },
+    "TimelineScrollbar": {
+      "source": "netroute/components/timeline-scrollbar.vue",
+      "what": "temporal navigator: single (chevron) + batch (double-chevron) step controls around a time window; steps time-bucketed snapshots",
+      "gap": "timelineScrollbar"
+    },
+    "GraphBreadcrumb": {
+      "source": "netroute/components/graph-view.vue",
+      "what": "a Breadcrumb variant: closable rounded MTags of expanded graph nodes (the traversal/expansion trail)"
+    }
+  },
+  "checkedAndScopedOut": {
+    "TopologyViewSwitch_ChartTypeSelector": {
+      "verdict": "Radio (segmented) usage, not a new nav entry -> cross-ref Atoms/Radio"
+    },
+    "TopologyCategory_APMSection_AlertTwoLevelTabs": {
+      "verdict": "Tabs usage (Alert adds a hover sub-menu) -> cross-ref Molecules/Tabs"
+    },
+    "ViewDetailDrawer": {
+      "verdict": "Drawer + Tabs composition -> cross-ref Organisms/Drawer"
+    },
+    "FacetedSidebar": {
+      "source": "vertical-filter/filters.vue",
+      "verdict": "a Filter, not nav -> Molecules/Filters -> Vertical filter"
+    },
+    "NotNavigation": {
+      "verdict": "swap/reorder control, role-navigation settings form, flame-graph zoom, Layer-3 toggle, keyboard-shortcuts tooltip -> not wayfinding"
+    },
+    "Pagination": {
+      "usage": "79x",
+      "verdict": "page-nav archetype, but belongs to the Table family (grid footer) — cross-referenced, not duplicated here"
+    },
+    "MenuToggle": {
+      "source": "menu-toggle-button",
+      "usage": "7x",
+      "verdict": "the Primary nav's collapse control — folded into the collapsed<->expanded variant, not a separate entry"
+    },
+    "NavLandmark": {
+      "source": "role=navigation",
+      "usage": "2x",
+      "verdict": "an a11y attribute, not a component — tracked in F2"
+    },
+    "MMenu": {
+      "usage": "13x",
+      "verdict": "shared primitive under Primary nav / Side menu -> now catalogued in its own right in the Menu family (Molecules/Menu)"
+    },
+    "MSubMenu": {
+      "usage": "0x",
+      "verdict": "flyout/mega-menu submenus confirmed ABSENT in the product"
+    },
+    "ContextMenu": {
+      "source": "FlotoGridActions (_base-grid-actions.vue) + MDropdown",
+      "usage": "grid rows + 1x",
+      "verdict": "an action surface (do something), not wayfinding -> now homed in the Menu family (Molecules/Menu)"
+    }
+  },
+  "decisionFlow": [
+    "Switch between top-level product MODULES? -> Primary nav (left sidebar).",
+    "Navigate SECTIONS within a module (e.g. Settings)? -> Side menu.",
+    "A multi-step create/setup flow? -> Steps (wizard).",
+    "Show location + a way up? -> Breadcrumb.",
+    "Just go back one level? -> Back button.",
+    "Switch between sibling VIEWS of one page? -> Tabs (Molecules/Tabs)."
+  ],
+  "do": [
+    "Use the Primary nav for modules, the Side menu for sections.",
+    "Use Steps for ordered multi-step flows (show completed/current/remaining).",
+    "Put the Back button in the Page header's back-button slot.",
+    "Use Tabs (separate family) for sibling views, not module/section nav."
+  ],
+  "dont": [
+    "Don't use Tabs for module/section navigation (that's Primary nav / Side menu).",
+    "Don't build a bespoke sidebar — reuse FlotoNavBar / the side-menu pattern.",
+    "Don't confuse a breadcrumb (location) with a toolbar (actions)."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "Router/store-bound (visibleMenuItems, FlotoLink, MCollapse) -> reproductions."
+    },
+    "F2": {
+      "severity": "Low",
+      "a11y": true,
+      "issue": "Verify nav landmarks (role=navigation / aria-current on active), focus-visible ring (SF-001), and that the stepper conveys step state to assistive tech."
+    }
+  },
+  "tokensUsed": [
+    "--nav-panel-bg",
+    "--code-tag-background-color",
+    "--left-menu-text-color",
+    "--primary",
+    "--primary-alt",
+    "--border-color",
+    "--neutral-lightest",
+    "--neutral-light",
+    "--page-text-color"
+  ],
+  "storybook": "Molecules/Navigation",
+  "related": [
+    "tabs",
+    "toolbars",
+    "input",
+    "tag",
+    "table"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "apis": {
+    "PrimaryNav": {
+      "source": "src/components/layout/navbar.vue (FlotoNavBar)",
+      "props": {
+        "portalMode": "Boolean (false)"
+      },
+      "events": {
+        "change": "v-model — pinned (collapse) state Boolean"
+      },
+      "slots": {},
+      "note": "router/Vuex-bound — reads visibleMenuItems from auth/permission + roleNavigation; v-model = pinned. Reproduction: the item list is store-driven."
+    },
+    "SideMenuSection": {
+      "source": "src/modules/settings/components/left-menu.vue",
+      "props": {},
+      "events": {},
+      "slots": {},
+      "note": "presentational + store-bound: maps a permission-checked MenuItems array to MCollapse sections; searchTerm + activeSection managed internally (synced to route). No public props/events — to reproduce, feed your own sections array (see source)."
+    },
+    "BackButton": {
+      "source": "src/components/_base-back-button.vue (FlotoBackButton)",
+      "props": {},
+      "events": {},
+      "slots": {},
+      "note": "thin wrapper — FlotoLink + chevron-left; inheritAttrs:false → bind :to on it for routing."
+    },
+    "Steps": {
+      "source": "report/components/report-steps.vue (ReportSteps) + product-setup/components/guide-section-step.vue",
+      "props": {
+        "report-stepper": {
+          "value": "Number (1) — current step; v-model"
+        },
+        "setup-guide-step": {
+          "step": "Object {title,description,route?,documentationLink?,icon?} (required)",
+          "index": "Number (required)",
+          "completed": "Boolean — shows ✓",
+          "isLastItem": "Boolean — hides connector",
+          "type": "String — 'log'/'flow' show icon vs number",
+          "hideLink": "Boolean"
+        }
+      },
+      "events": {
+        "report": {
+          "change": "new step Number (v-model)"
+        },
+        "setup-guide": {
+          "link": "step route clicked"
+        }
+      },
+      "slots": {
+        "setup-guide": {
+          "default": "replaces step title/description/link"
+        }
+      },
+      "note": "BESPOKE steppers (no MSteps). Report = horizontal, v-model current step (3 hardcoded). Setup-guide = one vertical step, props-driven."
+    },
+    "NocPlayer": {
+      "source": "src/modules/dashboard/components/noc-player.vue",
+      "props": {
+        "noc": "Object (required) — { dashboards[], refreshInterval (default 30s) }"
+      },
+      "events": {
+        "close": "exit button / Esc"
+      },
+      "slots": {},
+      "note": "self-contained fullscreen rotator; auto-rotates by noc.refreshInterval; keyboard Esc/arrows/space; renders Widgets per dashboard."
+    },
+    "TimelineScrollbar": {
+      "source": "src/modules/netroute/components/timeline-scrollbar.vue",
+      "props": {},
+      "events": {},
+      "slots": {},
+      "note": "display-only — consumes an INJECTED netRouteHistoryChartContext { startTime, endTime, onePontShift, oneBatchShift }; no public props/events (controls call the injected callbacks). To reproduce, provide that context."
+    },
+    "SideMenuCategories": {
+      "source": "src/modules/dashboard/components/dashboard-dropdown.vue",
+      "props": {
+        "value": "Number — selected dashboard/NOC id (v-model)",
+        "options": "Array {id,name,category,canEdit} (required)",
+        "nocOptions": "Array — NOC tab",
+        "menuVisible": "Boolean — sidebar visibility/affix"
+      },
+      "events": {
+        "change": "new id (v-model)",
+        "visible-change": "Boolean",
+        "toggle-favourite": "dashboard id",
+        "create": "",
+        "create-noc": "",
+        "edit-noc": "NOC obj",
+        "delete-noc": "NOC obj"
+      },
+      "slots": {},
+      "note": "store-bound (UserPreference/auth); Dashboard/NOC tabs (MRadioGroup as-button) + MCollapse categories + count + star; v-model=change."
+    },
+    "SideMenuList": {
+      "source": "src/modules/report/components/report-sidebar.vue",
+      "props": {
+        "value": "String — selected category key (v-model)",
+        "sidebarItems": "Array {key,text,isDefault,isNew,reportTypes[]} (required)",
+        "tab": "String (required) — filters categories by reportTypes",
+        "isSidebarForForm": "Boolean"
+      },
+      "events": {
+        "change": "category key (v-model)",
+        "add-new-category": "new name string",
+        "update-category": "(newKey, oldKey, isNew) — rename"
+      },
+      "slots": {},
+      "note": "MMenu category list + inline FlotoForm rename/create; filters by tab. Reused pattern as ExplorerSavedViewList."
+    },
+    "SideMenuTree": {
+      "source": "src/modules/log/components/hierarchy/hierarchy-container.vue + src/components/hierarchy/infinite-tree.vue (core)",
+      "props": {
+        "data": "Array — nested nodes {id,key,name,children[],resourceId,resourceType,severity,...}",
+        "value": "Object — selected node {id,resourceType,name,key} (v-model)",
+        "keyField": "String ('key')",
+        "openIds": "Array — pre-expanded node ids",
+        "rowHeight": "Number (35)",
+        "searchTerm": "String — debounced filter (750ms)",
+        "filterFn": "Function(node,term)->bool",
+        "autoExpandSearchResults": "Boolean"
+      },
+      "events": {
+        "change": "(selectedNode, tree) — v-model",
+        "mouseenter-infinite-tree-node": "node",
+        "mouseleave-infinite-tree-node": "node"
+      },
+      "slots": {
+        "default": "{ item:node, tree } — custom node render"
+      },
+      "note": "virtual tree on infinite-tree + RecycleScroller; container adds Type/Group/Saved-Query tabs. Node data shape is the key contract."
+    }
+  },
+  "a11y": {
+    "summary": "Nav rail/side-menus should be <nav>/role=navigation with a label; active item carries aria-current; steppers + collapsibles expose state (aria-expanded; completed/current/remaining).",
+    "issues": [
+      "SF-001 focus ring on nav items/rows/steps.",
+      "App-chrome triggers (user menu, bell, omnibox), notification count, NOC controls and graph-breadcrumb × need accessible names."
+    ],
+    "doc": "Molecules/Navigation/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "usageRules": {
+    "primary-nav": {
+      "useWhen": "You need the app's global wayfinding between top-level product MODULES. This is the left vertical FlotoNavBar sidebar (MLayoutSider): collapsed to 65px by default (brand mark + module icons), hover-expands/pins to 170px (ObserveOps logo + labels). Renders the role/license-gated visibleMenuItems set with the active module highlighted --primary and an inset left rule when expanded.",
+      "dontUse": "Don't use it to navigate SECTIONS inside a single module (use side-menu-*), for sibling views of one page (use Tabs, Molecules/Tabs), or for a step-through flow (use steps). Don't hand-roll a module rail — reuse FlotoNavBar.",
+      "example": "The ObserveOps left module sidebar switching between Dashboards, Monitors, Alerts, SLO (BETA), Reports, Topology, NCCM, NetRoute, the Explorers, Audits, and Settings."
+    },
+    "side-menu-section": {
+      "useWhen": "A module's left panel is a fixed set of named SECTIONS that each expand to sub-items. This is the MCollapse accordion form (settings/components/left-menu.vue, ~20 uses) with an active --primary left rule.",
+      "dontUse": "Don't use it when the content is a nested hierarchy (side-menu-tree), a category list with counts/favourites (side-menu-categories), or a searchable flat saved-views list (side-menu-list). Don't use it for top-level modules (primary-nav).",
+      "example": "The Settings module left menu — an MCollapse accordion of setting sections (e.g. General, Users & Roles, Monitoring) expanding to their sub-items."
+    },
+    "side-menu-tree": {
+      "useWhen": "The left panel must present an infinite/virtualised HIERARCHY — chevron + type icon/severity + name + count badge, nested, often above Type/Group/Saved Query tabs. Built on the shared components/hierarchy/infinite-tree.vue (RecycleScroller).",
+      "dontUse": "Don't use a tree for a flat list of sections (side-menu-section), for dashboard categories (side-menu-categories), or for saved-view lists with inline rename (side-menu-list). A faceted checkbox sidebar that filters a grid is NOT this — it's Filters → Vertical filter.",
+      "example": "The Log Explorer and Topology hierarchy panels — a virtualised tree of types/groups with severity icons and count badges under Type/Group/Saved Query tabs."
+    },
+    "side-menu-categories": {
+      "useWhen": "The left panel groups items into CATEGORIES with count badges and a favourite star, fronted by segmented tabs and an add (+) button. This is the dashboard-dropdown.vue form (MCollapse categories).",
+      "dontUse": "Don't use it for plain setting sections (side-menu-section), a deep hierarchy (side-menu-tree), or a searchable saved-query list (side-menu-list).",
+      "example": "The Dashboard picker — segmented Dashboard/NOC tabs + a round add button over MCollapse dashboard categories showing count badges and a favourite star."
+    },
+    "side-menu-list": {
+      "useWhen": "The left panel is a searchable FLAT list of saved views/reports with tabs, a Favorites star, active highlight, and per-row pencil inline-rename. This is the report-sidebar.vue / ExplorerSavedViewList form (MInput + MMenu).",
+      "dontUse": "Don't use it when items are naturally sectioned (side-menu-section), hierarchical (side-menu-tree), or category-grouped with counts (side-menu-categories).",
+      "example": "The Reports sidebar and the APM/RUM/Metric/Log Explorer saved-view lists — tabs + search + a flat list with a Favorites star and inline pencil rename per row."
+    },
+    "steps": {
+      "useWhen": "You are guiding the user through an ordered multi-step create/setup FLOW and must show progress: a count circle + label per step in completed (✓ filled) · current (filled + ring) · remaining (grey), with connectors filling --primary up to the current step. Bespoke in-product (no MSteps).",
+      "dontUse": "Don't use it for navigating between unordered sections (side-menu-*) or peer views (Tabs). Don't hand-roll yet another stepper — model it on the existing report/setup/2FA patterns.",
+      "example": "The Report Builder's horizontal 3-step wizard (Report Properties → Visualizations & Preview → Schedule); also the Product Setup Guide vertical steps and the 2FA Step 1/2/3 indicator."
+    },
+    "breadcrumb": {
+      "useWhen": "You need to show the user's LOCATION plus a way up — a back chevron + a path trail (e.g. Reports / Compliance / PCI-DSS Audit) with the current crumb bold. Lives in the Page header (hosted by Toolbars).",
+      "dontUse": "Don't use it for a graph traversal/expansion trail (that's graph-breadcrumb), for just going back one level (back-button), or for actions (a toolbar holds actions, not location).",
+      "example": "The compliance report header trail — Reports / Compliance / PCI-DSS Audit — with a back chevron (compliance-breadcrumb.vue)."
+    },
+    "back-button": {
+      "useWhen": "The user only needs to go BACK one level. This is the smallest nav atom — a chevron-left MIcon inside a FlotoLink (router :to) — FlotoBackButton, also the Page header's back-button slot.",
+      "dontUse": "Don't use it when the user needs to see where they are or jump multiple levels up (use breadcrumb), or to switch modules/sections (primary-nav / side-menu-*).",
+      "example": "The chevron-left back control in a detail page's Page header back-button slot (FlotoBackButton), returning to the list view."
+    },
+    "user-menu": {
+      "useWhen": "App-level chrome for the signed-in account: a header avatar opening an MPopover with My Profile / Product Setup Guide / Documentation, the theme toggle (Dark/Light/Auto), and Logout.",
+      "dontUse": "Don't use it for module/section navigation (primary-nav / side-menu-*) or for alerts/system notices (notification-dropdown). It's account chrome, not page wayfinding.",
+      "example": "The top-app-header avatar (user-dropdown.vue) → My Profile, theme Dark/Light/Auto toggle, and Logout."
+    },
+    "notification-dropdown": {
+      "useWhen": "App-level chrome to surface alerts/system notices: a header bell + MBadge count opening Alerts / System Notification tabs (MTab) over a RecycleScroller list with View all / Clear all.",
+      "dontUse": "Don't use it for account actions (user-menu), global search (omnibox), or in-page content navigation. It's an app-header notifier only.",
+      "example": "The app-header bell with an unread MBadge (notification-dropdown.vue) → Alerts / System Notification tabs, list, and View all / Clear all."
+    },
+    "omnibox": {
+      "useWhen": "You need a global search / command palette: a category picker + CodeMirror query editor + Execute (enter) with parse-error and clear. App-header chrome for cross-product querying.",
+      "dontUse": "Don't use it for the per-panel search inside a side menu (that's the side-menu-list/tree search input), for account chrome (user-menu), or for notifications (notification-dropdown).",
+      "example": "The global search bar in the app header (omnibox/searchbar.vue) — pick a category, type a query in the CodeMirror editor, press Enter to Execute."
+    },
+    "noc-player": {
+      "useWhen": "You need to auto-cycle a wallboard through dashboards: a rotator with logo + prev/next around the current dashboard title + a countdown + play/pause. For NOC/wallboard viewing.",
+      "dontUse": "Don't use it to pick or manage dashboards (side-menu-categories / dashboard-dropdown) or to step through time (timeline-scrollbar). It's a hands-off rotation player.",
+      "example": "The NOC wallboard rotator (noc-player.vue) — ObserveOps logo, prev/next around the current dashboard title, countdown, and play/pause."
+    },
+    "timeline-scrollbar": {
+      "useWhen": "You need a TEMPORAL navigator that steps through time-bucketed snapshots: single (chevron) + batch (double-chevron) step controls around a time window. Used in NetRoute for stepping historical snapshots.",
+      "dontUse": "Don't use it to rotate dashboards (noc-player) or as a general page nav. It navigates time, not views.",
+      "example": "The NetRoute timeline scrollbar (timeline-scrollbar.vue) — single and double-chevron controls stepping the time-bucketed path snapshots."
+    },
+    "graph-breadcrumb": {
+      "useWhen": "You are traversing/expanding a graph and need to show the expansion trail as closable rounded MTags of expanded nodes, each removable to collapse that branch. A Breadcrumb variant for graph views.",
+      "dontUse": "Don't use it for a normal page location trail (breadcrumb) or for going back one level (back-button). It's specific to graph node expansion.",
+      "example": "The NetRoute graph view's expansion trail (graph-view.vue) — closable rounded MTags of the expanded graph nodes."
+    },
+    "metric-picker": {
+      "useWhen": "Cross-reference only — a Metric Explorer picker (⊕-add + drag) for choosing metrics. It LOOKS like a side menu but is a PICKER, not wayfinding; catalogued under DropdownPicker.",
+      "dontUse": "Don't treat it as navigation. For sectioned/tree/category/list left panels use the side-menu-* forms; for the picker behaviour itself see DropdownPicker.",
+      "example": "The Metric Explorer add-metric panel (⊕-add + drag) — referenced from Navigation but owned by DropdownPicker."
+    }
+  },
+  "changelog": []
+}

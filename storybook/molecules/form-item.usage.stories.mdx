@@ -1,0 +1,85 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/FormItem/Usage" />
+
+# Form Field — Usage
+
+🟢 **Stable** · Molecule — the **Form Field** (`FlotoFormItem`, **1783×**, the most-used
+component). It bundles **label + control + validation + help/error** so every field looks and
+behaves the same. Decision rules are mirrored in `registry/form-item.json`.
+
+## How to build a field (decision)
+
+First match wins:
+
+1. **Always** wrap a control in `FlotoFormItem` — never hand-roll a label + validation.
+2. **Plain text / number / textarea?** → omit the slot, set `type` (it renders its own `MInput`).
+3. **Select / Radio / Checkbox / picker / tag input?** → put that control in the **default slot**.
+4. **Mandatory?** → put `required` in **`rules`** (the asterisk is automatic — there is no
+   `required` prop).
+5. **Needs guidance?** → `help` (short, always visible) or `info-tooltip` (longer, behind an (i)).
+
+## Which layout? (vertical vs horizontal)
+
+Layout is set on the parent **`FlotoForm` / `MForm`** `layout` — and it genuinely changes how a
+form reads. Pick by **form type**:
+
+| Layout | Use it when… | Looks like | As seen in the product |
+| --- | --- | --- | --- |
+| **`vertical`** (label **above** control) | space is **narrow** or the flow is **focused** — drawers, modals, wizards, setup panels; long labels | label stacked over a full-width control | the **Add/Edit drawers**, **integration setup** (Slack, MS Teams, Jira, ServiceNow), pickers |
+| **`horizontal`** (label **beside** control) | a **dense settings page** with many short fields you scan top-to-bottom; label↔value alignment matters | label in a left column, control to the right (`labelCol`/`wrapperCol`) | **Mail Server**, **Proxy**, **SNMP Trap**, **RADIUS**, **Two-Factor Auth**, **My Profile** settings |
+
+> Rule of thumb: **drawers/modals/wizards → vertical**; **full settings pages → horizontal**.
+> When unsure, vertical is safer (works at any width). See the **Layout** story.
+
+## Each element — what, when, real example
+
+### Label
+
+- **Always provide one.** Short noun phrase, Title Case. *As seen in:* "Mail Server", "Polling
+  Interval", "Community String".
+
+### Required (`rules="required"`)
+
+- **Use when** the field must be filled — the **\*** appears automatically (derived from rules).
+- *As seen in:* almost every create form — "Name", "Start Date", "Hours", "Threshold Counter"
+  are all `rules="required"`.
+
+### Help text (`help`)
+
+- **Use when** a **short, always-visible** hint helps — units, consequences. Keep it one line.
+- *Example:* "In seconds. Lower values increase load." under a **Polling Interval** field.
+
+### Info tooltip (`info-tooltip`)
+
+- **Use when** the explanation is **longer** and would clutter the form — put it behind an **(i)**
+  icon by the label (shows on hover). *As seen in:* the **Group** form, **Firmware-update
+  profile** form, **timeline preferences** — fields that need a sentence of context (e.g. what an
+  SNMP community string is).
+- Don't hide *required* guidance only here (hover isn't discoverable for everyone).
+
+### Custom control (default slot)
+
+- **Use when** the control isn't a plain input — a segmented **`MRadioGroup`**, a
+  **`FlotoDropdownPicker`**, a **`MCheckbox`**, **`LooseTags`**. The wrapper still gives the
+  label + validation. *Example:* a **Severity** field as a segmented radio.
+
+### Validation & errors (`rules`)
+
+- **Use when** the value must be valid — `rules="required|email"`, `rules="max:255"`,
+  `rules="required|numeric|min_value:1"`. On failure: a **red border** + an **inline message**
+  (e.g. "The Email field must be a valid email"). The message is **pristine-gated** — it appears
+  after the user edits/blurs; the red border shows sooner. Reusable rules live in
+  `src/validations.js`.
+
+## Binding & form-level validation
+
+- v-model binds `value` + **`update`** (not `input`).
+- Wrap fields in **`FlotoForm`** (which uses `MValidationObserver`) to validate the **whole
+  form** on submit, and to set the `layout`. Lay fields out with **`MRow`/`MCol`** (e.g. two
+  `:size="6"` columns) inside the form.
+
+## Related
+
+`Input` (default control) · `Radio` / `Checkbox` / `Switch` / `DropdownPicker` / `LooseTags`
+(slot controls) · `FlotoForm` (form + layout) · `multiple-form-items` (repeatable field rows).

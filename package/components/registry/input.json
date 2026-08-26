@@ -1,0 +1,305 @@
+{
+  "name": "input",
+  "component": "MInput",
+  "display": "Input",
+  "tier": "atom",
+  "category": "form-control",
+  "source": "mkit",
+  "sourceFile": "ui/components/Input/Input.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "Text input. A type-router (text/password/number/search/textarea/datetime). v-model is value+update. Almost always wrapped by FlotoFormItem for label+validation.",
+  "variants": [
+    {
+      "name": "text",
+      "what": "single-line (default)",
+      "usage": ""
+    },
+    {
+      "name": "password",
+      "what": "masked",
+      "usage": ""
+    },
+    {
+      "name": "number",
+      "what": "MInputNumber steppers",
+      "usage": "70×"
+    },
+    {
+      "name": "search",
+      "what": "MInputSearch + enter",
+      "usage": ""
+    },
+    {
+      "name": "textarea",
+      "what": "multi-line",
+      "usage": ""
+    },
+    {
+      "name": "material-input",
+      "what": "bottom-border underline",
+      "usage": "62×"
+    },
+    {
+      "name": "no-border-input",
+      "what": "borderless inline edit",
+      "usage": "3×"
+    },
+    {
+      "name": "autocomplete",
+      "what": "search + live typed-suggestion list (omnibox)",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "resting"
+    },
+    {
+      "name": "hover",
+      "what": "border lightens"
+    },
+    {
+      "name": "focus",
+      "what": "border → primary"
+    },
+    {
+      "name": "disabled",
+      "what": "muted, no caret"
+    },
+    {
+      "name": "read-only",
+      "what": "selectable not editable"
+    },
+    {
+      "name": "error",
+      "what": "red border (validation)"
+    }
+  ],
+  "family": "Form Controls",
+  "model": {
+    "prop": "value",
+    "event": "update",
+    "note": "event is 'update', not 'input' (F1)"
+  },
+  "props": {
+    "type": {
+      "type": "string",
+      "default": "text",
+      "enum": [
+        "text",
+        "password",
+        "number",
+        "search",
+        "textarea",
+        "datetime"
+      ],
+      "note": "routes to a-input / a-input[type=password] / MInputNumber / MInputSearch / a-textarea / date-picker"
+    },
+    "value": {
+      "type": "any",
+      "note": "v-model"
+    },
+    "label": {
+      "type": "string",
+      "note": "form-item label above the field (FlotoFormItem pattern); a red required * is appended when `required`. Linked to the field via for/id."
+    },
+    "help": {
+      "type": "string",
+      "note": "supporting/hint text below the field (Ant form-explain), muted --neutral-light. Hidden when an error-message shows."
+    },
+    "defaultValue": {
+      "type": "string"
+    },
+    "allowClear": {
+      "type": "boolean",
+      "note": "shows an x to clear when there's a value (218x incl. pickers)"
+    },
+    "maxlength": {
+      "type": "number",
+      "note": "native char cap (7x); no built-in counter — show-count NOT supported by Ant 1.4 kit"
+    },
+    "(a-input attrs)": {
+      "type": "passthrough",
+      "note": "disabled, readOnly, maxLength via $attrs. size (small/default/large) exists but EFFECTIVELY UNUSED — one height (32px; search 36px)"
+    }
+  },
+  "events": [
+    "update (model)",
+    "search",
+    "enterKey"
+  ],
+  "slots": [
+    "prefix",
+    "suffix",
+    "addonBefore",
+    "addonAfter",
+    "enterButton (search)"
+  ],
+  "typeRouting": {
+    "text": "a-input",
+    "password": "a-input[type=password] (no show/hide toggle, F2)",
+    "number": "MInputNumber (steppers)",
+    "search": "MInputSearch (enter button, emits search)",
+    "textarea": "a-textarea",
+    "datetime": "date picker (separate concern)"
+  },
+  "styleClasses": {
+    "material-input": {
+      "usage": 62,
+      "note": "bottom-border-only Material underline (border 0/0/1/0)"
+    },
+    "full-border-text-area": 17,
+    "full-bordered-addon-input": 6,
+    "no-border-input": 3,
+    "auto-height-input": 2,
+    "text-lg-input": 2
+  },
+  "anatomy": [
+    "optional prefix/suffix (inside field)",
+    "input control",
+    "optional addonBefore/addonAfter segments"
+  ],
+  "tokensUsed": [
+    "--field-border-color",
+    "--input-text-color",
+    "--text-input-bg",
+    "--input-placeholder-color",
+    "--input-suffix-bg",
+    "--input-suffix-text",
+    "--input-addon-color"
+  ],
+  "accessibility": {
+    "semantics": "native input/textarea; label via FlotoFormItem or aria-label",
+    "focus": "no visible ring (SF-001)",
+    "placeholder": "~50% color (--input-placeholder-color) — verify contrast; not a label substitute"
+  },
+  "decisionFlow": [
+    "Multi-line text? -> type=textarea (or FlotoFormItem type=textarea).",
+    "Numeric value (with steppers)? -> type=number (MInputNumber).",
+    "Secret/password? -> type=password (PasswordInput for show/hide).",
+    "Search box (enter/clear, emits search)? -> type=search (MInputSearch).",
+    "A date/time? -> date picker, not a text input.",
+    "Otherwise single-line text -> type=text (default).",
+    "[Field] In a form with a label/validation? -> wrap in FlotoFormItem (the norm).",
+    "[Style] Dense/inline underline look? -> .material-input. Unit/protocol attached? -> addonBefore/addonAfter. Context icon? -> prefix/suffix."
+  ],
+  "usageRules": {
+    "text": {
+      "useWhen": "single-line free text (name, label, value)",
+      "example": "monitor name"
+    },
+    "password": {
+      "useWhen": "secret entry",
+      "dontUse": "when a show/hide toggle is needed (use PasswordInput) — type=password has none (F2)"
+    },
+    "number": {
+      "useWhen": "numeric input with steppers",
+      "example": "port, threshold, interval"
+    },
+    "search": {
+      "useWhen": "a search box (Enter emits search, has an enter button)",
+      "example": "filter/search a list"
+    },
+    "textarea": {
+      "useWhen": "multi-line text",
+      "note": "in forms use FlotoFormItem type=textarea",
+      "example": "description, notes"
+    },
+    "prefix/suffix": {
+      "useWhen": "a context icon inside the field (search glass, unit)",
+      "example": "search prefix, $ suffix"
+    },
+    "addonBefore/addonAfter": {
+      "useWhen": "attached fixed segments (protocol/unit)",
+      "example": "https:// … .com"
+    },
+    "material-input": {
+      "useWhen": "a dense/inline Material underline look (bottom border only)",
+      "example": "inline filters/toolbars (62x)"
+    },
+    "allow-clear": {
+      "useWhen": "an optional field/search where clearing to empty is valid",
+      "example": "filter/search inputs (x to clear)"
+    },
+    "error-state": {
+      "useWhen": "a field fails validation",
+      "note": ".has-error red border applied by FlotoFormItem; always pair with an inline message"
+    },
+    "disabled-vs-readonly": {
+      "useWhen": "disabled = can't interact (greyed); read-only = selectable/copyable but not editable (view mode)"
+    },
+    "FlotoFormItem": {
+      "useWhen": "any input in a form — adds the label + validation (the standard pattern, 1783x)"
+    },
+    "no-border-input": {
+      "useWhen": "A borderless field for inline editing — no visible box until interacted with, so the value reads like plain text in place. Rare (3x); use only where the field lives inside a larger surface and a border would add visual noise.",
+      "dontUse": "Don't use for normal form fields where users need to see the editable affordance — use the default bordered text input, or .material-input for a dense-but-visible underline. Reserve no-border for true inline-edit-in-place spots.",
+      "example": "An inline-editable label/title edited directly in place (e.g. renaming an item where the value sits inline, no form box), one of the ~3 borderless inline-edit spots."
+    },
+    "autocomplete (search + suggestions)": {
+      "useWhen": "a SEARCH field whose suggestions come from what the user TYPES (search-as-you-type) — a live suggestion list, keyboard-navigable",
+      "dontUse": "picking from a known fixed list (use the Dropdown picker / Select); a plain search that just filters a list shown elsewhere (use type=search with no suggestion list).",
+      "example": "the global omnibox search, metric/counter search-ahead, host/monitor name suggestions (auto-complete-list.vue / omnibox)."
+    }
+  },
+  "do": [
+    "Wrap inputs in FlotoFormItem for label + validation (standard form pattern).",
+    "Pick the type for the data; bind with v-model.",
+    "Use prefix/suffix for context icons; addonBefore/addonAfter for units/protocols."
+  ],
+  "dont": [
+    "Don't rely on @input to update the model — it's @update (F1).",
+    "Don't use the placeholder as the only label.",
+    "Don't expect a password show/hide toggle from type=password (F2)."
+  ],
+  "whenToUse": "Capturing typed input (text/number/search/multi-line) on a form or toolbar.",
+  "insteadOf": [
+    "raw a-input/a-textarea",
+    "native input"
+  ],
+  "usage": {
+    "MInput": 293,
+    "FlotoFormItem": 1783,
+    "material-input": 62,
+    "full-border-text-area": 17
+  },
+  "knownIssues": [
+    "F1 (low): v-model event is 'update' not 'input' — @input won't update the model; use @update or v-model. Align to input/update:value in a future API pass.",
+    "F2 (low): type=password has no show/hide toggle (falls to a-input[type=password]); a separate PasswordInput exists. Route to a-input-password or point to PasswordInput.",
+    "F3 (high, a11y): inputs strip the focus outline — no visible focus ring (SF-001).",
+    "[element] obs-input element: emits `input` per keystroke + `change` on blur; el.value now reflects typed text. Event detail is an array (unwrap detail[0])."
+  ],
+  "related": [
+    "FlotoFormItem",
+    "MInputNumber",
+    "MInputSearch",
+    "MInputGroup",
+    "LooseTags",
+    "date picker"
+  ],
+  "changelog": [
+    "2026-08-06 — BUGFIX (owner report): text fields would not accept typing and sometimes showed \"0\". Cause: the inner native <input>/<textarea> `input` event is composed:true, so it escaped the shadow DOM and collided with our emit(\"input\") — consumers reading e.detail got 0 (UIEvent default), blanked the field, and 0||\"\" cleared it. Fix: stop the native input/change from leaving the shadow root (@input.stop / e.stopPropagation) so only our clean CustomEvent (detail=[value]) is seen; also normalise value as v==null?\"\":String(v) so a real 0 shows \"0\". Verified controlled (e.detail) + uncontrolled typing.",
+    "2026-06-07: added (decision-grade from the start). 293x; type-router; v-model value/update; prefix/suffix/addon slots; .material-input 62x (bottom-border) verified. F1-F3. FlotoFormItem (1783x) noted as the field wrapper (own entry next).",
+    "2026-07-09: material variant now has a transparent background (elements@0.1.14) — was inheriting the box's white fill, so .material-input showed a filled box instead of just the underline.",
+    "2026-07-08: added `label` + `help` to obs-input (elements@0.1.10) so the field carries its own FlotoFormItem-style label (0.8rem, --text-color-common-secondary, red required * after) + supporting/hint text below (--neutral-light) — self-contained form fields without a separate wrapper. Label is for/id-linked to the field (a11y).",
+    "2026-07-11: documented AUTOCOMPLETE as a variant of Input (search + live suggestions) rather than a standalone component (owner decision) — a search-as-you-type field whose options come from the query, not a fixed list. Storybook: Atoms/Input → Autocomplete. Distinct from Dropdown/Select."
+  ],
+  "storybook": "Atoms/Input",
+  "figma": {
+    "status": "todo",
+    "component": "Input"
+  },
+  "a11y": {
+    "summary": "Native <input>/<textarea>, correct roles + text-editing keys. Always label (FlotoFormItem or aria-label). type=search adds Enter→search.",
+    "issues": [
+      "No visible focus ring (SF-001).",
+      "Placeholder contrast ~50% — verify.",
+      "type=password has no show/hide (F2) — use PasswordInput."
+    ],
+    "doc": "Atoms/Input/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

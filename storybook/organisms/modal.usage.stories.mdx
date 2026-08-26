@@ -1,0 +1,118 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Modal/Usage" />
+
+# Modal — Usage
+
+🟢 **Stable** · Organism — a centered **dialog** over a blurred backdrop. `MModal` (39×) is the
+base; **`FlotoConfirmModal`** (71×) is the confirm variant. Rules mirrored in
+`registry/modal.json`. Each type/variant below has **when to use · how · real examples**.
+
+## Which overlay? (decision)
+
+First match wins:
+
+1. **A yes/no or destructive confirmation?** → **`FlotoConfirmModal`** (`variant="error"` for
+   destructive).
+2. **A focused, short task/form that must interrupt the flow?** → **`MModal`** (dialog).
+3. **Long/complex content, or contextual to a record** (view details, edit-in-place)? →
+   **`FlotoDrawer`** (side panel, 158×) — *not* a modal.
+4. **Just a brief message** (success/error toast)? → a **notification**, not a modal.
+
+## Types
+
+### `MModal` — base dialog
+
+- **Use when:** a focused, self-contained task or piece of content that should interrupt the
+  flow until the user finishes or dismisses it.
+- **How:** open via the **`trigger`** slot (`{ open }`); add a **header** (title + close ×) and
+  a **`footer`** (`{ cancel, success }`). Size with `width`; `centered`; `confirmLoading` for
+  async Save.
+- **As seen in:** the **Forecast / Anomaly / Compare / Arithmetic** analysis modals
+  (metric-explorer), the **Error** modal, **password-verify**, **chart capture**,
+  **linked-records detail**.
+
+### `FlotoConfirmModal` — confirm dialog
+
+- **Use when:** confirming a yes/no or **destructive** action before it runs.
+- **How:** drive the **`open`** prop (boolean); slots `icon` + `message`; `successText` /
+  `cancelText`; `variant="error"` for destructive; listen to `@confirm` / `@hide`. Cancel sits
+  left, the action right.
+- **As seen in:** **delete confirmations** across CRUD lists (`paginated-crud`), **inline name
+  edit**, **widgets**, **rediscover**, **domain-mapping**, **trap-profile** delete.
+
+## Variants (`overlay-class-name`)
+
+### `hide-footer` — read-only / viewer
+
+- **Use when:** the modal only **shows** content (no Save/Cancel) — viewers, analysis panels.
+  The header **close ×** is the way out.
+- **How:** `overlay-class-name="hide-footer"`; omit the footer slot.
+- **As seen in:** the metric-explorer **Compare / Anomaly / Arithmetic / Outlier** modals.
+
+### `scrollable-modal` — long content
+
+- **Use when:** the body is **long** (lists, editors, configurators) and must scroll while the
+  header/footer stay pinned.
+- **How:** `overlay-class-name="scrollable-modal"`; ⚠️ wrap the content in a
+  `flex:1; min-height:0; overflow-y:auto` child (the body itself has no overflow — F3). Add
+  `smaller-modal` (50vh body) as needed. See the **Variant: scrollable-modal** story.
+- **As seen in:** **Compare metric** modal, **linked-records detail**, **widget JSON editor**,
+  **column configurator**.
+
+### `restrict-width` — large / wide (1020px)
+
+- **Use when:** you need a **fixed wide** modal (side-by-side comparison, wide tables) regardless
+  of the `width` prop. Beyond this, prefer a **Drawer** (the 85–96% full-screen pattern).
+- **How:** `overlay-class-name="restrict-width"` (forces content min = max = 1020px; often paired
+  with `scrollable-modal`). See the **Variant: large (restrict-width 1020px)** story.
+- **As seen in:** **compare-metric** / **diff-view** modals.
+
+### `no-padding-modal` / `no-padding-confrim-modal` — edge-to-edge
+
+- **Use when:** the content manages its own padding (a code editor, a full-bleed list, an
+  embedded form) and the default modal padding gets in the way.
+- **How:** `overlay-class-name="no-padding-modal"` (body → 8px) or `no-padding-confrim-modal`
+  (body → 0). See the **Variant: no-padding** story.
+- **As seen in:** **log-collection profile** list, **view-query**, **LAMA integration**,
+  **activation-code** modal.
+
+> **Note — `readable-content-overlay` is *not* a modal variant.** It's a **popover/tooltip**
+> overlay class (on `MPopover` / `MTooltip`, defined in `popover.less`) for readable-width text
+> overflow. It belongs to the **Popover/Tooltip family**, not Modal — don't reach for it here.
+
+## Header pattern (match the product)
+
+MModal's built-in × is off, so **build the header yourself** in the `title` slot — a flex row
+with a **`text-primary` title** + a **close ×** (`MIcon name="times"` wired to `hide()`):
+
+```vue
+<template #title>
+  <div class="flex items-center">
+    <h4 class="flex-1 m-0 text-primary">Edit monitor</h4>
+    <MIcon name="times" class="cursor-pointer" @click="$refs.m.hide()" />
+  </div>
+</template>
+```
+
+The backdrop **blurs** the page behind it (`backdrop-filter: blur(3px)`).
+
+## Do
+
+- Use **`FlotoConfirmModal`** for confirms; a plain **`MModal`** for a focused task.
+- **Always give a way out** — a header × and/or a footer `Cancel` (no built-in × / backdrop, F1).
+- For long bodies, use `scrollable-modal` **with an inner `overflow-y:auto` child** (F3).
+- Name action buttons by verb (**Delete**, **Save**), not "Yes/OK".
+- Putting an **`MForm`/`FlotoForm` inside a modal**? It renders its **own default "Submit"
+  button** — suppress it with an empty `<template #submit></template>` and let the modal
+  **footer** Save submit, or you'll get two submit buttons.
+
+## Don't
+
+- Don't rely on a × or backdrop click to dismiss — both are disabled.
+- Don't put long or record-contextual content in a modal — use a **`FlotoDrawer`**.
+
+## Related
+
+`FlotoConfirmModal` (confirm) · `FlotoDrawer` / `FlotoDrawerForm` (side panel) · `MButton`
+(footer actions) · `FlotoFormItem` (fields inside).

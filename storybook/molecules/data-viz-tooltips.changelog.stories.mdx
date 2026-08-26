@@ -1,0 +1,19 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Data-Viz Tooltips/Changelog" />
+
+# Data-Viz Tooltips — Changelog
+
+- **2026-06-16 (four-page parity)** — Added the **Accessibility** and **Changelog** pages (this page),
+  plus the `registry/data-viz-tooltips.json` + `specs/data-viz-tooltips.md` with a **which-tooltip→where**
+  lookup table. The family was previously a **story only**; it now follows the same four-page structure
+  as every other component. No story changes.
+- **Initial** — Catalogued the product's **chart & widget hover tooltips** as **reference
+  reproductions** (real tokens — `--chart-tooltip-background`, `--severity-*`, `--topology-graph-tooltip-bg`).
+  ~28 patterns across four render mechanisms: **Highcharts `TooltipBuilder`** (series/bar, donut, bubble,
+  map, radar, timeline, gauge, sankey, treemap, scatter, anomaly band, RUM waterfall, geo marker,
+  log-pattern, sparkline), **Vue widgets** (heatmap, alert/availability segment, availability bar),
+  **graph canvas** (live-graph node/edge, APM service-map node, SDN tunnel edge, Cisco ACI endpoint/link,
+  network interface edge, netroute node/edge), and the **d3 flame graph**.
+- **A11y** flagged (F2): hover-only, canvas-rendered → not keyboard-reachable / not in the a11y tree;
+  the data must also exist in a table or legend.

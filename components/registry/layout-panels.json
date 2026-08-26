@@ -1,0 +1,112 @@
+{
+  "name": "layout-panels",
+  "component": "panels",
+  "display": "Panel behaviours",
+  "tier": "foundation",
+  "section": "Foundations",
+  "family": "Layout",
+  "status": "stable",
+  "summary": "How panels & overlays open, move and resize. Drawer (slide-over, FlotoDrawer · 146) · Modal (a-modal · 37) · Collapsible (MCollapse · 19) · Expandable rows (9) · Resizable / split (splitpanes · ~3) · Affix / sticky · Dashboard tiles (vue-grid-layout · 5) · Bulk-action bar (fixed bottom · 2) · Popover (20+) · Full-screen / OmniBox overlay.",
+  "props": {
+    "behaviour": {
+      "type": "string",
+      "default": "drawer",
+      "enum": [
+        "drawer",
+        "modal",
+        "collapse",
+        "expand",
+        "split",
+        "affix",
+        "dash",
+        "bulkbar",
+        "popover",
+        "fullscreen"
+      ],
+      "note": "which panel/overlay behaviour to show"
+    }
+  },
+  "do": [
+    "Drawer is the default record surface (forms + deep drill-downs); ESC to close.",
+    "Modal for small confirm/collect; Drawer for panel-sized records.",
+    "Bulk-action bar appears on selection; Popover for contextual, light content."
+  ],
+  "dont": [
+    "Don't use resizable splits casually (rare — only settings/topology/apm trace).",
+    "Don't confuse table column-resize (a grid feature) with a panel behaviour."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--primary",
+    "--code-tag-background-color",
+    "--overlay-bg",
+    "--neutral-shadow-light",
+    "--neutral-light"
+  ],
+  "related": [
+    "layout-screen-regions",
+    "layout-app-shell"
+  ],
+  "storybook": "Foundations/Layout/Panel behaviours",
+  "a11y": {
+    "summary": "Behaviour references. In the product: Drawer/Modal trap focus + close on ESC; Popover is aria-described from its anchor; the Bulk-action bar announces the selection count.",
+    "issues": []
+  },
+  "knownIssues": [
+    "Behaviour diagrams, not live overlays — the real components own focus-trap / ESC / aria.",
+    "[element] The obs-layout-* WEB COMPONENT is a fixed visual demo, not a slotted layout primitive — you can't put a real page inside it. Use the layout GUIDANCE (decisionFlow/regions) + compose the shell from atoms + the 12-col grid + tokens."
+  ],
+  "changelog": [
+    "2026-06-29: added — the 10 panel/overlay behaviours.",
+    "2026-06-29: fixed Expandable-rows expanded header/body collapsing to content width.",
+    "2026-06-29: Usage enriched — when-to-use + where-it's-used."
+  ],
+  "whenToUse": "How a surface shows up — editing a record → Drawer; a quick confirm → Modal; optional detail → Collapsible / Expandable rows; the rest are for specific jobs.",
+  "usedIn": [
+    "Drawer 146 files · Modal 37 · Collapsible 19 · Popover 20+ · Expandable rows 9.",
+    "Dashboard tiles 5 · Bulk-action bar 2 · Resizable splits ~3 (settings / topology / apm trace).",
+    "Drawer is the default record surface; Modal for small confirms; Bulk-bar appears on selection."
+  ],
+  "decisionFlow": [
+    "Short yes/no or destructive confirmation, or a small focused task that must center-interrupt? -> Modal (FlotoConfirmModal, variant=error for destructive; MModal for a short form). Keep it small.",
+    "A brief non-interactive hint? -> Tooltip. A small contextual menu / column-selector / rich mini-panel off a trigger? -> Popover (non-blocking).",
+    "Create/edit a record, or a panel-sized detail/drill-down contextual to a row (keep the list behind it)? -> Drawer (FlotoDrawerForm ~40% for forms; a WIDE drawer 85-96% for multi-pane flows or genuine deep dives). The product's default off-list surface.",
+    "A high-complexity record, a multi-step wizard, a settings section, or a screen that must be deep-linkable / own its route? -> a full PAGE/route (a page template), NOT a drawer or modal.",
+    "Optional, secondary detail on the current screen? -> Collapsible section or Expandable table row. Never collapse REQUIRED fields.",
+    "Other jobs: tiles in a grid -> Dashboard tiles; stick on scroll -> Affix; multi-select actions -> Bulk-action bar (appears on selection); split/resizable areas -> Resizable split."
+  ],
+  "usageRules": {
+    "modal": {
+      "useWhen": "a short confirm/collect, or a focused task that must block until answered; destructive actions (variant=error, name the verb, not Yes/OK)",
+      "dontUse": "long/scrollable content or anything contextual to a record -> use a Drawer; a page-sized flow -> use a route",
+      "example": "Delete monitor? confirm; one-time API secret; quick Add-label form"
+    },
+    "drawer": {
+      "useWhen": "create/edit a record or a panel-sized detail off a list; keeps the list context behind the backdrop (~40% for forms, 85-96% wide for multi-pane / genuine deep dives)",
+      "dontUse": "a one-line confirm (-> Modal); a high-complexity record that deserves its own URL (-> page/route)",
+      "example": "Add Monitor / Edit Policy (FlotoDrawerForm); backup-compare deep dive (wide)"
+    },
+    "page-route": {
+      "useWhen": "a high-complexity record, a multi-step wizard, a settings section, or anything that must be deep-linkable / keep its own route",
+      "dontUse": "a quick edit off a list where a drawer keeps context better; a confirm (-> Modal)",
+      "example": "a full Settings policy form (hideSettingsMenu); a Report Builder wizard"
+    },
+    "popover": {
+      "useWhen": "a small, non-blocking contextual panel off a trigger — action menus, column selectors, sub-tabs, rich mini-panels",
+      "dontUse": "a center-interrupting task/confirm (-> Modal); long content (-> Drawer)",
+      "example": "row '...' action menu; column chooser"
+    },
+    "collapsible": {
+      "useWhen": "optional/secondary detail on the current screen the user can reveal",
+      "dontUse": "hiding REQUIRED fields; a whole record (-> Drawer)",
+      "example": "Advanced options section; expandable table-row detail"
+    },
+    "bulk-action-bar": {
+      "useWhen": "actions on a multi-selection in a grid/list; appears on selection",
+      "dontUse": "single-row actions (-> row menu / Popover)",
+      "example": "Delete Selected / Export on a checked table"
+    }
+  },
+  "referenceOnly": true
+}

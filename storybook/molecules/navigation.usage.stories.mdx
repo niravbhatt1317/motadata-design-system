@@ -1,0 +1,66 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Navigation/Usage" />
+
+# Navigation — Usage
+
+🟢 **Stable** · Molecule — the product's **wayfinding** components, by archetype. Rules in
+[`registry/navigation.json`](../../components/registry/navigation.json).
+
+## The archetypes
+
+| Archetype | Story | What it is |
+| --- | --- | --- |
+| **Primary nav** (`FlotoNavBar`) | Primary nav | left vertical **module** sidebar (collapse ↔ hover-expand) |
+| **Side menu** — the **left-panel**, 4 forms | Side menu · Tree · Categories · List | section (`settings/left-menu`) · tree (Log/Topology/Inventory `infinite-tree`) · category-list (`dashboard-dropdown`) · list/saved-views (`report-sidebar`, `ExplorerSavedViewList`) |
+| **Steps** | Steps · Setup guide steps | numbered **wizard / stepper** (bespoke — report builder, product-setup, 2FA) |
+| **Breadcrumb** | Breadcrumb · Graph breadcrumb | back + **path trail**; graph variant = closable expanded-node tags |
+| **Back button** (`FlotoBackButton`) | Back button | **chevron-left** router link |
+| **User account menu** (`user-dropdown`) | App chrome — user menu | avatar → profile / theme (Dark/Light/Auto) / logout |
+| **Notification dropdown** (`notification-dropdown`) | App chrome — notification | bell + badge → Alerts / System tabs |
+| **Global search / Omnibox** (`omnibox/searchbar`) | App chrome — omnibox | category + query + time-range command palette |
+| **NOC Player** (`noc-player`) | NOC Player | wallboard **rotator** (prev/next/play/countdown) |
+| **Timeline scrollbar** (`netroute/timeline-scrollbar`) | Timeline scrollbar | **temporal** navigator (time-bucket stepper) |
+| **Metric picker** (`metric-explorer`) | Metric picker | a **picker** (⊕-add + drag) — cross-ref DropdownPicker |
+| **Tabs** (`MTab`) | — | *its own family* — **Molecules/Tabs** |
+
+## Which navigation? (decision)
+
+1. **Top-level modules?** → **Primary nav**.
+2. **A left panel of sections / a tree / categories / saved views?** → **Side menu** (pick the form).
+3. **A multi-step create/setup flow?** → **Steps**.
+4. **Location + a way up?** → **Breadcrumb** (graph traversal → Graph breadcrumb).
+5. **Just back one level?** → **Back button**.
+6. **App-level chrome** (account, alerts, global search)? → **User menu / Notification / Omnibox**.
+7. **Cycle dashboards / step through time?** → **NOC Player / Timeline scrollbar**.
+8. **Sibling views of one page?** → **Tabs** (separate family).
+
+## Relationships
+
+- Navigation is **wayfinding**; **Toolbars** hold **actions**. The **Page header** (Toolbars) *hosts*
+  the **Back button** + **Breadcrumb**; the **App header** hosts the user menu, notification dropdown,
+  and omnibox.
+- **Tabs** switch sibling views of one page — they are **not** module/section navigation.
+- A **faceted checkbox left-panel** *looks* like a Side menu but **filters** → it's **Filters →
+  Vertical filter**. The **Metric picker** is a **picker**, not nav → cross-ref **DropdownPicker**.
+
+> **Reproduction note:** the live nav is router/store-bound (`visibleMenuItems`, `FlotoLink :to`,
+> `MCollapse`, `infinite-tree`, CodeMirror), so these are reproductions with real tokens.
+
+## Do
+
+- Use **Primary nav** for modules; pick the right **Side menu** form (section / tree / categories /
+  list) for the content; **Steps** for ordered flows.
+- Put the **Back button** in the Page header's `back-button` slot.
+
+## Don't
+
+- Don't use **Tabs** for module/section nav.
+- Don't hand-roll a sidebar/tree — reuse `FlotoNavBar` / the side-menu forms / `infinite-tree`.
+- Don't confuse a **breadcrumb** (location) with a **toolbar** (actions), or a **Side menu** with a
+  **Vertical filter** (faceted checkboxes that filter a grid).
+
+## Related
+
+**Tabs** · **Toolbars** (App/Page header host nav) · **Filters** (Vertical filter) · **DropdownPicker**
+(Metric picker) · `MMenu` / `MCollapse` / `infinite-tree` · `Input` (side-menu search).

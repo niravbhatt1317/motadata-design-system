@@ -1,0 +1,14 @@
+{
+  "$description": "Kit accents — Ant Design Vue 1.x LESS @vars that are NOT in variable.less (compile-time, theme-independent). They paint a few Ant component INTERNALS that tokens/variables.json cannot resolve. AI: if a registry says a control's dot/check is the 'Ant @primary-color' / cyan, resolve it here.",
+  "@primary-color": {
+    "value": "#099dd9",
+    "themed": false,
+    "note": "cyan — Ant interactive accent. Same in light + dark.",
+    "usedBy": [
+      "radio list dot",
+      "checkbox check",
+      "select/spinner",
+      "some Ant focus borders"
+    ]
+  }
+}

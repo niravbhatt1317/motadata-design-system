@@ -1,0 +1,260 @@
+{
+  "$description": "Purpose → token map. When styling a NEW element that ISN'T a catalogued component, pick the token by PURPOSE here (instead of guessing or hardcoding). All entries are real product tokens: runtime CSS --vars (resolve via variables.json), LESS @vars (structural.json), or the kit @primary-color (kit-accents.json). Colour values shown as light / dark.",
+  "$rules": [
+    "Never hardcode hex/rgba — use the token for the purpose.",
+    "Brand / primary action = --primary (navy #111c2c light / #e3e8f2 dark), NOT cyan.",
+    "The cyan @primary-color (#099dd9) is ONLY the Ant form-control accent (radio dot, checkbox check, select) — not a general brand colour.",
+    "Every colour token is theme-aware (light/dark) — never branch on theme yourself.",
+    "For monitor/alert SEVERITY use the Severity component + --severity-* tokens; for generic status use --secondary-*."
+  ],
+  "color": {
+    "surface": {
+      "page / app background": {
+        "token": "--page-background-color",
+        "light": "#fff",
+        "dark": "#07101f"
+      },
+      "card / widget surface": {
+        "token": "--common-widget-bg",
+        "light": "#fff",
+        "dark": "#172336"
+      },
+      "content area background": {
+        "token": "--common-main-bg",
+        "light": "#ecf1f9",
+        "dark": "#172336"
+      },
+      "subtle fill / skeleton / code chip": {
+        "token": "--code-tag-background-color",
+        "light": "#ecf1f9",
+        "dark": "#172336"
+      },
+      "row / subtle hover": {
+        "token": "--neutral-lighter",
+        "light": "#e3e8f2",
+        "dark": "#1d2a3e"
+      },
+      "nav item hover": {
+        "token": "--nav-hover-bg",
+        "light": "#ecf1f9",
+        "dark": "#1d2a3e"
+      },
+      "grid / table header": {
+        "token": "--grid-header-bg",
+        "light": "#ecf1f9",
+        "dark": "rgba(72,89,117,0.4)"
+      },
+      "left nav rail": {
+        "token": "--nav-panel-bg",
+        "light": "#f6f9fc",
+        "dark": "#172336"
+      },
+      "dashboard canvas": {
+        "token": "--dashboard-background",
+        "light": "#f9fafb",
+        "dark": "#0b1627"
+      },
+      "modal surface": {
+        "token": "--modal-background-color",
+        "light": "#fff",
+        "dark": "#07101f"
+      },
+      "drawer surface": {
+        "token": "--drawer-background-color",
+        "light": "#fff",
+        "dark": "#07101f"
+      },
+      "overlay / backdrop scrim": {
+        "token": "--overlay-bg",
+        "light": "rgba(0,0,0,0.25)",
+        "dark": "rgba(255,255,255,0.25)"
+      }
+    },
+    "text": {
+      "primary / body": {
+        "token": "--page-text-color",
+        "light": "#1d2a3e",
+        "dark": "#cad3e2"
+      },
+      "secondary": {
+        "token": "--neutral-regular",
+        "light": "#7186a8",
+        "dark": "#6a7fa0"
+      },
+      "muted / hint / placeholder / caption": {
+        "token": "--neutral-light",
+        "light": "#6a7fa0",
+        "dark": "#8e9fbc"
+      },
+      "form-field label (secondary)": {
+        "token": "--text-color-common-secondary",
+        "light": "#7186a8",
+        "dark": "#8e9fbc"
+      },
+      "on-brand / inverse (text on --primary or a coloured fill)": {
+        "token": "--active-text-color",
+        "light": "#fff",
+        "dark": "#fff"
+      },
+      "white (badges, knobs)": {
+        "token": "--white-regular",
+        "light": "#fff",
+        "dark": "rgba(255,255,255,0.8)"
+      }
+    },
+    "border": {
+      "default border / divider": {
+        "token": "--border-color",
+        "light": "#e3e8f2",
+        "dark": "#1d2a3e"
+      },
+      "form field border": {
+        "token": "--field-border-color",
+        "light": "#e3e8f2",
+        "dark": "#2b394f"
+      }
+    },
+    "brand / interactive": {
+      "primary action (button bg, active pill, key accents)": {
+        "token": "--primary",
+        "light": "#111c2c",
+        "dark": "#e3e8f2"
+      },
+      "primary alt (secondary brand / gradient stop)": {
+        "token": "--primary-alt",
+        "light": "#1d2a3e",
+        "dark": "#cad3e2"
+      },
+      "form-control accent (radio dot, checkbox check, select highlight)": {
+        "token": "@primary-color",
+        "value": "#099dd9",
+        "note": "kit LESS @var (kit-accents.json); same both themes"
+      }
+    },
+    "status / semantic": {
+      "error / danger": {
+        "token": "--secondary-red",
+        "light": "#ec5b5b",
+        "dark": "#ec5b5b"
+      },
+      "success": {
+        "token": "--secondary-green",
+        "light": "#14b053",
+        "dark": "#36d576"
+      },
+      "warning": {
+        "token": "--secondary-yellow",
+        "light": "#e8b407",
+        "dark": "#fad100"
+      },
+      "info / in-progress": {
+        "token": "--secondary-orange",
+        "light": "#f47c22",
+        "dark": "#fa9950"
+      }
+    },
+    "severity (monitor / alert LEVELS)": {
+      "$pattern": "--severity-<level> = the dot/text colour; --severity-<level>-dot-box = the light centre/halo; --severity-<level>-lighter = a bg tint.",
+      "levels": [
+        "up",
+        "clear",
+        "critical",
+        "down",
+        "major",
+        "warning",
+        "maintenance",
+        "unreachable",
+        "suspended",
+        "disable",
+        "stop",
+        "none",
+        "unknown"
+      ],
+      "$use": "Prefer the Severity component (atoms/severity); fall back to --secondary-* for generic status strings."
+    },
+    "tag / status-chip backgrounds (applied via .tag-<colour> classes — src/design/tags.less)": {
+      "$note": "A tag chip = the matching --secondary-* token for TEXT + a 20% rgba tint for BACKGROUND, applied by the .tag-<colour> class. The tint is a fixed rgba (same in light + dark), not a themed --var. Use the class; these are the resolved values.",
+      "green (success)": {
+        "class": "tag-green",
+        "text": "--secondary-green",
+        "background": "rgba(54, 213, 118, 0.2)"
+      },
+      "red (error)": {
+        "class": "tag-red",
+        "text": "--secondary-red",
+        "background": "rgba(236, 91, 91, 0.2)"
+      },
+      "yellow (warning)": {
+        "class": "tag-yellow",
+        "text": "--secondary-yellow",
+        "background": "rgba(250, 209, 0, 0.2)"
+      },
+      "orange (info)": {
+        "class": "tag-orange",
+        "text": "--secondary-orange",
+        "background": "rgba(250, 153, 80, 0.2)"
+      },
+      "primary (neutral)": {
+        "class": "tag-primary",
+        "text": "--default-tag-text-color",
+        "background": "--tag-bg-color"
+      }
+    },
+    "neutrals ramp (light → dark)": [
+      "--neutral-lightest",
+      "--neutral-lighter",
+      "--neutral-light",
+      "--neutral-regular",
+      "--neutral-dark",
+      "--neutral-darker",
+      "--neutral-darkest"
+    ],
+    "elevation / shadow": {
+      "card / panel / popover / drawer / toast shadow": {
+        "token": "--neutral-shadow-light",
+        "value": "rgba(70,70,70,0.15)",
+        "note": "shadow COLOUR — keep your own offset/blur, e.g. box-shadow: 0 6px 18px var(--neutral-shadow-light)"
+      },
+      "tooltip shadow (complete value)": {
+        "token": "--tooltip-box-shadow",
+        "value": "0 2px 8px rgba(0,0,0,0.15)"
+      }
+    },
+    "chart / data-viz series (categorical)": {
+      "$ref": "tokens/chart-palette.json",
+      "$note": "Multi-series chart colours come from the CATEGORICAL palette (chart-palette.json series.light / series.dark), assigned by series order — NOT --primary and NOT a single --secondary. Status/threshold colours in a chart still use the severity/--secondary tokens above."
+    }
+  },
+  "structural": {
+    "$note": "LESS @vars (structural.json) — compile-time, not themed. These are NOT CSS custom properties: emit them via <style lang=\"less\" scoped> (e.g. @padding-md) or Tailwind utilities (p-4, gap-2, text-sm). NEVER inline the raw px/rem value in a plain <style> block (a comment naming the token is not enough).",
+    "spacing": {
+      "@padding-lg": "24px",
+      "@padding-md": "16px (default form gutter)",
+      "@padding-sm": "12px",
+      "@padding-xs": "8px"
+    },
+    "sizing": {
+      "@input-height-base": "32px",
+      "@btn-height": "2.1rem",
+      "@header-height": "55px",
+      "@nav-icon-width": "50px",
+      "@navbar-height": "50px",
+      "@search-height": "36px"
+    },
+    "radius": {
+      "$note": "The DS has NO @border-radius-base — use @btn-radius for ALL general radius (cards, modals, inputs, chips), not just buttons.",
+      "@btn-radius": "4px (the general-purpose default radius, app-wide)",
+      "@btn-raidus-full": "150px (pill; note the source typo 'raidus' is the real token name)"
+    },
+    "type": {
+      "@font-family": "'Poppins', sans-serif",
+      "@text-lg": "1.5rem",
+      "@text-regular": "1rem",
+      "@text-sm": "0.8rem (base body)",
+      "@text-xs": "0.6rem"
+    }
+  },
+  "grid": {
+    "$note": "Layout uses the 12-col MRow/MCol — see layout/grid.json. 6 = half, 12 = full, gutter 16 (@padding-md)."
+  }
+}

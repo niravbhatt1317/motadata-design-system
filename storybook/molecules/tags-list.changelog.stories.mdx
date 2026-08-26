@@ -1,0 +1,16 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/TagsList/Changelog" />
+
+# TagsList — Changelog
+
+## 2026-06-07
+
+- Added to the catalog **badged as unused (dead code)** at the owner's request.
+- Deep-dive of `src/components/tags-list.vue`: confirmed **0 usages**; mapped the two render
+  paths (inline chips ≤ `maxLength`; count chip + hover popover above it).
+- Verified render (neutral `tag-primary` chips, `border-radius: 10px`; count "5" + popover
+  listing all items).
+- Findings: **F1** (dead code — recommend removal or consolidation onto `SelectedItemPills`),
+  **F2** (count-only overflow vs. the live first-N + `+N` idiom).
+- Classified as the Tag family's read-only overflow member ([D12](../../decisions/DECISIONS.md)).

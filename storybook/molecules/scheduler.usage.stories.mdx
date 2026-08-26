@@ -1,0 +1,77 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Scheduler/Usage" />
+
+# Scheduler / Recurrence — Usage
+
+🟢 **Stable** · Molecule — the **recurrence builder** (`ScheduleInput`, **16×**). Rules mirrored in
+[`registry/scheduler.json`](../../components/registry/scheduler.json).
+
+## What it is (and isn't)
+
+It produces a **recurrence rule** — *how often* a job runs and *when*. It is **not** a date/time
+*value* picker. Pick the right tool:
+
+| Need | Use |
+| --- | --- |
+| A job that **recurs** (daily/weekly/monthly) | **`ScheduleInput`** (this) |
+| A single **date / date-time** value in a form | **`MDatePicker`** (Date & Time Pickers) |
+| A chart/dashboard **time window** | **`TimeRangePicker`** |
+
+## The four types
+
+A **"Scheduler Type"** segmented control (`MRadioGroup as-button`) swaps the sub-form:
+
+| Type | Fields |
+| --- | --- |
+| **Once** | Start Date · Hours |
+| **Daily** | Start Date · Hours (same sub-form as Once) |
+| **Weekly** | **Days** (Mon–Sun) · Start Date · Hours |
+| **Monthly** | **Months** · **Dates** (1–31) · Start Date · Hours |
+
+- **Hours** = the custom dropdown **`TimePicker`** (multi-select times).
+- **Days / Months / Dates** = **`FlotoDropdownPicker`** multi-selects.
+- **Start Date** = **`MDatePicker`** (date-only, `min-date` = today).
+
+## v-model & emit
+
+```js
+{
+  scheduleType: 'Once' | 'Daily' | 'Weekly' | 'Monthly',
+  scheduleInfo: {
+    startDate: <ms>,       // defaults to today
+    times: [ … ],          // Hours
+    days:  [ … ],          // Weekly only
+    months: [ … ], dates: [ … ],  // Monthly only
+  }
+}
+```
+
+Changing the **type resets** `scheduleInfo` to `{ startDate: now }`.
+
+## Key props
+
+- **`:excluded-schedule-options`** — drop types (e.g. `['Weekly','Monthly']` → only Once & Daily).
+- **`:show-only-once`** — collapse to the **Once** type (a single, non-recurring run).
+- `$attrs` flow to the sub-form: `hide-date-time`, `time-options`, `use-single-selection`, `multiple`.
+
+> **Reproduction note:** the live `ScheduleInput` pulls the **local DB (lokijs → Node `fs`)**, so —
+> like `TimeRangePicker` and the Kendo grid — it can't render in Storybook. These stories rebuild it
+> from the **real** primitives (`MRadioGroup as-button` + `MDatePicker` + `FlotoDropdownPicker`) with
+> the exact fields, labels, and options, and are **interactive** (switch the type, the sub-form swaps).
+
+## Do
+
+- Use for **recurring jobs** (backups, discovery, audits, reports, runbooks).
+- Restrict types with `excluded-schedule-options` when only some recurrences are valid.
+- Use `show-only-once` for a single scheduled run.
+
+## Don't
+
+- Don't use it for a plain date/time **value** (→ `MDatePicker`) or a chart **window** (→ `TimeRangePicker`).
+- Don't hand-roll the Once/Daily/Weekly/Monthly switcher — reuse `ScheduleInput`.
+
+## Related
+
+`MRadioGroup` (segmented type control) · **Date & Time Pickers** (`MDatePicker` + the embedded
+`TimePicker`) · `FlotoDropdownPicker` · `FlotoFormItem`.

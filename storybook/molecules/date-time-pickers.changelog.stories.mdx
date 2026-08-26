@@ -1,0 +1,77 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Date & Time Pickers/Changelog" />
+
+# Date & Time Pickers — Changelog
+
+- **2026-06-16 (audit)** — Added the **Presets-only** story (`hide-custom-time-range`, 24×) — the
+  TimeRangePicker reduced to its relative presets with the Custom calendar removed (the common
+  dashboard-widget form).
+
+- **2026-06-15 (dark-theme contrast fixes)** — Owner: in dark theme some text didn't change, the range
+  wasn't highlighted, and the time inputs had no visible border. Root cause: tokens that collapse into
+  the dark background. Fixes: **selected-cell text** → `--page-background-color` (the inverse — dark on
+  the light selected cell, was invisible white-on-light, incl. the real MDatePicker via ds-primitives);
+  **in-range band** → `--timerange-background-color` (`#2b394f` in dark, visible) instead of `--tag-bg`
+  (= the panel color in dark); **time-input borders** → `--timerange-background-color` so they're
+  visible in dark. Verified by selecting a multi-day range in dark.
+- **2026-06-15 (Custom calendar — month/year header drill-down)** — Owner: the month/year in the
+  header weren't interactive like a real date picker. Added the Ant-style **drill-down**: click the
+  **month name** → a **Jan–Dec month grid**; click the **year** → a **decade year grid** (`«`/`»` to
+  change decade). Year → month → days, with the current selection highlighted navy. Verified by
+  click-test (Jun → month grid → pick Sep → day view shows September; no console errors).
+- **2026-06-15 (Custom calendar — now fully interactive)** — Owner: inside Custom, the dual-month
+  calendar wasn't clickable. Replaced the static hardcoded grid with **computed month grids + real
+  interaction**: **click two dates** to select a range (navy endpoints + `--tag-bg` in-between band),
+  **‹ › month navigation** (range persists across nav), **future days disabled**, **today ringed**,
+  and **From / To Time** open a dropdown of times. Apply sets the range (pill shows day-count +
+  `Custom`). Verified by click-test (selected 5→9, navigated months, no console errors).
+- **2026-06-15 (date picker branding — cyan → navy)** — The kit's precompiled Ant calendar uses its
+  cyan primary; re-skinned the `a-date-picker` / `a-time-picker` in `ds-primitives.less` (with
+  `!important`) to the product's **navy** (selected day, today ring, Ok button, hover) so MDatePicker
+  matches the product branding.
+- **2026-06-15 (TimeRangePicker — now interactive, click-to-open)** — Consolidated the three static
+  state-stories (Trigger / Presets / Custom) into **one interactive `TimeRangePicker`** that mirrors
+  the real flow: **click the pill** → presets panel opens → choose **Custom** → the dual-month
+  calendar appears → **Apply** sets the range & closes, **Cancel** returns to presets, click-outside
+  dismisses, **×** clears. Verified by click-test (closed → presets → calendar → Apply → pill shows
+  `6d 23h · Custom`). The `TimeRangeSlider` remains its own story.
+- **2026-06-15 (Custom range view — rebuilt as the real dual-month calendar)** — Owner: my Custom-range
+  reproduction was a stripped-down placeholder (two date boxes). Rebuilt it to match the product
+  `a-range-picker` panel: **two months side by side** (Jun + Jul) with month-nav arrows, **range
+  endpoints filled navy** as one connected bar, **today ringed**, **out-of-range / future days greyed
+  (disabled)**, **From/To Time dropdown selects** (`10:05` / `Select`), and **Cancel / Apply**.
+- **2026-06-15 (TimeRangeSlider — matched to the product + made functional)** — Owner shared a
+  dashboard screenshot; the slider didn't match in UI or behavior. Rebuilt it to match: a **full-width
+  dense tick ruler** (~100 ticks) with an **`HH:mm` label every 10th**, the **`--slider-tracker`**
+  slate band between two **square handles**, dark-theme accurate. Now **functional** — the handles
+  **drag** to resize the window (verified by simulated drag). Token colors confirmed against the
+  screenshot (`--slider-tracker` band, dark `--timerange-background-color` pill).
+- **2026-06-15 (sweep recheck — added the missed variant)** — Owner flagged a missed variant + UI
+  mismatch. Census of every picker tag → **added the `TimeRangeSlider`** story (the draggable
+  **timeline scrubber** used in the dashboard + alert correlation drawer). Also corrected: **no
+  standalone time picker is used** (kit `MTimePicker` *and* custom `TimePicker` are 0× — time comes via
+  `show-time` or the range custom view, which uses a **dropdown-based** `TimePicker`, not an Ant
+  spinner); `excluded-options` is a real **7×** variant (with `hide-icon` 3×) while `only-label` /
+  `daily-rolling` are 0×; `MDatePicker` has no size/format/mode in use; **Scheduler/Recurrence**
+  (`schedule-input/`, 17 files) is a separate family. *The TimeRangePicker/slider stories are
+  reproductions — a product screenshot is needed to pixel-match the panel UI.*
+- **2026-06-15** — Added — the **Date & Time Pickers family** in one entry. Swept the family and found
+  the hero isn't the kit date picker — it's **`TimeRangePicker`** (`src/components/widgets/time-range-picker.vue`,
+  **42× / 35 files**): the observability time-range control (relative presets + absolute custom).
+  **`MDatePicker`** (10×, wraps `a-date-picker`) is the form **date-time** field — **every** real usage
+  passes `:show-time`, so it's date-*time*, not date-only. **`MTimePicker`** (wraps `a-time-picker`,
+  12-hour) is barely used standalone. **`DateTimePopover`** is a lighter custom-range-only popover.
+- **Stories:** real `MDatePicker` (date-time + states) and `MTimePicker`; **reference reproductions**
+  of the `TimeRangePicker` trigger (pill + label + bordered + empty), the **presets panel** (the exact
+  15-option list with shortcut pills + the `hide-custom-time-range` toggle), and the **custom range**
+  view (calendar + From/To time + Apply/Cancel). `TimeRangePicker` depends on the user-preference store
+  + `datetime` filter + moment, so it can't render live — reproduced with the real tokens/labels.
+- **Verified by render + screenshot (every shot opened):** the real MDatePicker calendar themes
+  correctly (today ringed navy, "Now / select time / Ok" footer); no console errors. **Caught + fixed**
+  two issues by *looking*: MTimePicker showed **"Invalid date"** when bound to an empty string (moment
+  parses `''` → invalid; fixed to `null`), and the preset rows had a stray `<a>` **underline** (added
+  `text-decoration:none`).
+- **A11y:** Ant gives focusable inputs + keyboard-navigable panels + Escape. Flagged the preset rows'
+  keyboard reachability, the focus ring (**SF-001**), and announcing the custom-range error.
+- Related: **DropdownPicker** · **FormItem** (wraps date/time in forms) · **Popover**.

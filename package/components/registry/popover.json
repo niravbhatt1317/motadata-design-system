@@ -1,0 +1,241 @@
+{
+  "name": "popover",
+  "display": "Popover",
+  "tier": "molecule",
+  "family": "Popover & Tooltip",
+  "source": "ui/components/Popover/Popover.vue (kit; wraps Ant a-popover). Related primitive: src/components/_base-popper.vue (MPopper, wraps v-popover).",
+  "status": "stable",
+  "summary": "Click-triggered floating panel anchored to a trigger, holding interactive content (action menus, pickers, mini-forms). Slots trigger/title/default each get {hide,show,toggle}. MPopper is the lower-level v-popover positioning primitive that powers FlotoDropdownPicker.",
+  "variants": [
+    {
+      "name": "click",
+      "what": "click trigger (default)",
+      "usage": "20×"
+    },
+    {
+      "name": "hover",
+      "what": "hover trigger (+N reveals)",
+      "usage": "13×"
+    },
+    {
+      "name": "action-menu",
+      "what": "kebab item actions",
+      "usage": ""
+    },
+    {
+      "name": "grid-row-actions",
+      "what": "grid row kebab",
+      "usage": ""
+    },
+    {
+      "name": "rich-panel",
+      "what": "colour/date picker panel",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "closed",
+      "what": "hidden"
+    },
+    {
+      "name": "open",
+      "what": "visible/interactive"
+    }
+  ],
+  "usage": {
+    "total": 35,
+    "mpopper": 2,
+    "patterns": [
+      "action/kebab menu (_base-grid-actions)",
+      "color picker",
+      "date/time picker",
+      "rich panels",
+      "+N overflow hover reveal (tags-list)"
+    ],
+    "triggerDistribution": {
+      "click": 20,
+      "hover": 13,
+      "explicit-click": 2
+    },
+    "placementDistribution": {
+      "bottomLeft": 11,
+      "bottomRight": 9,
+      "bottom": 7,
+      "leftTop": 4,
+      "top": 1,
+      "right": 1
+    },
+    "transition": "transition-name='slide-up' (16x)",
+    "overlayClassName": [
+      "picker-action-dropdown",
+      "color-picker-popover",
+      "picker-overlay",
+      "readable-content-overlay"
+    ]
+  },
+  "props": {
+    "trigger": {
+      "type": "string",
+      "default": "click",
+      "enum": [
+        "click",
+        "hover",
+        "focus",
+        "contextmenu"
+      ]
+    },
+    "placement": {
+      "type": "string",
+      "default": "bottom",
+      "enum": [
+        "top",
+        "bottom",
+        "bottomRight",
+        "bottomLeft",
+        "left",
+        "right"
+      ]
+    },
+    "visible": {
+      "type": "boolean",
+      "default": null,
+      "note": "controlled mode; pair with @visibleChange (one-way — F1)"
+    },
+    "overlayClassName": {
+      "type": "string",
+      "default": null
+    },
+    "overlayStyle": {
+      "type": "object",
+      "default": null
+    },
+    "mouseEnterDelay": {
+      "type": "number",
+      "default": null
+    },
+    "mouseLeaveDelay": {
+      "type": "number",
+      "default": null
+    },
+    "destroyTooltipOnHide": {
+      "type": "boolean",
+      "default": true,
+      "note": "re-creates content each open"
+    },
+    "getPopupContainer": {
+      "type": "function",
+      "default": null,
+      "note": "defaults to closest .__panel or document.body"
+    }
+  },
+  "slots": {
+    "trigger": "the anchor; scope { hide, show, toggle }",
+    "title": "optional header; scope { hide, show, toggle }",
+    "default": "the panel content; scope { hide, show, toggle }"
+  },
+  "events": {
+    "visibleChange": "fires on open/close (controlled mode)"
+  },
+  "tokensUsed": [
+    "--page-background-color",
+    "--border-color",
+    "--page-text-color"
+  ],
+  "decisionFlow": [
+    "Is the content a short non-interactive hint? -> Tooltip, not Popover.",
+    "Is it a row/item action list (edit/duplicate/delete)? -> Popover action menu (placement='bottomRight').",
+    "Is it a picker/mini-form/color or date picker? -> Popover rich panel (often a custom overlay-class).",
+    "Is it a center-interrupting task or confirmation? -> Modal, not Popover.",
+    "Is it a select-from-options field? -> FlotoDropdownPicker (which uses MPopper internally)."
+  ],
+  "usageRules": {
+    "actionMenu": {
+      "useWhen": "row/item actions (edit, duplicate, delete)",
+      "how": "kebab (ellipsis-v) trigger, placement='bottomRight', items call hide()",
+      "example": "grid row actions (_base-grid-actions)"
+    },
+    "richPanel": {
+      "useWhen": "an interactive picker/mini-form",
+      "how": "trigger='click' + a custom overlay-class",
+      "example": "color-picker-popover, date/time picker"
+    },
+    "hoverReveal": {
+      "useWhen": "a passive reveal on hover (no click) — +N overflow, quick peek",
+      "how": "trigger='hover' (often transition-name='slide-up')",
+      "example": "tags-list '+N' overflow (13x use hover)"
+    },
+    "click": {
+      "useWhen": "The anchored content is interactive and should open on an explicit click — a menu, picker, or mini-form the user deliberately opens. This is the default trigger (20× in the product) and the right choice for anything requiring interaction rather than a passive peek.",
+      "dontUse": "Don't use click for a passive '+N overflow' or quick-info peek that should reveal on hover (use trigger=hover); don't use it for a short non-interactive hint (use MTooltip); and don't use it for a center-interrupting task or confirmation (use MModal).",
+      "example": "The color picker (color-picker.vue) and date/time pickers open their panel on a click trigger; FlotoGridActions kebab menus also click-open."
+    },
+    "hover": {
+      "useWhen": "You want a passive reveal with no click — the '+N overflow' pill that shows hidden items, or a quick info peek. Common in the product (13×), usually paired with transition-name='slide-up'.",
+      "dontUse": "Don't use hover for menus or pickers that need deliberate interaction (use trigger=click); don't use it for a plain text hint (use MTooltip); don't use it when content must stay open while the user works inside it.",
+      "example": "The '+N' overflow reveal in tags-list.vue and interface-template.vue that surfaces the hidden tags/items on hover (13× of popovers use hover)."
+    },
+    "action-menu": {
+      "useWhen": "You need a kebab (ellipsis-v) menu of item actions opening a dark picker-action-dropdown panel, placement='bottomRight', transition-name='slide-up', each item calling hide() on select. This is the shared FlotoGridActions engine (_base-grid-actions.vue, 89×) — use for widget-header chrome (Full Screen · Share · Export as CSV) or the multi-select bulk-action bar's 'More' overflow.",
+      "dontUse": "Don't use it for a single table row's actions when you specifically need the Edit·Clone·Disable·Delete(red) set below a divider — that's the grid-row-actions variant; don't use it for a picker or mini-form (use rich-panel); don't hand-roll a select dropdown (use FlotoDropdownPicker).",
+      "example": "The widget-header kebab (widget-title.vue) with Full Screen · Share · Export as CSV, and the bulk-action bar 'More' overflow kebab (_base-bulk-action-bar.vue) that opens upward (topRight) with overlay-class bulk-action-bar-more."
+    },
+    "grid-row-actions": {
+      "useWhen": "A table ROW needs its per-row actions — Edit · Clone · Disable · divider · Delete(red). The 89× default of FlotoGridActions: ellipsis-v trigger, placement='bottomRight', a divider plus a danger item (isDanger -> text-secondary-red), each item calling hide().",
+      "dontUse": "Don't use it for widget chrome or multi-select toolbars (use the action-menu variants — widget-header kebab / bulk-action bar); don't use it for a picker/mini-form (use rich-panel); don't use it for a passive hover reveal (use hover).",
+      "example": "The grid row kebab across list tables — Edit · Clone · Disable · — · Delete (red, below a divider) — the 89× default rendered by _base-grid-actions.vue."
+    },
+    "rich-panel": {
+      "useWhen": "An interactive picker or small mini-form should float by its trigger. Use trigger='click' plus a custom overlay-class-name to style the floating panel.",
+      "dontUse": "Don't use it for a list of item actions (use action-menu / grid-row-actions); don't use it for a plain hint (use MTooltip); don't use it for a select-from-options field (use FlotoDropdownPicker, which uses MPopper internally); don't use it for a center-interrupting task (use MModal).",
+      "example": "The color picker (color-picker.vue) with overlay-class color-picker-popover, and the date/time picker panels (picker-overlay / picker-action-dropdown overlay classes)."
+    }
+  },
+  "placementVocabulary": "Ant names (bottomLeft/bottomRight/leftTop/bottom/top) — NOT the Tooltip's VTippy names (top-start). Not interchangeable.",
+  "do": [
+    "Use for interactive, click-triggered content",
+    "Give items a hide() on select",
+    "Anchor row actions bottomRight"
+  ],
+  "dont": [
+    "Don't use for plain hints (use Tooltip)",
+    "Don't use for center-interrupting tasks/confirmations (use Modal)",
+    "Don't hand-roll a select dropdown (use FlotoDropdownPicker)"
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "`visible` is one-way — controlled mode needs an explicit @visibleChange handler to stay in sync."
+    },
+    "F2": {
+      "severity": "Medium",
+      "a11y": true,
+      "issue": "Trigger lacks aria-haspopup/aria-expanded; no focus move into the panel on open and no focus-trap — keyboard/SR users aren't told a panel opened."
+    },
+    "F3": {
+      "severity": "Medium",
+      "a11y": true,
+      "issue": "No focus ring (`:focus { outline:none }` in _base-popper) — links to SF-001."
+    }
+  },
+  "storybook": "Molecules/Popover",
+  "related": [
+    "tooltip",
+    "modal",
+    "dropdown-picker"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "a11y": {
+    "summary": "Holds interactive content → focus handling matters. Outside-click / Esc close (from a-popover); verify Esc returns focus.",
+    "issues": [
+      "Trigger not announced as a disclosure — no aria-haspopup/expanded (F2).",
+      "Focus not moved into the panel; no focus trap.",
+      "Overlay removes the focus outline."
+    ],
+    "doc": "Molecules/Popover/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

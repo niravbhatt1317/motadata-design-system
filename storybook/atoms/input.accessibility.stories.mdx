@@ -1,0 +1,25 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Input/Accessibility" />
+
+# Input — Accessibility
+
+## Label & semantics
+
+- Renders a native `<input>` / `<textarea>` — correct roles and keyboard behavior. ✅
+- **Always give it a label.** In forms that's `FlotoFormItem` (programmatic label); for a bare
+  input provide an `aria-label`. The **placeholder is not a label** — it disappears on input.
+
+## Keyboard
+
+- Standard text-editing keys; `type="search"` adds **Enter → search**. `type="number"` adds
+  stepper controls.
+
+## Known a11y gotchas
+
+- ⚠️ **No visible focus ring** system-wide ([SF-001](../../findings/SF-001-focus-visible.md)) —
+  inputs strip `outline`. Critical for inputs, where focus location matters most.
+- **Placeholder contrast:** `--input-placeholder-color` is ~50% opacity — verify it meets
+  contrast in both themes, and never rely on it to convey required info.
+- `type="password"` has no show/hide toggle (F2) — use `PasswordInput` where revealing the
+  value aids accessibility.

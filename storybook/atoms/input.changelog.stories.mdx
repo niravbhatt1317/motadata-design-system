@@ -1,0 +1,35 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Input/Changelog" />
+
+# Input — Changelog
+
+## 2026-07-11
+
+- **Added — Autocomplete** as a variant of Input (the `search` type + a live typed-suggestion list,
+  `auto-complete-list.vue` / omnibox). A search-as-you-type surface where the suggestions come from the
+  **query**, not a fixed list — distinct from the Dropdown picker / Select. Storybook: *Autocomplete (search +
+  suggestions)*; owner decision to document it under Input rather than as a standalone component.
+
+## 2026-06-16
+
+- Added an **Interaction states** story (hover / focus / disabled on the real `MInput`) that **surfaces
+  SF-001** — the focus affordance is only the `--primary` border shift; the global `:focus-visible` ring
+  is removed. (From the catalogue audit.)
+
+## 2026-06-07
+
+- Added to the design system — authored to the **decision-grade Usage** standard from the start
+  (which-input decision flow + per-type cards, mirrored in `registry/input.json`).
+- Deep-dive of `ui/components/Input/Input.vue` (`MInput`, **293×**): a **type-router**
+  (text · password · number · search · textarea · datetime); v-model binds `value` + **`update`**;
+  slots prefix / suffix / addonBefore / addonAfter / enterButton.
+- **Class-style sweep** (the parallel API): `.material-input` **62×** (bottom-border underline),
+  `full-border-text-area` 17×, `full-bordered-addon-input` 6×, `no-border-input` 3×,
+  `auto-height-input` / `text-lg-input` 2× — documented; Material shown as a story.
+- Stories: Types · Adornments · Material · States · Playground — verified all type routing,
+  adornments, and material border (`0/0/1/0` vs default `1/1/1/1`).
+- Findings: **F1** (v-model event is `update`, not `input`), **F2** (`type=password` has no
+  show/hide toggle), **F3** (no focus ring → SF-001).
+- Noted **`FlotoFormItem` (1783×)** as the dominant field wrapper (label + validation) — its
+  own entry is the natural next component (the "Form Field" molecule).

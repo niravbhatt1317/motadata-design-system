@@ -1,0 +1,94 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Popover/Usage" />
+
+# Popover — Usage
+
+🟢 **Stable** · Molecule — a **click-triggered floating panel** (`MPopover`, 35×, wraps Ant
+`a-popover`) for **interactive** anchored content. The low-level **`MPopper`** (`v-popover`) is the
+same family and powers `FlotoDropdownPicker`. Rules mirrored in `registry/popover.json`.
+
+## Which anchored overlay? (decision)
+
+First match wins:
+
+1. **A short, non-interactive hint?** → **`MTooltip`** (hover label), not a popover.
+2. **Row / item actions** (edit, duplicate, delete)? → **Popover action menu**
+   (`placement="bottomRight"`).
+3. **A picker / mini-form / color or date picker?** → **Popover rich panel** (often a custom
+   `overlay-class-name`).
+4. **A center-interrupting task or confirmation?** → **`MModal`**, not a popover.
+5. **Select-from-options field?** → **`FlotoDropdownPicker`** (it uses `MPopper` internally).
+
+## Use cases by type
+
+### Action / kebab menu (3 distinct variants)
+
+All are the same engine — **`FlotoGridActions`** (`_base-grid-actions.vue`, 89×) → an **`ellipsis-v`**
+trigger opening a dark **`picker-action-dropdown`** menu, `placement="bottomRight"`,
+`transition-name="slide-up"`; each item calls **`hide()`** on select. They differ by **content,
+context, and trigger** — pick the one that matches the place:
+
+| Variant | Where | Items | Distinguishing trait | Story |
+| --- | --- | --- | --- | --- |
+| **Grid-row kebab** | a table **row** | Edit · Clone · Disable · — · **Delete (red)** | a **divider** + **danger** (`isDanger` → `text-secondary-red`) item; the 89× default | Kebab — grid row |
+| **Widget-header kebab** | a **widget** header (`widget-title.vue`) | Full Screen · Share · Export as CSV | view actions, **no destructive** item | Kebab — widget header |
+| **Bulk-action bar** | a **floating selection toolbar** (`_base-bulk-action-bar.vue`) | inline primary + danger buttons **+ a "More" overflow kebab** | acts on the **selection** (N items), not one row; `overlay-class-name` adds `bulk-action-bar-more`; opens **upward** (`topRight`) | Kebab — bulk action bar |
+
+**Rules:** one-row actions → grid-row kebab (Delete always red, below a divider); widget chrome →
+widget-header kebab; multi-select → the bulk-action bar (inline common actions, overflow into the
+"More" kebab).
+
+> **The `⋮` appears at the *top of the opened panel*, with items below it — that's not a different
+> kebab.** `picker-action-dropdown` positions the menu to **overlap its own trigger**
+> (`.ant-popover-inner { top: -40px }` + `ul.action-dropdown { padding-top: 30px }`), so the `⋮`
+> trigger shows through the panel's top-right and the items list underneath. All three variants above
+> share this layout — they differ only in **items / context**, not the trigger position.
+
+### Rich panel (picker / mini-form)
+
+- **Use when:** an interactive picker or small form should float by its trigger.
+- **How:** `trigger="click"` + a custom `overlay-class-name` (e.g. `color-picker-popover`).
+- **As seen in:** **color picker** (`color-picker.vue`), **date/time** pickers. See the **Rich
+  panel** story.
+
+### Hover reveal — `trigger="hover"`
+
+- **Use when:** a passive **reveal** on hover (no click) — the **"+N overflow"** pill that shows
+  the hidden items, a quick info peek.
+- **How:** `trigger="hover"` (often with `transition-name="slide-up"`).
+- **As seen in:** `tags-list.vue` / `interface-template.vue` **+N** overflow (13× use hover). See
+  the **Behavior: hover trigger** story.
+
+## Opening behavior & placement (match the product)
+
+- **Trigger:** **`click`** is the default (20×), but **`hover`** is common (13×) for passive
+  reveals, and controlled (`:visible` + `@visibleChange`) for programmatic opens. Pick `click` for
+  menus/pickers, `hover` for "+N"/peek reveals.
+- **Transition:** the product commonly sets **`transition-name="slide-up"`** (16×).
+- **Placement (Ant names):** real distribution — **`bottomLeft`** (11×, most common) ·
+  **`bottomRight`** (9×, row/kebab actions) · `bottom` (7×) · **`leftTop`** (4×) · `top`/`right`
+  (1×). Default is `bottom`. See the **Placements** story. (⚠️ Ant names — **not** the Tooltip's
+  VTippy `top-start` names.)
+
+## Slots & scope
+
+`trigger` · optional `title` · default (content) — **each** receives **`{ hide, show, toggle }`**,
+so content can dismiss itself. `trigger` defaults to **`click`**, `placement` to **`bottom`**.
+`destroyTooltipOnHide` (default true) re-creates content each open.
+
+## Do
+
+- Use for **interactive, click-triggered** content.
+- Give menu/picker items a **`hide()`** on select.
+- Anchor row actions **`bottomRight`**.
+
+## Don't
+
+- Don't use for plain hints — use **Tooltip**.
+- Don't use for center-interrupting tasks/confirmations — use **Modal**.
+- Don't hand-roll a select dropdown — use **FlotoDropdownPicker**.
+
+## Related
+
+`MTooltip` (hover label) · `FlotoDropdownPicker` (select; uses MPopper) · `MModal` (dialog).

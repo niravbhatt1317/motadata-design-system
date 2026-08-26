@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ObserveOps · Component Catalog</title>
+<style>__DS_CSS__</style>
+<style>
+  :root { --cat-max: 1280px; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-family, 'Poppins', system-ui, -apple-system, sans-serif);
+    background: var(--page-background-color, #f4f6fb);
+    color: var(--page-text-color, #1d2a3e);
+    font-size: 13px; line-height: 1.5;
+  }
+  .wrap { max-width: var(--cat-max); margin: 0 auto; padding: 24px 24px 55px; }
+  header.hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .hd h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -.2px; }
+  .hd p { margin: 0; color: var(--neutral-regular, #516381); max-width: 640px; }
+  .themebox { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--neutral-regular,#516381); white-space: nowrap; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0 4px; }
+  .stat { border: 1px solid var(--border-color, #e3e8f2); border-radius: 10px; padding: 16px;
+    background: var(--common-widget-bg, var(--page-background-color, #fff)); }
+  .stat-k { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: var(--neutral-light,#8091ad); font-weight: 500; }
+  .stat-v { font-size: 30px; font-weight: 600; line-height: 1.1; margin: 4px 0 2px; color: var(--primary, #111c2c); font-variant-numeric: tabular-nums; }
+  .stat-v .of { font-size: 16px; font-weight: 500; color: var(--neutral-light,#8091ad); }
+  .stat-sub { font-size: 11.5px; color: var(--neutral-regular,#516381); min-height: 30px; }
+  .pbar { height: 6px; border-radius: 3px; background: var(--neutral-lighter,#e3e8f2); overflow: hidden; margin-top: 8px; }
+  .pbar > i { display: block; height: 100%; background: var(--secondary-green, #2bbb7f); border-radius: 3px; }
+  .pbar > i.alt { background: var(--primary-alt, #3279be); }
+  @media (max-width: 760px) { .stats { grid-template-columns: 1fr; } }
+
+  .toolbar {
+    position: sticky; top: 0; z-index: 20; margin: 16px 0 12px; padding: 12px 16px;
+    background: var(--common-widget-bg, var(--page-background-color, #fff));
+    border: 1px solid var(--border-color, #e3e8f2); border-radius: 10px;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 1px 2px rgba(16,28,44,.04);
+  }
+  .trow { display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; }
+  .trow .grow { flex: 1 1 260px; min-width: 200px; }
+  .count { margin-left: auto; color: var(--neutral-light, #8091ad); font-size: 12px; white-space: nowrap; }
+  .fbox { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--neutral-regular,#516381); }
+  .flabel { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: var(--neutral-light,#8091ad); }
+
+  table.cat { width: 100%; border-collapse: collapse; }
+  .cat th { text-align: left; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .4px;
+    color: var(--neutral-light, #8091ad); padding: 8px 10px; border-bottom: 1px solid var(--border-color, #e3e8f2); }
+  .grp-row td { padding: 16px 10px 6px; }
+  .grp-row .gh { display: flex; align-items: baseline; gap: 10px; }
+  .grp-row .gh b { font-size: 13px; font-weight: 600; letter-spacing: .3px; text-transform: uppercase; color: var(--primary, #111c2c); }
+  .grp-row .gh span { font-size: 11.5px; color: var(--neutral-light,#8091ad); }
+  tr.cmp { border-bottom: 1px solid var(--border-color, #eef1f7); }
+  tr.cmp:hover { background: var(--neutral-lightest, #f7f9fc); }
+  tr.cmp td { padding: 10px; vertical-align: middle; }
+  .nm { font-weight: 500; }
+  .nm code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--neutral-light,#8091ad); font-weight: 400; }
+  .sub { font-size: 11px; color: var(--neutral-light,#8091ad); margin-top: 1px; }
+  .src { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: .3px; }
+  .hint { color: var(--neutral-regular,#516381); font-size: 12px; max-width: 360px; }
+  .partof { font-size: 11px; color: var(--neutral-light,#8091ad); margin-top: 2px; }
+  .bar { position: relative; height: 6px; border-radius: 3px; background: var(--neutral-lighter, #e3e8f2); width: 84px; overflow: hidden; }
+  .bar > i { position: absolute; inset: 0 auto 0 0; background: var(--primary-alt, #3279be); border-radius: 3px; }
+  .use { display: flex; align-items: center; gap: 8px; }
+  .use b { font-variant-numeric: tabular-nums; font-weight: 500; min-width: 46px; }
+  .muted { color: var(--neutral-light,#8091ad); }
+  obs-input { display: block; width: 100%; }
+  .foot { margin-top: 22px; font-size: 11.5px; color: var(--neutral-light,#8091ad); }
+  @media (max-width: 760px) { .col-hide { display: none; } .hint { max-width: 200px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hd">
+    <div>
+      <h1>ObserveOps · Component Catalog</h1>
+      <p>Every component the design system discovered — grouped by tier, tagged by source, ranked by real usage.
+      Use the <b>Recommendation</b> column to pick which component to reach for. Built entirely from the design
+      system's own <code>obs-*</code> components &amp; tokens.</p>
+    </div>
+    <label class="themebox">Dark mode<obs-switch id="theme"></obs-switch></label>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <div class="trow">
+      <div class="grow"><obs-input id="q" type="search" allow-clear placeholder="Search components, families, sources…"></obs-input></div>
+      <span class="count" id="count">—</span>
+    </div>
+    <div class="trow">
+      <obs-radio id="tiers" as-button size="small"
+        options="All,Foundations,Atoms,Molecules,Organisms,Templates,Patterns,Infrastructure" value="All"></obs-radio>
+      <span class="fbox"><span class="flabel">Show only</span>
+        <obs-switch id="recOnly"></obs-switch> Recommended
+        <obs-switch id="catOnly"></obs-switch> Catalogued</span>
+    </div>
+  </div>
+
+  <table class="cat">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Product usage</th>
+        <th class="col-hide">Status</th>
+        <th>Recommendation</th>
+        <th class="col-hide">How to pick / note</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="body"></tbody>
+  </table>
+
+  <p class="foot">Source: the DS inventory (<code>components/inventory.md</code>) + registry (<code>components/index.json</code>)
+  + product usage sweeps. “Catalogued” = onboarded to the DS Storybook; “Backlog” = discovered but not yet onboarded.
+  The 46 data-pickers and 44 data-providers are shown as single “consolidate” entries.</p>
+</div>
+
+<!-- Real DS web components (auto-register on import) -->
+<script type="module">__DS_JS__</script>
+
+<!-- Catalog data + interactivity -->
+<script>
+const DATA = __DATA__;
+const STATS = __STATS__;
+document.getElementById('stats').innerHTML = `
+  <div class="stat">
+    <div class="stat-k">Components added</div>
+    <div class="stat-v">${STATS.addedPct}%</div>
+    <div class="stat-sub">${STATS.catalogued} of ${STATS.total} discovered components onboarded to the Storybook.</div>
+    <div class="pbar"><i style="width:${STATS.addedPct}%"></i></div>
+  </div>
+  <div class="stat">
+    <div class="stat-k">DS coverage (impact)</div>
+    <div class="stat-v">${STATS.coveragePct}%</div>
+    <div class="stat-sub">Weighted by how essential each component is to building the product (role + real usage) — the foundational, high-usage few carry the most weight.</div>
+    <div class="pbar"><i class="alt" style="width:${STATS.coveragePct}%"></i></div>
+  </div>
+  <div class="stat">
+    <div class="stat-k">Page flows buildable</div>
+    <div class="stat-v">${STATS.patternsBuildable}<span class="of"> / ${STATS.patternsTotal}</span></div>
+    <div class="stat-sub">End-to-end page patterns (CRUD, form-in-drawer, dashboard, filter+grid…) fully composable from what's onboarded today. Unlocked as the composing organisms land.</div>
+  </div>`;
+
+const GROUPS = ['Foundations','Atoms','Molecules','Organisms','Templates','Patterns','Infrastructure'];
+// Recommendation → DS Tag variant (the real obs-tag chip; label carries the meaning, no emoji).
+const REC = {
+  primary:         { label:'Recommended',   variant:'tag-green'   },
+  'building-block':{ label:'Building block', variant:'tag-primary' },
+  alternative:     { label:'Situational',    variant:'tag-orange'  },
+  avoid:           { label:'Avoid',          variant:'tag-red'     },
+  foundation:      { label:'Foundation',     variant:'tag-purple'  },
+  consolidate:     { label:'Consolidate',    variant:'tag-yellow'  },
+  pattern:         { label:'Pattern',        variant:'tag-purple'  },
+  infra:           { label:'Infrastructure', variant:'tag-unknown' },
+  example:         { label:'Example only',   variant:'tag-unknown' },
+};
+const REC_PICK = new Set(['primary','foundation']);
+const SB_ROOT = 'https://niravbhatt1317.github.io/motadata-design-system/';
+const maxUse = Math.max(1, ...DATA.map(d => d.usage || 0));
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const storyUrl = p => `${SB_ROOT}?path=/story/${p.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}-examples--playground`;
+
+const state = { q:'', tier:'All', recOnly:false, catOnly:false };
+
+function matches(d){
+  if (state.tier !== 'All' && d.group !== state.tier) return false;
+  if (state.recOnly && !REC_PICK.has(d.rec)) return false;
+  if (state.catOnly && d.status !== 'catalogued') return false;
+  if (state.q){
+    const h = (d.name+' '+d.family+' '+d.component+' '+d.source+' '+d.hint+' '+d.group).toLowerCase();
+    if (!h.includes(state.q.toLowerCase())) return false;
+  }
+  return true;
+}
+
+function render(){
+  const body = document.getElementById('body');
+  const rows = DATA.filter(matches);
+  let html = ''; let shown = 0;
+  for (const g of GROUPS){
+    const items = rows.filter(d => d.group === g).sort((a,b)=> (b.usage||0)-(a.usage||0) || a.name.localeCompare(b.name));
+    if (!items.length) continue;
+    const total = DATA.filter(d=>d.group===g).length;
+    html += `<tr class="grp-row"><td colspan="6"><div class="gh"><b>${g}</b><span>${items.length} of ${total}</span></div></td></tr>`;
+    for (const d of items){
+      shown++;
+      const rec = REC[d.rec] || REC.alternative;
+      const pct = Math.max(3, Math.round((d.usage||0)/maxUse*100));
+      const useCell = d.usage!=null
+        ? `<div class="use"><b>${d.usage.toLocaleString()}×</b><span class="bar"><i style="width:${pct}%"></i></span></div>`
+        : `<span class="muted">—</span>`;
+      const statusTag = d.status==='catalogued'
+        ? `<obs-tag variant="tag-green">Catalogued</obs-tag>`
+        : `<obs-tag variant="tag-unknown">Backlog</obs-tag>`;
+      const known = d.known ? ` <span class="partof">${d.known} issue${d.known>1?'s':''}</span>` : '';
+      const sub = [d.source ? `<span class="src">${esc(d.source)}</span>` : '', d.family && d.family!=='—' ? esc(d.family) : '']
+        .filter(Boolean).join(' · ');
+      const partOf = d.partOf ? `<div class="partof">part of <b>${esc(d.partOf)}</b></div>` : '';
+      const link = (d.status==='catalogued' && d.storybook)
+        ? `<obs-link href="${storyUrl(d.storybook)}" target="_blank">Open</obs-link>` : '';
+      html += `<tr class="cmp">
+        <td><div class="nm">${esc(d.name)}${d.component?` <code>&lt;${esc(d.component)}&gt;</code>`:''}</div>${sub?`<div class="sub">${sub}</div>`:''}</td>
+        <td>${useCell}</td>
+        <td class="col-hide">${statusTag}${known}</td>
+        <td><obs-tag variant="${rec.variant}">${rec.label}</obs-tag>${partOf}</td>
+        <td class="col-hide"><div class="hint">${esc(d.hint)}</div></td>
+        <td>${link}</td>
+      </tr>`;
+    }
+  }
+  body.innerHTML = html || `<tr><td colspan="6" style="padding:30px;text-align:center" class="muted">No components match.</td></tr>`;
+  document.getElementById('count').textContent = `showing ${shown} of ${DATA.length}`;
+}
+
+// Vue defineCustomElement dispatches events with `detail` = the ARRAY of emit args. Unwrap it.
+const evVal = e => Array.isArray(e.detail) ? e.detail[0] : (e.detail != null ? e.detail : (e.target && e.target.value));
+
+// tier filter — the DS segmented control (obs-radio as-button); emits the selected value on 'change'.
+document.getElementById('tiers').addEventListener('change', e => { state.tier = evVal(e); render(); });
+
+// filters + theme — the DS Switch (obs-switch); 'change' emits the new boolean. Works every toggle now.
+document.getElementById('recOnly').addEventListener('change', e => { state.recOnly = !!evVal(e); render(); });
+document.getElementById('catOnly').addEventListener('change', e => { state.catOnly = !!evVal(e); render(); });
+document.getElementById('theme').addEventListener('change', e => {
+  const on = !!evVal(e);
+  document.documentElement.setAttribute('data-theme', on ? 'dark-theme' : '');
+  document.body.setAttribute('data-theme', on ? 'dark-theme' : '');
+});
+
+// search — the DS Input (search type; magnifier icon built in). Emits input/search/change with the value.
+const q = document.getElementById('q');
+const onSearch = e => { const v = evVal(e); state.q = v == null ? '' : v; render(); };
+q.addEventListener('input', onSearch); q.addEventListener('change', onSearch); q.addEventListener('search', onSearch);
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{
+  "name": "timeline-scrollbar",
+  "component": "netroute/components/timeline-scrollbar.vue",
+  "display": "Timeline Scrollbar",
+  "tier": "molecule",
+  "family": "Playback & Timeline",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The temporal NAVIGATOR bar — batch (« ») and single-step (‹ ›) controls around a START–END time WINDOW of bucketed snapshots. Left: batch-back + step-back + the window start; right: the window end + step-forward + batch-forward. Data/behaviour-agnostic: it renders the controls + times and emits `shift {direction, batch}`; the consumer moves its data window. Part of the Playback & Timeline family. Source-derived from netroute/timeline-scrollbar.vue. Reuses obs-button (the step/batch controls, whose obs-icon chevrons inherit --page-text-color so they read dark in light theme / light in dark) + obs-icon.",
+  "selectHint": "A stepper to move a TIME WINDOW back/forward over bucketed snapshots (netroute history / a temporal chart)? -> obs-timeline-scrollbar. To PICK an absolute date/range -> obs-date-time-picker. To rotate DASHBOARDS -> obs-noc-player.",
+  "whenToUse": "Under a temporal chart/table whose data is bucketed into fixed windows — the user steps the visible window backward/forward one point or one whole batch at a time.",
+  "insteadOf": [
+    "a hand-built pair of prev/next buttons around two timestamps",
+    "a date picker (that selects an absolute point/range; this steps a relative window)",
+    "a full scrubber/slider (this is the discrete stepped navigator)"
+  ],
+  "variants": [
+    {
+      "name": "default",
+      "what": "batch-back + step-back + START … END + step-forward + batch-forward.",
+      "usage": "under a temporal chart"
+    },
+    {
+      "name": "disabled",
+      "what": "all controls inert (opacity 0.5) — loading, or at the edge of the available range.",
+      "usage": "while data loads / range boundary"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "40px bar (full width)",
+      "note": "a full-width strip with a --border-color top rule; step buttons are ~25px tall neutral-lightest; the double-chevron batch buttons are wider."
+    }
+  ],
+  "states": [
+    {
+      "name": "rest",
+      "what": "controls neutral-lightest; the two window times between them."
+    },
+    {
+      "name": "hover",
+      "what": "a step/batch button lightens to --neutral-lighter."
+    },
+    {
+      "name": "disabled",
+      "what": "all controls at opacity 0.5, cursor not-allowed; clicks emit nothing."
+    }
+  ],
+  "props": {
+    "start": {
+      "type": "string",
+      "default": "",
+      "note": "the window START time label (left)."
+    },
+    "end": {
+      "type": "string",
+      "default": "",
+      "note": "the window END time label (right)."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "disable all step/batch controls (loading, or at the edge of the range)."
+    }
+  },
+  "events": [
+    {
+      "name": "shift",
+      "detail": "{direction:'backward'|'forward', batch:boolean}",
+      "note": "a control was clicked; `batch` true = the double-chevron (move a whole window), false = single step (one point). The consumer moves its data window."
+    }
+  ],
+  "slots": {},
+  "decisionFlow": [
+    "Step a bucketed TIME WINDOW back/forward under a temporal chart/table? -> obs-timeline-scrollbar.",
+    "Pick an absolute date or a relative preset range? -> obs-date-time-picker, NOT this.",
+    "Rotate through DASHBOARDS on a countdown (wallboard)? -> obs-noc-player.",
+    "Single point vs whole window? -> the single chevron emits batch:false (one point); the double chevron emits batch:true (a whole window)."
+  ],
+  "usageRules": {
+    "default": {
+      "useWhen": "the data is bucketed into fixed windows and the user steps the visible window backward/forward",
+      "dontUse": "for absolute date/range selection (that is obs-date-time-picker)",
+      "example": "under the netroute history chart: « ‹  Jul 21 06:00 PM … 06:15 PM  › »",
+      "asSeenIn": "netroute/components/timeline-scrollbar.vue"
+    },
+    "disabled": {
+      "useWhen": "data is loading, or the window is already at the earliest/latest available bucket",
+      "dontUse": "as a permanent read-only display — if it never steps, it should not be shown",
+      "example": "disabled while the history query is in flight"
+    }
+  },
+  "usage": {
+    "total": 1,
+    "files": 1,
+    "byModule": {
+      "netroute": 1
+    },
+    "note": "One per temporal chart context (netroute history). The product wires it to a chart context that shifts the window; the DS element emits `shift` for the consumer to handle."
+  },
+  "do": [
+    "Place it directly under the temporal chart/table it scrubs (the top rule reads as the divider).",
+    "Wire `shift` to move your data window (single point vs whole batch via the `batch` flag).",
+    "Show the current window's start/end in `start`/`end`.",
+    "Disable it while loading or at the range boundary."
+  ],
+  "dont": [
+    "Don't use it to select an absolute date/range — that's obs-date-time-picker.",
+    "Don't use it to rotate dashboards — that's obs-noc-player.",
+    "Don't hardcode colours — it uses --border-color / --neutral-lightest / --neutral-lighter."
+  ],
+  "a11y": {
+    "summary": "Each step/batch control REUSES obs-button (keyboard-operable) with an aria-label/title (Previous window / Step back / Step forward / Next window); the chevron icons are decorative. Disabled buttons carry the disabled attribute. Announce the new window's start/end via an aria-live region so keyboard/screen-reader users hear where they moved.",
+    "issues": [],
+    "doc": "Molecules/Timeline Scrollbar/Accessibility",
+    "notes": "The step vs batch distinction is only visual (single vs double chevron) — the aria-labels carry it (Step back vs Previous window). Announce the resulting window range on shift. Keep the buttons keyboard-reachable (they are native buttons)."
+  },
+  "knownIssues": [
+    "The bar is a discrete STEPPER, not a draggable slider — the product's timeline-scrollbar.vue also only exposes step/batch controls (a draggable handle was scaffolded but commented out). Times are formatted by the consumer and passed in as `start`/`end` strings."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--timeline-scrollbar-background-color"
+  ],
+  "related": [
+    "noc-player",
+    "date-time-pickers",
+    "data-viz",
+    "toolbars",
+    "button"
+  ],
+  "changelog": [
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to what the element resolves (dropped stale --neutral-lightest / --neutral-lighter / --neutral-light — the step/batch controls now reuse obs-button and the chevrons use --page-text-color); a11y + summary now note the obs-button / obs-icon composition. Props/variants/knownIssues verified current — no drift. No API change.",
+    "2026-07-22 — Fix (owner): the step buttons no longer use obs-button `square` (which zeroes the corner radius) — all four step/batch buttons now share the same rounded-rectangle radius.",
+    "2026-07-22 — Reuse pass (owner): the step/batch controls now REUSE obs-button (variant neutral-lightest) instead of hand-built buttons; the window times flex-shrink + ellipsize so they never collide in a narrow bar (full in fullscreen).",
+    "2026-07-22 — Refinement (owner): darkened the step/batch chevron icons in light theme (--neutral-dark) and lightened them in dark theme (:host-context) for contrast; the playground now showcases the under-a-chart placement (skeleton chart + the bar pinned at the bottom), wider with padding, and fills the viewport in fullscreen like the product.",
+    "2026-07-22 — Shipped obs-timeline-scrollbar (new Playback & Timeline family): a full-width temporal navigator bar — batch (« ») + single-step (‹ ›) controls around a START–END window, reusing obs-icon (chevron / chevron-double). Emits `shift {direction, batch}`. Source-derived from netroute/components/timeline-scrollbar.vue (closes the timelineScrollbar known-gap)."
+  ],
+  "storybook": "Molecules/Timeline Scrollbar",
+  "figma": {
+    "status": "not-started",
+    "component": "Timeline Scrollbar"
+  }
+}

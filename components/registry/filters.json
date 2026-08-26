@@ -1,0 +1,212 @@
+{
+  "name": "filters",
+  "display": "Filters",
+  "tier": "molecule",
+  "family": "Filters",
+  "status": "stable",
+  "summary": "The product's filtering components, grouped by ARCHETYPE (not by the screen they sit in). Four distinct kinds: the Expression builder (nested AND/OR query builder), the Filter bar (inline chips), Quick filters (preset menu), and the Filter row (multi-selects + Reset/Apply). These are molecules; the Toolbars (organisms) compose them.",
+  "variants": [
+    {
+      "name": "expression-builder",
+      "what": "nested AND/OR popover",
+      "usage": "32×"
+    },
+    {
+      "name": "filter-bar",
+      "what": "inline chip bar + Match All/Any",
+      "usage": "50×"
+    },
+    {
+      "name": "quick-filters",
+      "what": "preset one-click menu",
+      "usage": ""
+    },
+    {
+      "name": "filter-row",
+      "what": "multi-selects + Reset/Apply",
+      "usage": ""
+    },
+    {
+      "name": "vertical-filter",
+      "what": "faceted left-panel (checkbox+count)",
+      "usage": "APM/RUM/NCM"
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "resting"
+    },
+    {
+      "name": "applied",
+      "what": "active conditions"
+    },
+    {
+      "name": "open",
+      "what": "popover/panel visible"
+    },
+    {
+      "name": "disabled",
+      "what": "not interactive"
+    }
+  ],
+  "props": {
+    "kind": {
+      "type": "string",
+      "default": "bar",
+      "description": "which filter archetype to render — bar (FlotoFilterBar ~50×), expression (FiltersContainer 32×), quick (preset menu), row (multi-selects + Reset/Apply), vertical (faceted sidebar). Filters is MULTI-ARCHETYPE: per-archetype prop/event contracts live in the apis block below, not as element props."
+    },
+    "match": {
+      "type": "string",
+      "default": "all",
+      "enum": [
+        "all",
+        "any"
+      ],
+      "note": "the Match toggle mode: all (AND) | any (OR). Driven + emitted (was internal-only)."
+    }
+  },
+  "renders": "REFERENCE REPRODUCTIONS — the live filters are store-bound (FilterCondition is 500+ lines). The Filter bar reproduction is fully interactive.",
+  "archetypes": {
+    "ExpressionBuilder": {
+      "source": "src/components/filters/ — FiltersContainer (filters-container.vue) + Filters (filters.vue) + FilterGroup + FilterCondition (516 ln) + FilterTrigger",
+      "usage": "FiltersContainer 32× — the most-used filter",
+      "presentation": "an MPopover (placement bottomLeft, has-arrow) opened from a FilterTrigger input (renders the applied query, or a 'Search' placeholder) — NOT an inline panel. Popover has a close x, Pre Filters / Post Filters tabs (MTab), the builder, and a Reset / Clear / Apply footer. Apply emits the query (trigger shows it) and closes; Clear empties; Reset reverts.",
+      "what": "a nested AND/OR query builder: 'Group(s) matching All/Any' -> one or more groups (3 pre / 1 post), each 'Include/Exclude -> Group matching All/Any -> Criteria' -> conditions (counter · operator · value; Between -> From/To). Add Condition (max 3) / Add New Group.",
+      "props": "MultipleFormItems drive the group/condition lists; FilterCondition is type-aware (operator + value picker by field type)",
+      "storybook": "fully functional reproduction (open/close, tabs, add/remove conditions+groups, Include/Exclude + All/Any, Between, Apply renders the query into the trigger)"
+    },
+    "FilterBar": {
+      "source": "src/components/filter-bar/_base-filter-bar.vue + filter-chip.vue",
+      "usage": "~50×",
+      "what": "an inline CHIP bar — field·operator·value chips (default-chips have no ×) + '+ Filter' + a Match All/Any toggle + Clear All. Chips scroll horizontally; the segment picker floats position:fixed.",
+      "note": "moved here from the former Grid Toolbar entry"
+    },
+    "QuickFilters": {
+      "source": "src/components/filter-bar/filter-quick-menu.vue",
+      "what": "a thumbs-up button opening a panel of PRESET one-click filters ({ key, label, condition }); picking one applies that condition",
+      "note": "moved here from the former Grid Toolbar entry"
+    },
+    "FilterRow": {
+      "source": "pattern (e.g. metric-collection-filters.vue)",
+      "what": "the simplest filter — a few multi-selects (Groups/Severity/Tags) + Reset/Apply + close ×, as a slide-in over a list",
+      "note": "re-homed from the retired Monitoring Config (Collection Filters)"
+    },
+    "VerticalFilter": {
+      "source": "components/filters/vertical-filter/filters.vue (shared: APM Explorer, APM Error Tracker, RUM Sessions) + ncm/components/explorer-grid-virtical-filter.vue (richer NCM variant)",
+      "usage": "APM/RUM/NCM",
+      "what": "the FACETED left-panel sidebar — a search atop collapsible groups (MCollapse), each row a checkbox + optional status/type icon + label + count; checking rows filters the grid",
+      "note": "looks like a Navigation side menu but it FILTERS (not navigates) -> lives in Filters; cross-referenced from Navigation -> Side menu. Surfaced by the 2026-06-16 left-panel sweep."
+    }
+  },
+  "decisionFlow": [
+    "Complex AND/OR conditions across multiple groups? -> Expression builder (FiltersContainer, 32×).",
+    "A compact inline chip bar over a grid? -> Filter bar.",
+    "One-click saved/preset filters? -> Quick filters.",
+    "A few simple multi-selects + Apply/Reset? -> Filter row.",
+    "Plain text search of a list? -> the Input 'search' type (181×), not a Filter."
+  ],
+  "do": [
+    "Use the Expression builder for real query logic (groups + AND/OR + typed operators).",
+    "Use the Filter bar for a compact chip filter over a grid.",
+    "Use Quick filters for common one-click presets.",
+    "Use a Filter row for a small fixed set of facets."
+  ],
+  "dont": [
+    "Don't hand-roll a condition builder — use FiltersContainer.",
+    "Don't put plain search here — that's the Input search type.",
+    "Don't duplicate a filter across screens — it's one molecule; compose it in a Toolbar."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "Store-bound / FilterCondition is 500+ lines, so these render as reproductions (the Filter bar reproduction is fully interactive)."
+    },
+    "element": "[element] obs-filters (kind=bar) is now FUNCTIONAL: pass fields (array/JSON: {key,label,type,values}) + value (active conditions); it emits a change event with the conditions and reflects el.value on every edit. The bar has NO always-on empty 'Select Filter' chip — the '+ Filter' button is the sole add affordance (it inserts a fresh chip and opens the field picker; an abandoned/unpicked chip is discarded on click-outside). value='[]' / Clear All → an empty bar showing only '+ Filter'. Other kinds (expression/vertical/quick/row) remain visual references."
+  },
+  "tokensUsed": [
+    "--code-tag-background-color",
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--neutral-light",
+    "--neutral-button-text",
+    "--primary",
+    "--dropdown-background"
+  ],
+  "storybook": "Molecules/Filters",
+  "related": [
+    "dropdown-picker",
+    "input",
+    "tag",
+    "table"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "apis": {
+    "FilterBar": {
+      "source": "src/components/filter-bar/_base-filter-bar.vue (FlotoFilterBar)",
+      "props": {
+        "value": "Object (model, event 'change')",
+        "fieldSchema": "Array (required) — the filterable fields + their operator/value types",
+        "defaultChips": "Array — leading non-removable chips declared by the consuming module (e.g. Groups/Types/Severity)"
+      },
+      "events": {
+        "change": "(next) emitted as chips change"
+      },
+      "note": "PITFALL: the leading default-chips come from the MODULE via defaultChips, not the base bar — read a real consumer to reproduce faithfully."
+    }
+  },
+  "a11y": {
+    "summary": "Field/operator/value selects (FlotoDropdownPicker) + real buttons (+Filter, Add, Reset/Apply); convey the nested Group→Condition structure to AT.",
+    "issues": [
+      "SF-001 focus ring on chips/selects/buttons.",
+      "Icon-only triggers (thumbs-up, chip ×, row ×) need accessible names."
+    ],
+    "doc": "Molecules/Filters/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "changelog": [
+    "2026-08-09 — Filter-bar fixes (consumer G16/G17/G18): (G16) the vanishing chip — the write-back now compares LIKE WITH LIKE (JSON-normalised, so an array seed no longer looks different from its string form) and NEVER rebuilds internal state from its own reflect, so a half-built chip survives and a filter can be added in ONE pass. (G18) the Match toggle is now a real driven `match` prop (all|any) and the mode is EMITTED — the `change` payload is now {conditions, match} (was a bare conditions array — update your handler). (G17) Match only shows at >=2 conditions (meaningless at one). Verified end-to-end.",
+    "2026-07-14: completeness pass (owner) — reviewed the full surface (already comprehensive: the `kind` control switches all 5 archetypes; gallery covers each + a wired bar; the per-archetype contracts live in the apis block; the spec has the archetypes table + decision). Added a 'Bar data' playground preset (built-in demo vs wired fields+value) so the functional kind=\"bar\" contract is demonstrable.",
+    "2026-07-01: added to the Elements site — obs-filters, the filtering family as one element via a `kind` prop: bar (FlotoFilterBar ~50× — interactive field·operator·value chips + Match All/Any + Clear All), expression (FiltersContainer 32× — nested AND/OR query builder popover with Pre/Post tabs, groups, conditions, Reset/Clear/Apply), quick (preset menu), row (multi-selects + Reset/Apply), vertical (faceted sidebar — search + collapsible checkbox+count groups). Reference reproductions with real tokens; gated by cross-render token check (light+dark) + driven chip/expression/vertical interaction.",
+    "2026-07-01: made the row variant full-width (owner) — it was shrink-wrapping to a narrow box; now the host is block width:100% (like bar) and .frow fills the container in both the playground and examples.",
+    "2026-07-01: fixed buttons to match the product Button (border-radius 6px→4px via --btn-radius, primary weight 600→500) and added a native-control font-family reset — the <select>/<input> were rendering in the UA font (Arial), now Poppins.",
+    "2026-07-01: button font-weight 500→400 to match the real product Button (Ant default 400)."
+  ],
+  "usageRules": {
+    "expression-builder": {
+      "useWhen": "You need real query logic — complex AND/OR conditions across one or more nested groups with typed operators. This is the most-used filter (FiltersContainer, 32×): a FilterTrigger input opens an MPopover with Pre/Post Filters tabs, 'Group(s) matching All/Any' → groups (Include/Exclude, matching All/Any) → conditions (field · operator · value, type-aware, Between → From/To), Add Condition (max 3) / Add New Group, and a Reset / Clear / Apply footer where Apply emits the query and renders it back into the trigger.",
+      "dontUse": "Don't use for a compact chip filter over a grid (→ Filter bar) or a small fixed set of facets (→ Filter row). Don't hand-roll a condition builder — always compose FiltersContainer. For plain text search of a list, use the Input 'search' type, not this.",
+      "example": "The nested AND/OR query builder popover opened from a search-style FilterTrigger over a grid — the 32× FiltersContainer usage, with Pre/Post Filter tabs and Include/Exclude groups matching All/Any."
+    },
+    "filter-bar": {
+      "useWhen": "You want a compact inline chip filter sitting directly over a grid. The Filter bar (FlotoFilterBar, ~50×) renders field·operator·value chips (default-chips declared by the module via defaultChips have no ×), a '+ Filter' button, a Match All/Any toggle, and Clear All; chips scroll horizontally while the segment picker floats position:fixed so it never clips.",
+      "dontUse": "Don't use when you need nested groups or AND/OR logic beyond a flat Match All/Any (→ Expression builder). Don't use for one-click presets (→ Quick filters) or a slide-in facet panel (→ Filter row). Not for plain text search (→ Input 'search' type).",
+      "example": "The inline chip bar over a data grid where the module seeds leading default-chips (e.g. Groups/Types/Severity via defaultChips) and users add field·operator·value chips with Match All/Any — the ~50× FlotoFilterBar usage."
+    },
+    "quick-filters": {
+      "useWhen": "You want to expose common, one-click preset filters. Quick filters (filter-quick-menu) is a thumbs-up button that opens a panel of PRESET filters as { key, label, condition }; picking one immediately applies that condition.",
+      "dontUse": "Don't use when users must author arbitrary conditions or groups (→ Expression builder) or maintain an evolving chip set over a grid (→ Filter bar). Not for facet multi-selects with Reset/Apply (→ Filter row).",
+      "example": "The thumbs-up preset menu beside a grid toolbar offering saved one-click filters ({ key, label, condition }) — click a preset to apply its condition instantly."
+    },
+    "filter-row": {
+      "useWhen": "You have a small, fixed set of facets to filter a list — a few multi-selects (e.g. Groups / Severity / Tags) plus Reset/Apply and a close ×, presented as a slide-in over the list.",
+      "dontUse": "Don't use for real query logic with nested AND/OR groups (→ Expression builder), for an inline chip bar over a grid (→ Filter bar), or for one-click presets (→ Quick filters).",
+      "example": "The slide-in Collection Filters panel over a monitoring list — a few multi-selects (Groups/Severity/Tags) with Reset/Apply and a close × (pattern e.g. metric-collection-filters.vue)."
+    },
+    "vertical-filter": {
+      "useWhen": "You need a faceted left-panel sidebar that filters (not navigates) a grid. The vertical filter is a search box atop collapsible MCollapse groups, each row a checkbox + optional status/type icon + label + count; checking rows narrows the grid. Used across APM Explorer, APM Error Tracker, RUM Sessions, and a richer NCM Explorer variant.",
+      "dontUse": "Don't confuse it with a Navigation side menu — it filters, so it lives in Filters (cross-referenced from Navigation → Side menu). Don't use it for a compact inline chip filter (→ Filter bar) or nested AND/OR logic (→ Expression builder).",
+      "example": "The APM Explorer / RUM Sessions left-panel faceted sidebar — a search over collapsible checkbox+count groups (with status/type icons) that filters the results grid; NCM Explorer uses the richer variant."
+    },
+    "bar-wiring": {
+      "useWhen": "kind=\"bar\": pass fields + value (active conditions) + match (all|any); listen to `change` for {conditions, match}.",
+      "dontUse": "seeding value as an ARRAY via the el.value PROPERTY at mount if you are on <0.1.150 (it hit the vanishing-chip bug). Fixed now; array or string both work.",
+      "must": "read the `change` payload as {conditions, match} — it is NO LONGER a bare conditions array. `el.value` still reflects the conditions JSON.",
+      "example": "<obs-filters kind=\"bar\" fields=... value=... match=\"all\" @change=\"e => { const {conditions, match} = e.detail[0] }\">"
+    }
+  }
+}

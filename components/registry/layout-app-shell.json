@@ -1,0 +1,92 @@
+{
+  "name": "layout-app-shell",
+  "component": "Layout (views/layouts/main.vue)",
+  "display": "App shell",
+  "tier": "foundation",
+  "section": "Foundations",
+  "family": "Layout",
+  "status": "stable",
+  "summary": "The authenticated app frame — NavBar (left rail, 50px, --nav-panel-bg) + Header (top, 55px) + the one scrolling content panel + a shell-level overlay layer (toasts, OmniBox, portals). The default shell for every in-app page. Toggle the chrome to see how the other shells (EmptyLayout, LoginLayout) drop regions.",
+  "decisionFlow": [
+    "Start EVERY authenticated product screen here — the app shell is the outermost frame (top nav bar + left icon rail + content region). It is not optional chrome; it's the frame the page mounts into.",
+    "Full-bleed page WITHOUT the shell (login, error, print, embedded/public view)? -> use a bare layout (LoginLayout/EmptyLayout/PublicLayout), NOT the app shell.",
+    "Need a settings-style secondary side menu inside the content? -> compose layout-screen-regions (a left settings panel), don't fork the shell.",
+    "The shell is fixed: don't recreate the top bar / icon rail per page — mount your screen into its content region."
+  ],
+  "props": {
+    "sidebar": {
+      "type": "boolean",
+      "default": "false",
+      "note": "show the left NavBar rail"
+    },
+    "header": {
+      "type": "boolean",
+      "default": "false",
+      "note": "show the top Header"
+    },
+    "overlay": {
+      "type": "boolean",
+      "default": "false",
+      "note": "show the shell-level overlay (a toast)"
+    },
+    "empty": {
+      "type": "boolean",
+      "default": "false",
+      "note": "swap the page body for an empty-state prompt"
+    },
+    "anatomy": {
+      "type": "boolean",
+      "default": "false",
+      "note": "render the annotated region-callout diagram instead of the interactive shell"
+    }
+  },
+  "regions": [
+    "NavBar — left rail, @nav-icon-width 50px, --nav-panel-bg; the module icons (active = --primary pill)",
+    "Header — top, @header-height 55px; brand logo · global search · notifications · user menu",
+    "Content panel — MLayoutContent in FlotoScrollView; the routed page slot, the only scrolling region",
+    "Overlay layer — OmniBox, notifications, PortalTargets; shell-level, above the content"
+  ],
+  "do": [
+    "Use the Layout shell for every authenticated app page (the default — no route override needed).",
+    "Keep the content panel the only scrolling region.",
+    "Mount global/portal UI (toasts, OmniBox) at the overlay layer, above the content."
+  ],
+  "dont": [
+    "Don't put the breadcrumb/back in the Header — that lives in the page header.",
+    "Don't add a second scrolling container inside the content panel."
+  ],
+  "tokensUsed": [
+    "--nav-panel-bg",
+    "--border-color",
+    "--page-background-color",
+    "--primary",
+    "--code-tag-background-color",
+    "--secondary-green"
+  ],
+  "related": [
+    "layout-screen-regions",
+    "layout-grid"
+  ],
+  "storybook": "Foundations/Layout/App shell",
+  "a11y": {
+    "summary": "Structural reference, not interactive. In the product the regions map to landmarks — NavBar = <nav>, Header = <header>, content = <main>; the content panel is the only scroll container, so focus order is nav → header → content.",
+    "issues": [
+      "The overlay layer (toasts/OmniBox) must manage focus + ESC at the product level."
+    ]
+  },
+  "knownIssues": [
+    "Documentation diagram, not the live shell — the product Layout (src/views/layouts/main.vue) is the source of truth.",
+    "[element] The obs-layout-* WEB COMPONENT is a fixed visual demo, not a slotted layout primitive — you can't put a real page inside it. Use the layout GUIDANCE (decisionFlow/regions) + compose the shell from atoms + the 12-col grid + tokens."
+  ],
+  "changelog": [
+    "2026-06-29: added to the Elements site (Foundations › Layout) — Anatomy diagram + interactive chrome toggles; render-first from the Storybook story.",
+    "2026-06-29: playground + examples widths fixed to fill the stage.",
+    "2026-06-29: Usage enriched — when-to-use + where-it's-used."
+  ],
+  "whenToUse": "Every signed-in page renders into this frame — you don't opt in. Switch to another shell only for login, print/export, or system pages.",
+  "usedIn": [
+    "Every authenticated in-app page — the default for ~all routes.",
+    "Drop the chrome via a different shell: login, report export, upgrade/restore."
+  ],
+  "referenceOnly": true
+}

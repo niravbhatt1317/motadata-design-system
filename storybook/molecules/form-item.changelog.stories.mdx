@@ -1,0 +1,22 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/FormItem/Changelog" />
+
+# Form Field — Changelog
+
+## 2026-06-07
+
+- Added to the design system — the **Form Field** molecule (`FlotoFormItem`, **1783×**, the
+  most-used component), authored to the decision-grade Usage standard.
+- Deep-dive of `_base-form-item.vue`: `MValidationProvider` (vee-validate) → `MFormItem` →
+  label + control + error/help. `required` is **derived from `rules`** (no `required` prop);
+  with no slot it renders its own `MInput` (routed by `type`), otherwise the slot is the control;
+  exposes `validate()` / `setValue()` / `addError()` / `focus()`.
+- **Storybook infra:** registered `MValidationProvider` / `MValidationObserver` (vee-validate)
+  + imported `src/validations` (the rule set) + registered `FlotoFormItem` in the preview, so
+  fields render and **validate** in Storybook.
+- Stories: Basic · Required · With help · With info tooltip · Custom control (segmented radio in
+  the slot) · Validation error — verified the required asterisk derives from rules, and the live
+  email error ("The Email field must be a valid email") + red border.
+- Findings: **F1** (`required` derived, not a prop), **F2** (error message pristine-gated —
+  border shows before the text), **F3** (no focus ring → SF-001).

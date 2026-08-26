@@ -1,0 +1,14 @@
+{
+  "$note": "The product's CATEGORICAL chart series palette (Highcharts) — the ordered hues assigned to series 1..N in a multi-series chart. Source of truth: src/utils/chart-colors.js (getChartColors → colors / colorsDark). This is NOT the brand palette: charts use these distinguishable categorical hues, NOT --primary navy. Severity/status colours in charts still come from the severity tokens (variables.json). Consume in order; wrap after the last. Theme-aware: use the light array under :root, the dark array under the dark theme.",
+  "$purpose": "chart series / categorical data-viz colour",
+  "series": {
+    "light": ["#0D9488", "#F97316", "#9333EA", "#65A30D", "#DB2777", "#0891B2", "#CA8A04", "#EF4444", "#059669", "#C026D3", "#F59E0B", "#7C3AED", "#EA580C", "#14B8A6", "#E11D48", "#84CC16", "#A21CAF", "#DB2777"],
+    "dark": ["#14B8A6", "#FB923C", "#A855F7", "#84CC16", "#EC4899", "#06B6D4", "#EAB308", "#FF6B6B", "#10B981", "#D946EF", "#FBBF24", "#8B5CF6", "#F97316", "#2DD4BF", "#F43F5E", "#A3E635", "#C026D3", "#E83E8C"]
+  },
+  "$rules": [
+    "Categorical only: assign hues to series by ORDER (series 1 → series[0], series 2 → series[1], …). Don't hand-pick.",
+    "A single-series trend needs no palette — use one --primary-alt or a severity colour if it encodes status.",
+    "Severity/threshold charts (gauge zones, availability, alert bands) use the severity tokens, NOT this categorical palette.",
+    "Never recolour a chart with the brand navy --primary — series must stay visually distinguishable."
+  ]
+}

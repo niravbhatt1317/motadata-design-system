@@ -1,0 +1,115 @@
+{
+  "name": "tags-list",
+  "component": "TagsList",
+  "display": "TagsList",
+  "tier": "molecule",
+  "category": "display",
+  "source": "app",
+  "sourceFile": "src/components/tags-list.vue",
+  "status": "dead-code",
+  "maturity": "unused",
+  "summary": "Read-only tag overflow display: up to maxLength neutral chips, else a count chip + hover popover. UNUSED in product (0 usages) — prefer SelectedItemPills.",
+  "variants": [],
+  "sizes": [],
+  "states": [
+    {
+      "name": "inline",
+      "what": "all chips (≤ maxLength)"
+    },
+    {
+      "name": "overflow",
+      "what": "count chip + hover popover"
+    }
+  ],
+  "family": "Tag",
+  "props": {
+    "value": {
+      "type": [
+        "array",
+        "object"
+      ],
+      "default": "undefined",
+      "note": "tags to display"
+    },
+    "maxLength": {
+      "type": "number",
+      "default": 2,
+      "note": "inline threshold before collapsing to a count chip"
+    }
+  },
+  "events": "none — display-only.",
+  "slots": "none — display-only; renders tags inline and collapses to a +N count chip (with a popover listing the rest) once past `maxLength`.",
+  "anatomy": [
+    "inline neutral chips (<= maxLength)",
+    "count chip (> maxLength)",
+    "hover popover list"
+  ],
+  "behaviors": {
+    "empty": "renders nothing when value is empty",
+    "overflow": "collapses to ONLY the count (not first-N + remaining); hover (not click) opens the popover"
+  },
+  "styling": {
+    "chip": "tag-primary neutral (--tag-bg/--tag-color), border-radius 10px (.application-item)",
+    "popoverDivider": "--border-color"
+  },
+  "tokensUsed": [
+    "--tag-bg",
+    "--tag-color",
+    "--border-color"
+  ],
+  "accessibility": {
+    "chips": "read-only span text, legible both themes",
+    "overflow": "hover-only; count chip not focusable/click-openable (keyboard/touch can't reveal list)"
+  },
+  "do": [
+    "For tag overflow in the product, use SelectedItemPills (live, themed, +N), not this."
+  ],
+  "dont": [
+    "Don't adopt TagsList in new code (dead/unused). Don't build it in Figma."
+  ],
+  "whenToUse": "N/A — unused. Use SelectedItemPills for tag overflow.",
+  "decisionFlow": [
+    "Tag overflow display (show some, +N rest)? -> SelectedItemPills (or LooseTags :disabled), NOT TagsList.",
+    "Editable tags? -> LooseTags.",
+    "Single label/status? -> MTag/MStatusTag."
+  ],
+  "usageRules": {
+    "tags-list": {
+      "useWhen": "never — dead code (0 usages)",
+      "dontUse": "all cases; duplicates SelectedItemPills with count-only overflow + no keyboard support",
+      "example": "n/a — use SelectedItemPills"
+    }
+  },
+  "usage": {
+    "total": 0,
+    "files": 0,
+    "note": "dead code — never imported or rendered"
+  },
+  "knownIssues": [
+    "F1 (medium): DEAD CODE — 0 usages; duplicates SelectedItemPills. Remove tags-list.vue or fold into SelectedItemPills.",
+    "F2 (low): collapses to count-only (no tag preview), unlike SelectedItemPills' first-N + +N idiom. Standardize the overflow idiom."
+  ],
+  "related": [
+    "SelectedItemPills",
+    "MTag",
+    "MPopover",
+    "LooseTags"
+  ],
+  "changelog": [
+    "2026-06-07: added (badged UNUSED) at owner request; render verified; dead-code finding F1 + pattern inconsistency F2; recommend removal/consolidation onto SelectedItemPills."
+  ],
+  "storybook": "Molecules/TagsList",
+  "figma": {
+    "status": "n/a",
+    "component": "TagsList (dead code — do not build)"
+  },
+  "a11y": {
+    "summary": "Read-only <span> chips, legible contrast; display-only.",
+    "issues": [
+      "Overflow is hover-only — the +N count chip isn't focusable/openable.",
+      "No visible focus ring (SF-001)."
+    ],
+    "doc": "Molecules/TagsList/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

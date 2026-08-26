@@ -1,0 +1,28 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Link/Accessibility" />
+
+# Link — Accessibility
+
+## Default (text link)
+
+- Renders a true `<a>` (RouterLink) → correct **link** role, keyboard focus, and native
+  affordances (middle-click, open-in-new-tab, right-click menu). ✅
+- Give the link **destination-naming text** (not "click here") so it makes sense out of context.
+
+## ⚠️ `as-button` is a button, not a link (F1)
+
+`as-button` renders a `<button>` and navigates via `$router.push` — so:
+
+- there's **no `href`** → no open-in-new-tab / middle-click,
+- assistive tech announces it as a **button**, not a link.
+
+For navigation CTAs, prefer a real anchor styled as a button so the `href` is present; reserve
+`as-button` for cases where a true anchor isn't possible.
+
+## Focus & affordance
+
+- ⚠️ No visible keyboard focus indicator system-wide
+  ([SF-001](../../findings/SF-001-focus-visible.md)).
+- Plain links inherit text color (F2) — add an affordance (`text-primary`, and ideally a hover
+  underline) so links are distinguishable from text without relying on color alone.

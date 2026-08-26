@@ -1,0 +1,139 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/DropdownPicker/Usage" />
+
+# DropdownPicker — Usage
+
+🟡 **Stable-but-flawed** · Organism — the product's **custom select** (`FlotoDropdownPicker`),
+used **510×/241 files**. Options are `{ key, text }`; v-model is the selected `key` (single)
+or an **array of keys** (`multiple`).
+
+Decision rules below are mirrored in `registry/dropdown-picker.json` (`decisionFlow` +
+`usageRules`) so AI tools configure it the same way.
+
+## Is DropdownPicker the right component? (decision)
+
+First match wins:
+
+1. **Free-form tags the user types?** → **`LooseTags`**, not the picker.
+2. **Two or three mutually-exclusive options, always visible?** → **`MRadio`** (segmented) is
+   clearer than a dropdown.
+3. **A simple on/off?** → **`MSwitch`**.
+4. **Otherwise — choosing one or many from a list?** → **DropdownPicker**.
+
+## Configure it (pick the props)
+
+First match wins:
+
+1. **Choosing several values?** → **`multiple`** (add **`allow-select-all`** for a Select-All
+   header).
+2. **Short, fixed list (≤ ~7 items)?** → **`:searchable="false"`** (hide the search box).
+3. **Should the user be able to empty it?** → **`allow-clear`**.
+4. **Users can add options that aren't there yet?** → **`can-user-add-options`** + `add-label`.
+5. **Need a non-default trigger** (a button, chips, custom look)? → use the **`trigger` slot**.
+
+## Use cases by option
+
+### Single select (default)
+
+- **Use when:** pick **one** value from a list — the most common case.
+- **Example:** choose a monitor type, a template, an owner.
+
+### `multiple` (+ `allow-select-all`)
+
+- **Use when:** pick **several** values — renders checkboxes, an optional Select-All header,
+  and a Clear footer; the trigger shows "First (+N)".
+- **Example:** filter by several tags/groups.
+
+### `:searchable="false"` (119×)
+
+- **Use when:** the list is short and fixed, so search would be noise.
+
+### `allow-clear` (218×)
+
+- **Use when:** an empty/none state is valid and the user should be able to reset the choice.
+
+### `as-input` (default true)
+
+- **Use when:** the trigger should look like a form field (the norm). Set `false` for a
+  chip/inline trigger.
+
+### `can-user-add-options`
+
+- **Use when:** the user may need a value that isn't in the list yet (inline add → emits `add`).
+
+### `trigger` slot
+
+- **Use when:** the default input trigger doesn't fit — e.g. a button, an avatar, or pills.
+
+### Grid / table dropdown (~70×)
+
+- **Use when:** the user picks from **rich records** that need multiple columns to identify (name · IP · type ·
+  status), often multi-select with checkboxes. The menu is a **searchable table**, not a plain list.
+- **Don't use** for simple `{label}` options (plain dropdown) or a menu of actions (that's a Menu).
+- **As seen in:** the "Select Agent / Select Monitor" pickers (`FlotoDropdownGridSelector`, `MonitorPicker`).
+
+### Icon / severity-dot (27×)
+
+- **Use when:** each option needs a **leading glyph** (severity color dot, monitor-type icon) — shown per-option
+  **and** in the collapsed trigger, via `before-menu-text` (+ `after-menu-text`).
+- **As seen in:** `severity-picker.vue`, `monitor-type-picker.vue`, status pickers.
+
+### Tree-select (hierarchy)
+
+- **Use when:** the choices are **hierarchical** (parent → children) and the user expands nodes to navigate. This
+  is the codebase's cascader/tree-select equivalent.
+- **As seen in:** `monitor-hierarchy-picker.vue` (Data Centers → sites → monitors).
+
+### Avatar / people picker
+
+- **Use when:** the options are **people** — show an avatar (initials/photo) + name. For bulk assignment, use the
+  grid-table mode.
+- **As seen in:** owner / assignee / approver selection (`user-picker.vue`).
+
+### Virtualized rich-row list (16×)
+
+- **Use when:** each option is a multi-line **card** (title + meta + glyph) and there can be many — the menu
+  virtualizes tall rows instead of single-line options.
+- **As seen in:** notification dropdown, widget selector, counter list.
+
+### Triggers (the how-it-opens axis)
+
+- **Use when:** choose *how* the dropdown opens, independent of the menu content — **input** (form field), **text**
+  (inline), **button** (labelled action), **icon-only** (compact toolbar), or **chip** (filter bar). Any variant
+  above can use any trigger (130× via `v-slot:trigger`).
+
+> Cap selection with **`maxValues`**, not `maxAllowedSelection` (the latter is dead — F2).
+
+## Anatomy
+
+Trigger (input/text/chip/pills) · search box (+ optional add) · Select-All header (multi) ·
+virtualized option rows · Clear footer (multi) · no-data illustration.
+
+## Accessibility
+
+⚠️ Not an accessible combobox today — see **SF-003** (and the Accessibility page).
+
+## In the product
+
+**As seen in:** The **column selector**, the **severity picker**, and **filter bars** across the product.
+
+## Real usages worth knowing (re-homed here by component type)
+
+These are **usages of the DropdownPicker**, not separate components:
+
+- **Monitoring Hours** (`MonitoringHourPicker`, 5×) — a **multi-select** of hours-of-day (which hours
+  to collect a metric). Options come from an **injected provider** (`monitoringHourContext`), so one
+  provider feeds every picker on a page; `disabled` → read-only `SelectedItemPills`. A
+  metric-collection *setting* — the reusable part is the multi-select.
+- The **entity pickers** (`monitor-picker`, `user-picker`, `group-picker`, `severity-picker`, … ~50)
+  are all DropdownPickers wired to a data source — usages, not separate components.
+
+## Related
+
+`LooseTags` (tag input built on this) · `MSelect` · `SelectedItemPills` (its multi/read-only
+pills) · `MRadio` (segmented) · `MSwitch`.
+
+## Other variants
+
+Also available (see `registry/dropdown-picker.json` `usageRules` for the full when/why): **two-pane, use-popover**.

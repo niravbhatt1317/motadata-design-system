@@ -1,0 +1,568 @@
+{
+  "name": "data-viz-tooltips",
+  "display": "Data-Viz Tooltips",
+  "tier": "molecule",
+  "family": "Popover & Tooltip",
+  "status": "stable",
+  "summary": "The product's chart & widget hover tooltips — a distinct family from MTooltip, owned by the chart layer (Highcharts TooltipBuilder, graph canvases, widget Vue components), not DS components. ~28 reference reproductions cover every mechanism.",
+  "props": {
+    "kind": {
+      "type": "string",
+      "default": "bar",
+      "description": "which chart/widget or live-graph tooltip to reproduce (28 kinds — bar, donut, heatmap, …, graph-node, graph-edge, …)"
+    },
+    "block": {
+      "type": "boolean",
+      "default": false,
+      "description": "stretch the card to its container width instead of its intrinsic per-kind width (preview how a tooltip fills a wide surface)"
+    }
+  },
+  "variants": [
+    {
+      "name": "bar-series",
+      "what": "Highcharts series",
+      "usage": ""
+    },
+    {
+      "name": "donut-pie",
+      "what": "donut/pie",
+      "usage": ""
+    },
+    {
+      "name": "bubble",
+      "what": "packed-bubble",
+      "usage": ""
+    },
+    {
+      "name": "map-geo",
+      "what": "geo map",
+      "usage": ""
+    },
+    {
+      "name": "radar",
+      "what": "radar",
+      "usage": ""
+    },
+    {
+      "name": "timeline-xrange",
+      "what": "SLO timeline",
+      "usage": ""
+    },
+    {
+      "name": "gauge",
+      "what": "gauge",
+      "usage": ""
+    },
+    {
+      "name": "sankey",
+      "what": "sankey",
+      "usage": ""
+    },
+    {
+      "name": "treemap",
+      "what": "treemap",
+      "usage": ""
+    },
+    {
+      "name": "scatter",
+      "what": "scatter",
+      "usage": ""
+    },
+    {
+      "name": "anomaly-band",
+      "what": "actual vs expected",
+      "usage": ""
+    },
+    {
+      "name": "rum-waterfall",
+      "what": "RUM resource timing",
+      "usage": ""
+    },
+    {
+      "name": "geo-marker",
+      "what": "RUM apdex marker",
+      "usage": ""
+    },
+    {
+      "name": "log-pattern",
+      "what": "log distribution",
+      "usage": ""
+    },
+    {
+      "name": "sparkline",
+      "what": "inline mini-trend",
+      "usage": ""
+    },
+    {
+      "name": "heatmap",
+      "what": "heatmap cell",
+      "usage": ""
+    },
+    {
+      "name": "availability-segment",
+      "what": "segmented cell",
+      "usage": ""
+    },
+    {
+      "name": "availability-bar",
+      "what": "Up/Down bar",
+      "usage": ""
+    },
+    {
+      "name": "live-graph-node",
+      "what": "topology node",
+      "usage": ""
+    },
+    {
+      "name": "live-graph-edge",
+      "what": "link/interface edge",
+      "usage": ""
+    },
+    {
+      "name": "apm-service-node",
+      "what": "APM service map node",
+      "usage": ""
+    },
+    {
+      "name": "sdn-tunnel-edge",
+      "what": "SD-WAN tunnel",
+      "usage": ""
+    },
+    {
+      "name": "cisco-aci-endpoint",
+      "what": "ACI endpoint",
+      "usage": ""
+    },
+    {
+      "name": "cisco-aci-link",
+      "what": "ACI fabric link",
+      "usage": ""
+    },
+    {
+      "name": "network-interface-edge",
+      "what": "interface edge",
+      "usage": ""
+    },
+    {
+      "name": "netroute-node",
+      "what": "netroute hop",
+      "usage": ""
+    },
+    {
+      "name": "netroute-edge",
+      "what": "netroute transit",
+      "usage": ""
+    },
+    {
+      "name": "flame-graph-span",
+      "what": "trace flame span",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "visible",
+      "what": "on hover (canvas/SVG)"
+    }
+  ],
+  "renders": "REFERENCE REPRODUCTIONS — styling is owned by Highcharts / vis-network / d3 / widget components, not a DS Vue component. Built with real tokens (--chart-tooltip-background, --topology-graph-tooltip-bg, --severity-*).",
+  "mechanisms": {
+    "HighchartsTooltipBuilder": {
+      "source": "src/components/chart/options/tooltip-builder.js + .hc-tooltip-bg / .highcharts-tooltip-container-class",
+      "surface": "--chart-tooltip-background + blur(15px)",
+      "tooltips": [
+        "bar/series",
+        "donut/pie",
+        "bubble",
+        "map/geo",
+        "radar",
+        "timeline/x-range (SLO)",
+        "gauge",
+        "sankey",
+        "treemap",
+        "scatter",
+        "anomaly/forecast band",
+        "RUM resource waterfall",
+        "geo map marker (RUM apdex)",
+        "log pattern distribution",
+        "sparkline"
+      ]
+    },
+    "VueWidget": {
+      "source": "heatmap-tooltip.vue + segmented-cell + availability bar",
+      "tooltips": [
+        "heatmap",
+        "alert/availability segment",
+        "availability bar segment"
+      ]
+    },
+    "GraphCanvas": {
+      "source": "vis-network / d3 graph canvases",
+      "surface": "--topology-graph-tooltip-bg (fixed-dark both themes), --tooltip-text-color",
+      "tooltips": [
+        "live graph node (topology/netroute)",
+        "live graph edge",
+        "APM service-map node",
+        "SDN tunnel edge",
+        "Cisco ACI endpoint",
+        "Cisco ACI fabric link",
+        "network interface edge",
+        "netroute hop node",
+        "netroute edge (transit)"
+      ]
+    },
+    "FlameGraph": {
+      "source": "d3 flame graph (APM / RUM traces)",
+      "surface": "hc-tooltip-bg",
+      "tooltips": [
+        "flame graph span"
+      ]
+    }
+  },
+  "whichTooltipWhere": [
+    {
+      "tooltip": "Bar / series",
+      "where": "severity/metric stacked columns & line charts",
+      "renderer": "Highcharts TooltipBuilder"
+    },
+    {
+      "tooltip": "Donut / pie",
+      "where": "status/distribution donuts",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Bubble",
+      "where": "grouped-count packed-bubble widgets",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Map / geo",
+      "where": "geo-distribution maps",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Radar",
+      "where": "multi-axis comparison",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Timeline / x-range",
+      "where": "SLO / availability timelines",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Gauge",
+      "where": "KPI gauges / circular progress",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Sankey",
+      "where": "flow / traffic sankey",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Treemap",
+      "where": "capacity / hierarchy treemaps",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Scatter",
+      "where": "correlation scatter (x/y)",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Anomaly / forecast band",
+      "where": "anomaly & forecast charts (actual vs expected)",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "RUM resource waterfall",
+      "where": "RUM page resource timing",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Geo map marker",
+      "where": "RUM geo apdex map",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Log pattern distribution",
+      "where": "log pattern value distribution",
+      "renderer": "Highcharts"
+    },
+    {
+      "tooltip": "Sparkline",
+      "where": "inline mini-trends (grid cells, KPIs)",
+      "renderer": "Highcharts (mini)"
+    },
+    {
+      "tooltip": "Heatmap",
+      "where": "heatmap widgets",
+      "renderer": "heatmap-tooltip.vue"
+    },
+    {
+      "tooltip": "Alert / availability segment",
+      "where": "segmented availability cells",
+      "renderer": "Vue (segmented-cell)"
+    },
+    {
+      "tooltip": "Availability bar segment",
+      "where": "Up/Down % bars",
+      "renderer": "Vue"
+    },
+    {
+      "tooltip": "Live graph node",
+      "where": "topology / netroute maps",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "Live graph edge",
+      "where": "link / interface edges",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "APM service-map node",
+      "where": "APM service map",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "SDN tunnel edge",
+      "where": "SD-WAN tunnels",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "Cisco ACI endpoint",
+      "where": "ACI endpoint edges",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "Cisco ACI fabric link",
+      "where": "ACI fabric links",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "Network interface edge",
+      "where": "interface topology",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "Netroute hop node",
+      "where": "netroute path hops",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "Netroute edge",
+      "where": "netroute transit edges",
+      "renderer": "graph canvas"
+    },
+    {
+      "tooltip": "Flame graph span",
+      "where": "APM / RUM trace flame graphs",
+      "renderer": "d3 flame graph"
+    }
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "Owned by the chart layer, not DS components -> catalogued as reference reproductions (real tokens)."
+    },
+    "F2": {
+      "severity": "Low",
+      "a11y": true,
+      "issue": "Hover-only, canvas/SVG-rendered -> not keyboard-reachable / not in the a11y tree; ensure data also exists in a table/legend."
+    }
+  },
+  "tokensUsed": [
+    "--chart-tooltip-background",
+    "--topology-graph-tooltip-bg",
+    "--tooltip-text-color",
+    "--severity-down",
+    "--severity-unreachable",
+    "--severity-critical",
+    "--severity-major",
+    "--severity-warning",
+    "--severity-up",
+    "--page-text-color",
+    "--border-color"
+  ],
+  "storybook": "Molecules/Data-Viz Tooltips",
+  "related": [
+    "data-viz",
+    "tooltip",
+    "table"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "decisionFlow": [
+    "Hover detail on a CHART/graph/canvas mark? -> data-viz tooltip (owned by the chart layer, not MTooltip).",
+    "A UI element/text hint? -> MTooltip (Molecules/Tooltip).",
+    "Which one: match the chart/widget type in whichTooltipWhere."
+  ],
+  "do": [
+    "Use the chart layer's TooltipBuilder / widget tooltip; don't build a DS component.",
+    "Convey severity by token + label, not colour alone.",
+    "Provide the same data in a table/legend (a11y F2)."
+  ],
+  "dont": [
+    "Don't reach for MTooltip on a chart mark.",
+    "Don't rely on hover-only data for accessibility.",
+    "Don't hardcode tooltip colours — use --chart-tooltip-background / --severity-*."
+  ],
+  "a11y": {
+    "summary": "Hover-only over SVG/canvas marks — not keyboard-reachable, not in the a11y tree (canvas tooltips). Colour isn't the only signal (swatch + label).",
+    "issues": [
+      "Not keyboard-reachable / not in the a11y tree.",
+      "Verify translucent tooltip-bg contrast."
+    ],
+    "doc": "Molecules/Data-Viz Tooltips/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "changelog": [
+    "2026-06-29: added to the Elements site — obs-dataviz-tooltip: all 28 chart/widget + live-graph tooltip reference reproductions (kind prop), real tokens (--chart-tooltip-background, --topology-graph-tooltip-bg, --severity-*).",
+    "2026-06-30: added a `block` prop (Full width) — the card stretches to its container instead of its intrinsic per-kind width; exposed as a Playground toggle + a Full-width Examples group, and documented kind/block in Details."
+  ],
+  "usageRules": {
+    "bar-series": {
+      "useWhen": "Hovering a mark on a bar/line/area/column chart rendered by the Highcharts TooltipBuilder — metric-trend, top-N, time-series widgets, KPI-trend, or areasplinerange. Shows a title (category/date-time) plus one row per series (8x8 color square, series name, right-aligned unit-applied value); multi-series charts with sharedTooltip show every series at the hovered x with a crosshair.",
+      "dontUse": "When the mark is a slice (use donut-pie), a low-high band (use anomaly-band), or when you need a UI hint on a control rather than a chart mark (use MTooltip). Don't hand-build; content lives in tooltip-builder.js.",
+      "example": "Hovering a column in a metric-trend or Top-N time-series widget on an ObserveOps dashboard to read the per-series value at that timestamp."
+    },
+    "donut-pie": {
+      "useWhen": "Hovering a slice of an availability/status donut widget or a distribution pie. Highcharts renders it on the hc-tooltip-bg surface; pie omits the header row that bar/line keep.",
+      "dontUse": "For time-series or category columns use bar-series; for hex status grids use heatmap. Not for UI control hints (MTooltip).",
+      "example": "Hovering a segment of a monitor-availability status donut or a severity-distribution pie widget on a dashboard."
+    },
+    "bubble": {
+      "useWhen": "Hovering a bubble in a packed-bubble widget (category/tag distribution), rendered by bubble-options.vue on hc-tooltip-bg.",
+      "dontUse": "For x/y correlation points use scatter; for hierarchical area use treemap. Not a UI tooltip.",
+      "example": "Hovering a bubble in a category- or tag-distribution packed-bubble widget to read its grouped count."
+    },
+    "map-geo": {
+      "useWhen": "Hovering a region on a geo-map widget that plots monitor distribution by location (map-chart-options.vue, hc-tooltip-bg).",
+      "dontUse": "For RUM apdex/demographics country markers use geo-marker; for topology nodes use live-graph-node. Not for UI hints.",
+      "example": "Hovering a country/region on a monitor-distribution-by-location geo map widget."
+    },
+    "radar": {
+      "useWhen": "Hovering a point on a multi-axis radar comparison widget (radar-chart-options.vue, hc-tooltip-bg).",
+      "dontUse": "For single-axis trends use bar-series; for two-variable correlation use scatter.",
+      "example": "Hovering an axis vertex on a multi-metric radar comparison widget to read that axis's value."
+    },
+    "timeline-xrange": {
+      "useWhen": "Hovering a segment on an SLO timeline or availability timeline (x-range) rendered by timeline-chart-options.vue on hc-tooltip-bg.",
+      "dontUse": "For the colored alert/availability bar segment use availability-segment; for RUM resource timing use rum-waterfall. Not for UI hints.",
+      "example": "Hovering a state band on an SLO / availability timeline widget to read its window."
+    },
+    "gauge": {
+      "useWhen": "Hovering a solid-gauge, circular-progress, or KPI gauge widget (gauge.vue / circular-progress-options.vue, hc-tooltip-bg).",
+      "dontUse": "For a linear trend use bar-series; for an inline mini-trend use sparkline.",
+      "example": "Hovering the arc of a KPI solid-gauge or circular-progress widget to read the current value."
+    },
+    "sankey": {
+      "useWhen": "Hovering a node or link on a sankey/flow widget (traffic flow, dependency) rendered by sankey-options.vue on hc-tooltip-bg.",
+      "dontUse": "For topology link details use live-graph-edge or network-interface-edge; for hierarchy area use treemap.",
+      "example": "Hovering a flow band on a traffic-flow or dependency sankey widget."
+    },
+    "treemap": {
+      "useWhen": "Hovering a tile on a treemap widget (capacity/hierarchy) rendered by tree-map-with-levels.vue on hc-tooltip-bg.",
+      "dontUse": "For packed-bubble distribution use bubble; for a flow diagram use sankey.",
+      "example": "Hovering a rectangle in a capacity/hierarchy treemap widget to read its share."
+    },
+    "scatter": {
+      "useWhen": "Hovering a point on a scatter widget plotting x vs y per monitor (type:'scatter', hc-tooltip-bg).",
+      "dontUse": "For category distribution use bubble; for multi-axis comparison use radar.",
+      "example": "Hovering a point in an x-vs-y correlation scatter widget to read both coordinates for that monitor."
+    },
+    "anomaly-band": {
+      "useWhen": "Hovering an anomaly or forecast chart where each point is an actual value vs an expected low-high band (areasplinerange + isAnomalySeries; __getLowHighHtml). Used in anomaly/forecast widgets, metric-explorer, metric-insight; out-of-range points are colored.",
+      "dontUse": "For a plain single-value trend use bar-series (default value format). Anomaly-band is specifically the low-high range value cell.",
+      "example": "Hovering a metric-explorer anomaly chart to compare the actual value against the expected low-high band at that time."
+    },
+    "rum-waterfall": {
+      "useWhen": "Hovering a resource bar on a RUM session resource-timing waterfall (rum-resource-waterfall.vue, x-range, hc-tooltip-bg) to read start/end/duration.",
+      "dontUse": "For an APM/RUM trace flame graph span use flame-graph-span; for an SLO timeline use timeline-xrange.",
+      "example": "Hovering a resource row in a RUM page resource-timing waterfall to read its start, end, and duration."
+    },
+    "geo-marker": {
+      "useWhen": "Hovering a country/marker on a RUM apdex-or-demographics-by-country map or a Leaflet online map (apdex-rating-by-country-map.vue / leaflet-map.vue) to read region + severity + metrics.",
+      "dontUse": "For a monitor-distribution geo widget use map-geo; for topology nodes use live-graph-node.",
+      "example": "Hovering a country on the RUM apdex-by-country map to read its region, apdex severity, and metrics."
+    },
+    "log-pattern": {
+      "useWhen": "Hovering a log pattern count in the log pattern detection grid (log-pattern-detection-grid.vue) — shows a nested VALUE/COUNT/SHARE grid (popover + MGrid, hc-tooltip-bg).",
+      "dontUse": "For a generic chart series row use bar-series. This is the specific log distribution popover.",
+      "example": "Hovering a pattern's count in the Log pattern detection grid to see its value distribution (VALUE/COUNT/SHARE)."
+    },
+    "sparkline": {
+      "useWhen": "Hovering an inline sparkline cell in a grid or metric widget (sparkline-options.vue, hc-tooltip-bg mini) to read the point value on the mini-trend.",
+      "dontUse": "For a full-size trend chart use bar-series; for a gauge use gauge.",
+      "example": "Hovering an inline sparkline cell in a grid row or KPI widget to read the value at that point."
+    },
+    "heatmap": {
+      "useWhen": "Hovering a cell of a hex heatmap widget — monitor status grid, or SLO/APM/RUM heatmaps (heatmap-tooltip.vue). Surface is --chart-tooltip-background with a severity badge; convey severity by badge + label, not color alone.",
+      "dontUse": "For a segmented availability timeline bar use availability-segment; for a donut use donut-pie.",
+      "example": "Hovering a hex cell in the monitor-status heatmap widget to read the monitor and its severity badge."
+    },
+    "availability-segment": {
+      "useWhen": "Hovering a segment of an alert/availability timeline bar (segmented-cell-tooltip.vue) — shows start/end/duration + severity on --chart-tooltip-background with a severity badge.",
+      "dontUse": "For the stacked up/down percentage bar use availability-bar; for an SLO x-range timeline use timeline-xrange.",
+      "example": "Hovering a colored segment on an alert/availability timeline bar to read its start, end, duration, and severity."
+    },
+    "availability-bar": {
+      "useWhen": "Hovering a segment of a stacked up/down percentage bar (availability-bar.vue via MTooltip) — shows 'Status: %' on --tooltip-background-color.",
+      "dontUse": "For a segmented alert timeline with start/end/duration use availability-segment; for a status donut use donut-pie.",
+      "example": "Hovering the up or down portion of a stacked availability % bar to read 'Up: 99.2%'."
+    },
+    "live-graph-node": {
+      "useWhen": "Hovering a monitor node on a Topology map or Netroute path (topology/netroute node components) — canvas tooltip on --topology-graph-tooltip-bg (fixed-dark in both themes).",
+      "dontUse": "For a link/edge use live-graph-edge or network-interface-edge; for an APM service node use apm-service-node; for a netroute hop use netroute-node.",
+      "example": "Hovering a device node on the Topology map to read the monitor's summary."
+    },
+    "live-graph-edge": {
+      "useWhen": "Hovering a generic topology/netroute link (edge-tooltip.vue) — shows interface in/out and utilization on --topology-graph-tooltip-bg.",
+      "dontUse": "When the edge is a full network interface link (use network-interface-edge), an SD-WAN tunnel (sdn-tunnel-edge), an ACI link (cisco-aci-link), or a netroute transit edge (netroute-edge).",
+      "example": "Hovering a link on the topology map to read its in/out interface utilization."
+    },
+    "apm-service-node": {
+      "useWhen": "Hovering a node on the APM service map (servicemap-tooltip.vue) — throughput/latency/error on --topology-graph-tooltip-bg.",
+      "dontUse": "For a generic topology monitor node use live-graph-node; for a flame graph span use flame-graph-span.",
+      "example": "Hovering a service node on the APM service map to read its throughput, latency, and error rate."
+    },
+    "sdn-tunnel-edge": {
+      "useWhen": "Hovering an SD-WAN tunnel edge (sdn-tunnel-edge-tooltip.vue) — latency/loss/jitter KPIs plus health/color/site on --topology-graph-tooltip-bg.",
+      "dontUse": "For a plain interface edge use network-interface-edge; for an ACI fabric link use cisco-aci-link.",
+      "example": "Hovering an SD-WAN tunnel on the SDN topology to read its latency, loss, jitter, and health."
+    },
+    "cisco-aci-endpoint": {
+      "useWhen": "Hovering a Cisco ACI leaf-to-endpoint edge (cisco-aci-edge-tooltip.vue) — MAC/IPv4/IPv6/endpoint-group on --topology-graph-tooltip-bg.",
+      "dontUse": "For an ACI leaf-to-leaf fabric link use cisco-aci-link; for a generic interface edge use network-interface-edge.",
+      "example": "Hovering a leaf-to-endpoint connection on a Cisco ACI map to read the endpoint's MAC, IPv4/IPv6, and group."
+    },
+    "cisco-aci-link": {
+      "useWhen": "Hovering a Cisco ACI leaf-to-leaf fabric link (cisco-aci-link-edge-tooltip.vue) — node/pod/role/state/interface on --topology-graph-tooltip-bg.",
+      "dontUse": "For a leaf-to-endpoint edge use cisco-aci-endpoint; for a non-ACI interface link use network-interface-edge.",
+      "example": "Hovering a fabric link between two ACI leaves to read node, pod, role, state, and interface."
+    },
+    "network-interface-edge": {
+      "useWhen": "Hovering a network link on a topology map (network-interface-edge-tooltip.vue) — both-sides interface details: alias/status/IP/speed/traffic on --topology-graph-tooltip-bg.",
+      "dontUse": "For a generic edge with just in/out utilization use live-graph-edge; for SD-WAN tunnels use sdn-tunnel-edge; for ACI use cisco-aci-link.",
+      "example": "Hovering a network link on the topology map to read both interfaces' alias, status, IP, speed, and traffic."
+    },
+    "netroute-node": {
+      "useWhen": "Hovering a hop node on a Netroute path (netroute/node-tooltip.vue) — latency min/avg/max + loss + alerts on --topology-graph-tooltip-bg.",
+      "dontUse": "For a netroute transit edge use netroute-edge; for a topology monitor node use live-graph-node.",
+      "example": "Hovering a hop in a Netroute path to read its latency min/avg/max, loss, and alerts."
+    },
+    "netroute-edge": {
+      "useWhen": "Hovering a transit edge between hops on a Netroute path (netroute/edge-tooltip.vue) — latency/loss plus transit likelihood on --topology-graph-tooltip-bg.",
+      "dontUse": "For a hop node use netroute-node; for a generic topology edge use live-graph-edge.",
+      "example": "Hovering the transit segment between two Netroute hops to read latency, loss, and transit likelihood."
+    },
+    "flame-graph-span": {
+      "useWhen": "Hovering a span in a d3 flame graph (d3-flame-graph.vue) — APM trace drill-down or RUM view/action/long-task flame graphs. Shows name + self/total + % of trace; long-task adds source URL + invoker. Surface hc-tooltip-bg.",
+      "dontUse": "For a RUM resource-timing waterfall use rum-waterfall; for an APM service-map node use apm-service-node.",
+      "example": "Hovering a span in an APM trace flame graph to read its name, self/total time, and % of the trace."
+    }
+  }
+}

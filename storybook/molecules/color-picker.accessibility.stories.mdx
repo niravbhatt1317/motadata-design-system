@@ -1,0 +1,24 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Color Picker/Accessibility" />
+
+# Color Picker — Accessibility
+
+## Verify
+
+- **Trigger name** — the swatch trigger is essentially icon-only; give it an **`aria-label`** describing what
+  it sets (e.g. "Series color") and make it keyboard-focusable (`role="button"` / a real `<button>`).
+- **Palette cells have names** — each preset swatch must expose its **color name or hex** (via `aria-label` /
+  `title`) so a screen-reader user can tell them apart; they can't rely on the visual color.
+- **Keyboard operable** — open on Enter/Space; move between presets with arrow keys; select with Enter; close
+  with Esc. Focus returns to the trigger on close.
+- **Selected state is not color-only** — the chosen preset shows a `--primary` outline **and** the current hex
+  is displayed as text, so selection isn't conveyed by color alone.
+- **Contrast** — when the picked color is used as text/background elsewhere, verify the resulting contrast; the
+  picker itself should not be the only guardrail.
+
+## Known gaps
+
+- Color is inherently visual — **never** use a color swatch as the *sole* signal for meaning (severity/status);
+  pair it with a label or icon.
+- The underlying `vue-color` Sketch canvas may need explicit labels on its hex/RGBA inputs.

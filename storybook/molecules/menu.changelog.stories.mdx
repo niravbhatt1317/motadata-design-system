@@ -1,0 +1,22 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Menu/Changelog" />
+
+# Menu — Changelog
+
+- **2026-06-16** — Added — the **Menu** family. Two members: the **`MMenu` primitive** (a vertical list
+  of selectable icon + label rows, with `MMenuDivider` and danger/positive colours) catalogued **in its
+  own right** as the building block beneath **Primary nav**, **Side menu** and the **Dropdown picker**;
+  and the **Context / Action menu** (`_base-grid-actions.vue`, `FlotoGridActions` — an `MPopover` "⋯"
+  trigger opening an `MMenu` of **actions**; the single `MDropdown` usage, the rich-text editor table
+  options, is the same shape).
+- **Why now:** during the **Navigation recheck**, `MMenu` was logged as a "scoped-out" primitive and
+  the context menu as an "action surface, not navigation". Both were promoted to real catalogue entries
+  here (the primitive belongs in the system; the action menu now has a home — distinct from Navigation
+  and from value pickers).
+- **Stories:** Menu (primitive) · Context menu — interactive (hover/select; click the ⋯). Reproductions
+  (live `MMenu` needs Ant menu context); verified render in light + dark, no console errors.
+- **A11y** flagged (F2): trigger `aria-label`, `role=menu`/`menuitem`, arrow-key + Esc, focus return,
+  non-colour-only danger.
+- Related: **Navigation** (built on `MMenu`) · **Dropdown picker** / **Select** (value selection) ·
+  **Popover** (container) · **Toolbars** / **Table** (host the "⋯" action menu).

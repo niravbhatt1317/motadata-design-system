@@ -1,0 +1,249 @@
+{
+  "name": "page-header",
+  "display": "Page Header",
+  "tier": "organisms",
+  "family": "Toolbars",
+  "group": "Structure & Navigation",
+  "source": "FlotoPageHeader (src/components/_base-page-header.vue), 54×",
+  "status": "stable",
+  "summary": "The list/detail PAGE HEADER at the top of a page: an optional back button + the title (--primary-alt, weight 500) + an optional count pill on the left, and right-side actions (search / export / primary Add) via the default slot, over a --border-color bottom rule. Split from the product's Toolbars family. NOT the strip above a list/table (that is obs-toolbar) and NOT between-page navigation (obs-sidebar / obs-breadcrumbs). Supports an optional subtitle, a detail-header metadata strip (meta=[{label,value,icon?,status?}] with an accent stripe — the RUM/APM span-detail header), (detail/drawer header pattern) and a breadcrumb slot (drop obs-breadcrumbs). The global app top-bar (logo/search/notifications/user) is a SEPARATE archetype, not a page-header variant.",
+  "variants": [
+    {
+      "name": "default",
+      "what": "title + right-side actions over a bottom rule",
+      "usage": "54×"
+    },
+    {
+      "name": "back",
+      "what": "leading back chevron (emits `back`)",
+      "usage": ""
+    },
+    {
+      "name": "with-count",
+      "what": "a count pill next to the title",
+      "usage": ""
+    },
+    {
+      "name": "no-divider",
+      "what": "drops the bottom rule (header on a surface that already has edges)",
+      "usage": ""
+    },
+    {
+      "name": "with-subtitle",
+      "what": "title + a secondary muted line (detail/drawer headers)",
+      "usage": ""
+    },
+    {
+      "name": "with-breadcrumb",
+      "what": "a trail above the header row",
+      "usage": ""
+    },
+    {
+      "name": "detail-meta",
+      "what": "accent stripe + title + metadata strip (RUM/APM span-detail header)",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    "rest"
+  ],
+  "props": {
+    "heading": {
+      "type": "string",
+      "note": "the page title (uses `heading`, not `title`, so it doesn't set a native tooltip). --primary-alt, weight 500, 16px, ellipsised."
+    },
+    "count": {
+      "type": "string|number",
+      "default": null,
+      "note": "optional count pill shown next to the title (--timerange-background-color / --timerange-text-color)."
+    },
+    "back": {
+      "type": "boolean",
+      "default": false,
+      "note": "show the leading back chevron button; clicking it emits `back`. (Or provide a `back` slot for a custom control.)"
+    },
+    "no-divider": {
+      "type": "boolean",
+      "default": false,
+      "note": "remove the bottom rule; default shows a 1px --border-color divider (matching the 54× render)."
+    },
+    "subtitle": {
+      "type": "string",
+      "note": "optional secondary muted line under the title (--neutral-theme-color) — the detail/drill-down/drawer header pattern (title + subtitle)."
+    },
+    "meta": {
+      "type": "string",
+      "note": "detail-header ATTRIBUTE STRIP — a JSON array of {label?,value,icon?,status?}, rendered as a wrapping \" | \"-separated key:value row below the title (the RUM/APM Session/Action/Resource span-detail header). icon → obs-icon; status → obs-severity dot; label muted (--neutral-theme-color); value --page-text-color."
+    },
+    "accent": {
+      "type": "string",
+      "note": "left accent stripe (3px) coloured by a severity level (up/critical/warning/major/clear/down → --severity-<level>) or a colour token (--x / #hex). Marks the entity type/severity on a detail header. Accepts a severity level (maps to --severity-<level>), a colour token (--x), or a raw colour.",
+      "enum": [
+        "",
+        "up",
+        "clear",
+        "warning",
+        "major",
+        "critical",
+        "down",
+        "maintenance"
+      ]
+    }
+  },
+  "events": {
+    "back": "() — the back button was clicked (wire it to your router.back() / navigation)."
+  },
+  "slots": {
+    "default": "the right-side actions — compose obs-input (search), obs-button (primary Add), icon buttons, etc.",
+    "back": "a custom leading control, replacing the default back chevron.",
+    "title": "extra content after the title — a status badge (obs-severity / obs-tag), e.g. the monitor detail \"Up\".",
+    "breadcrumb": "a breadcrumb trail ABOVE the header row (drop obs-breadcrumbs here); the slot is invisible when empty.",
+    "before": "content immediately BEFORE the title (a monitor-type icon / avatar)."
+  },
+  "decisionFlow": [
+    "Title + primary actions at the TOP of a page (list or detail)? -> obs-page-header.",
+    "Detail / drawer header that needs a secondary line under the title? -> add subtitle=\"…\". A location trail above it? -> the breadcrumb slot (obs-breadcrumbs).",
+    "An entity/span DETAIL header with a row of attribute fields (Session/Action/Resource, monitor detail)? -> add accent=\"<severity>\" + meta=[{label,value,icon?,status?}] (the metadata strip).",
+    "A search / filter / bulk-action strip sitting ABOVE a list or table? -> obs-toolbar (not page-header).",
+    "Navigating BETWEEN pages/routes? -> obs-sidebar (primary nav) or obs-breadcrumbs (the trail).",
+    "Switching sibling views of the SAME page? -> obs-tabs.",
+    "A widget's own title + time-range + kebab? -> the widget-header toolbar variant (obs-toolbar)."
+  ],
+  "usageRules": {
+    "default": {
+      "useWhen": "every list/detail page's top bar — the title and the page's primary actions (Add, export, search).",
+      "dontUse": "for a control strip that belongs ABOVE a table -> obs-toolbar.",
+      "example": "Monitors list: title + count + Search + Export + Add Monitor."
+    },
+    "back": {
+      "useWhen": "a detail/nested page the user drills into from a list — give them a way back.",
+      "dontUse": "on a top-level list page reachable from the nav (no back target).",
+      "example": "Monitor detail -> back to the Monitors list."
+    },
+    "with-count": {
+      "useWhen": "the title names a collection whose size matters (N monitors / alerts).",
+      "dontUse": "on a singular detail page.",
+      "example": "Monitors (128)."
+    },
+    "no-divider": {
+      "useWhen": "the header sits on a card/panel that already provides a bottom edge.",
+      "dontUse": "as the default page top bar (keep the divider).",
+      "example": "a header inside a bordered settings card."
+    },
+    "with-subtitle": {
+      "useWhen": "a detail / drill-down / drawer header where a secondary line adds context (type, id, last-run).",
+      "dontUse": "a simple list page (title alone).",
+      "example": "AlmaLinux 9 (CIS) / \"Compliance benchmark · 214 rules · last run 2h ago\" (the compliance drill-down)."
+    },
+    "with-breadcrumb": {
+      "useWhen": "a nested page that benefits from a location trail above the title.",
+      "dontUse": "top-level pages.",
+      "example": "Inventory / Monitors / web-server-01 (drop obs-breadcrumbs in the breadcrumb slot)."
+    },
+    "detail-meta": {
+      "useWhen": "an entity/span detail header (RUM Session/Action/Resource, APM trace, monitor detail) that needs a row of attribute key:value fields under the title.",
+      "dontUse": "a simple list/detail page (use subtitle or nothing).",
+      "example": "accent=\"up\" title=\"Session\" meta=[{icon:\"globe\",value:\"172.20.22.2\"},{label:\"Environment\",value:\"prod\"},…] — a \" | \"-separated strip."
+    },
+    "padding": {
+      "useWhen": "--page-header-padding controls the CONTENT inset only (default 8px all sides). The bottom divider always spans EDGE TO EDGE (full width) regardless of the padding.",
+      "dontUse": "the page content area already applies padding — then set --page-header-padding: 0 to avoid double inset.",
+      "example": "style=\"--page-header-padding: 0\" removes the content inset; a larger value (e.g. 16px 24px) makes a roomier header. The divider stays full-width either way."
+    }
+  },
+  "a11y": {
+    "summary": "The title is an <h4> heading — one page-header per view. The back control is a real <button aria-label=\"Back\"> that fires `back` on click/Enter/Space (keyboard-operable). Actions in the default slot are the consumer’s own focusable controls (obs-button/obs-input) in DOM order after the title. The accent stripe and meta field ICONS are decorative (aria-hidden); meta LABELS are real text (\"Label: value\") so screen readers read the attribute names. A status badge (obs-tag) carries its own accessible label.",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "The count pill (\"128\") is presented as plain text next to the title; if the count must be announced as a labelled figure, put it in the meta strip (label:\"Monitors\", value:\"128\") instead."
+      }
+    ]
+  },
+  "knownIssues": [
+    {
+      "severity": "info",
+      "issue": "The detail-header variants (subtitle · meta strip · accent · monitor-detail) are SOURCE-DERIVED — the product headers are store/data-bound with no Storybook story, so they are built from the source (rum-drill-down-header.vue / compliance-breadcrumb.vue) and verified against product screenshots, not the diff gate. The default list-header IS diff-gated (organisms-toolbars-examples--page-header, ✅ MATCH)."
+    },
+    {
+      "severity": "info",
+      "issue": "The inventory monitor-detail TOP header also shows metric rings/gauges and read-only pill groups on the right — those are separate components (a chart/gauge + obs-tag/obs-selected-pills) composed into the actions slot, not part of obs-page-header itself."
+    }
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--primary-alt",
+    "--timerange-background-color",
+    "--timerange-text-color",
+    "--neutral-light",
+    "--page-text-color",
+    "--neutral-theme-color",
+    "--severity-up",
+    "--severity-critical"
+  ],
+  "changelog": [
+    "2026-08-11 — Padding tightened to 8px on all four sides (owner). --page-header-padding default is now 8px; divider stays full-width.",
+    "2026-08-11 — Divider + padding (owner, ref #152/#153): the bottom divider now spans EDGE TO EDGE (moved to the full-width .wrap; it was inset by the content padding). Reduced the default content inset to a compact 10px 16px (was 16px 20px 0). --page-header-padding now controls the CONTENT inset only; the divider is always full-width.",
+    "2026-08-06 — Padding fix (owner): the header now carries its own left/right/top inset (var(--page-header-padding, 16px 20px 0)) instead of padding: 8px 0. The product page-header leans on the page content area (@padding-lg) for that inset, so dropped straight into a card it rendered flush to the edge. Override --page-header-padding: 0 when the surrounding page already pads.",
+    {
+      "date": "2026-07-15",
+      "change": "Completeness pass: `accent` now declares its enum (the severity levels the playground dropdown offers — up/clear/warning/major/critical/down/maintenance — while still accepting a colour token or raw colour). Confirmed every variant (default, back, with-count, no-divider, with-subtitle, with-breadcrumb, detail-meta, monitor-detail) is reachable from the playground presets + toggles."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Completeness pass: accent control is now a severity DROPDOWN (up/clear/warning/major/critical/down/maintenance) not open text; added rich playground presets (list · detail+subtitle+back · RUM meta strip · status dots · monitor detail) + a monitor-detail gallery example (breadcrumb + status badge via obs-tag + meta + icon actions, #80); added usedIn (\"Where it’s used\"), expanded Accessibility, and Known issues (source-derived detail variants; metric rings out of scope)."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Back button now centres on the TITLE line (top-aligned left column, back height = title line box) — it sits on the heading line while subtitle + meta stay left-aligned under the heading."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Layout: the back button is now a full-height LEFT GUTTER; title + subtitle + meta strip form a left-aligned column beside it (subtitle/meta line up under the heading, no longer indented under back)."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Fixes: export/secondary buttons use variant=default (bordered) instead of neutral-lighter (which read as disabled); the icon button uses squared (keeps the 4px radius) not square (radius 0); the back button now sits in the title row so it is vertically centred with the title, not the whole block."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Added the common DETAIL-HEADER variant — a meta attribute strip (JSON [{label,value,icon?,status?}] → a wrapping \" | \"-separated key:value row, reusing obs-icon + obs-severity dot) and an accent stripe (severity/colour), source-derived from the RUM/APM span-detail header (rum-drill-down-header.vue). Default layout unchanged (diff stays ✅). Covers the Session/Action/Resource + monitor-detail headers."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Added subtitle (detail/drill-down/drawer header pattern — sourced from compliance-breadcrumb + drawer-header) and a breadcrumb slot + before slot. Default gallery now includes the export/download icon action (obs-button[square], reused). App header is documented as a separate archetype, not a page-header variant."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Added obs-page-header element — render-faithful page header (title + optional back + count pill + right-side actions slot + bottom divider), split from the product Toolbars family (FlotoPageHeader, 54×). diff.mjs ✅ MATCH (light+dark); reuses obs-icon (back) and composes obs-button/obs-input in the actions slot. 2nd of the Structure & Navigation set."
+    }
+  ],
+  "related": [
+    "toolbars",
+    "tabs",
+    "sidebar",
+    "breadcrumbs",
+    "button",
+    "input"
+  ],
+  "storybook": "Organisms/Toolbars/Examples (PageHeader)",
+  "usedIn": [
+    "The top bar of every list page — Monitors / Alerts / Alert Policies / Reports (title + count + search + primary Add). FlotoPageHeader, 54× across ~40 files.",
+    "Detail / nested pages — a back button + title (+ subtitle) + record actions (Edit / Export / Re-run).",
+    "Entity / span DETAIL headers — the RUM/APM Session · Action · Resource drill-downs and the inventory Monitor detail: accent stripe + title + a status badge + a \" | \"-separated metadata strip.",
+    "Inside a drawer/panel (with subtitle or a meta strip) — the drawer supplies its own close; page-header supplies the title + meta."
+  ],
+  "do": [
+    "Use as the top bar of a list/detail page — title + count + the page’s primary actions (Add / export / search).",
+    "Add a back button (a left gutter, centred on the title) for a nested/detail page drilled into from a list.",
+    "Use a subtitle, or an accent + meta strip, for entity/detail headers (RUM/APM span detail, monitor detail); a breadcrumb slot for a trail.",
+    "Compose the actions from DS elements — obs-input (search), obs-button (Add / bordered secondary / [squared] icon)."
+  ],
+  "dont": [
+    "Don’t use for a search/filter/bulk-action strip above a list or table — that is obs-toolbar.",
+    "Don’t use for the global app top bar (logo / notifications / user) — that is obs-app-header.",
+    "Don’t use for between-page navigation — obs-sidebar (primary) / obs-breadcrumbs (trail).",
+    "Don’t use `title` as the heading attribute (it sets a native tooltip) — use `heading`."
+  ]
+}

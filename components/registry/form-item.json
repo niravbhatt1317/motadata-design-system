@@ -1,0 +1,306 @@
+{
+  "name": "form-item",
+  "component": "FlotoFormItem",
+  "display": "Form Field",
+  "tier": "molecule",
+  "category": "form",
+  "source": "app",
+  "sourceFile": "src/components/_base-form-item.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The form field: label + validation + control + error/help. MValidationProvider (vee-validate) -> MFormItem. Most-used component (1783x). required is derived from rules.",
+  "variants": [
+    {
+      "name": "text",
+      "what": "built-in MInput text",
+      "usage": ""
+    },
+    {
+      "name": "number",
+      "what": "MInput number",
+      "usage": ""
+    },
+    {
+      "name": "textarea",
+      "what": "MInput textarea",
+      "usage": ""
+    },
+    {
+      "name": "vertical",
+      "what": "label above",
+      "usage": "13×"
+    },
+    {
+      "name": "horizontal",
+      "what": "label beside",
+      "usage": "14×"
+    },
+    {
+      "name": "custom-control",
+      "what": "slot holds any control",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "normal"
+    },
+    {
+      "name": "required",
+      "what": "asterisk (from rules)"
+    },
+    {
+      "name": "error",
+      "what": "red border + msg (pristine-gated)"
+    },
+    {
+      "name": "valid",
+      "what": "passed validation"
+    }
+  ],
+  "family": "Form Controls",
+  "model": {
+    "prop": "value",
+    "event": "update"
+  },
+  "props": {
+    "label": {
+      "type": "string",
+      "default": "",
+      "note": "field label (+ optional info tooltip)"
+    },
+    "rules": {
+      "type": [
+        "string",
+        "object"
+      ],
+      "default": "",
+      "note": "vee-validate rules e.g. required|email|max:255; REQUIRED ASTERISK is derived from this (F1)"
+    },
+    "help": {
+      "type": "string",
+      "note": "hint text under the field"
+    },
+    "infoTooltip": {
+      "type": "string",
+      "note": "(i) icon by the label with hover help (HTML allowed)"
+    },
+    "type": {
+      "type": "string",
+      "note": "control type for the built-in MInput (text/number/textarea/...)"
+    },
+    "inputType": {
+      "type": "string",
+      "note": "overrides type for the built-in MInput"
+    },
+    "validationLabel": {
+      "type": "string"
+    },
+    "vid": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "default": "eager"
+    },
+    "immediate": {
+      "type": "boolean",
+      "default": false,
+      "note": "validate on mount (red border; message still pristine-gated, F2)"
+    },
+    "hideErrorMessage": {
+      "type": "boolean",
+      "default": false
+    },
+    "labelCol": {
+      "type": "object",
+      "default": "{ xxl:2, xl:3, lg:4 }",
+      "note": "responsive label width (horizontal layout)"
+    },
+    "wrapperCol": {
+      "type": "object",
+      "default": "{ xxl:10, xl:9, lg:8 }",
+      "note": "responsive control width"
+    }
+  },
+  "events": [
+    "update (model)",
+    "blur"
+  ],
+  "slots": [
+    "default (the control, gets slotData)",
+    "before-input",
+    "input-children",
+    "passthrough scoped slots -> inner MInput"
+  ],
+  "methods": [
+    "validate()",
+    "setValue(v)",
+    "addError(err)",
+    "focus()"
+  ],
+  "anatomy": [
+    "label (+ required asterisk + optional info tooltip)",
+    "control (built-in MInput or slot)",
+    "help text OR error message (red when invalid)"
+  ],
+  "behaviors": {
+    "required": "asterisk shown when rules include 'required' (not required_if)",
+    "validation": "eager mode validates on interaction; error => red border + inline errors[0]; message is pristine-gated (shows after interaction, border shows immediately)",
+    "control": "no slot => built-in MInput (routed by type); slot => any control with label+validation",
+    "programmatic": "validate()/addError()/setValue()/focus() via ref"
+  },
+  "tokensUsed": [
+    "--field-border-color",
+    "--text-color-common-secondary",
+    "--secondary-red"
+  ],
+  "accessibility": {
+    "label": "associated with the control via MFormItem",
+    "required": "asterisk is visual; the rule/error conveys requirement to AT",
+    "focus": "inner controls have no visible ring (SF-001)",
+    "errors": "text messages (not color-only)"
+  },
+  "decisionFlow": [
+    "Building a form field (label + control + validation)? -> FlotoFormItem (always).",
+    "Plain text/number/textarea control? -> omit the slot, set type (built-in MInput).",
+    "Select / Radio / Checkbox / picker / tag input? -> put it in the default slot.",
+    "Needs validation? -> set rules (required|email|max:255 ...); required asterisk is automatic.",
+    "Need a persistent hint? -> help. Longer explanation? -> info-tooltip."
+  ],
+  "usageRules": {
+    "field(default)": {
+      "useWhen": "any labelled form field; omit slot for a built-in MInput",
+      "example": "Monitor name text field"
+    },
+    "required": {
+      "useWhen": "the field is mandatory",
+      "must": "put 'required' in rules (asterisk derives from it) — there is no required prop (F1)"
+    },
+    "custom-control": {
+      "useWhen": "the control is not a plain input (Select/Radio/Checkbox/picker/LooseTags)",
+      "example": "Severity as a segmented MRadioGroup in the slot"
+    },
+    "help": {
+      "useWhen": "a short persistent hint under the field",
+      "example": "In seconds. Lower values increase load."
+    },
+    "info-tooltip": {
+      "useWhen": "a longer explanation behind an (i) icon (MTooltip/VTippy, hover)",
+      "note": "needs vue-tippy VTippy registered (done in SB preview)"
+    },
+    "validation": {
+      "useWhen": "the value must be valid",
+      "note": "rules from src/validations.js; error = red border + message (pristine-gated)"
+    },
+    "layout": {
+      "useWhen": "vertical (label on top) for narrow/focused forms — drawers, modals, integration setup (Slack/Jira/ServiceNow), pickers; horizontal (label beside) for dense settings pages — Mail Server, Proxy, SNMP Trap, RADIUS, 2FA, My Profile",
+      "note": "set on the parent FlotoForm/MForm layout; drawers/modals -> vertical, full settings pages -> horizontal"
+    },
+    "text": {
+      "useWhen": "The field collects a short single-line string. Omit the default slot and set type=\"text\" (or leave type default) so FlotoFormItem renders its own built-in MInput; the wrapper still supplies label + validation + help/error.",
+      "dontUse": "Don't use for non-text controls (Select/Radio/Checkbox/picker/tag input — put those in the default slot), for multi-line prose (use textarea), or for numeric-only entry with steppers (use number).",
+      "example": "The 'Monitor name' / 'Name' text field on almost every create form, or 'Community String' on the SNMP settings form."
+    },
+    "number": {
+      "useWhen": "The field collects a numeric value; set type=\"number\" so the built-in MInput renders a number control. Pair with numeric rules like rules=\"required|numeric|min_value:1\".",
+      "dontUse": "Don't use for free-form text (use text) or for a value chosen from a fixed set (use custom-control with a radio/picker). Don't hand-roll min/max — express it in rules.",
+      "example": "The 'Polling Interval' field (with help 'In seconds. Lower values increase load.'), or 'Hours' / 'Threshold Counter' fields on create forms."
+    },
+    "textarea": {
+      "useWhen": "The field collects multi-line text — descriptions, notes, messages, scripts. Set type=\"textarea\" so the built-in MInput renders a multi-line box; the wrapper still gives label + validation.",
+      "dontUse": "Don't use for single-line strings (use text) or numbers (use number). Don't reach for a custom slot control — textarea is built in via type.",
+      "example": "A 'Description' field on a Group / profile create form, or a multi-line note on an integration setup panel."
+    },
+    "vertical": {
+      "useWhen": "Space is narrow or the flow is focused — drawers, modals, wizards, setup panels, and forms with long labels. Label stacks above a full-width control. Set layout=\"vertical\" on the parent FlotoForm/MForm. When unsure, vertical is the safe default (works at any width).",
+      "dontUse": "Don't use for a dense settings page with many short fields where label-to-value column alignment matters — that reads better horizontal.",
+      "example": "The Add/Edit drawers and integration setup forms — Slack, MS Teams, Jira, ServiceNow."
+    },
+    "horizontal": {
+      "useWhen": "A dense settings page with many short fields scanned top-to-bottom, where label-to-value alignment matters. Label sits in a left column, control to the right (tune with labelCol/wrapperCol). Set layout=\"horizontal\" on the parent FlotoForm/MForm.",
+      "dontUse": "Don't use in narrow containers like drawers/modals/wizards or with long labels — the two-column layout cramps; use vertical there.",
+      "example": "Mail Server, Proxy, SNMP Trap, RADIUS, Two-Factor Auth, and My Profile settings pages."
+    }
+  },
+  "notCovered": {
+    "sizes": "none — fields are one height",
+    "is-view": "lives on the inner controls, not FlotoFormItem",
+    "repeatable": "multiple-form-items is a separate related component"
+  },
+  "do": [
+    "Wrap every form control in FlotoFormItem for consistent label + validation + error.",
+    "Put validation in rules; add reusable rules in src/validations.js.",
+    "Use the default slot for non-text controls; help for hints, info-tooltip for longer guidance."
+  ],
+  "dont": [
+    "Don't pass a 'required' attribute — put required in rules (F1).",
+    "Don't hand-roll labels/validation around a bare input.",
+    "Don't rely on @input — v-model uses update."
+  ],
+  "whenToUse": "Every labelled, validated field in a form.",
+  "insteadOf": [
+    "raw a-form-item",
+    "a bare input with a hand-made label + validation"
+  ],
+  "usage": {
+    "total": 1783,
+    "label": 611,
+    "rules": 272,
+    "id": 52
+  },
+  "knownIssues": [
+    "F1 (low): required is derived from rules (regex for 'required'); there is no required prop — passing required does nothing. A convenience prop could help.",
+    "F2 (low): error message is pristine-gated — with immediate the red border shows but the message only appears after interaction (expected vee-validate behavior).",
+    "F3 (high, a11y): inner controls have no visible focus ring (SF-001)."
+  ],
+  "related": [
+    "MInput",
+    "MRadioGroup",
+    "MCheckbox",
+    "MSwitch",
+    "FlotoDropdownPicker",
+    "LooseTags",
+    "FlotoForm",
+    "MValidationObserver"
+  ],
+  "changelog": [
+    "2026-06-07: added (decision-grade) — the Form Field molecule (1783x). vee-validate provider -> MFormItem; required derived from rules; built-in MInput vs slot control; help + info-tooltip; validate/setValue/addError/focus. SB preview registers MValidationProvider/Observer + src/validations + FlotoFormItem. Verified live email error + red border. F1-F3."
+  ],
+  "storybook": "Molecules/FormItem",
+  "figma": {
+    "status": "todo",
+    "component": "Form Field"
+  },
+  "apis": {
+    "FlotoForm": {
+      "source": "src/components/_base-form.vue",
+      "what": "the form WRAPPER (MValidationObserver + MForm). Wrap FlotoFormItems in it.",
+      "props": {
+        "showNotification": "Boolean (default false) — toast on failed validate"
+      },
+      "events": {
+        "submit": "emitted only after validation passes",
+        "reset": "on reset"
+      },
+      "methods": {
+        "validate()": "Promise<true|reject> — call via ref before manual submit",
+        "resetValidation()": "clear errors"
+      },
+      "slots": "pass-through; default/named slots receive { validate, submit, reset }",
+      "usage": "<FlotoForm @submit=\"save\"><MRow><MCol :size=\"6\"><FlotoFormItem .../></MCol></MRow><template v-slot:submit=\"{ submit }\">...</template></FlotoForm>"
+    }
+  },
+  "$tokensNote": "Label = --text-color-common-secondary; error state (.has-error) = --secondary-red (#ec5b5b).",
+  "a11y": {
+    "summary": "Label associated via MFormItem (click focuses the control). Errors are text (not colour-only), pristine-gated; the required asterisk is visual — keep the required rule.",
+    "issues": [
+      "Wrapped controls have no visible focus ring (SF-001).",
+      "info-tooltip content sits behind a hover trigger."
+    ],
+    "doc": "Molecules/FormItem/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "name": "menu",
+  "display": "Menu",
+  "tier": "molecule",
+  "family": "Menu",
+  "status": "stable",
+  "summary": "The MMenu primitive (a vertical list of selectable icon+label rows, with dividers and danger/positive colours) catalogued in its own right, plus its action-surface usage: the Context/Action menu (FlotoGridActions — a '...' trigger opening an MMenu of actions).",
+  "variants": [
+    {
+      "name": "menu-primitive",
+      "what": "MMenu list of rows",
+      "usage": "13×"
+    },
+    {
+      "name": "context-menu",
+      "what": "⋯ → MMenu of actions",
+      "usage": "grid rows"
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "hover",
+      "what": "--neutral-lighter"
+    },
+    {
+      "name": "selected",
+      "what": "--primary on tint"
+    },
+    {
+      "name": "danger",
+      "what": "--secondary-red"
+    },
+    {
+      "name": "positive",
+      "what": "--secondary-green"
+    },
+    {
+      "name": "disabled",
+      "what": "not interactive"
+    }
+  ],
+  "renders": "REFERENCE REPRODUCTIONS — the live MMenu needs Ant menu context/theme. Built with real tokens + MIcon.",
+  "element": "obs-menu",
+  "props": {
+    "items": {
+      "type": "string|array",
+      "note": "[{key,label,icon?,danger?,positive?,divider?,disabled?,selected?}] — JSON string or a JS array property. `icon` is a product icon key (pencil/trash/cog…)."
+    },
+    "mode": {
+      "type": "string",
+      "default": "context",
+      "note": "context = a ⋯/button trigger opening a top-layer menu of actions · inline = render the menu list in place (the primitive)"
+    },
+    "trigger": {
+      "type": "string",
+      "default": "dots",
+      "note": "context trigger style: dots (⋯ ellipsis-v) · button (labelled)"
+    },
+    "label": {
+      "type": "string",
+      "default": "Actions",
+      "note": "button-trigger label (trigger=button)"
+    },
+    "placement": {
+      "type": "string",
+      "default": "bottom-end",
+      "note": "bottom-end (product bottomRight) · bottom-start"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": "false"
+    },
+    "bordered": {
+      "type": "boolean",
+      "default": false,
+      "note": "give the ⋯ dots trigger a border (a bordered kebab button, e.g. the bulk-action-bar More) — 34×34, 1px --border-color, radius 6."
+    }
+  },
+  "events": [
+    "select — { detail: item.key } (array-wrapped, unwrap detail[0])",
+    "show / hide — menu open/close"
+  ],
+  "members": {
+    "Menu": {
+      "source": "@motadata/ui MMenu / MMenuItem / MMenuDivider",
+      "usage": "13x",
+      "what": "the primitive — a vertical list of selectable rows (icon + label); states: hover (--neutral-lighter), selected (--primary on --code-tag-background-color); MMenuDivider (--border-color); danger (--secondary-red) / positive (--secondary-green) item colours",
+      "buildingBlockFor": [
+        "navigation (Primary nav, Side menu)",
+        "dropdownpicker",
+        "menu (Context/Action menu)"
+      ]
+    },
+    "ContextMenu": {
+      "source": "components/_base-grid-actions.vue (FlotoGridActions) + MDropdown (1x, rich-text editor table options)",
+      "usage": "grid rows + 1x MDropdown",
+      "what": "an action surface — an MPopover (placement bottomRight) triggered by an ellipsis-v '...' icon, opening an MMenu of ACTION items (icon + label); permission-gated (create/edit/delete keys), supports dividers, danger=red / positive=green",
+      "isActionSurface": true
+    }
+  },
+  "decisionFlow": [
+    "A list of items to render inside something (nav, picker, dropdown)? -> Menu primitive.",
+    "A '...' or button that opens a list of ACTIONS on a row/object? -> Context / Action menu.",
+    "Pick a VALUE from options (single/multi)? -> Dropdown picker / Select (not this family).",
+    "Go to a destination? -> Navigation (Primary nav / Side menu / Tabs)."
+  ],
+  "do": [
+    "Reuse the Menu primitive; use FlotoGridActions for row actions.",
+    "Colour danger actions with --secondary-red, positive with --secondary-green.",
+    "Gate menu items by permission (create/edit/delete keys)."
+  ],
+  "dont": [
+    "Don't confuse an actions menu with a value picker (use Dropdown picker / Select).",
+    "Don't confuse it with navigation (go somewhere).",
+    "Don't hand-roll a <ul> dropdown; don't rely on colour alone for danger."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "Primitive reproduced (live MMenu needs Ant menu context) -> real tokens + MIcon."
+    },
+    "F2": {
+      "severity": "Low",
+      "a11y": true,
+      "issue": "Verify role=menu/menuitem, arrow-key + Esc, trigger aria-label, focus return, non-colour-only danger."
+    },
+    "F3": {
+      "severity": "Info",
+      "issue": "MDropdown appears only 1x (editor); the standard action menu is FlotoGridActions (MPopover + MMenu)."
+    }
+  },
+  "tokensUsed": [
+    "--page-background-color",
+    "--border-color",
+    "--neutral-lighter",
+    "--code-tag-background-color",
+    "--primary",
+    "--secondary-red",
+    "--secondary-green",
+    "--page-text-color"
+  ],
+  "storybook": "Molecules/Menu",
+  "related": [
+    "navigation",
+    "dropdownpicker",
+    "select",
+    "popover",
+    "toolbars",
+    "table"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "apis": {
+    "ContextMenu": {
+      "source": "src/components/_base-grid-actions.vue (FlotoGridActions)",
+      "props": {
+        "actions": "Array<{key,name,icon?,isDanger?|redAction?,greenAction?,type?:'divider'}>",
+        "resource": "Object (the row, required)",
+        "createPermissionKeys/editPermissionKeys/deletePermissionKeys": "Array of action keys gated by the matching *PermissionName",
+        "createPermissionName/editPermissionName/deletePermissionName": "String permission const",
+        "overlayClassName": "String (default 'picker-action-dropdown')",
+        "textClassName": "String (default 'text-neutral-light')",
+        "useDelayedHide": "Boolean"
+      },
+      "events": {
+        "selected": "(action) on any pick",
+        "<actionKey>": "also emitted by the action's key (e.g. @delete)"
+      },
+      "slots": {
+        "trigger": "{ toggle } — default is the ⋯ ellipsis-v"
+      },
+      "actionItem": "{ key, name, icon, isDanger|redAction (red), greenAction (green), type:'divider' }"
+    }
+  },
+  "a11y": {
+    "summary": "role=menu + menuitem; ↑/↓ move, Enter/Space activate, Esc closes + restores focus (trapped while open); not colour-only (danger/positive carry icon+label).",
+    "issues": [
+      "The ellipsis-v ⋯ trigger is icon-only — needs an aria-label."
+    ],
+    "doc": "Molecules/Menu/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "usageRules": {
+    "menu-primitive": {
+      "useWhen": "You need a vertical list of selectable icon+label rows rendered INSIDE another surface — a nav, a dropdown picker, a side menu, or a custom overlay. Reach for the MMenu primitive (MMenu / MMenuItem / MMenuDivider) as the shared building block; use MMenuDivider to group rows and the danger (--secondary-red) / positive (--secondary-green) item colours for destructive/affirmative rows. States it carries: hover (--neutral-lighter), selected (--primary on --code-tag-background-color).",
+      "dontUse": "Don't use the bare primitive when you specifically need a '...' trigger opening ACTIONS on a grid row/object — use the Context / Action menu (FlotoGridActions) which adds the ellipsis trigger and permission gating. Don't use it to pick a VALUE (single/multi) — that's Dropdown picker / Select. Don't use it for navigation to a destination — that's Primary nav / Side menu / Tabs. Never hand-roll a <ul> dropdown to replace it.",
+      "example": "The MMenu list that renders the item rows inside the Primary nav, the Side menu, and the Dropdown picker overlays — the same primitive reused across all of them rather than a hand-rolled list."
+    },
+    "context-menu": {
+      "useWhen": "You need a '⋯' (ellipsis-v) trigger — or a button — that opens a menu of ACTIONS on a specific row/object: Edit, Duplicate, Delete, etc. Use FlotoGridActions (an MPopover placement bottomRight opening an MMenu of action items); pass the row as `resource`, actions as {key,name,icon,isDanger/redAction,greenAction,type:'divider'}, and gate items via create/edit/delete permission keys. Colour destructive actions red (isDanger/redAction) and affirmative ones green (greenAction), each keeping its icon+label so meaning isn't colour-only.",
+      "dontUse": "Don't use it just to render a static list of rows with no action-trigger — use the Menu primitive directly. Don't use it to select a VALUE from options — use Dropdown picker / Select. Don't use it to navigate somewhere — use Navigation. Avoid the 1x MDropdown pattern (rich-text editor table options) as the standard row-action surface; FlotoGridActions is the standard.",
+      "example": "The '⋯' actions menu on each row of a Floto grid (e.g. an alert/monitor/report list), opening Edit / Duplicate / Delete where Delete is red and the whole item set is filtered by the user's create/edit/delete permissions."
+    }
+  },
+  "changelog": [
+    {
+      "date": "2026-07-15",
+      "change": "Added a `bordered` option to the ⋯ dots trigger (a bordered kebab button) — used by the obs-toolbar bulk-action-bar More. Default (borderless) unchanged."
+    },
+    "2026-07-14: completeness pass (owner) — the playground now exposes the `mode` (context | inline) control + a Content preset (Row actions / Nav list) so both modes are switchable on one live menu; added the element 'modes, item shape & when to use' table + item shape ({key,label,icon,danger,divider,selected,disabled}) to the prose spec.",
+    "2026-07-11: shipped the real <obs-menu> web component. Two modes: context (a ⋯ ellipsis-v or button trigger opening a top-layer MMenu of ACTIONS — the FlotoGridActions surface) and inline (the MMenu primitive rendered in place). Rows carry a product icon (icon key), danger/positive colours, dividers, disabled + selected states; emits `select` (item key) and reflects el.value. Top-layer Popover menu so it's correct inside animated ancestors. The ⋯ trigger uses the real product ellipsis-v icon.",
+    "2026-06-16: Added — the Menu family. Two members: the MMenu primitive (a vertical list of selectable icon+label rows, with MMenuDivider + danger/positive colours) catalogued in its own right as the building block beneath Primary nav / Side menu / Dropdown picker; and the Context/Action menu (FlotoGridActions — an MPopover ellipsis-v trigger opening an MMenu of ACTIONS, an action surface distinct from a value picker). Storybook: Molecules/Menu (Menu + ContextMenu)."
+  ]
+}

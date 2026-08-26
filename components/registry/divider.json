@@ -1,0 +1,200 @@
+{
+  "name": "divider",
+  "component": "MDivider",
+  "display": "Divider",
+  "tier": "atom",
+  "family": "Divider",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "A thin rule that marks a semantic break between content — horizontal between stacked sections, vertical between inline items.",
+  "selectHint": "Use to separate sections (horizontal) or inline items (vertical). If you only need space, use margin instead. A titled section header? -> a plain heading (NOT a with-text divider by default — that treatment is opt-in).",
+  "whenToUse": "A real boundary between two groups of content — not merely spacing.",
+  "insteadOf": [
+    "a hardcoded 1px border div",
+    "extra margin used as a fake separator"
+  ],
+  "variants": [
+    {
+      "name": "horizontal",
+      "what": "Full-width 1px rule between stacked sections (default). margin 1rem 0.",
+      "usage": "126×"
+    },
+    {
+      "name": "vertical",
+      "what": "Inline 1px separator between items in a row (type=\"vertical\").",
+      "usage": "7×"
+    },
+    {
+      "name": "with-text",
+      "what": "Labelled section rule (text prop or slot; orientation start/center/end).",
+      "usage": "kit-supported"
+    },
+    {
+      "name": "dashed",
+      "what": "A real dashed rule (obs-divider fixes the product F1 no-op).",
+      "usage": "DS improvement"
+    },
+    {
+      "name": "dark",
+      "what": "Line tuned for a dark background (--neutral-light).",
+      "usage": "rare"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "1px",
+      "note": "1px hairline; not size-configurable."
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "what": "Static decorative rule; no interactive states."
+    }
+  ],
+  "props": {
+    "type": {
+      "type": "string",
+      "default": "horizontal",
+      "enum": [
+        "horizontal",
+        "vertical"
+      ],
+      "note": "horizontal (default) — a full-width rule between stacked sections; vertical — an inline separator between row items."
+    },
+    "dashed": {
+      "type": "boolean",
+      "default": false,
+      "note": "a REAL dashed line (obs-divider fixes the product F1, where dashed rendered solid)."
+    },
+    "orientation": {
+      "type": "string",
+      "default": "",
+      "enum": [
+        "",
+        "start",
+        "end"
+      ],
+      "note": "label position on a with-text divider (default center); start→left, end→right."
+    },
+    "text": {
+      "type": "string",
+      "default": "",
+      "note": "optional label → renders a with-text section rule (or use the default slot)."
+    },
+    "dark": {
+      "type": "boolean",
+      "default": false,
+      "note": "tune the line for a dark surface (--neutral-light)."
+    }
+  },
+  "events": [],
+  "slots": {
+    "default": "optional label content — renders a with-text divider (equivalent to the `text` prop; slot wins)."
+  },
+  "decisionFlow": [
+    "Just want space between elements (no real boundary)? -> use margin/spacing, NOT a divider (don't overuse dividers).",
+    "Separating items sitting in a row (inline metadata, toolbar actions, compare columns)? -> type=\"vertical\".",
+    "A titled section / group (e.g. a form’s “General” / “Credential details” header)? -> a PLAIN heading is the default (the product norm). The with-text (labelled) divider is an OPTIONAL, opt-in decorative treatment — do NOT auto-apply it. An AI tool should build the plain heading and, at the END of its reply, OFFER the labelled divider as an alternative (“want the section headers as labelled dividers instead? — let me know”).",
+    "Otherwise separating stacked blocks/sections? -> the default horizontal rule.",
+    "Modifiers: dark = tuned for a dark background; dashed = a real dashed line."
+  ],
+  "usageRules": {
+    "horizontal": {
+      "useWhen": "two vertically-stacked groups need a clear boundary — form sections, card regions, header above body",
+      "dontUse": "you only need spacing (use margin), or the groups are already separate cards",
+      "example": "the rule between Connection details and Advanced options in a settings form",
+      "asSeenIn": "settings log-parser forms, NCM device-template-form, integration lama-profile-form"
+    },
+    "vertical": {
+      "useWhen": "items sit in a row and need a light separator — inline metadata, compare columns, a small action group",
+      "dontUse": "the items are stacked (use horizontal), or a gap reads clearly enough",
+      "example": "separating status · version · updated-time on one line",
+      "asSeenIn": "NCM backup-compare-form / device-policy-breakdown, alert ncm-compare-diff, flow-analytics-card"
+    },
+    "dashed": {
+      "useWhen": "a lighter, less-permanent boundary — an optional/secondary section break",
+      "dontUse": "the primary structural boundaries (use the solid rule)",
+      "example": "obs-divider renders a real dashed line (the product MDivider does not — F1)"
+    },
+    "with-text": {
+      "useWhen": "ONLY when the user EXPLICITLY asks for a labelled / decorative section rule (opt-in). It is NOT the default for form or page section headers.",
+      "dontUse": "for a normal section / form header — use a plain heading instead (the product norm). Never auto-apply it.",
+      "example": "opt-in only. orientation=start|end moves the label. AI tools: build a plain heading by DEFAULT and only MENTION this at the end of your message (“you can swap plain section headings for labelled dividers if you prefer”) — do not apply it unprompted.",
+      "note": "Optional variant — the product mostly uses plain headings, not labelled dividers. Owner does not want this auto-applied."
+    },
+    "dark": {
+      "useWhen": "the divider sits on a dark-surfaced panel and the default line is too faint",
+      "dontUse": "on the normal page surface (the default already resolves per theme)",
+      "example": "a divider inside a dark-surfaced widget/panel"
+    }
+  },
+  "usage": {
+    "total": 133,
+    "files": 93,
+    "byType": {
+      "horizontal": 126,
+      "vertical": 7
+    },
+    "byModule": {
+      "settings": 31,
+      "components (shared)": 14,
+      "alert": 10,
+      "ncm-approval": 6,
+      "ncm": 6,
+      "topology": 5,
+      "apm": 4
+    },
+    "note": "byType is exact from the sweep (type=\"vertical\" appears 7×; the rest default to horizontal). dashed and with-text/orientation have zero product uses."
+  },
+  "do": [
+    "Use one rule per boundary — never stack two dividers.",
+    "Try whitespace/margin first; a divider is a semantic break, not a spacer.",
+    "Let the line inherit the theme (var(--border-color)); don't hardcode a colour.",
+    "Use type=\"vertical\" for inline separators, horizontal for stacked sections.",
+    "For a titled form/section header, use a PLAIN heading by default; the with-text (labelled) divider is opt-in — offer it at the end, don’t auto-apply it."
+  ],
+  "dont": [
+    "Don't use a divider just to add space (use margin).",
+    "Don't stack dividers or box every section — it reads noisy.",
+    "Don't rely on a divider alone to communicate meaning (pair it with text/state).",
+    "Don’t default to the with-text (labelled) divider for section/form headers — it’s an optional decorative treatment; use a plain heading and only add it if the user asks."
+  ],
+  "a11y": {
+    "summary": "Decorative separator — Ant renders role=\"separator\"; conveys a thematic break without interactive noise.",
+    "issues": [],
+    "doc": "Atoms/Divider/Accessibility",
+    "notes": "A rule is a visual break, not a landmark/heading — give navigable sections a real heading. Line is a low-contrast hairline by design; never rely on it alone to convey meaning."
+  },
+  "knownIssues": [
+    "F1 (resolved in obs-divider): in the product MDivider, `dashed` renders SOLID — the DS override `.ant-divider { background: var(--border-color) }` (general.less:212 / form.less:448) paints over Ant's dashed border-top, so it has no effect (0× product use). obs-divider FIXES this: `dashed` drops the background fill and paints a real 1px dashed border, so the element renders an actual dashed line. This is a DELIBERATE divergence from the product render."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-text-color",
+    "--neutral-lightest",
+    "--action-dropdown-divider",
+    "--nav-divider-bg"
+  ],
+  "related": [
+    "toolbar",
+    "table",
+    "page-header",
+    "form-item"
+  ],
+  "changelog": [
+    "2026-08-06 — Guidance (owner): demoted the with-text (labelled) divider from the recommended treatment for titled sections to an OPTIONAL, opt-in variant. decisionFlow / usageRules / do-dont / selectHint now steer AI tools to use a PLAIN heading for form/section headers by default and only OFFER the labelled divider at the end of the reply, rather than auto-applying it. (Owner disliked the auto-applied labelled-divider look in a generated form.)",
+    "2026-07-21 — Added a themeable vertical margin: `--divider-my` (default 1rem) so a dense surface (e.g. a dropdown menu) can use a tight divider. obs-user-menu uses it for compact group separators.",
+    "2026-07-16 — Fixed: the `dark` variant filled the WITH-TEXT divider as a solid block (the dark background paint outranked the with-text box's transparent background). Scoped the fill to the plain line (`.dh:not(.withtext)`) and recolour the with-text ::before/::after rules to --neutral-light instead — the labelled divider now renders as a line + label on a dark surface. (element CSS)",
+    "2026-07-16 — Shipped obs-divider (the framework-agnostic element): type (horizontal/vertical) · text/slot with-text rule · orientation (start/center/end) · dark. Source-derived from Ant v1 divider defaults + the DS overrides (background var(--border-color) · horizontal margin 1rem 0 · vertical 1px×0.9em top -0.06em margin 0 8px · with-text table layout 50/50, start 5/95, end 95/5, font-size lg / weight 500). role=\"separator\" on every form. INTENTIONAL divergence: `dashed` renders a REAL dashed line (fixes the product F1 no-op). Ledger flagged source-derived (no rendered Storybook diff — storybook-static not rebuilt).",
+    "2026-07-04 — Added to the DS (first catalogue). Swept 133×/93 files: 126 horizontal + 7 vertical; with-text kit-supported but unused. Base line verified as background: var(--border-color) (light + dark). Decision-grade Usage authored + mirrored here.",
+    "2026-07-04 — F1 (owner-caught): `dashed` is a no-op — it renders solid because the DS `.ant-divider { background: var(--border-color) }` override paints over Ant's dashed border. Flagged in the Dashed story + Usage + here; measured by computed style."
+  ],
+  "storybook": "Atoms/Divider",
+  "figma": {
+    "status": "not-started",
+    "component": "Divider"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "name": "key-value",
+  "display": "Key-Value",
+  "tier": "molecule",
+  "family": "Data Display",
+  "status": "stable",
+  "element": "obs-key-value",
+  "summary": "The DS key-value / description list (obs-key-value) — the product's column-grid-view / overview-layout: a TRANSPOSED grid where columns become row labels (a tinted label cell) + the record's value. A single-record DETAIL view, common in widget overviews and detail panels. NOT a data table (it only shares the grid chrome) — for rows-of-records use obs-table.",
+  "element_note": "Split out of the Storybook Table 'key-value (transposed)' variant — it's a detail LAYOUT, not a data table.",
+  "variants": [
+    {
+      "name": "card",
+      "what": "default — bordered card with a tinted label cell (column-grid-view)"
+    },
+    {
+      "name": "plain",
+      "what": "[element] borderless, muted label, no card (overview-layout)"
+    },
+    {
+      "name": "two-column",
+      "what": "[element] columns=\"2\" — pairs laid out two-across (overview-layout 2-columns) for wide records"
+    },
+    {
+      "name": "color-coded",
+      "what": "[element] a value coloured by a --severity token (item's 3rd field / `color` key) — the product ColorCodedCell colouring"
+    },
+    {
+      "name": "status",
+      "what": "[element] a value rendered as an obs-tag (item's 4th field / `status` key) — the overview-layout status cell"
+    }
+  ],
+  "props": {
+    "items": {
+      "type": "string|array",
+      "note": "[[label, value], …] or [[label, value, color, status], …] or [{label, value, color?, status?}] — JSON string or a JS array. `color` is a --severity token that colours the value; `status` (e.g. \"running\") renders the value as an obs-tag."
+    },
+    "variant": {
+      "type": "String",
+      "default": "card",
+      "note": "[element] card (bordered card, tinted label — column-grid-view) | plain (borderless, muted label — overview-layout)"
+    },
+    "columns": {
+      "type": "Number",
+      "default": 1,
+      "note": "[element] 1 | 2 — pairs per row (columns=2 lays the pairs out two-across, the overview-layout 2-columns layout)"
+    }
+  },
+  "decisionFlow": [
+    "Showing ONE record's fields as label→value pairs (a detail / overview panel)? -> Key-Value.",
+    "Rows of MANY records with columns? -> the Table (obs-table).",
+    "Headline metrics (big number + unit)? -> Metric List (obs-metric-list)."
+  ],
+  "do": [
+    "Use for a record's detail/overview (label | value).",
+    "Keep labels short; the label cell is tinted (card variant).",
+    "Use columns=\"2\" for many fields; colour a threshold value with a --severity token; render a status value as a tag via `status`."
+  ],
+  "dont": [
+    "Don't use for tabular records (use obs-table).",
+    "Don't use for KPI metrics (use obs-metric-list).",
+    "Don't hardcode a value colour — use a --severity token; don't use 2 columns for long-wrapping values."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--grid-header-bg",
+    "--neutral-dark",
+    "--neutral-light",
+    "--neutral-lighter",
+    "--page-text-color"
+  ],
+  "usageRules": {
+    "key-value": {
+      "useWhen": "a single record's fields shown as label→value pairs (detail / overview panel)",
+      "dontUse": "for tabular records (obs-table) or headline metrics (obs-metric-list)",
+      "example": "a monitor detail panel: Monitor: web-server-01, IP: 10.0.0.12, Type: Linux Server, Uptime: 42 days"
+    },
+    "card": {
+      "useWhen": "the default — a bordered card with a tinted label cell, for a self-contained detail panel/widget",
+      "dontUse": "when the pairs sit inside an already-bordered container or a dense inline overview — use `plain`",
+      "example": "a monitor detail card in a drawer or overview widget"
+    },
+    "plain": {
+      "useWhen": "an inline, borderless detail with muted labels (the overview-layout style) — inside another card/section",
+      "dontUse": "when the block needs its own visual boundary — use `card`",
+      "example": "a properties block inside a larger detail page section"
+    },
+    "two-column": {
+      "useWhen": "a record has MANY fields — columns=\"2\" lays the pairs two-across so it reads compactly (overview-layout 2-columns)",
+      "dontUse": "for a few pairs (1 column is cleaner) or when values are long and would wrap",
+      "example": "an asset inventory panel: Vendor / Model / Uptime / OS / Site / Rack across two columns"
+    },
+    "color-coded": {
+      "useWhen": "a value signals severity/threshold state — pass a `color` (a --severity token) as the item's 3rd field / key",
+      "dontUse": "don't hardcode a hex; don't colour a value with no threshold meaning",
+      "example": "CPU 94% in --severity-critical, Memory 61% in --severity-warning"
+    },
+    "status": {
+      "useWhen": "a value IS a status — pass `status` (e.g. \"running\"/\"down\") as the 4th field / key to render it as an obs-tag",
+      "dontUse": "for plain text values (leave status empty); for a big KPI number use obs-metric-list",
+      "example": "Status: a green Running obs-tag inside the detail panel"
+    }
+  },
+  "a11y": {
+    "summary": "Semantically a description list — prefer a <dl> if possible; the label cell should be associated with its value. Ensure sufficient contrast on the tinted label cell.",
+    "issues": []
+  },
+  "knownIssues": [
+    "[element] obs-key-value is FUNCTIONAL: pass items ([label,value] pairs/objects). Split from the Storybook Table 'key-value (transposed)' variant since it's a detail layout, not a data table."
+  ],
+  "changelog": [
+    "2026-07-13: dark-mode label fix (owner) — the card label cell used --neutral-dark, which resolves near-black (#172336) in dark mode → invisible on the dark tinted label cell. Switched to --neutral-regular (muted in both themes: light #7186a8 / dark #6a7fa0). Readable in both.",
+    "2026-07-13: variants + playground (owner) — added `variant` (card [default, tinted card] | plain [borderless, muted — overview-layout]), `columns` (1 | 2 — pairs two-across, overview-layout 2-columns), color-coded values (a --severity token as the item's 3rd field), and status values (a 4th field renders the value as an obs-tag). Added the Details-tab playground (variant + columns selects + dataset presets) and gallery examples. Documented the full surface in the new prose spec.",
+    "2026-07-13: row hover (owner) — added a real row-hover highlight on the value cell (`tr:hover td.val` → --neutral-lighter, 0.12s ease; the tinted label cell stays put). Earlier this was wrongly dismissed as an Inspect-mode artifact; the owner wanted an actual hover affordance.",
+    "2026-07-13: width fix (owner) — the playground was shrink-wrapping the widget to ~208px (labels wrapped); changed :host to display:block, widened the max-width, and gave the element full stage width so labels/values sit on one line.",
+    "2026-07-13: shipped <obs-key-value> — the DS key-value / description list (column-grid-view / overview-layout). Split out of the Storybook Table variant set (it's a detail LAYOUT, not a table)."
+  ],
+  "storybook": "Organisms/Table (key-value variant)"
+}

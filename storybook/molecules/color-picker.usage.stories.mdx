@@ -1,0 +1,40 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Color Picker/Usage" />
+
+# Color Picker — Usage
+
+A **color picker** lets a user choose a **color** — a swatch trigger that opens a color canvas plus a
+16-color preset palette (`color-picker.vue`). Use it only when the value being set *is a color*.
+
+Written so designers, developers, PMs — and AI tools — never have to guess: start with the decision flow,
+then the per-case rules. Examples are real ObserveOps usage.
+
+## Decision flow (first match wins)
+
+1. **Is the value a fixed severity / status color?** → use the `--severity-*` token, **not** a free picker
+   (keeps severities consistent across the product).
+2. **Is the value a color the user should pick freely** (brand, widget series, threshold band, background)?
+   → **Color Picker**.
+3. **Not a color?** → a **Dropdown / Select / Input**, not this.
+
+## When to use
+
+- **Use when** the user sets a **color**: brand/theme color, a chart/widget **series** color, **threshold /
+  gauge band** colors, a **dashboard background**.
+- **Offer the preset palette** (the 16 on-brand colors) for a quick pick; allow a **custom hex** via the canvas.
+- **Support `transparent`** where "no fill" is valid — the swatch renders with a red diagonal line.
+
+## When NOT to use / use instead
+
+- **Fixed severity/status color** → the `--severity-*` token (Critical, Major, Warning, Clear, …), so the
+  color is consistent everywhere. Don't let users re-pick a severity color.
+- **A non-color value** → a **Dropdown picker / Select** (a value from a list) or an **Input** (free text).
+- **Don't rely on color alone** to convey meaning — pair the color with a **label or icon** (accessibility).
+
+## As seen in the product
+
+- **Widget / chart series colors** — dashboard widgets let you set the color of each series.
+- **Threshold & gauge band colors** — metric thresholds / gauge ranges.
+- **Branding** — theme/logo accent color in settings.
+- **Dashboard background** — the canvas color, including `transparent`.

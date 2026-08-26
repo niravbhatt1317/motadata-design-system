@@ -1,0 +1,306 @@
+{
+  "name": "command-palette",
+  "component": "omnibox searchbar.vue (MSelect + CodeMirror)",
+  "display": "Command Palette",
+  "tier": "molecule",
+  "family": "App Chrome",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The interactive header GLOBAL SEARCH / omnibox — a search bar with a category picker (Metric/Log/Flow), a query field with a live SUGGESTIONS dropdown, an Execute action (⏎) that flips to a red error icon on a parse error, a clear (⌫), and a time-range picker. For cross-app search / a command surface, NOT a plain list filter. Composes obs-select + obs-input + obs-date-time-picker (kind=range) + obs-icon. The turnkey form of the `command-palette` recipe.",
+  "selectHint": "A GLOBAL / cross-app search or command surface (category + query + Execute) in the header? -> obs-command-palette. A plain search of a single list/table? -> the obs-input `search` type, NOT this.",
+  "whenToUse": "The header omnibox for global/cross-app search or a query-builder command surface — pick a category, type a query, Execute. One per app chrome.",
+  "insteadOf": [
+    "a hand-built search bar (icon + select + input + button)",
+    "the obs-input search type used for a global command surface (that is for filtering one list)",
+    "a bespoke command-palette widget"
+  ],
+  "variants": [
+    {
+      "name": "default",
+      "what": "search icon + category picker + query field + Execute (+ clear).",
+      "usage": "the standard header omnibox"
+    },
+    {
+      "name": "no-category",
+      "what": "omit `categories` -> a plain global search bar (search + query + Execute).",
+      "usage": "when there is no category axis"
+    },
+    {
+      "name": "error",
+      "what": "the `error` prop -> Execute turns red with the message + an exclamation icon; Execute disabled until the query parses.",
+      "usage": "invalid-query state"
+    },
+    {
+      "name": "with-suggestions",
+      "what": "a live autocomplete dropdown under the query (the `suggestions` prop).",
+      "usage": "metric/query typeahead"
+    },
+    {
+      "name": "with-time-range",
+      "what": "a reused obs-date-time-picker (kind=range) on the right for the query time window.",
+      "usage": "metric/log queries"
+    },
+    {
+      "name": "overlay",
+      "what": "a search-icon trigger → a centered, blurred Cmd+K modal palette (overlay=true).",
+      "usage": "the product header search"
+    },
+    {
+      "name": "block",
+      "what": "a wider bar — grows to a 1100px cap (vs the 680–800 default). Bounded, never edge-to-edge.",
+      "usage": "a roomy standalone search page / wide header"
+    },
+    {
+      "name": "centered",
+      "what": "align=\"center\" centers the bar within its container (default is left).",
+      "usage": "a standalone / hero search surface"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "680–800px bar (block: up to 1100px)",
+      "note": "a single rounded bordered bar; min-width 680 so the query is never cramped, grows to 800; block widens to a 1100 cap; align left (default) / center."
+    }
+  ],
+  "states": [
+    {
+      "name": "empty",
+      "what": "just the placeholder; the clear button is hidden."
+    },
+    {
+      "name": "typing",
+      "what": "a query is entered; clear button shows; Enter or Execute runs it."
+    },
+    {
+      "name": "error",
+      "what": "the Execute icon becomes a red exclamation (obs-icon exclamationCircle); the border turns red; Execute is disabled until the query parses."
+    }
+  ],
+  "props": {
+    "value": {
+      "type": "string",
+      "default": "",
+      "note": "the query text (two-way via the `input` event)."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Start Typing...",
+      "note": "the query field placeholder."
+    },
+    "categories": {
+      "type": "array|string",
+      "default": "",
+      "note": "category-picker options ([{value,label}] or a comma list). Empty -> no category picker (a plain search bar)."
+    },
+    "category": {
+      "type": "string",
+      "default": "",
+      "note": "the current category value (else the first option)."
+    },
+    "execute-label": {
+      "type": "string",
+      "default": "Execute",
+      "note": "the Execute action label."
+    },
+    "error": {
+      "type": "string",
+      "default": "",
+      "note": "a parse-error message -> Execute shows the error state (red + exclamation) and is disabled."
+    },
+    "clearable": {
+      "type": "boolean",
+      "default": true,
+      "note": "show the clear (backspace) button when there is a query."
+    },
+    "suggestions": {
+      "type": "array|string",
+      "default": "",
+      "note": "autocomplete options (strings) → a live dropdown while the query is focused; filtered by the query. Click / Arrow+Enter fills the query (emits `suggest`)."
+    },
+    "time-range": {
+      "type": "boolean",
+      "default": false,
+      "note": "show the time-range picker on the right (REUSES obs-date-time-picker kind=range — the hero TimeRangePicker: relative presets + Custom)."
+    },
+    "overlay": {
+      "type": "boolean",
+      "default": false,
+      "note": "render as a header search-ICON trigger that opens the palette as a centered, near-top MODAL over a blurred/dimmed backdrop (Cmd+K style; <dialog>.showModal like obs-modal). Esc / backdrop-click closes. This is how the product header search opens."
+    },
+    "block": {
+      "type": "boolean",
+      "default": false,
+      "note": "wider bar — grows to 1100px (vs the 680–800 default). Bounded, never edge-to-edge full-bleed."
+    },
+    "align": {
+      "type": "string",
+      "default": "left",
+      "enum": [
+        "left",
+        "center"
+      ],
+      "note": "horizontal alignment of the bar within its container: left (default) or center."
+    }
+  },
+  "events": [
+    {
+      "name": "execute",
+      "detail": "{category, query}",
+      "note": "the query was run (Enter or Execute click); blocked while `error` is set."
+    },
+    {
+      "name": "input",
+      "detail": "{query}",
+      "note": "the query text changed."
+    },
+    {
+      "name": "category",
+      "detail": "{value}",
+      "note": "the category changed."
+    },
+    {
+      "name": "clear",
+      "detail": "none",
+      "note": "the clear button was clicked (query reset)."
+    },
+    {
+      "name": "suggest",
+      "detail": "{value}",
+      "note": "a suggestion was picked from the autocomplete dropdown (fills the query)."
+    },
+    {
+      "name": "open",
+      "detail": "none",
+      "note": "the overlay palette opened (overlay mode)."
+    },
+    {
+      "name": "close",
+      "detail": "none",
+      "note": "the overlay palette closed."
+    }
+  ],
+  "slots": {},
+  "decisionFlow": [
+    "A GLOBAL / cross-app search or a command/query surface in the header? -> obs-command-palette.",
+    "A plain search that filters ONE list/table? -> the obs-input `search` type, NOT this.",
+    "Is there a category/scope axis (Monitor / Metric / Log)? -> set `categories`; else omit it for a plain bar.",
+    "Invalid query? -> set `error` with the message; Execute shows red + is disabled until it clears.",
+    "Where does it live? -> the obs-app-header search area (default slot).",
+    "Need a full modal Cmd+K palette with a results list? -> compose obs-modal + this bar (route-away); this element is the inline omnibox.",
+    "Query has a known vocabulary (metric names)? -> pass `suggestions` for a live autocomplete dropdown.",
+    "Results are time-scoped (metrics/logs)? -> `time-range` adds the reused obs-date-time-picker (presets + Custom).",
+    "Should the header search open as a focused Cmd+K modal (icon -> centered blurred palette)? -> `overlay`. Inline always-visible bar? -> default (no overlay).",
+    "How wide / where? -> default is a 680–800 left-aligned bar; a roomy standalone surface -> `block` (grows to a 1100 cap); center it in its container -> align=\"center\"."
+  ],
+  "usageRules": {
+    "default": {
+      "useWhen": "the header global-search omnibox — category + query + Execute for cross-app search",
+      "dontUse": "for filtering a single list (use the obs-input search type)",
+      "example": "obs-app-header search area: All / Monitor / Metric + a query + Execute",
+      "asSeenIn": "components/omnibox/searchbar.vue"
+    },
+    "no-category": {
+      "useWhen": "a plain global search with no scope axis",
+      "dontUse": "distinct search scopes exist (add categories)",
+      "example": "omit `categories` -> search + query + Execute"
+    },
+    "error": {
+      "useWhen": "the typed query fails to parse and the user must fix it before running",
+      "dontUse": "the query is valid/empty (no error state)",
+      "example": "error=\"Unexpected token near '='\" -> red Execute + exclamation"
+    },
+    "with-suggestions": {
+      "useWhen": "the query has a known vocabulary (metric names, keywords) worth autocompleting",
+      "dontUse": "a free-text search with no suggestions",
+      "example": "suggestions=['top','system.disk.free.percent',…] → a dropdown while focused"
+    },
+    "with-time-range": {
+      "useWhen": "the query results are time-scoped (metrics/logs over a window)",
+      "dontUse": "a non-temporal search",
+      "example": "time-range → a Last 1 Hour / Last 24 Hours / Custom picker on the right"
+    },
+    "overlay": {
+      "useWhen": "the header search should open the palette as a focused Cmd+K modal (the product behaviour) rather than sit inline",
+      "dontUse": "an always-visible inline search bar is wanted (default mode)",
+      "example": "overlay -> a search icon in obs-app-header; click it -> a centered blurred palette"
+    },
+    "block": {
+      "useWhen": "a roomy standalone search page or a wide header where the 680–800 default feels cramped",
+      "dontUse": "a compact header slot (the default already keeps a min-width 680 so the query is never cramped)",
+      "example": "block -> the bar grows to a bounded 1100px cap"
+    },
+    "centered": {
+      "useWhen": "a standalone / hero search surface where the bar should sit in the middle of its container",
+      "dontUse": "the header search area (left-aligned is the product default)",
+      "example": "align=\"center\" -> the bar centers; the showcase playground uses this"
+    }
+  },
+  "usage": {
+    "total": 1,
+    "files": 1,
+    "byModule": {
+      "components (omnibox)": 1
+    },
+    "note": "One per app shell (the header search). Turnkey element for the command-palette recipe; the product uses a CodeMirror query editor, this uses obs-input."
+  },
+  "do": [
+    "Place it in the obs-app-header search area (default slot).",
+    "Wire `execute` to your search/route and `category` to the scope.",
+    "Use `error` for parse feedback; keep Execute disabled until the query is valid.",
+    "Only use it for global/cross-app search — a list filter is the obs-input search type."
+  ],
+  "dont": [
+    "Don't use it to filter a single table/list (that's obs-input search).",
+    "Don't hardcode the categories in the query — the category is a separate scope axis.",
+    "Don't hardcode colours — the error state uses --secondary-red."
+  ],
+  "a11y": {
+    "summary": "The query is an obs-input (labelled by the placeholder/aria); the category is an obs-select (keyboard-navigable). Enter runs the query. On a parse error the message replaces Execute and the action is disabled; announce it via aria-live so screen-reader users hear the invalid-query feedback.",
+    "issues": [],
+    "doc": "Molecules/Command Palette/Accessibility",
+    "notes": "Give the query field a discernible name (the placeholder + an aria-label). Enter executes; the clear button has aria-label=\"Clear\". Announce results count / parse errors via a live region. If wrapped in a modal Cmd+K palette, trap focus and restore it on close."
+  },
+  "knownIssues": [
+    "Simplified vs the product: the query is a plain obs-input (with a suggestions dropdown), not the product's CodeMirror editor with tokenized parsing — appropriate for a DS omnibox. A full Cmd+K modal palette with a live results list is a route-away (obs-modal + this bar)."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--neutral-lightest",
+    "--neutral-lighter",
+    "--neutral-light",
+    "--neutral-shadow-light",
+    "--primary-alt",
+    "--secondary-red",
+    "--code-tag-background-color"
+  ],
+  "related": [
+    "app-header",
+    "select",
+    "input",
+    "modal",
+    "user-menu",
+    "notification-menu",
+    "date-time-pickers",
+    "tooltip"
+  ],
+  "changelog": [
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves (dropped stale/typography vars, added the overlay/theme tokens it uses). a11y / props / variants / usage verified current against the shipped component — no content drift. No API change.",
+    "2026-07-22 — Docs completeness pass: promoted `block` (wider, 1100 cap) and `centered` (align) to first-class variants with usage cards; added a width/alignment decisionFlow branch; the playground now exposes align + overlay controls so every mode (default / no-category / error / suggestions / time-range / overlay / block / centered) is reachable. No API change.",
+    "2026-07-22 — Overlay fix: the CLOSED overlay dialog no longer leaks its bar onto the page (a display:block show-rule was overriding the :not([open]) hide-rule); in overlay mode only the search-icon trigger shows until clicked.",
+    "2026-07-21 — Width fix (owner): the bar now has min-width 680 (was max-width 680) so it never shrinks below 680 and the query stays roomy; grows to 800; `block` widens to a bounded 1100px cap (not edge-to-edge).",
+    "2026-07-21 — Width/alignment (owner): default bar caps at 680px and is LEFT-aligned; `block` now widens to a 800px cap (not full-bleed); added an `align` prop (left|center). Showcase examples are 680/left, the playground centers (align=center); a Category-picker control was added to toggle the category dropdown.",
+    "2026-07-21 — Added `overlay` (Cmd+K) mode: a header search-ICON trigger opens the palette as a centered, near-top MODAL over a blurred, dimmed backdrop (<dialog>.showModal + ::backdrop blur, the obs-modal treatment) — matching how the product header search opens. Esc / backdrop-click closes (emits open/close). The app-header example now uses it.",
+    "2026-07-21 — UI polish (owner): category picker is now tinted/flat (transparent obs-select trigger over the segment, like the time-range) + halved width (92px) with truncation; the Execute (⏎) shows only when there is a query (empty → nothing; error → a red exclamation ICON, no button); added a `block` (full-width) prop; a 12px query inset; exec/clear tightened + each given an INSTANT tooltip via the reused obs-tooltip.",
+    "2026-07-21 — Full product-UI match (owner): added the live SUGGESTIONS dropdown (`suggestions` prop — focus the query → autocomplete list, ↑/↓ + Enter or click to fill) and the TIME-RANGE picker on the right (`time-range` → reuses obs-date-time-picker kind=range: presets + Custom). Parse error now flips Execute to a red exclamation ICON (not an inline message). Categories aligned to the product Metric/Log/Flow. The omnibox now mirrors searchbar.vue end-to-end.",
+    "2026-07-21 — Shipped obs-command-palette (App Chrome family): a single search-bar omnibox — leading search icon + a category picker (reused obs-select, not-searchable) + a query field (reused obs-input, no-border) + an Execute action, with a parse-error state (red + exclamation, Execute disabled) + a clear button. Emits execute/input/category/clear; Enter runs the query. Drops into obs-app-header's search area. The turnkey form of the command-palette recipe. Source-derived from components/omnibox/searchbar.vue (category MSelect + CodeMirror query + Execute/clear)."
+  ],
+  "storybook": "Molecules/Command Palette",
+  "figma": {
+    "status": "not-started",
+    "component": "Command Palette"
+  }
+}

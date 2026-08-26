@@ -1,0 +1,376 @@
+{
+  "name": "date-time-pickers",
+  "display": "Date & Time Pickers",
+  "tier": "molecule",
+  "family": "Date & Time Pickers",
+  "status": "stable",
+  "summary": "The product's date/time selection family. The hero is TimeRangePicker (42×) — the observability time-range control (relative presets + absolute custom range). MDatePicker (10×, wraps a-date-picker) is the form date-time field, in practice ALWAYS used with show-time. MTimePicker wraps a-time-picker (12-hour) but is rarely used standalone. DateTimePopover is a lighter custom-range-only popover.",
+  "props": {
+    "kind": {
+      "type": "string",
+      "default": "range",
+      "description": "which family member to render — range (the 42× hero TimeRangePicker), range-presets (hide-custom, 24×), field-datetime / field-date / field-time (MDatePicker/MTimePicker fields), slider (TimeRangeSlider scrubber)"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "non-interactive (greyed field / inert trigger)"
+    },
+    "bordered": {
+      "type": "boolean",
+      "default": false,
+      "description": "range trigger gets a --border-color frame (1×)"
+    },
+    "allowClear": {
+      "type": "boolean",
+      "default": false,
+      "description": "attr allow-clear — a times-circle × on the range pill that resets the selection (7×)"
+    },
+    "empty": {
+      "type": "boolean",
+      "default": false,
+      "description": "start with no selection — shows the calendar icon + “Select Time” placeholder"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "",
+      "description": "field placeholder text (defaults per kind)"
+    }
+  },
+  "variants": [
+    {
+      "name": "TimeRangePicker",
+      "what": "presets + custom range",
+      "usage": "42×"
+    },
+    {
+      "name": "presets-only",
+      "what": "hide-custom-time-range",
+      "usage": "24×"
+    },
+    {
+      "name": "excluded-options",
+      "what": "exclude preset keys",
+      "usage": "7×"
+    },
+    {
+      "name": "MDatePicker",
+      "what": "date-time (show-time)",
+      "usage": "10×"
+    },
+    {
+      "name": "MTimePicker",
+      "what": "12h time",
+      "usage": "ref"
+    },
+    {
+      "name": "TimeRangeSlider",
+      "what": "draggable scrubber",
+      "usage": "2×"
+    },
+    {
+      "name": "DateTimePopover",
+      "what": "custom-range-only popover",
+      "usage": "1×"
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "pill + label"
+    },
+    {
+      "name": "empty",
+      "what": "'Select Time' placeholder"
+    },
+    {
+      "name": "open",
+      "what": "panel/calendar visible"
+    },
+    {
+      "name": "disabled",
+      "what": "not interactive"
+    }
+  ],
+  "members": {
+    "TimeRangePicker": {
+      "source": "src/components/widgets/time-range-picker.vue (name TimeRangePicker)",
+      "usage": "42x / 35 files — the dominant date/time control",
+      "renders": "REFERENCE REPRODUCTION in Storybook (depends on the Vuex user-preference store + the `datetime` filter + moment, so it can't render live — like the Kendo grid).",
+      "presets": [
+        "Last 5 Mins (5m)",
+        "Last 15 Mins (15m)",
+        "Last 30 Mins (30m)",
+        "Last 1 Hour (1h)",
+        "Last 6 Hours (6h)",
+        "Last 12 Hours (12h)",
+        "Last 24 Hours (24h)",
+        "Last 48 Hours (48h)",
+        "Today (today)",
+        "Last Day (1d)",
+        "Last Week (1w)",
+        "Last Month (1mo)",
+        "This Week (week)",
+        "This Month (month)",
+        "Custom ('')"
+      ],
+      "props": {
+        "value": "v-model — object { selectedKey, startDate, endDate, startTime, endTime, dailyRollingData }",
+        "hideCustomTimeRange": "bool, 24× — drop the 'Custom' option (presets-only mode); the dominant variant",
+        "excludedOptions": "array, 7× — drop specific preset keys (e.g. ['today']); a real, common variant",
+        "allowClear": "bool, 7× — show a times-circle × to reset (emits change=undefined)",
+        "hideIcon": "bool, 3× — passed by consumers",
+        "maxSelectableRangeDays": "number, default 93 (365 for report export) — disables dates beyond the span in the custom calendar (2×)",
+        "disabled": "bool, 3×",
+        "getPopupContainer": "function, 2×",
+        "bordered": "bool, 1× — add a --border-color frame to the trigger",
+        "pillStyle": "object, 1× — inline style for the shortcut pill",
+        "hideSelectedTime": "bool, 1× — hide the absolute from/to shown beside the trigger",
+        "overlayClassName": "string, 1×",
+        "onlyLabel": "bool — DECLARED BUT UNUSED (0×); dailyRolling also 0×"
+      },
+      "emit": "change/v-model -> { selectedKey:'-24h'|'today'|'custom'|…, startDate:<ms>, endDate:<ms>, startTime:'HH:mm:ss', endTime:'HH:mm:ss', dailyRollingData:false }. Custom range validates end > start or blocks the emit.",
+      "trigger": "a --timerange-background-color shortcut pill (e.g. '24h' or a computed duration '6d 23h') + separator + the range label ('Last 24 Hours'); empty state shows a calendar-alt icon + 'Select Time'."
+    },
+    "MDatePicker": {
+      "source": "ui/components/Datepicker/Datepicker.vue (wraps a-date-picker)",
+      "usage": "10x / 8 files",
+      "renders": "REAL kit component (no store deps)",
+      "props": {
+        "value": "moment | string | number; v-model (model event=change)",
+        "showTime": "bool|object, default { use12Hours:true, format:'hh:mm A' } — ALL 10 real usages pass :show-time, so MDatePicker is the date-TIME field",
+        "allowClear": "9×",
+        "minDate": "7× — earliest selectable date",
+        "disabled": "5×",
+        "disabledDate": "function — grey out days",
+        "format": "display format",
+        "placeholder": "default 'Select...'"
+      },
+      "icon": "calendar suffix icon; slot dateRender for custom day cells"
+    },
+    "MTimePicker": {
+      "source": "ui/components/Datepicker/Timepicker.vue (wraps a-time-picker)",
+      "usage": "0× standalone — NOT used as a standalone tag anywhere in src. Time-of-day is entered via MDatePicker show-time or inside the TimeRangePicker custom view.",
+      "renders": "REAL kit component (shown for reference)",
+      "props": {
+        "format": "default 'hh:mm A'",
+        "use12Hours": "default true",
+        "allowClear": "default true",
+        "placeholder": "default 'Select...'"
+      },
+      "emit": "change(formattedString, moment)",
+      "icon": "clock suffix icon"
+    },
+    "TimePicker (custom)": {
+      "source": "src/components/time-picker.vue (name TimePicker)",
+      "usage": "0× standalone; used INSIDE TimeRangePicker's custom view (From/To time)",
+      "renders": "internal — wraps FlotoDropdownPicker (a DROPDOWN of time options + clock icon), NOT an Ant spinner",
+      "props": {
+        "value": "Array|Object|String",
+        "multiple": "bool",
+        "useSeconds": "bool (seconds granularity)",
+        "usePopover": "bool",
+        "...$attrs": "passed through to FlotoDropdownPicker"
+      }
+    },
+    "TimeRangeSlider": {
+      "source": "src/components/widgets/time-range-picker/time-range-slider.vue (name TimeRangeSlider)",
+      "usage": "2× — dashboard view + alert correlation drawer",
+      "renders": "REFERENCE REPRODUCTION (Ant range Slider styled as a timeline; needs moment/helper/datetime filter)",
+      "anatomy": "hidden rail; tick dots (2x14px) with time-mark labels every 10th (HH:mm / DD/MM / MMM by span); two 10x10 square handles; a --primary track for the selected window. min/max auto-expand to ~4x the current duration so dragging widens the window.",
+      "emit": "change -> { selectedKey:'custom', startDate, endDate, startTime, endTime } (same shape as TimeRangePicker)"
+    },
+    "DateTimePopover": {
+      "source": "src/components/common/date-time-popover.vue",
+      "usage": "1× (SLO correction profile) — a lighter CUSTOM-RANGE-ONLY popover (no presets)",
+      "renders": "documented (MPopover + FlotoFormItem + store deps)",
+      "emit": "{ startDate, endDate, startTime, endTime }"
+    }
+  },
+  "decisionFlow": [
+    "Selecting a TIME WINDOW for charts/dashboards/logs (relative or absolute)? -> TimeRangePicker (the 42× hero).",
+    "Want presets only (no absolute calendar)? -> TimeRangePicker :hide-custom-time-range (24×).",
+    "A single date or date+time value in a FORM field? -> MDatePicker with :show-time (the product default).",
+    "Just a time of day (e.g. a schedule)? -> MTimePicker (12-hour).",
+    "A custom absolute from/to with NO presets, as a form field? -> DateTimePopover.",
+    "Constrain how far back/forward? -> :max-selectable-range-days (TimeRangePicker) or :min-date / :disabled-date (MDatePicker)."
+  ],
+  "usageRules": {
+    "timeWindow": {
+      "useWhen": "pick a chart/dashboard/log time window",
+      "how": "<TimeRangePicker v-model>",
+      "example": "metric explorer, dashboards, log search"
+    },
+    "presetsOnly": {
+      "useWhen": "absolute ranges shouldn't be allowed",
+      "how": ":hide-custom-time-range",
+      "example": "widgets where only relative windows make sense"
+    },
+    "dateTimeField": {
+      "useWhen": "a date+time value in a form",
+      "how": "<MDatePicker :show-time v-model>",
+      "example": "maintenance window start, schedule"
+    },
+    "timeField": {
+      "useWhen": "a time of day",
+      "how": "<MTimePicker v-model>",
+      "example": "daily run time"
+    },
+    "TimeRangePicker": {
+      "useWhen": "Selecting a TIME WINDOW for charts, dashboards, or log/metric explorers — relative presets (Last 5/15/30 Mins, Last 1/6/12/24/48 Hours, Today, Last Day, Last/This Week, Last/This Month) OR an absolute custom from/to range. This is the 42x hero control and the default answer for any observability time selection. Emits v-model { selectedKey, startDate, endDate, startTime, endTime }.",
+      "dontUse": "Don't use for a single date/date-time value in a form (use MDatePicker with :show-time), for a time-of-day schedule (MTimePicker), or when absolute custom ranges must be forbidden (use presets-only via :hide-custom-time-range). Don't hand-roll a relative-range dropdown — this is that control.",
+      "example": "The dashboard/metric-explorer/log-search time-window control — click the '24h' pill to open the preset list, or choose Custom for a dual-month absolute range with From/To time selects."
+    },
+    "presets-only": {
+      "useWhen": "You need TimeRangePicker but absolute custom ranges shouldn't be allowed — pass :hide-custom-time-range to drop the 'Custom' option and expose only the relative presets. The dominant configured variant (24x). Use for widgets/contexts where only relative windows make sense.",
+      "dontUse": "Don't use when users legitimately need to pick an absolute from/to calendar range — use the full TimeRangePicker (Custom enabled). Don't reach for a separate component; this is just TimeRangePicker with one prop.",
+      "example": "Widgets and panels where only relative rolling windows are valid — the preset list (Last 24 Hours, Last Week, etc.) with no absolute calendar."
+    },
+    "excluded-options": {
+      "useWhen": "You want TimeRangePicker but must hide specific preset keys that don't apply to the context — pass :excluded-options with an array of preset keys (e.g. ['today']) to drop just those presets while keeping the rest. A real, common variant (7x).",
+      "dontUse": "Don't use to remove the Custom range wholesale — that's :hide-custom-time-range (presets-only). Don't use if you need every preset; only reach for it when specific presets are invalid for the view.",
+      "example": "A view where a preset like 'Today' is meaningless is dropped via :excluded-options=\"['today']\" while the remaining relative windows stay available."
+    },
+    "MDatePicker": {
+      "useWhen": "A single date or date+time value in a FORM field. In the product it is ALWAYS used with :show-time (12-hour hh:mm A), so treat it as the date-TIME field with a calendar icon. Constrain with :min-date (7x) or :disabled-date, add :allow-clear for an × (9x).",
+      "dontUse": "Don't use for selecting a chart/dashboard time WINDOW — that's TimeRangePicker. Don't use for a bare time-of-day (use MTimePicker) or a presets-free custom range popover (DateTimePopover). Don't pass an empty string '' as the value — moment parses it to 'Invalid date'; pass null/undefined or a moment.",
+      "example": "A maintenance-window start or schedule date-time field: <MDatePicker :show-time :min-date :allow-clear v-model> opening a single-month calendar with a 12-hour time spinner."
+    },
+    "MTimePicker": {
+      "useWhen": "Just a time of day (e.g. a daily run time / schedule), rendered as a 12-hour picker with a clock icon (allow-clear default true). Documented for reference — wraps a-time-picker.",
+      "dontUse": "Don't reach for it as a standalone control in practice: the product uses NO standalone time picker — time-of-day is entered via MDatePicker :show-time or inside the TimeRangePicker custom view (which uses a custom dropdown-based TimePicker). Don't use for a date or date-time value (MDatePicker) or a time window (TimeRangePicker). Don't pass '' as the value (parses to Invalid date).",
+      "example": "A daily run-time / schedule time-of-day field (12-hour hh:mm A) — reference pattern; in real product code time-of-day arrives via MDatePicker show-time or the range custom view instead."
+    },
+    "TimeRangeSlider": {
+      "useWhen": "You need a draggable TIMELINE SCRUBBER over an existing time window — a horizontal rail with tick dots, time-mark labels, and two square handles that widen/narrow the selected window by dragging (min/max auto-expand ~4x the current duration). Emits the same shape as TimeRangePicker with selectedKey:'custom'.",
+      "dontUse": "Don't use as the primary way to pick a window when users expect presets — pair it with or defer to TimeRangePicker. Don't use in forms or for discrete date/time values. Only 2x — a specialized scrubber, not the default.",
+      "example": "The dashboard timeline scrubber and the alert-correlation drawer — drag the two handles to reshape the visible time window."
+    },
+    "DateTimePopover": {
+      "useWhen": "A custom absolute from/to range as a FORM field with NO presets — a lighter custom-range-only popover (built on MPopover + FlotoFormItem). Emits { startDate, endDate, startTime, endTime }.",
+      "dontUse": "Don't use when relative presets are wanted (use TimeRangePicker or presets-only) or for a single date-time value (MDatePicker). Rare (1x) — only when you specifically need an absolute from/to inside a form without the preset machinery.",
+      "example": "The SLO correction-profile form — a custom-range-only from/to popover with no relative presets."
+    }
+  },
+  "tokensUsed": [
+    "--timerange-background-color",
+    "--timerange-text-color",
+    "--dropdown-background",
+    "--dropdown-hover-background",
+    "--left-menu-text-color-hover",
+    "--border-color",
+    "--primary",
+    "--calendar-selected-day-background-color",
+    "--tag-bg",
+    "--secondary-red",
+    "--neutral-light",
+    "--neutral-lightest",
+    "--page-text-color"
+  ],
+  "do": [
+    "Use TimeRangePicker for chart/dashboard/log time windows.",
+    "Use :hide-custom-time-range when only relative windows are valid.",
+    "Use MDatePicker WITH :show-time for date-time form fields (the product norm).",
+    "Constrain selection with :max-selectable-range-days / :min-date where it matters."
+  ],
+  "dont": [
+    "Don't hand-roll a relative-range dropdown — use TimeRangePicker.",
+    "Don't use a bare date picker for chart windows — that's TimeRangePicker's job.",
+    "Don't pass an empty string '' to MTimePicker/MDatePicker value (parses to an Invalid date) — pass null/undefined or a moment.",
+    "Don't assume card/inline calendar variants — the product uses the popup pickers only."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "TimeRangePicker depends on the user-preference store + datetime filter, so it is reproduced (not rendered live) in Storybook."
+    },
+    "F2": {
+      "severity": "Low",
+      "a11y": true,
+      "issue": "Catalog-wide focus-ring removal (SF-001) may affect the picker inputs/preset rows; verify keyboard focus visibility."
+    },
+    "element": "[element] The obs-date-time-picker WEB COMPONENT is reference-only: renders every variant but has NO `value` prop and emits NO events — can't set a date or read the selection. Visual reference only; use the product component in-repo or STOP-and-ASK."
+  },
+  "accessibility": {
+    "providedByAnt": "a-date-picker / a-time-picker expose a text input + a keyboard-navigable calendar/time panel; Escape closes; the input is focusable and typeable.",
+    "verify": "Focus-visible ring (SF-001) on inputs and on the TimeRangePicker preset rows (which are <a>/clickable divs — ensure they're keyboard-reachable and labelled)."
+  },
+  "scopedOut": {
+    "Scheduler / Recurrence (schedule-input/)": "17 files — a Once/Daily/Weekly/Monthly RECURRENCE builder (MRadioGroup + Once/Weekly/Monthly inputs). Date/time-adjacent but a DISTINCT component family — candidate for its own future entry, not part of date/time pickers.",
+    "DateTimePopover": "covered above (custom-range-only popover).",
+    "date-remark-pairs.vue": "a date + remark list (holidays / special days) — a composite, not a picker primitive.",
+    "TimeRangeSlider text-input shorthand (time-range-picker/text-input.vue)": "internal — typed shorthand ('5m','7d') with autocomplete inside TimeRangePicker.",
+    "kit DateRangePicker / NotifyTimePicker": "0× / niche — not used as standalone product patterns.",
+    "no week/month/quarter/calendar pickers": "confirmed absent — no MWeekPicker/MMonthPicker/MRangePicker/a-calendar usage."
+  },
+  "storybook": "Molecules/Date & Time Pickers",
+  "related": [
+    "dropdown-picker",
+    "form-item",
+    "popover"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "apis": {
+    "TimeRangePicker": {
+      "source": "src/components/widgets/time-range-picker.vue",
+      "props": {
+        "value": "Object — selected range (.sync via change)",
+        "hideCustomTimeRange": "Boolean (false) — presets only",
+        "excludedOptions": "Array — preset keys to hide",
+        "allowClear": "Boolean (false)",
+        "bordered": "Boolean (false)",
+        "onlyLabel": "Boolean (false)",
+        "hideIcon": "Boolean (false)",
+        "hideSelectedTime": "Boolean (false)",
+        "disabled": "Boolean (false)",
+        "getPopupContainer": "Function"
+      },
+      "events": {
+        "change": "(range) — selection changed"
+      }
+    },
+    "MDatePicker": {
+      "source": "ui/components/Datepicker/Datepicker.vue (kit)",
+      "props": {
+        "value": "[String,Number,Object]",
+        "format": "String — display format",
+        "showTime": "[Boolean,Object] (default 12h hh:mm A) — date-time vs date-only",
+        "minDate": "[String,Number,Object]",
+        "maxDate": "[String,Number,Object]",
+        "disabledTime": "Function",
+        "placeholder": "('Select...')",
+        "getPopupContainer": "Function"
+      },
+      "events": {
+        "change": "(date)",
+        "update": "(date)",
+        "handleCalendarChange": "(date)"
+      }
+    }
+  },
+  "a11y": {
+    "summary": "Focusable text input + keyboard-navigable calendar; disabled via the disabled input. The trigger pill should expose its current selection to AT.",
+    "issues": [
+      "Preset rows are <a>/<div> — verify keyboard-reachable.",
+      "SF-001 focus ring.",
+      "Range error is shown as text."
+    ],
+    "doc": "Molecules/Date & Time Pickers/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "changelog": [
+    "2026-07-14: fixed the left double-chevron « (owner) — the calendar header/month/year/decade nav used chevronDoubleRight + inline transform:scaleX(-1), which does NOT reliably flip on the <obs-icon> host (Vue custom-element upgrade interferes), so it rendered » on the LEFT. Added a real `chevronDoubleLeft` icon (mirrored path) and used it directly across all popovers — no transform.",
+    "2026-07-14: completeness pass (owner) — added the element 'kinds & when to use' table (range · range-presets · field-datetime · field-date · field-time · slider) + the shared props (disabled/bordered/allow-clear/empty/placeholder) + the decision routing to the prose spec. Playground already switches all 6 kinds; registry already complete.",
+    "2026-06-30: added to the Elements site — obs-date-time-picker, the date/time family as one element via a `kind` prop: range (the 42× TimeRangePicker hero — interactive pill → presets → Custom dual-month calendar with From/To time menus), range-presets (hide-custom 24×), field-datetime/field-date/field-time (MDatePicker/MTimePicker fields + disabled), slider (draggable TimeRangeSlider). Reference reproductions with real tokens (--timerange-*, --calendar-selected-day-background-color, --slider-tracker, --dropdown-*); gated by cross-render token check (light+dark) + driven open/custom/disabled states.",
+    "2026-06-30: made the MDatePicker/MTimePicker FIELD kinds interactive (owner caught they were static, non-functional) — field-date/field-datetime open a single-month calendar (today ringed, allow-clear ×), field-datetime adds a 12h time field, field-time opens a 12h time menu; reset popups on kind-change. Playground fixes: slider now fills the stage width; tall picker panels no longer clip (stage top-aligns + overflow visible + min-height).",
+    "2026-06-30: reworked the MDatePicker/MTimePicker field popovers to match the real Ant render (owner compared to Storybook) — a connected card with the value input on top, the calendar (today navy-filled), a footer (Now · select time/select date · Ok), and a proper 3-COLUMN time spinner (HH · MM · AM/PM, selected row banded + scrolled to top) instead of a flat time dropdown. field-date = Now·Ok, field-time = the spinner alone.",
+    "2026-06-30: matched the per-variant footer pattern (owner) — date-only shows a single centered \"Today\" link (not Now·Ok); time-only keeps Now·Ok; date-time keeps Now·select-time/date·Ok with the time spinner opening in the same popover.",
+    "2026-06-30: fixed field-calendar day states (owner) — selected (filled navy) and today (navy RING) were rendering identically; now distinct, plus a hover background on days. Applies to field-date and field-datetime (refactored day cells from inline styles to CSS classes so :hover works).",
+    "2026-07-14: FUNCTIONAL now (owner) — obs-date-time-picker reflects the selection to `el.value` (JSON) and emits a `change` event on every pick, so it's no longer reference-only. Value shape varies by kind: range/range-presets → {type:'relative',key,label,span} or {type:'absolute',start,end,fromTime,toTime}; field-date/field-datetime → {date:<ms>,display}; field-time → {time}; slider → {startPct,endPct,start,end}. Verified initial reflection + change on preset/day/time/slider selection."
+  ],
+  "referenceOnly": false,
+  "elementValue": "reflects el.value (JSON) + emits `change`. Per-kind: range → relative {key,label,span} | absolute {start,end,fromTime,toTime}; field-date/datetime → {date:<ms>,display}; field-time → {time}; slider → {startPct,endPct,start,end}."
+}

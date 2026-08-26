@@ -1,0 +1,32 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Menu/Usage" />
+
+# Menu — Usage
+
+**Menu** is the shared **primitive** beneath several families, plus its one direct usage — the
+**context / action menu**.
+
+## When to use which
+
+| You need… | Use | Where it lives |
+| --- | --- | --- |
+| A list of selectable rows inside something | **Menu** primitive (`MMenu`) | this family |
+| A "⋯" / button opening **actions** on a row/object | **Context / Action menu** (`FlotoGridActions`) | this family |
+| To pick a **value** (single/multi) | **Dropdown picker** / **Select** | Organisms/DropdownPicker · Atoms/Select |
+| To **go** somewhere | **Primary nav** / **Side menu** / **Tabs** | Molecules/Navigation · Tabs |
+
+## Decision
+
+1. Rendering a list of items inside a nav / picker / dropdown? → **Menu** primitive.
+2. A "⋯" that opens **actions** (Edit, Duplicate, Delete…)? → **Context / Action menu**.
+3. Selecting a **value**? → **Dropdown picker** / **Select** (not this family).
+4. Navigating to a destination? → **Navigation**.
+
+## Notes
+
+- The **Menu** primitive is the building block under **Primary nav**, **Side menu**, the **Dropdown
+  picker**, and the **Context / Action menu** — reuse it, don't hand-roll a `<ul>` dropdown.
+- **Danger** actions use `--secondary-red`, **positive** use `--secondary-green`; both also carry an
+  icon/label so the meaning isn't colour-only.
+- The action menu is **permission-gated** (`FlotoGridActions` filters items by create/edit/delete keys).

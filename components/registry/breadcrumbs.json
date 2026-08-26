@@ -1,0 +1,175 @@
+{
+  "name": "breadcrumbs",
+  "component": "ComplianceBreadcrumb / FlotoBackButton",
+  "display": "Breadcrumbs",
+  "tier": "molecule",
+  "family": "Navigation",
+  "group": "Structure & Navigation",
+  "source": "src/modules/report/components/compliance-breadcrumb.vue · src/components/_base-back-button.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The location TRAIL (+ an optional back chevron): a path of crumbs (Reports / Compliance / PCI-DSS Audit) with the current (last) crumb in weight 500 and the ancestors as muted links. Shows where the user is and gives a one-click way up one or many levels. Data-driven `items`; separator is `/` (default) or a chevron. Lives in a page header (obs-page-header has a `breadcrumb` slot). NOT module switching (obs-sidebar), NOT sibling views (obs-tabs), NOT a graph-expansion trail.",
+  "variants": [
+    {
+      "name": "trail",
+      "what": "the full path (ancestor links + current crumb, `/`-separated)",
+      "usage": "location header"
+    },
+    {
+      "name": "with-back",
+      "what": "a leading back chevron before the trail (emits `back`)",
+      "usage": "detail pages"
+    },
+    {
+      "name": "chevron-separator",
+      "what": "separator=\"chevron\" → a › icon between crumbs (instead of `/`)",
+      "usage": "optional"
+    },
+    {
+      "name": "divider",
+      "what": "a bottom rule under the trail (the compliance-breadcrumb header)",
+      "usage": "page header"
+    },
+    {
+      "name": "back-button",
+      "what": "the smallest atom — a lone chevron-left `back` with a single crumb/title (FlotoBackButton, 3×)",
+      "usage": "3×"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "13px",
+      "note": "font-size 13px; the crumb text scales with it"
+    }
+  ],
+  "states": [
+    {
+      "name": "ancestor",
+      "what": "a muted (--neutral-light) link; hover underlines + --primary-alt"
+    },
+    {
+      "name": "current",
+      "what": "the last crumb — weight 500, --page-text-color, aria-current=\"page\""
+    }
+  ],
+  "props": {
+    "items": {
+      "type": "string",
+      "default": "",
+      "note": "the trail — a JSON array of strings [\"Reports\",\"Compliance\"] or objects [{label,href?}]; or a plain \"A / B / C\" string. The last item is the current (bold) crumb."
+    },
+    "separator": {
+      "type": "string",
+      "default": "/",
+      "enum": [
+        "/",
+        "chevron"
+      ],
+      "note": "the divider between crumbs — any text (default `/`), or `chevron` to render a › icon."
+    },
+    "back": {
+      "type": "boolean",
+      "default": false,
+      "note": "show a leading back chevron; clicking it emits `back`."
+    },
+    "divider": {
+      "type": "boolean",
+      "default": false,
+      "note": "a bottom rule under the trail (for a page-header location bar)."
+    }
+  },
+  "events": {
+    "navigate": "({label,href,index}) — an ancestor crumb was clicked (wire it to your router).",
+    "back": "() — the leading back chevron was clicked (router.back())."
+  },
+  "slots": {},
+  "decisionFlow": [
+    "Show the user's LOCATION plus a way up one or MANY levels? -> obs-breadcrumbs (the trail).",
+    "Only need to go BACK one level (a chevron before a title)? -> obs-breadcrumbs with `back` and a single crumb (the back-button atom).",
+    "Switch between top-level MODULES? -> obs-sidebar, NOT breadcrumbs.",
+    "Switch between sibling VIEWS of the same page? -> obs-tabs.",
+    "Put the trail at the top of a page? -> drop obs-breadcrumbs in obs-page-header's `breadcrumb` slot.",
+    "A graph node-expansion trail? -> that's a graph-breadcrumb, a different navigator."
+  ],
+  "usageRules": {
+    "trail": {
+      "useWhen": "a nested page needs to show its path and let the user jump up any level",
+      "dontUse": "a flat top-level page (no hierarchy to show), or for actions (a toolbar holds actions)",
+      "example": "Reports / Compliance / PCI-DSS Audit — with PCI-DSS Audit as the current crumb",
+      "asSeenIn": "the compliance report header (compliance-breadcrumb.vue)"
+    },
+    "with-back": {
+      "useWhen": "a detail page where a quick way back is as important as the trail",
+      "dontUse": "the top-level list (nowhere to go back to)",
+      "example": "a back chevron + Inventory / Monitors / web-server-01"
+    },
+    "chevron-separator": {
+      "useWhen": "the design uses › between crumbs instead of /",
+      "dontUse": "when the product's default / is expected",
+      "example": "Home › Monitors › web-server-01"
+    },
+    "back-button": {
+      "useWhen": "the user only needs to go back one level (the smallest nav atom)",
+      "dontUse": "when they need to see where they are or jump multiple levels (use the full trail)",
+      "example": "a chevron-left before a detail-page title (FlotoBackButton)",
+      "asSeenIn": "a detail page's back control (_base-back-button.vue, 3×)"
+    },
+    "divider": {
+      "useWhen": "the breadcrumb acts as a page-header LOCATION bar and needs a bottom rule to separate it from the content (e.g. the compliance header)",
+      "dontUse": "an inline trail inside page content (no rule needed)",
+      "example": "divider → a --border-color bottom rule under the trail"
+    }
+  },
+  "do": [
+    "Feed the path via `items`; the last item is automatically the current (bold) crumb.",
+    "Wire `navigate` (ancestor click) and `back` to your router.",
+    "Drop it in obs-page-header's `breadcrumb` slot for a page location bar.",
+    "Keep crumb labels short; the current crumb ellipsises if long."
+  ],
+  "dont": [
+    "Don't use breadcrumbs to switch modules (obs-sidebar) or sibling views (obs-tabs).",
+    "Don't put actions in the trail — a trail is location, not commands.",
+    "Don't make the current (last) crumb a link — it's the page you're on.",
+    "Don't hardcode colours — the ancestors are --neutral-light, the current is --page-text-color."
+  ],
+  "a11y": {
+    "summary": "A <nav aria-label=\"Breadcrumb\"> wrapping an ordered list (<ol>); ancestors are links, the current crumb carries aria-current=\"page\" and is not a link. The back control is a real <button aria-label=\"Back\">. Separators are decorative (aria-hidden). Keyboard: links + the back button are tabbable and activate on Enter.",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "Ensure a visible focus ring on the crumb links and the back button against the page surface in both themes."
+      }
+    ]
+  },
+  "knownIssues": [
+    {
+      "severity": "info",
+      "issue": "obs-breadcrumbs is a render-faithful reproduction of the product trail (compliance-breadcrumb) + back atom (FlotoBackButton). The real trails are router-bound; wiring `navigate`/`back` to the router is the consumer's. Some product 'breadcrumbs' are actually a back + title/subtitle context header — that pattern is obs-page-header (subtitle + breadcrumb slot), not this trail."
+    }
+  ],
+  "tokensUsed": [
+    "--page-text-color",
+    "--neutral-light",
+    "--primary-alt",
+    "--border-color"
+  ],
+  "related": [
+    "page-header",
+    "sidebar",
+    "tabs",
+    "app-header"
+  ],
+  "changelog": [
+    "2026-07-26 — Docs accuracy pass (owner): added the missing usage card for the `divider` variant (page-header location bar with a bottom rule) and documented the `divider` boolean in the coverage ledger Behaviour section. Reuse/props/a11y verified current. No API change.",
+    {
+      "date": "2026-07-16",
+      "change": "Added obs-breadcrumbs — the location trail (+ optional back chevron): data-driven `items` (JSON strings/objects or a \"A / B / C\" string), `separator` (/ or chevron), `back`, and an optional bottom `divider`. Ancestors are muted links, the current crumb is weight 500 (aria-current). Emits navigate/back. Composes obs-icon. Source-derived from the rendered Navigation/Breadcrumb story + compliance-breadcrumb.vue. Pairs with obs-page-header's breadcrumb slot."
+    }
+  ],
+  "storybook": "Molecules/Navigation (Breadcrumb · BackButton)",
+  "figma": {
+    "status": "not-started",
+    "component": "Breadcrumbs"
+  }
+}

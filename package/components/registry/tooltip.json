@@ -1,0 +1,195 @@
+{
+  "name": "tooltip",
+  "display": "Tooltip",
+  "tier": "molecule",
+  "family": "Popover & Tooltip",
+  "source": "src/components/_base-tooltip.vue (Floto override; kit MTooltip excluded). Renders via VTippy (vue-tippy).",
+  "status": "stable",
+  "summary": "Transient hover/focus label anchored to a trigger. The kit MTooltip is excluded and this Floto override ships instead, rendering through VTippy (not a-tooltip). trigger slot = anchor, default slot = content. Non-interactive — for interactive panels use Popover.",
+  "variants": [
+    {
+      "name": "default",
+      "what": "dark bubble + info-circle idiom",
+      "usage": "73×"
+    },
+    {
+      "name": "chart-like-tooltip",
+      "what": "light chart-surface overlay",
+      "usage": "2×"
+    },
+    {
+      "name": "placements",
+      "what": "top-start/top/left/right/bottom/bottomRight/topLeft",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "hidden",
+      "what": "no tooltip"
+    },
+    {
+      "name": "visible",
+      "what": "on hover/focus"
+    },
+    {
+      "name": "disabled",
+      "what": "trigger inline, no tooltip"
+    }
+  ],
+  "usage": {
+    "total": 94,
+    "placementDistribution": {
+      "top-start (default)": 73,
+      "top": 11,
+      "left": 6,
+      "bottomRight": 2,
+      "topLeft": 1,
+      "right": 1
+    },
+    "overlayClassName": "chart-like-tooltip (2x, chart bg), noc-dashboard-tooltip (1x)",
+    "siblingMechanisms": {
+      "native title= attribute": "~59x (browser tooltip for plain/truncated text)",
+      "v-tooltip directive": "1x",
+      "graph/canvas tooltips": "topology/netroute/apm edge & node tooltips — domain-specific content, not MTooltip"
+    }
+  },
+  "props": {
+    "placement": {
+      "type": "string",
+      "default": "top-start",
+      "enum": [
+        "top",
+        "top-start",
+        "top-end",
+        "bottom",
+        "bottom-start",
+        "left",
+        "right"
+      ],
+      "note": "VTippy placement"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "note": "short-circuits — renders the trigger inline with no tooltip"
+    },
+    "trigger": {
+      "type": "string",
+      "default": "hover focus",
+      "note": "DECLARED BUT NOT WIRED to VTippy (F1) — VTippy uses its own hover default"
+    },
+    "overlayClassName": {
+      "type": "string",
+      "default": null,
+      "note": "e.g. chart-like-tooltip"
+    },
+    "getPopupContainer": {
+      "type": "function",
+      "default": null,
+      "note": "defaults to closest .__panel or document.body"
+    }
+  },
+  "slots": {
+    "trigger": "the anchor element (e.g. an info-circle icon)",
+    "default": "the floating tooltip content"
+  },
+  "tokensUsed": [
+    "--tooltip-background-color",
+    "--tooltip-text-color",
+    "--tooltip-box-shadow",
+    "--border-color",
+    "--chart-tooltip-background"
+  ],
+  "decisionFlow": [
+    "Is the content interactive (buttons, inputs, links)? -> use Popover, NOT a tooltip.",
+    "Just the full text of a truncated/plain element? -> native title='' attribute (browser tooltip, ~59x).",
+    "A styled/rich/positioned hint on hover/focus? -> MTooltip (the 94x default).",
+    "Is it a chart/series hover card? -> MTooltip with overlay-class-name='chart-like-tooltip'.",
+    "A topology/graph edge or node tooltip? -> domain-specific graph tooltip component, NOT MTooltip.",
+    "Should the hint be conditionally suppressed? -> :disabled='true'."
+  ],
+  "usageRules": {
+    "infoHint": {
+      "useWhen": "explain a field/icon with a short text hint",
+      "how": "info-circle in the trigger slot + text in the default slot",
+      "example": "Polling interval ⓘ -> 'How often the monitor is polled.'"
+    },
+    "richHover": {
+      "useWhen": "a small non-interactive hover card (title + a few key/values)",
+      "how": "structured content in the default slot",
+      "example": "host hover card in topology"
+    },
+    "chartTooltip": {
+      "useWhen": "a chart/series hover",
+      "how": "overlay-class-name='chart-like-tooltip'",
+      "example": "metric chart point"
+    },
+    "default": {
+      "useWhen": "You need the standard dark hover/focus bubble for a short, non-interactive hint — most commonly the info-circle idiom: an info-circle MIcon in the trigger slot with explanatory text in the default slot. This is the 94x workhorse (73x use the top-start default placement). Also covers the rich hover card: a small non-interactive title + a few key/values in the default slot.",
+      "dontUse": "Don't use for content with buttons/links/inputs (it dismisses on mouse-out — use Popover instead). Don't use for the full text of a plain/truncated cell or label (use the native title='' attribute, ~59x, cheaper with no component). Switch to chart-like-tooltip when the hint must match a chart/graph surface (light bubble). Not for topology/graph edge or node tooltips (domain-specific graph components).",
+      "example": "The 'Polling interval ⓘ' field hint on settings/monitor forms — info-circle trigger revealing 'How often the monitor is polled.' Also the topology/host hover card (title + a few key/values, placement=right) shown in the Rich content story."
+    },
+    "chart-like-tooltip": {
+      "useWhen": "The tooltip should visually match a chart/graph surface — a LIGHT bubble (--chart-tooltip-background + page text) instead of the default dark one. Apply overlay-class-name='chart-like-tooltip'. Used for series/point hovers and info-tooltips that live on a chart canvas.",
+      "dontUse": "Don't use for ordinary UI field hints — the default dark bubble is correct there. Don't use for actual chart data-series hover cards rendered by the Highcharts chart layer (those are the chart TooltipBuilder / sparkline / heatmap tooltips, owned by the chart component, not MTooltip). Only 2x in the product, so reach for it deliberately.",
+      "example": "The traceroute Timeout info-tooltip (via tooltip-props with overlay-class-name='chart-like-tooltip'), giving a light chart-surface bubble on the traceroute chart."
+    },
+    "placements": {
+      "useWhen": "You need to steer where the bubble opens relative to the trigger via the `placement` prop (VTippy names: top-start default, top, top-end, bottom, bottom-start, left, right, plus -start/-end). Set it when layout constraints require the bubble to avoid clipping or overlapping neighbours — e.g. right for a rich card next to a node, left/bottom near panel edges.",
+      "dontUse": "Don't change placement just for style — top-start dominates (73x) and should stay the default unless the layout forces it. Don't use Ant placement names here (bottomLeft) — those belong to MPopover and are NOT interchangeable with VTippy names. Rare placements (bottomRight/topLeft/right) are 1-2x, so only override when genuinely needed.",
+      "example": "The Rich content host hover-card in topology uses placement='right' so the card opens beside the node; the Placements story stacks top-start/top/left/right/bottom/bottomRight/topLeft to show directional layout."
+    }
+  },
+  "do": [
+    "Keep content brief and non-interactive",
+    "Use the info-circle idiom for field hints",
+    "Use :disabled when the hint is redundant"
+  ],
+  "dont": [
+    "Don't put buttons/links/inputs in a tooltip (it dismisses on mouse-out) — use Popover",
+    "Don't rely on the `trigger` prop to change activation (it's not wired — F1)"
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "`trigger` prop declared (default 'hover focus') but not passed to VTippy — changing it has no effect."
+    },
+    "F2": {
+      "severity": "Medium",
+      "a11y": true,
+      "issue": "No focus ring on the overlay (`:focus { outline:none }` in _base-popper) — links to SF-001."
+    },
+    "F3": {
+      "severity": "Medium",
+      "a11y": true,
+      "issue": "Tooltip content is not linked to the trigger via aria-describedby; icon-only triggers have no accessible name — screen-reader users may miss the hint."
+    }
+  },
+  "storybook": "Molecules/Tooltip",
+  "related": [
+    "popover",
+    "modal",
+    "dropdown-picker"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "events": "none — VTippy (vue-tippy) driven; the wrapper emits no Vue events. Control visibility via the `disabled` / `trigger` props.",
+  "a11y": {
+    "summary": "Appears on focus + hover (keyboard-reachable if the trigger is focusable). Keep the trigger ≥24px.",
+    "issues": [
+      "Icon-only triggers often aren't focusable / have no name.",
+      "Bubble not linked via aria-describedby (F3).",
+      "Overlay removes the focus outline."
+    ],
+    "doc": "Molecules/Tooltip/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "changelog": [
+    "2026-06-29: added to the Elements site — obs-tooltip (hover/focus bubble): dark default + chart-like light variant, placements, disabled; render-first from tooltip.stories.js + popover.less.",
+    "2026-06-30: added the Rich content example (slotted title + key/values host hover-card, placement=right) to match the RichContent story; reworked the Examples gallery layout so open bubbles get directional breathing room (placements stacked & centered) — no longer overlap labels/neighbours or clip at the panel edge.",
+    "2026-06-30: added a Playground 'Content' control (Plain text / Rich host hover-card) via a new slot-preset control kind — lets you drive the slotted rich-content body live (snippet now serializes innerHTML)."
+  ]
+}

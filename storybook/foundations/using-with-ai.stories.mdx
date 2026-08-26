@@ -1,0 +1,112 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Guides/Using the DS with AI" />
+
+# Using the design system with AI tools
+
+> **In plain terms:** point your AI coding tool (Cursor, Claude Code, Windsurf, Cline, Copilot) at this
+> design system and it builds ObserveOps UI from the **real** components, tokens, recipes and rules —
+> then **verifies its own render** — instead of guessing.
+
+Ways to give a tool the DS: the **MCP server** (strongest), the **npm spec package** (files), the
+**`@mtdt/observeops-ds-elements`** package (the real `obs-*` components — the build target), the
+**`@mtdt/observeops-ds-css` look package** (tokens), and this **Storybook** (visual reference — don't scrape
+it; get specs from the package/MCP). The full walkthrough with a live demo lives on the **Elements site →
+[Build with AI](https://niravbhatt1317.github.io/motadata-design-system/elements/build-with-ai.html)**.
+
+## Option A — the MCP server (recommended)
+
+Live tools the agent calls, with a hard **STOP-and-ASK** signal when something isn't in the DS.
+
+```bash
+# Claude Code
+claude mcp add observeops-ds -s user -- npx -y @mtdt/observeops-ds-mcp
+```
+
+```json
+// Cursor / Windsurf / Cline / VS Code — mcp.json
+{
+  "mcpServers": {
+    "observeops-ds": { "command": "npx", "args": ["-y", "@mtdt/observeops-ds-mcp"] }
+  }
+}
+```
+
+**Tools:** `search_components` · `get_component` (with resolved token values) · `resolve_token` ·
+`get_theme` · `get_recipe` · `get_layout` · `list_gaps` · `validate_usage` · **`validate_render`** ·
+`get_contract`. **Prompt:** `build-observeops-ui` primes the whole authoring loop. **Resource:**
+`spec://playbook` (the authoring playbook).
+
+## Option B — the npm spec package
+
+```bash
+npm install @mtdt/observeops-ds-spec
+```
+
+Then point your rules file (`.cursor/rules` / `AGENTS.md` / `CLAUDE.md`) at the contract:
+
+```text
+Follow node_modules/@mtdt/observeops-ds-spec/AGENTS.md when building any ObserveOps UI.
+```
+
+## Option F — build with the REAL components (recommended for new UI)
+
+The genuine ObserveOps components as framework-agnostic **Web Components** — usable in React, Vue, Svelte, or
+plain HTML. The output *is* the DS component, not a reconstruction, so a fabricated look-alike is impossible.
+
+```bash
+npm install @mtdt/observeops-ds-elements @mtdt/observeops-ds-css
+```
+
+```js
+import '@mtdt/observeops-ds-elements'                   // registers obs-button, obs-tag, …
+import '@mtdt/observeops-ds-css/dist/observeops-ds.css' // the DS tokens (light + dark)
+```
+
+```html
+<obs-button variant="primary">Save</obs-button>
+<obs-input type="search" placeholder="Search…"></obs-input>
+<obs-tag variant="tag-green">Active</obs-tag>
+<obs-severity severity="critical" display-text></obs-severity>
+```
+
+Events deliver the value in `event.detail` as an **array** — unwrap: `Array.isArray(e.detail) ? e.detail[0] : e.detail`.
+
+## The authoring loop the AI follows
+
+The full method ships as `authoring-playbook.md` in the spec package (and the MCP `build-observeops-ui`
+prompt). It turns a request into product-faithful UI:
+
+1. **Understand & plan** — restate the request; enumerate the screens/steps in the flow.
+2. **Layout & placement** — pick the shell → screen regions → content layout (12-col grid for forms).
+3. **Surface** — per screen choose **page vs drawer vs modal vs panel vs popover**: edit-while-keeping-the-list
+   → drawer; confirm/destructive → modal; complex deep-linkable record → full page.
+4. **Select + justify** — per element pick the component **and variant with a stated reason** (one primary
+   action per view; `error` only for destructive).
+5. **Build DS-only** — the real `obs-*` components; resolve every colour from tokens (brand navy, not blue/cyan).
+6. **STOP-and-ASK** — no recipe → still compose. A building block the DS lacks (`list_gaps`: charts/topology)
+   → ask, don't substitute.
+7. **Validate the render** (below) → fix to ≥ 90 → finalize with a rationale summary + declared-gaps list.
+
+## Verify your render (the conformance checker)
+
+Don't just cite the right rules — check that what you *rendered* matches the DS. The spec package ships a
+Playwright checker that scores any page 0–100 (token · component · variant · philosophy · layout) and flags
+every off-token colour, raw control, invented/overridden variant, and **undeclared non-DS element** (a hard
+contract breach):
+
+```bash
+node node_modules/@mtdt/observeops-ds-spec/conformance/ds-conformance.mjs ./your-page.html
+```
+
+It's the render-time counterpart to the MCP `validate_render`. Aim ≥ 90 with zero breaches.
+
+## Honest scope
+
+- **The real components are now shipped everywhere** via `@mtdt/observeops-ds-elements` — an AI tool (in the
+  repo or a standalone prototype) uses the genuine `obs-*` component, not a reconstruction. Prefer Option F.
+- **Known gaps:** charts / data-viz / topology / widget-tiles aren't catalogued yet — the AI **asks** rather
+  than guessing, and the conformance checker hard-fails an undeclared non-DS chart/graph.
+
+Full guide: [`design-system/USING-WITH-AI.md`](../../USING-WITH-AI.md) ·
+[authoring playbook](../../authoring-playbook.md).

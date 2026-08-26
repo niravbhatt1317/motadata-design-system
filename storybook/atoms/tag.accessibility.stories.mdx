@@ -1,0 +1,20 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Tag/Accessibility" />
+
+# Tag — Accessibility
+
+- A plain tag is a non-interactive `span` — fine for a label.
+- Contrast: the default tag (neutral text on a light/dark neutral chip) is legible in both
+  themes.
+
+## ⚠️ Known accessibility issues
+
+- **The remove "×" is not keyboard-accessible.** When `closable`, the control is an
+  anchor with **no href, no role, no aria-label, and no tabindex** — so it can't be
+  focused or activated by keyboard, and screen readers get no accessible name.
+  Fix: make it a real `button` with `type="button"` and an `aria-label` naming the tag
+  (e.g. "Remove Production") — focusable, labelled — and give it a visible focus ring
+  (see SF-001).
+- Removable tags therefore can't be removed without a mouse — a keyboard/AT blocker
+  wherever tags are user-removable (filter chips, selected items).

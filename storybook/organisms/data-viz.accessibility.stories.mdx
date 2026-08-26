@@ -1,0 +1,27 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Data Visualization/Accessibility" />
+
+# Data Visualization — Accessibility
+
+Charts are rendered by Highcharts / Cytoscape onto SVG/canvas, so accessibility is largely the *caller's*
+responsibility when configuring the product component.
+
+## Requirements
+
+- **Never encode by colour alone.** Colour-blind users can't separate series by hue — always pair a series
+  with a **label and a legend**, and prefer patterns/markers where hues sit close together.
+- **Offer the data as a table.** Canvas/SVG charts are not screen-reader legible. For critical views use the
+  product's `ChartWithGrid` (chart + companion data grid) so the numbers are reachable without sight.
+- **Keyboard.** The `widget-grid` and the `topology-graph` provide their own focus / zoom / pan controls
+  (Cytoscape panzoom, the grid's drag handles) — don't trap focus; expose the same actions via buttons.
+- **Text contrast.** Axis labels, legends and tooltips must use the DS text tokens (`--page-text-color`,
+  `--neutral-light`) so they meet contrast in both themes — don't hard-code a grey.
+- **Motion.** Keep chart animations short; honour reduced-motion for live-updating widgets.
+
+## Known gaps
+
+- Highcharts SVG has partial ARIA via its accessibility module, but the product build does **not** register
+  `highcharts/modules/accessibility` — so treat charts as visual-only and provide the table alternative.
+- The topology canvas is not screen-reader navigable; the left hierarchy tree (`navigation` family) is the
+  accessible entry point to the same data.

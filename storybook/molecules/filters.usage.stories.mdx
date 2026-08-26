@@ -1,0 +1,61 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Filters/Usage" />
+
+# Filters — Usage
+
+🟢 **Stable** · Molecule — the product's **filtering components**, by archetype. Rules in
+[`registry/filters.json`](../../components/registry/filters.json).
+
+## Four archetypes
+
+| Archetype | Usage | What it is |
+| --- | --- | --- |
+| **Expression builder** (`FiltersContainer`) | **32×** | a nested **AND/OR** query builder |
+| **Filter bar** (`FlotoFilterBar`) | ~50× | an inline **chip** bar + Match All/Any |
+| **Quick filters** (`filter-quick-menu`) | — | a **preset** one-click menu |
+| **Filter row** | — | a few **multi-selects** + Reset/Apply |
+
+## Which filter? (decision)
+
+1. **Complex AND/OR across multiple groups?** → **Expression builder**.
+2. **Compact chip bar over a grid?** → **Filter bar**.
+3. **One-click saved/preset filters?** → **Quick filters**.
+4. **A few simple facets (Group/Severity/Tag)?** → **Filter row**.
+5. **Plain text search of a list?** → the **Input** `search` type (181×) — **not** a filter.
+
+## Notes
+
+- **Expression builder** — `Group(s) matching All/Any` → groups (`Group matching All/Any Criteria`)
+  → conditions (`field · operator · value`, type-aware). Add Condition / Add Group.
+- **Filter bar** — chips (`default-chips` have no ×), `+ Filter`, `Match All/Any`, `Clear All`; the
+  segment picker floats `position:fixed` so the scrolling chip row never clips it.
+- **Quick filters** — a thumbs-up menu of presets `{ key, label, condition }`.
+- **Filter row** — multi-selects + Reset/Apply, as a slide-in over a list.
+
+> **Reorg note (2026-06-16):** this family gathers filters **by archetype**. **Filter bar** + **Quick
+> filters** moved here from the context-shaped *Grid Toolbar*; **Filter row** was re-homed from the
+> retired *Monitoring config*. The **Toolbars** organisms *compose* these molecules.
+
+> **Reproduction note:** the live filters are store-bound (`FilterCondition` is 500+ lines), so these
+> are reproductions; the **Filter bar** one is fully interactive.
+
+## Do
+
+- Use the **Expression builder** for real query logic.
+- Use the **Filter bar** for a compact chip filter over a grid; **Quick filters** for presets;
+  a **Filter row** for a few facets.
+
+## Don't
+
+- Don't hand-roll a condition builder (→ `FiltersContainer`).
+- Don't put plain **search** here (→ Input `search` type).
+- Don't duplicate a filter per screen — it's one molecule; compose it in a **Toolbar**.
+
+## Related
+
+`FlotoDropdownPicker` · **Input** (search) · `Tag` (chips) · **Table** · **Toolbars**.
+
+## Other variants
+
+Also available (see `registry/filters.json` `usageRules` for the full when/why): **vertical-filter**.

@@ -1,0 +1,30 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/LooseTags/Accessibility" />
+
+# LooseTags — Accessibility
+
+Built on Ant Select (`mode="tags"`), so it carries combobox semantics.
+
+## Keyboard
+
+- **Type** a value, **Enter** to add it as a pill.
+- **Backspace** on an empty input removes the last pill.
+- **Arrow keys** navigate the suggestions list; **Enter** selects a suggestion.
+
+## Screen reader
+
+- The control exposes a combobox/listbox. Verify each pill's remove control exposes an
+  accessible name (it's Ant's icon button, tinted orange).
+
+## Known a11y gotcha
+
+- ⚠️ **No visible keyboard focus indicator** — system-wide
+  ([SF-001](../../findings/SF-001-focus-visible.md)). Keyboard users can't see that the tag
+  input is focused. Recommended fix lives in SF-001 (a global `:focus-visible` ring).
+
+## Target size & contrast
+
+- Teal pill text on a teal-tinted background is legible in both themes
+  (`#218b81` on `#cdf1ed` light, `#2ec4b6` on `#183a42` dark).
+- The remove × is small — ensure the hit target is comfortable (Ant default).

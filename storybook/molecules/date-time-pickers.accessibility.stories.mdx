@@ -1,0 +1,40 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Date & Time Pickers/Accessibility" />
+
+# Date & Time Pickers — Accessibility
+
+## Provided by Ant (MDatePicker / MTimePicker)
+
+- A focusable **text input** that accepts typed values, plus a **keyboard-navigable** calendar /
+  time panel; **Escape** closes the panel; the suffix icon is decorative.
+- `disabled` is conveyed via the disabled input.
+
+## TimeRangePicker (reproduction reflects the real component)
+
+- ⚠️ The **preset rows** are clickable `<a>` / `<div>` elements. Verify they are **keyboard-reachable**
+  (tabbable, Enter/Space activate) and that each has an accessible name (the label text is present, so
+  this mostly holds — confirm the shortcut pill isn't the only label).
+- ⚠️ The **trigger pill** should expose its current selection to assistive tech (the range label text
+  is present; ensure it isn't icon-only when `only-label` is set).
+
+## Focus ring
+
+- ⚠️ Catalog-wide **SF-001**: the `:focus { outline:none }` removal can hide the keyboard focus
+  indicator on the inputs and preset rows. Confirm a visible **`:focus-visible`** ring.
+
+## Validation feedback
+
+- The custom-range error ("End Date/Time should be greater than Start Date/Time") is shown in
+  `--secondary-red` text — ensure it's announced (e.g. `role="alert"`) and not color-only.
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| Input focusable + typeable | ✅ (Ant) |
+| Calendar / time panel keyboard nav | ✅ (Ant) |
+| Escape closes | ✅ (Ant) |
+| Preset rows keyboard-reachable | ⚠️ verify |
+| Focus-visible ring | ⚠️ verify (SF-001) |
+| Range error announced (not color-only) | ⚠️ verify |

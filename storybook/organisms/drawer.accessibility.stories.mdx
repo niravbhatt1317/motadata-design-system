@@ -1,0 +1,23 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Drawer/Accessibility" />
+
+# Drawer — Accessibility
+
+## What works
+
+- Ant `a-drawer` → `role="dialog"`, **focus is trapped** within the panel and restored on close.
+- It has a **built-in close ×** — a real, discoverable dismiss (unlike `MModal`, which has none).
+  **Escape** also closes.
+
+## Gotchas
+
+- **Backdrop-click doesn't close** (`maskClosable:false`) — fine for forms (avoids data loss),
+  but make sure the × / a footer Cancel is obvious.
+- ⚠️ **No visible focus ring** inside the panel
+  ([SF-001](../../findings/SF-001-focus-visible.md)) — important in a focus-trapped surface.
+
+## Content
+
+- Give the drawer a clear **title** naming the record/task ("Incident #1234", "Edit monitor").
+- Keep the **actions footer** consistent: Cancel (left), the primary action (right).

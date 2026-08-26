@@ -1,0 +1,43 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/DropdownPicker/Changelog" />
+
+# DropdownPicker — Changelog
+
+## 2026-07-11
+
+- **Added — 5 missing menu variants** from the product sweep: **Grid / table dropdown** (the "Select Agent /
+  Monitor" table picker, ~70×), **Icon / severity-dot** (`before-menu-text`, 27×), **Tree-select** (the
+  cascader equivalent), **Avatar / people picker**, and the **Virtualized rich-row list** (16×). Each has a
+  Storybook story + a `usageRules` card (when to use vs a plain dropdown / a Menu).
+- **Added — the Trigger axis** (Group B): the same menu opened via **input · text · button · icon · chip**
+  (`v-slot:trigger`, 130×), documented as an axis orthogonal to the menu content.
+- **Fixed** — real bugs caught in review: `disabled-options` now greys **string** option lists (not just
+  objects); the inline-add "+" no longer disappears when the auto-search threshold hides the search box;
+  inline-add + two-pane now **always** show the search box; the dropdown trigger input **padding shorthand**
+  had vertical/horizontal swapped (`11px 4px` → `4px 11px`) in `src/design/dropdown.less`.
+
+## 2026-06-16
+
+- Added **six variant stories** (from the catalogue audit — this 510× control had only 4): **Allow
+  clear** (218×), **Read-only pills** (multiple + `disabled` → `SelectedItemPills`), **Text-only
+  trigger** (15×), **Disabled options** (`:disabled-options`), **Inline add** (`can-user-add-options`),
+  and **Two-pane** (`use-after-menu-description` + `hovered-menu-description` slot). All verified light +
+  dark. **Disabled options** is a reference reproduction — the live `:disabled-options` path reads the
+  theme getter from Vuex (absent in Storybook); every other story uses the real `FlotoDropdownPicker`.
+
+## 2026-06-07
+
+- Added to the design system — the first **Organism**.
+- Full deep-dive of `src/components/_base-dropdown-picker.vue` and the `dropdown-trigger/`
+  family (`SingleTrigger`, `MultipleTrigger`, `SelectedItemPills`) — used **510× / 241 files**.
+- Got it to render in its **real default mode** by registering the product globals the picker
+  depends on in the Storybook preview: `v-tooltip` (→ `MPopper`), `RecycleScroller`
+  (vue-virtual-scroller), and the picker itself. Fixed a webpack 5 `RealContentHashPlugin`
+  "circular hash dependency" (triggered by the worker import) via `optimization.realContentHash = false`.
+- Verified live: trigger, open menu + search box, virtualized option list, single + multi
+  (checkboxes / Select All / Clear), and dark theme.
+- Findings: **F1** (a11y, High — not an accessible combobox), **F2** (`maxAllowedSelection`
+  dead — use `maxValues`), **F3** (boolean props default true), **F4** (loose option schema).
+- Storybook caveats: search needs the `arrayWorker` web worker (no-op in SB); the no-data
+  illustration needs an SVG-component loader (absent in SB).

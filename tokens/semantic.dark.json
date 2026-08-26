@@ -1,0 +1,90 @@
+{
+  "$description": "TIER 2 — SEMANTIC (DARK mode). SAME keys as semantic.light.json, different primitive references. This is what 'modes' means: one token name, value swaps per theme. SLICE for sign-off.",
+  "$status": "FUTURE / portable DTCG token layer (mds-*). NOT yet wired to the running product or component tokensUsed — the LIVE product uses tokens/variables.json (--vars). Do not emit mds-* for live output.",
+  "color": {
+    "background": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.navy.950}"
+      },
+      "brand": {
+        "bold": {
+          "$type": "color",
+          "$value": "{color.white}"
+        }
+      },
+      "severity": {
+        "critical": {
+          "subtle": {
+            "$type": "color",
+            "$value": "{color.severity.critical.950}"
+          }
+        },
+        "clear": {
+          "subtle": {
+            "$type": "color",
+            "$value": "{color.severity.clear.950}"
+          }
+        }
+      }
+    },
+    "surface": {
+      "raised": {
+        "$type": "color",
+        "$value": "{color.neutral.800}"
+      }
+    },
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.neutral.100}"
+      },
+      "brand": {
+        "$type": "color",
+        "$value": "{color.neutral.100}"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.neutral.400}"
+      },
+      "inverse": {
+        "$type": "color",
+        "$value": "{color.navy.950}"
+      },
+      "severity": {
+        "critical": {
+          "$type": "color",
+          "$value": "{color.severity.critical.500}"
+        },
+        "clear": {
+          "$type": "color",
+          "$value": "{color.severity.clear.500}"
+        }
+      },
+      "accent": {
+        "teal": {
+          "$type": "color",
+          "$value": "{color.teal.500}"
+        }
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.navy.800}"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.neutral.700}"
+      },
+      "focused": {
+        "$type": "color",
+        "$value": "{color.cyan.500}"
+      }
+    },
+    "link": {
+      "$type": "color",
+      "$value": "{color.cyan.500}"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Button/Accessibility" />
+
+# Button — Accessibility
+
+- **Semantics:** renders a native `<button type="button">` — Enter/Space activate. ✅
+- **Icon-only buttons** (`shape="circle"` 218×, `.squared-button` 365×) have no text, so they
+  **need an `aria-label`** — there is no automatic name. This is the biggest practical a11y
+  gap for buttons given how many icon-only buttons exist.
+- **Target size:** `default`/`large` ≈ 34px; `small` ≈ 24px — below the 44–48px touch
+  target, so reserve `small` for dense desktop UIs. The `.squared-button` is 35×35.
+- **Contrast:** primary navy + white text is high-contrast; verify lighter variants
+  (`neutral-lightest`, `transparent`) text contrast in both themes.
+
+## ⚠️ Known accessibility issue
+
+**No visible focus indicator** — focused buttons currently show `outline: none` and no
+focus shadow (WCAG 2.4.7 risk). Fix planned: add a `:focus-visible` ring
+(`outline: 2px solid var(--primary); outline-offset: 2px;`).

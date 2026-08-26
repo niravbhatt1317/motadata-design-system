@@ -1,0 +1,263 @@
+{
+  "name": "user-menu",
+  "component": "MPopover + avatar (user-dropdown.vue)",
+  "display": "User Menu",
+  "tier": "molecule",
+  "family": "App Chrome",
+  "source": "mkit",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The interactive header ACCOUNT menu — an avatar/initials trigger that opens a dropdown with a user header, account links, an optional theme toggle, and a danger Logout. Self-contained (renders its own trigger + top-layer popover) so it drops into obs-app-header's `user` slot, or stands alone. The turnkey form of the `user-menu` recipe.",
+  "selectHint": "The header avatar + account dropdown (My Profile / Setup / Docs / theme / Logout)? -> obs-user-menu in the app-header `user` slot. For a generic action menu use obs-menu; for nav use obs-sidebar/obs-side-menu.",
+  "whenToUse": "The top-right account control of the app shell — the avatar that opens the user's profile links, theme toggle, and Logout. One per app chrome.",
+  "insteadOf": [
+    "a hand-built avatar + absolutely-positioned dropdown",
+    "obs-menu configured from scratch each time (obs-user-menu is the turnkey version)",
+    "putting account links in the sidebar"
+  ],
+  "variants": [
+    {
+      "name": "default",
+      "what": "Avatar (initials) trigger -> header (name + subtitle) + account links + theme toggle + danger Logout.",
+      "usage": "the standard header account menu"
+    },
+    {
+      "name": "avatar-image",
+      "what": "An image avatar (the `avatar` src prop) instead of initials.",
+      "usage": "when a user photo exists"
+    },
+    {
+      "name": "minimal",
+      "what": "theme-toggle=\"false\" logout=\"false\" -> just the account links.",
+      "usage": "embedded / restricted contexts"
+    },
+    {
+      "name": "theme-switcher",
+      "what": "the Dark / Light / Auto SEGMENTED switcher (reuses obs-radio as-button, moon/sun/theme-auto icons); `theme` sets the active segment, a change emits `theme` {value}.",
+      "usage": "the product default — per-user theme control lives in the account menu"
+    },
+    {
+      "name": "placement-start",
+      "what": "placement=\"bottom-start\" aligns the dropdown to the LEFT of the avatar (default is bottom-end / right).",
+      "usage": "when the avatar sits away from the right edge"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "32px avatar",
+      "note": "matches the app-header avatar; the dropdown is a 240px min-width panel."
+    }
+  ],
+  "states": [
+    {
+      "name": "closed",
+      "what": "just the avatar button (aria-expanded=false)."
+    },
+    {
+      "name": "open",
+      "what": "the top-layer dropdown is shown (avatar gets a focus ring); click-outside / Esc closes it."
+    },
+    {
+      "name": "hover",
+      "what": "rows highlight on hover; the danger Logout row is red."
+    }
+  ],
+  "props": {
+    "name": {
+      "type": "string",
+      "default": "",
+      "note": "display name shown in the dropdown header."
+    },
+    "subtitle": {
+      "type": "string",
+      "default": "",
+      "note": "secondary header line (email / role)."
+    },
+    "avatar": {
+      "type": "string",
+      "default": "",
+      "note": "avatar image src; if empty, initials are shown."
+    },
+    "initials": {
+      "type": "string",
+      "default": "",
+      "note": "explicit initials override (else derived from `name`)."
+    },
+    "items": {
+      "type": "array|string",
+      "default": "",
+      "note": "account links: [{key,label,icon?,href?,danger?,divider?}]. An href renders an <a>; otherwise a button that emits `select`."
+    },
+    "theme-toggle": {
+      "type": "boolean",
+      "default": true,
+      "note": "show the Dark/Light/Auto theme switcher (a segmented control; the active segment is a --primary pill)."
+    },
+    "logout": {
+      "type": "boolean",
+      "default": true,
+      "note": "show the danger Logout row (emits `logout`)."
+    },
+    "logout-label": {
+      "type": "string",
+      "default": "Logout",
+      "note": "the Logout row label."
+    },
+    "placement": {
+      "type": "string",
+      "default": "bottom-end",
+      "enum": [
+        "bottom-end",
+        "bottom-start"
+      ],
+      "note": "align the dropdown to the right (default) or left of the avatar."
+    },
+    "theme": {
+      "type": "string",
+      "default": "auto",
+      "enum": [
+        "dark",
+        "light",
+        "auto"
+      ],
+      "note": "the current theme selection shown in the Dark/Light/Auto segmented switcher."
+    },
+    "manage-theme": {
+      "type": "boolean",
+      "default": true,
+      "note": "Built-in theme control. When true (default) picking Dark/Light/Auto flips <html data-theme=\"dark-theme\"> itself — every DS token switches, the choice persists to localStorage, and Auto follows the OS. Set false to make the switcher emit-only (the app applies the theme via the `theme` event)."
+    }
+  },
+  "events": [
+    {
+      "name": "select",
+      "detail": "string",
+      "note": "an account link was clicked; payload is its key/label (detail[0])."
+    },
+    {
+      "name": "logout",
+      "detail": "none",
+      "note": "the Logout row was clicked."
+    },
+    {
+      "name": "theme",
+      "detail": "{value:'dark'|'light'|'auto'}",
+      "note": "the theme segment changed; the consumer applies the scheme (dark/light or system-auto)."
+    },
+    {
+      "name": "show",
+      "detail": "none",
+      "note": "the dropdown opened."
+    },
+    {
+      "name": "hide",
+      "detail": "none",
+      "note": "the dropdown closed."
+    }
+  ],
+  "slots": {},
+  "decisionFlow": [
+    "The header account control (avatar -> profile links + theme + Logout)? -> obs-user-menu, in the obs-app-header `user` slot.",
+    "A generic row-of-actions menu (Edit / Delete on a grid row)? -> obs-menu (context), NOT obs-user-menu.",
+    "Navigating between modules/sections? -> obs-sidebar / obs-side-menu, NOT a user menu.",
+    "Have a user photo? -> set `avatar` (src); else it shows `initials` (derived from `name`).",
+    "Restricted context (no theme/logout)? -> theme-toggle=\"false\" logout=\"false\".",
+    "Avatar on the left of its container? -> placement=\"bottom-start\"."
+  ],
+  "usageRules": {
+    "default": {
+      "useWhen": "the standard app-shell account menu — avatar + name/email header, account links, theme toggle, Logout",
+      "dontUse": "for a generic action menu (obs-menu) or navigation (obs-sidebar)",
+      "example": "obs-app-header `user` slot: My Profile / Product Setup Guide / Documentation / Dark theme / Logout",
+      "asSeenIn": "components/layout/user-dropdown.vue"
+    },
+    "avatar-image": {
+      "useWhen": "the user has a profile photo",
+      "dontUse": "no photo — initials read fine and avoid a broken image",
+      "example": "avatar=\"/uploads/nb.png\""
+    },
+    "minimal": {
+      "useWhen": "an embedded/restricted account menu with just links",
+      "dontUse": "the standard shell (users expect the theme toggle + Logout)",
+      "example": "theme-toggle=\"false\" logout=\"false\""
+    },
+    "theme-switcher": {
+      "useWhen": "the app offers per-user Dark / Light / Auto — the switcher belongs in the account menu (the product pattern)",
+      "dontUse": "the app has a single fixed theme (theme-toggle=\"false\"); or a global theme control lives elsewhere",
+      "example": "theme=\"auto\" → the Auto segment is active; changing it emits theme:{value} for the consumer to apply"
+    },
+    "placement-start": {
+      "useWhen": "the avatar is positioned so a right-aligned dropdown would overflow — anchor it left",
+      "dontUse": "the standard top-right chrome (bottom-end is correct there)",
+      "example": "placement=\"bottom-start\""
+    },
+    "theme-toggle": {
+      "useWhen": "you want the account menu to switch the whole UI theme — it works out of the box (no wiring): Dark/Light/Auto flips the document and persists.",
+      "dontUse": "the host app already owns theming — then set manage-theme=\"false\" and handle the `theme` event yourself.",
+      "must": "leave manage-theme on by default so anything built with the DS gets a working theme switch; Auto follows the OS.",
+      "example": "<obs-user-menu name=\"Nirav\" theme-toggle></obs-user-menu> → Dark/Light/Auto immediately theme the page."
+    }
+  },
+  "usage": {
+    "total": 1,
+    "files": 1,
+    "byModule": {
+      "layout": 1
+    },
+    "note": "One per app shell (the header account control). Turnkey element for the user-menu recipe."
+  },
+  "do": [
+    "Place it in obs-app-header's `user` slot (the top-right of the shell).",
+    "Wire the `logout` event to the sign-out flow and `theme` to your data-theme toggle.",
+    "Keep the link list short — profile, setup/help, docs; deep settings live in the sidebar.",
+    "Give the avatar meaningful initials (derived from name) or a real photo."
+  ],
+  "dont": [
+    "Don't use it as a generic action menu — that's obs-menu.",
+    "Don't stuff navigation into it (modules live in obs-sidebar).",
+    "Don't hardcode colours — the danger Logout uses --secondary-red, rows use tokens."
+  ],
+  "a11y": {
+    "summary": "The avatar is a button with aria-label \"Account menu\" + aria-expanded. The dropdown is a role=menu of menuitem rows; it opens in the top layer, closes on click-outside and Esc. The danger Logout is distinguished by an icon + red, not colour alone.",
+    "issues": [],
+    "doc": "Molecules/User Menu/Accessibility",
+    "notes": "Focus: move focus into the panel on open and back to the avatar on close for full keyboard support (the element wires Esc + click-outside; consumers should ensure the rows are tab-reachable). Announce the theme change (aria-live). The avatar needs a discernible name — initials alone are fine because the trigger carries aria-label."
+  },
+  "knownIssues": [
+    "The theme switcher emits `theme` {value} (dark/light/auto) but does NOT itself apply the scheme — the consumer sets data-theme / follows the system for auto (kept app-agnostic). Reuses the product moon/sun/theme-auto glyphs (added to the icon library)."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--primary",
+    "--neutral-light",
+    "--neutral-lighter",
+    "--neutral-shadow-light",
+    "--secondary-red",
+    "--white-regular"
+  ],
+  "related": [
+    "app-header",
+    "menu",
+    "switch",
+    "sidebar",
+    "notification-menu",
+    "radio",
+    "divider"
+  ],
+  "changelog": [
+    "2026-08-06 — Theme switcher is now BUILT-IN + functional (owner): selecting Dark/Light/Auto flips <html data-theme=\"dark-theme\"> itself (matches the DS CSS + showcase), persists the choice to localStorage, and Auto follows prefers-color-scheme — no consumer wiring needed. Added the manage-theme prop (default true; false = emit-only) + usageRule. Anything built with the DS gets a working theme switch out of the box.",
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves (dropped stale/typography vars, added the overlay/theme tokens it uses). a11y / props / variants / usage verified current against the shipped component — no content drift. No API change.",
+    "2026-07-22 — Docs completeness pass: promoted `theme-switcher` (Dark/Light/Auto segmented control) and `placement-start` to first-class variants with usage cards; the playground now exposes theme + placement controls and account links carry the full profile/setup/docs set (+ dividers/danger). No API change.",
+    "2026-07-21 — Refinement (owner): the theme switcher now REUSES the DS segmented radio (obs-radio as-button, Dark/Light/Auto with moon/sun/theme-auto icons) instead of hand-built buttons; group separators now use the reused obs-divider (compact via --divider-my); tightened all inter-group spacing (header/rows/switcher/logout).",
+    "2026-07-21 — Product-match: replaced the single on/off theme toggle with a Dark / Light / Auto SEGMENTED switcher (matching the product user-dropdown). Added a `theme` prop (dark|light|auto) and changed the `theme` event payload to {value}. Uses the real product moon / sun / theme-auto glyphs — added to the icon library (icons.js), with obs-icon gaining per-icon fill-rule support so the half-circle Auto glyph renders correctly (even-odd).",
+    "2026-07-21 — Shipped obs-user-menu (App Chrome family): a self-contained avatar trigger + top-layer account dropdown (header name/subtitle + links + theme toggle + danger Logout). Reuses obs-icon + obs-switch; popover pattern mirrors obs-menu (Popover API, composedPath click-outside, Esc). Drops into obs-app-header `user` slot to make the header interactive. Emits select/logout/theme/show/hide. The turnkey form of the user-menu recipe (which now offers turnkey + granular paths). Source-derived from components/layout/user-dropdown.vue."
+  ],
+  "storybook": "Molecules/User Menu",
+  "figma": {
+    "status": "not-started",
+    "component": "User Menu"
+  }
+}

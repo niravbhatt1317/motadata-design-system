@@ -1,0 +1,99 @@
+{
+  "name": "selected-pills",
+  "component": "SelectedItemPills",
+  "display": "Selected Pills",
+  "tier": "molecule",
+  "family": "Tag",
+  "status": "stable",
+  "summary": "Teal key:value pills for a current selection inside a picker/multi-select trigger. Truncates to max-items, then a \"+N\" pill opens a popover listing the rest. Display-only (the home of the teal pills, read-only mode).",
+  "props": {
+    "value": {
+      "type": "string",
+      "default": "\"\"",
+      "note": "CSV (\"a:1,b:2\") or JSON array; or an Array set as a property."
+    },
+    "max-items": {
+      "type": "number",
+      "default": "1",
+      "note": "How many pills to show before collapsing the rest into +N."
+    }
+  },
+  "do": [
+    "Use inside a picker/multi-select trigger to show the current selection as teal key:value pills.",
+    "Set max-items to control how many show before collapsing into a +N overflow pill."
+  ],
+  "dont": [
+    "Don't use for an editable tag list — use Tags Input.",
+    "Don't rely on it for interaction; it is a display surface (the +N popover is the only affordance)."
+  ],
+  "a11y": {
+    "summary": "Read-only display. Pills are not interactive; the only affordance is the +N popover, which must be keyboard-reachable and dismissible. Each pill reads as \"key: value\".",
+    "issues": [
+      "The +N popover is hover/click-opened; ensure it is also keyboard-focusable in the product."
+    ]
+  },
+  "knownIssues": [
+    "Display-only — for an editable selection use the Dropdown (multiple) or Tags Input."
+  ],
+  "changelog": [
+    "2026-08-12 — Catalogued in components/index.json (Tag family) so MCP search_components / get_component resolve it.",
+    "2026-06-29: added a full registry (Details / Usage / Accessibility / Known issues / Changelog) — it previously rendered from a manifest fallback with only Details."
+  ],
+  "tokensUsed": [
+    "--main-tags-bg-color",
+    "--main-tags-text-color",
+    "--border-color",
+    "--page-background-color",
+    "--neutral-light"
+  ],
+  "related": [
+    "loose-tags",
+    "dropdown-picker",
+    "tag"
+  ],
+  "storybook": "Molecules/TagsList",
+  "decisionFlow": [
+    "You don't pick this directly — it's the READ-ONLY display of chosen values INSIDE a DropdownPicker / multi-select trigger.",
+    "Need users to ADD/REMOVE free-text tags? -> LooseTags (input), not selected-pills.",
+    "Showing a status/severity, or a standalone labelled chip? -> Tag / Severity, not selected-pills."
+  ],
+  "variants": [
+    {
+      "name": "read-only-pills",
+      "what": "teal key:value pills for the current selection, display-only"
+    },
+    {
+      "name": "overflow-popover",
+      "what": "a '+N' pill that opens a popover listing the remaining selected values"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "—",
+      "note": "single size; matches the picker trigger"
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "what": "pills within max-items shown inline"
+    },
+    {
+      "name": "overflow",
+      "what": "selection exceeds max-items -> '+N' pill + popover"
+    }
+  ],
+  "usageRules": {
+    "read-only-pills": {
+      "useWhen": "showing the current multi-selection inside a picker/multi-select trigger (display-only)",
+      "dontUse": "letting users type/add tags (-> LooseTags); a standalone status chip (-> Tag/Severity)",
+      "example": "the chosen monitors/tags shown in a FlotoDropdownPicker trigger"
+    },
+    "overflow-popover": {
+      "useWhen": "the selection exceeds the trigger's max-items — collapse the rest behind a '+N' pill + popover",
+      "dontUse": "when all pills fit (show them inline)",
+      "example": "'MySQL, PostgreSQL +3' in a multi-select filter value"
+    }
+  }
+}

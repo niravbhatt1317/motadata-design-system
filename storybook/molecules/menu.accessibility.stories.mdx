@@ -1,0 +1,25 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Menu/Accessibility" />
+
+# Menu — Accessibility
+
+## Verify
+
+- **Trigger name** — the **ellipsis-v "⋯"** trigger is icon-only; it needs an **`aria-label`**
+  (e.g. "Row actions").
+- **Roles** — the open menu uses **`role="menu"`** with **`role="menuitem"`** children (dividers
+  `role="separator"`).
+- **Keyboard** — **↑/↓** move between items, **Enter/Space** activate, **Esc** closes and **returns
+  focus to the trigger**. The menu opens on Enter/Space from the trigger.
+- **Focus** — focus moves into the menu on open and is **trapped** until close; closing restores focus
+  to the trigger.
+- **Not colour-only** — **danger** (red) / **positive** (green) actions also carry an icon + label, so
+  the state is conveyed without relying on colour (WCAG 1.4.1).
+- **Contrast** — selected (`--primary` on `--code-tag-background-color`) and hover (`--neutral-lighter`)
+  rows meet contrast in **both** themes.
+
+## Status
+
+Tracked as **F2** in the [spec](../../components/specs/menu.md). Reproductions model the visuals; the
+roles / keyboard / focus contract must be verified on the live `MMenu` + `FlotoGridActions`.

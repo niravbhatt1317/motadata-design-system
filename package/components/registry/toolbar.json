@@ -1,0 +1,160 @@
+{
+  "name": "toolbar",
+  "display": "Toolbar",
+  "tier": "organisms",
+  "family": "Toolbars",
+  "group": "Structure & Navigation",
+  "source": "grid toolbar · _base-bulk-action-bar · widget-title (the Toolbars family, minus the page/app headers)",
+  "status": "stable",
+  "summary": "The control strip that frames a LIST/TABLE or a widget. Three compositions via `variant`: grid (default) — a strip ABOVE a grid with search (start slot) on the left and filter / column-chooser / primary Add (default slot) on the right; bulk — the floating SELECTION pill (a clear checkbox + \"N items selected\" + a divider + the bulk actions), shown once rows are selected, emits `clear`; widget — a widget header (title + a time-range pill + a kebab of actions) with rounded-top chrome. NOT the page title bar (obs-page-header) and NOT the global top bar (obs-app-header). Compose the contents from DS elements (obs-input, obs-button, obs-checkbox, obs-icon, obs-select).",
+  "variants": [
+    {
+      "name": "grid",
+      "what": "strip above a grid: search (left) + a filter button + the WORKING column chooser (eye = obs-select column mode) + a primary Add (right)",
+      "usage": "list/table pages"
+    },
+    {
+      "name": "bulk",
+      "what": "floating selection pill: checkbox + N-selected + primary/danger actions",
+      "usage": ""
+    },
+    {
+      "name": "widget",
+      "what": "widget header: title + time-range pill + kebab",
+      "usage": "58×"
+    },
+    {
+      "name": "bulk-single",
+      "what": "bulk bar with count=1 renders \"1 item selected\" (singular)",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    "rest"
+  ],
+  "props": {
+    "variant": {
+      "type": "string",
+      "default": "grid",
+      "note": "grid (default) · bulk (floating selection pill) · widget (widget header chrome).",
+      "enum": [
+        "grid",
+        "bulk",
+        "widget"
+      ]
+    },
+    "count": {
+      "type": "string|number",
+      "default": null,
+      "note": "(bulk) the number of selected rows → renders a checkbox + \"N items selected\" + a divider before the actions. Clearing the checkbox fires `clear`."
+    },
+    "title": {
+      "type": "string",
+      "default": "",
+      "note": "(widget) the widget title on the left (14px, weight 500, ellipsised)."
+    }
+  },
+  "events": {
+    "clear": "() — (bulk) the selection checkbox was cleared (wire it to reset your row selection)."
+  },
+  "slots": {
+    "start": "(grid) the left-side content — typically the search field (obs-input type=search).",
+    "default": "the main content on the right (grid: filter/column/Add) · (bulk) the bulk action buttons · (widget) the time-range pill + kebab."
+  },
+  "decisionFlow": [
+    "A search / filter / column / Add strip ABOVE a list or table? -> obs-toolbar (variant=grid, the default).",
+    "A floating bar that appears once rows are SELECTED (N selected + Acknowledge / Assign / Delete)? -> obs-toolbar variant=bulk.",
+    "A widget's own header (title + time-range + a kebab of widget actions)? -> obs-toolbar variant=widget.",
+    "The page's title + primary actions (not tied to a list)? -> obs-page-header, NOT toolbar.",
+    "The global app top bar (logo / notifications / user)? -> obs-app-header.",
+    "The column show/hide dropdown itself? -> the Dropdown (obs-select) column-chooser mode, composed behind the column button."
+  ],
+  "usageRules": {
+    "grid": {
+      "useWhen": "any list/table page needs search + filters + column show/hide + a primary Add above the grid.",
+      "dontUse": "for the page title bar -> obs-page-header.",
+      "example": "search (left) + filter + the column chooser (eye = obs-select column mode: show/hide + drag-reorder columns) + Add Monitor (right), above the Monitors grid."
+    },
+    "bulk": {
+      "useWhen": "the user has selected rows and needs to act on the selection.",
+      "dontUse": "as a permanent toolbar (it appears only while rows are selected).",
+      "example": "\"3 items selected\" + Acknowledge · Assign · Delete (danger) · More."
+    },
+    "widget": {
+      "useWhen": "a dashboard widget/card needs its own header (title + window + actions).",
+      "dontUse": "for a page or list header.",
+      "example": "\"CPU Utilization\" + a 24h time pill + a ⋮ of Edit / Clone / Full Screen / Share / Export."
+    },
+    "bulk-single": {
+      "useWhen": "the bulk selection bar with exactly ONE row selected — it reads “1 item selected” (singular)",
+      "dontUse": "nothing selected (hide the bar) or >1 (plural “N items selected”)",
+      "example": "variant=\"bulk\" count=\"1\" → “1 item selected”"
+    }
+  },
+  "do": [
+    "Use variant=grid for the search/filter/column/Add strip above a list or table.",
+    "Use variant=bulk for the floating selection bar (checkbox + count + primary/danger actions); wire `clear` to reset selection.",
+    "Use variant=widget for a dashboard widget header (title + time-range pill + kebab).",
+    "Compose the contents from DS elements — obs-input (search), obs-button (Add / bulk actions), obs-checkbox, obs-icon, obs-select/obs-menu (filter/column popovers)."
+  ],
+  "dont": [
+    "Don’t use for a page title bar (title + page actions) — that is obs-page-header.",
+    "Don’t use for the global app top bar (logo / notifications / user) — that is obs-app-header.",
+    "Don’t hand-build the search box or action buttons — reuse obs-input / obs-button.",
+    "Don’t keep the bulk bar visible when nothing is selected — render it only while count > 0."
+  ],
+  "a11y": {
+    "summary": "The bulk bar is a role=toolbar with an aria-label (\"Bulk actions\"); the clear checkbox is a real obs-checkbox (keyboard-operable, fires `clear`); the count is plain text (\"N items selected\"). Grid/widget toolbars are plain strips — their contents (obs-input/obs-button) carry their own semantics. The divider is decorative (aria-hidden).",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "In the bulk bar, announce the selection change to assistive tech (an aria-live region on \"N items selected\") so screen-reader users hear the count update as rows are (de)selected."
+      }
+    ]
+  },
+  "knownIssues": [
+    {
+      "severity": "info",
+      "issue": "obs-toolbar renders the strip/pill/header CHROME + the selection affordances; the filter and column-chooser POPOVERS are composed behind the buttons (obs-select / obs-menu) — the grid-toolbar story shows them as icon buttons. The column chooser (eye button) is itself a checkbox dropdown (obs-select), not part of the toolbar."
+    }
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--page-text-color",
+    "--common-widget-bg",
+    "--neutral-light",
+    "--tooltip-box-shadow"
+  ],
+  "changelog": [
+    "2026-07-26 — Docs accuracy pass (owner): added the missing usage card for the `bulk-single` variant (count=1 → singular “1 item selected”) and synced tokensUsed to what the element resolves (added --neutral-light / --tooltip-box-shadow, dropped stale --neutral-shadow-light / --secondary-red). Verified props/variants/a11y/do-dont current — no content drift. No API change.",
+    {
+      "date": "2026-07-16",
+      "change": "Consolidated: the grid toolbar now embeds the WORKING column chooser (the eye button IS obs-select in column mode) instead of a dead icon button — \"Column chooser\" was never a separate toolbar variant, only the grid strip with a functional column control, so the duplicate preset/gallery example and the phantom column-chooser variant were removed. The grid toolbar is the single source; the column chooser is its column control."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Completeness pass: `variant` now declares its enum (grid/bulk/widget); the column-chooser is folded into the Dropdown — the eye button composes obs-select in column-chooser mode (reusing its popover positioning) and its icon button matches the sibling filter (35x35, --default-button-text) for size + colour parity; the widget-header playground now renders a chart body so the top chrome reads as a complete card. Playground presets reach every variant (grid, bulk, single-select, widget, column-chooser)."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Matched the bulk action bar to the REAL product (_base-bulk-action-bar.vue): BORDERED action buttons (obs-button default) + red-bordered danger + a ⋮ More menu, muted --neutral-light count text, real padding/shadow (story was a simplified reproduction — 12 intentional deltas). Widget kebab is now a WORKING obs-menu (Edit/Clone/Full Screen/Share/Export). Added the Column chooser variant (eye → obs-select of column checkboxes). Playground is Preset-driven (variant + content switch together) so selecting Widget no longer shows grid content."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Added obs-toolbar element — the list/table control strip: grid (search + filter/column/Add), bulk (floating N-selected pill + primary/danger actions, emits `clear`), and widget (title + time-range pill + kebab) variants, split from the product Toolbars family. diff.mjs ✅ MATCH (light+dark); reuses obs-checkbox/obs-icon and composes obs-input/obs-button. 4th of the Structure & Navigation set."
+    }
+  ],
+  "related": [
+    "page-header",
+    "app-header",
+    "filters",
+    "table",
+    "grid-select",
+    "button",
+    "input",
+    "dropdown-picker"
+  ],
+  "storybook": "Organisms/Toolbars/Examples (GridToolbar · BulkActionBar · WidgetHeader)"
+}

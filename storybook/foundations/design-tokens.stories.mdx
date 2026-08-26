@@ -1,0 +1,37 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Design tokens" />
+
+# Design tokens
+
+> **In plain terms:** every colour, spacing, radius, font and size in ObserveOps is a named **token**.
+> The full, searchable gallery below is generated straight from the token spec — so it's always exact
+> and complete (all colour tokens, light + dark, plus the structural scale).
+
+The tokens ship as a standalone CSS "look" package, **`@mtdt/observeops-ds-css`** — import one file in any
+project (HTML, React, Vue, anything) and use `var(--token)` for pixel-exact ObserveOps styling.
+
+```bash
+npm install @mtdt/observeops-ds-css
+```
+
+```html
+<!-- or, no install -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mtdt/observeops-ds-css/dist/observeops-ds.css" />
+```
+
+## Live token gallery
+
+Grouped (Brand · Status · Severity · Navigation · Surface · Text · Border · Neutrals · Chart + the
+structural scale), searchable, with a sticky search/dark-toggle and a left section-nav.
+
+**[↗ Open the full token gallery](https://niravbhatt1317.github.io/motadata-design-system/tokens.html)**
+— every colour token (light + dark) plus the structural scale. Served from this site (renders live).
+
+## Notes
+
+- **Brand is navy** `--primary` (`#111c2c` / `#e3e8f2`), **not** cyan/blue. The cyan `--primary-color`
+  (`#099dd9`) is the Ant form-control accent only.
+- **Dark theme:** set `data-theme="dark-theme"` on a root element.
+- This is the *look* (tokens). Real *components* arrive as Web Components in Goal #4 (see
+  [`strategy/goal-4-headless.md`](../../strategy/goal-4-headless.md)).

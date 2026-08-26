@@ -1,0 +1,154 @@
+{
+  "id": "banner",
+  "name": "banner",
+  "display": "Banner",
+  "tier": "molecule",
+  "family": "Feedback",
+  "status": "core",
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "the resting inline notice"
+    },
+    {
+      "name": "closable",
+      "what": "a dismiss × is shown; clicking it hides the banner and emits close"
+    }
+  ],
+  "summary": "An inline notice / callout — a tinted surface with a status icon and a message. Intents: info (default, NEUTRAL), note (blue), success, warning, error. Persistent and in-flow — not a transient toast, not a blocking modal.",
+  "selectHint": "Use for a persistent inline message tied to a section (a form hint, a visibility notice, a non-blocking warning). For a transient auto-dismiss message use a toast; for a blocking decision use obs-modal.",
+  "variants": [
+    {
+      "name": "info",
+      "what": "default — NEUTRAL subtle notice: --neutral-lightest surface (#ecf1f9) + --neutral-regular text & icon (#7186a8), near-borderless. e.g. 'Anyone in the organization can view this dashboard.'"
+    },
+    {
+      "name": "note",
+      "what": "a BLUE callout: --info-surface blue bg (#eef5fc) + --info-text blue icon (#2f6099), dark text — an emphasised informational highlight"
+    },
+    {
+      "name": "success",
+      "what": "green — a positive confirmation inline"
+    },
+    {
+      "name": "warning",
+      "what": "amber — a non-blocking caution"
+    },
+    {
+      "name": "error",
+      "what": "red — an inline error/destructive notice"
+    }
+  ],
+  "props": {
+    "variant": {
+      "type": "string",
+      "default": "info",
+      "enum": [
+        "info",
+        "note",
+        "success",
+        "warning",
+        "error"
+      ],
+      "note": "the intent → surface/border/icon+text colour. info (default) is the subtle periwinkle notice; note is the emphasised brand-blue callout."
+    },
+    "title": {
+      "type": "string",
+      "default": "",
+      "note": "optional bold heading above the message"
+    },
+    "icon": {
+      "type": "string",
+      "default": "",
+      "note": "override the default per-variant icon (a library key)"
+    },
+    "closable": {
+      "type": "boolean",
+      "default": false,
+      "note": "show a dismiss × (emits close, then hides itself via [hidden])"
+    }
+  },
+  "events": [
+    "close"
+  ],
+  "slots": {
+    "default": "the banner message"
+  },
+  "decisionFlow": [
+    "A persistent message tied to a section / form (a hint, a visibility notice)? -> obs-banner (variant by intent).",
+    "A transient, auto-dismissing message after an action (saved/deleted)? -> a toast, NOT obs-banner.",
+    "A blocking decision the user must answer? -> obs-modal (confirm), NOT obs-banner.",
+    "Just a destructive-action warning inside a form? -> obs-banner variant=\"error\" (inline), not a modal."
+  ],
+  "usageRules": {
+    "info": {
+      "useWhen": "the DEFAULT low-key notice — neutral surface + muted grey-blue text (--neutral-lightest / --neutral-regular).",
+      "dontUse": "when you need emphasis — use note; for success/failure use success/error",
+      "example": "'Anyone in the organization can view this dashboard. Edit access is limited to you and Dashboard Admins.'"
+    },
+    "success": {
+      "useWhen": "a positive inline confirmation that should persist on the surface",
+      "dontUse": "for transient post-save feedback — that's a toast",
+      "example": "'Sharing updated — 3 users can now view this.'"
+    },
+    "warning": {
+      "useWhen": "a non-blocking caution the user should read before acting",
+      "dontUse": "for a hard block — use obs-modal",
+      "example": "'This category is shared with 20+ users.'"
+    },
+    "error": {
+      "useWhen": "an inline error/destructive notice kept in context",
+      "dontUse": "for a blocking decision — use obs-modal (confirm)",
+      "example": "'At least one user is required when Private.'"
+    },
+    "closable": {
+      "useWhen": "the notice is dismissible and not essential to keep on screen",
+      "dontUse": "for a notice that must stay (a permanent form hint)",
+      "example": "closable → user can dismiss a one-time tip"
+    },
+    "note": {
+      "useWhen": "an emphasised BLUE callout (blue bg + blue icon) that should stand out more than the neutral info.",
+      "dontUse": "for a routine notice (use info) or for status feedback (success/warning/error)",
+      "example": "a highlighted 'note' or tip that needs more attention than the default info"
+    }
+  },
+  "do": [
+    "Use obs-banner for a persistent inline notice; pick the variant by intent (info default).",
+    "Keep the message short; put a lead-in in `title` and the detail in the slot.",
+    "Let the colours come from the tokens (info-* / severity-*) — never hardcode."
+  ],
+  "dont": [
+    "Don't use a banner for transient post-action feedback (that's a toast) or for a blocking choice (that's obs-modal).",
+    "Don't reuse an off-purpose token for the surface — obs-banner uses --info-surface (info) / --primary-alt-lighter (note) / severity surfaces.",
+    "Don't stack many banners; one notice per surface."
+  ],
+  "a11y": {
+    "summary": "The banner is a role=status live region so assistive tech announces it; the icon is decorative (aria-hidden) and the dismiss button has an aria-label.",
+    "issues": []
+  },
+  "knownIssues": [],
+  "tokensUsed": [
+    "--neutral-lightest",
+    "--neutral-regular",
+    "--info-surface",
+    "--info-border",
+    "--info-text",
+    "--severity-up-lightest",
+    "--severity-warning-lightest",
+    "--severity-critical-lightest",
+    "--page-text-color"
+  ],
+  "storybook": "Molecules/Banner",
+  "related": [
+    "modal",
+    "severity",
+    "tag",
+    "icon"
+  ],
+  "changelog": [
+    "2026-08-10 — Colours (owner, minimal): info (default) → NEUTRAL — --neutral-lightest surface + --neutral-regular text & icon (token-based, no hex). note → BLUE — --info-surface bg + --info-text blue icon. (--info-* tokens reverted to their blue values.)",
+    "2026-08-10 — Variant rework (owner, ref image #149): the `info` variant (still the DEFAULT) is now the product SUBTLE notice — soft periwinkle surface + muted blue-grey TEXT (the message text itself, not just the icon), near-borderless — matching the real 'Anyone in the organization can view this dashboard' banner. Repointed the --info-surface/--info-text/--info-border tokens to those subtle values. The previous saturated-blue info moved to a NEW `note` variant (emphasised brand-blue callout). Banner text now follows --bn-text per variant.",
+    "2026-08-07 — Added obs-banner (Tier 2, gap G2): an inline notice/callout with info/success/warning/error intents, using the new --info-surface/--info-border/--info-text tokens (previously there was no inline-banner component and no info-surface token, so consumers reused --neutral-lightest off-purpose)."
+  ]
+}

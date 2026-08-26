@@ -1,0 +1,350 @@
+{
+  "name": "side-menu",
+  "component": "settings/left-menu.vue · dashboard-dropdown.vue · infinite-tree.vue · report-sidebar.vue",
+  "display": "Side Menu",
+  "tier": "organism",
+  "family": "Navigation",
+  "group": "Structure & Navigation",
+  "source": "src/modules/settings/.../left-menu.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The in-module SECTION navigation panel — a searchable, collapsible left menu. ONE element with a `mode` axis folding the product's four side-menu forms: sections (settings sub-nav, 20×), categories (dashboard picker, count tags), tree (Log/Topology N-level hierarchy with type icon + count badge), and list (report/saved-views flat list, optional ★ favourite). Data-driven via a recursive `items` model; optional top segmented `tabs` + a search box. The active leaf highlights --primary on --code-tag-background-color (sections adds a --primary left rule). NOT the module rail (obs-sidebar), NOT sibling views (obs-tabs), NOT the faceted checkbox filter (a vertical Filter). SIZING: the element is width:100% (fills its container) — set the container WIDTH per mode (sections ~15% / categories ~30vw / tree|list ~20%); see `sizing` + usageRules[mode].width.",
+  "variants": [
+    {
+      "name": "sections",
+      "what": "icon + name accordion → sub-items (settings left-menu); active leaf gets a --primary left rule",
+      "usage": "20×"
+    },
+    {
+      "name": "categories",
+      "what": "category groups WITH count tags → child items (dashboard picker)",
+      "usage": "many"
+    },
+    {
+      "name": "tree",
+      "what": "N-level hierarchy — node = a monitor-type LOGO + name + a numeric (JetBrains Mono) count pill (Log Explorer log-item.vue / Topology)",
+      "usage": "many"
+    },
+    {
+      "name": "list",
+      "what": "a flat list with an active highlight + optional ★ favourite (report / saved-views)",
+      "usage": "many"
+    },
+    {
+      "name": "with-tabs",
+      "what": "a segmented tab strip above the panel (Dashboard/NOC · Metric/Log/Flow…)",
+      "usage": "categories/list"
+    },
+    {
+      "name": "with-search",
+      "what": "a search box that filters (and auto-expands) the tree (default on)",
+      "usage": "default"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "fill",
+      "value": "100%",
+      "note": "the element fills its container — set the width via your layout column. In the product these are RESIZABLE splitter panes sized by percentage, not fixed px."
+    },
+    {
+      "name": "sections",
+      "value": "~15% viewport",
+      "note": "Settings left-menu: a <Pane :size=\"15\" min-size=\"15\"> (~215–290px on a 1440–1920 screen)."
+    },
+    {
+      "name": "categories",
+      "value": "~30vw",
+      "note": "Dashboard picker: width 30vw / 30% (~430–580px) — the widest."
+    },
+    {
+      "name": "tree",
+      "value": "~15–25% viewport",
+      "note": "Log/Topology explorer rail: a resizable splitpanes pane (~250–360px; ~340px fixed)."
+    },
+    {
+      "name": "list",
+      "value": "~15–25% viewport",
+      "note": "Report / saved-views rail: a resizable pane (~250–360px; ~340px fixed)."
+    }
+  ],
+  "states": [
+    {
+      "name": "group",
+      "what": "a collapsible node — chevron + optional icon + label + optional count; click toggles expand"
+    },
+    {
+      "name": "leaf-rest",
+      "what": "a selectable item; hover → --nav-hover-bg"
+    },
+    {
+      "name": "leaf-active",
+      "what": "the selected leaf — --primary on --code-tag-background-color (sections: + inset left rule)"
+    }
+  ],
+  "props": {
+    "mode": {
+      "type": "string",
+      "default": "sections",
+      "enum": [
+        "sections",
+        "categories",
+        "tree",
+        "list"
+      ],
+      "note": "sections (icon accordion) · categories (count-tag groups) · tree (N-level hierarchy) · list (flat)."
+    },
+    "items": {
+      "type": "string",
+      "default": "",
+      "note": "the recursive menu model — a JSON array of {label, icon?, logo?, count?, favorite?, edit?, children?}. `icon` is an obs-icon name; `logo` is a monitor-type LOGO — a NAME renders <obs-logo> (e.g. router/linux/windows), a URL/data-URI renders an <img> — and takes precedence over `icon`. `count` renders an obs-tag (tree adds numeric/JetBrains-Mono). A node with `children` is a collapsible group; a leaf is selectable."
+    },
+    "active": {
+      "type": "string",
+      "default": "",
+      "note": "the active leaf `label` — highlighted (--primary; sections adds a --primary left rule; list uses weight 500). Seeds the initial highlight AND expands its ancestor groups; clicking any leaf moves the highlight (internal state) and emits `select`."
+    },
+    "search": {
+      "type": "boolean",
+      "default": true,
+      "note": "show the search box (filters + auto-expands matches)."
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Search",
+      "note": "the search box placeholder."
+    },
+    "tabs": {
+      "type": "string",
+      "default": "",
+      "note": "optional segmented tabs above the panel — a JSON array of {label,value} (or strings)."
+    },
+    "active-tab": {
+      "type": "string",
+      "default": "",
+      "note": "the selected tab value (defaults to the first)."
+    },
+    "tab-style": {
+      "type": "string",
+      "default": "underline",
+      "enum": [
+        "underline",
+        "segmented"
+      ],
+      "note": "tab presentation — underline (tree/list) or segmented (categories Dashboard/NOC switcher)."
+    }
+  },
+  "events": {
+    "select": "({label}) — a leaf item was chosen (wire it to filter the grid/route).",
+    "search": "({query}) — the search text changed.",
+    "tab": "({value}) — a segmented tab was chosen."
+  },
+  "slots": {
+    "tabs-action": "an action to the right of the tabs (e.g. a ＋).",
+    "search-action": "an action to the right of the search (e.g. a layout toggle).",
+    "logo": "optional branding/header slot at the very top (a logo or section title) — adds no height when unused.",
+    "default": "the default (footer) slot at the bottom, below the list — e.g. a \"+ New Category\" action. Adds no height when unused."
+  },
+  "decisionFlow": [
+    "Navigate SECTIONS within a module (Settings sub-nav; expand to sub-items)? -> obs-side-menu mode=\"sections\".",
+    "A category picker with COUNTS (Dashboard categories → dashboards)? -> mode=\"categories\".",
+    "An N-level HIERARCHY with type icons + counts (Log types, Topology tree)? -> mode=\"tree\".",
+    "A flat LIST of saved views / reports (optional favourites)? -> mode=\"list\".",
+    "Switch between top-level MODULES? -> obs-sidebar, NOT the side-menu.",
+    "Switch between sibling VIEWS of the same page? -> obs-tabs.",
+    "A faceted CHECKBOX filter panel? -> a vertical Filter (Filters family), not a side-menu."
+  ],
+  "usageRules": {
+    "sections": {
+      "useWhen": "an in-module section nav that expands to sub-items (Settings-style)",
+      "dontUse": "top-level module switching (obs-sidebar) or sibling views (obs-tabs)",
+      "example": "Settings: General / Monitoring / Users & Roles → sub-items, Monitoring expanded",
+      "asSeenIn": "settings/left-menu.vue (20×)",
+      "width": "WIDTH: wrap it in ~15% of the viewport (~215–290px; use ~260px if fixed) — the narrow Settings rail."
+    },
+    "categories": {
+      "useWhen": "grouped items with counts, expand to children (dashboard picker)",
+      "dontUse": "a flat list (use list) or a deep hierarchy (use tree)",
+      "example": "My Favorite (7) / Server (6) → child dashboards",
+      "asSeenIn": "dashboard-dropdown.vue",
+      "width": "WIDTH: wrap it in ~30vw (~430–580px; use ~500px if fixed) — the WIDEST (dashboard picker)."
+    },
+    "tree": {
+      "useWhen": "a multi-level hierarchy where nodes carry a type icon + a count (log types, topology)",
+      "dontUse": "a 2-level section menu (use sections/categories)",
+      "example": "Syslog 57.25M / Linux 9.86M → Linux Syslog 9.61M",
+      "asSeenIn": "components/hierarchy/infinite-tree.vue",
+      "width": "WIDTH: wrap it in ~15–25% of the viewport (~250–360px; use ~340px if fixed) — an explorer rail."
+    },
+    "list": {
+      "useWhen": "a flat list of saved views / reports, one active, optional favourites",
+      "dontUse": "when items nest (use tree/sections)",
+      "example": "All Reports (active) · ★ Favorites · user categories",
+      "asSeenIn": "report-sidebar.vue / ExplorerSavedViewList",
+      "width": "WIDTH: wrap it in ~15–25% of the viewport (~250–360px; use ~340px if fixed) — a report / saved-views rail."
+    },
+    "with-tabs": {
+      "useWhen": "the panel switches between named scopes (Dashboard/NOC, Metric/Log/Flow)",
+      "dontUse": "a single-scope menu (omit tabs)",
+      "example": "Metric / Log / Flow / Trap / Audit tabs above a saved-views list"
+    },
+    "with-search": {
+      "useWhen": "the list is long enough to need filtering (default on)",
+      "dontUse": "a short fixed menu (set search=false)",
+      "example": "typing 'linux' filters + auto-expands the tree"
+    },
+    "surface": {
+      "useWhen": "always — the in-module side menu is a FLUSH WHITE panel (var(--common-widget-bg)); it fills its column edge-to-edge.",
+      "dontUse": "a gray/tinted surface or a rounded bordered card. Do NOT wrap it in a gray container, and do NOT set its background to --page-background-color / --common-main-bg (those are the PAGE, which is grey in a real app — the menu would go gray).",
+      "must": "keep it white and flush with a RIGHT divider only (border-right) — no card border/radius. Matches the product settings menu (full-height column separated from content by a right border).",
+      "example": "<obs-side-menu mode=\"sections\" items=\"...\"></obs-side-menu> in a full-height left column — white, borderless."
+    }
+  },
+  "do": [
+    "Render it as a flush WHITE panel (it uses --common-widget-bg) filling its column — don’t put it on a gray surface or in a rounded card.",
+    "Pick the `mode` for the shape of your data (sections/categories/tree/list).",
+    "Feed a recursive `items` model; set `active` to the current leaf; child items may carry an `icon`.",
+    "Reuse the header slots for mode chrome — `tabs-action` (＋), `search-action` (toggle); the search is a real obs-input.",
+    "Wire `select` to filter the grid/route; `tab`/`search` as needed.",
+    "Set the panel WIDTH via your layout column — the element is width:100%. In the product these are resizable panes (Settings ~15%, Dashboard ~30vw, explorers ~20%); don't hardcode a fixed px unless your layout is fixed."
+  ],
+  "dont": [
+    "Don’t give the side menu a gray background or a rounded/bordered card — it’s a flush white panel (product = background:none, radius:0).",
+    "Don't use it for top-level modules (obs-sidebar) or sibling views (obs-tabs).",
+    "Don't use it as a faceted checkbox filter — that's a vertical Filter.",
+    "Don't hand-roll the accordion/tree — reuse obs-side-menu.",
+    "Don't hardcode colours — active is --primary on --code-tag-background-color."
+  ],
+  "a11y": {
+    "summary": "A role=tree of role=treeitem rows; groups expose aria-expanded; the active leaf is highlighted. Tabs are role=tab/tablist with aria-selected. The search is a real <input type=search>. Keyboard: rows/tabs are clickable; (full arrow-key tree nav is a consumer enhancement).",
+    "issues": [
+      {
+        "severity": "low",
+        "issue": "Arrow-key roving tabindex across the tree is not built in — add it if the panel is a primary keyboard surface."
+      },
+      {
+        "severity": "low",
+        "issue": "Verify a visible focus ring on rows/tabs against the panel surface in both themes."
+      }
+    ]
+  },
+  "knownIssues": [
+    {
+      "severity": "info",
+      "issue": "obs-side-menu is a render-faithful reproduction of the four product side-menu forms (the live trees are store/worker/virtualised — infinite-tree.vue). Virtualisation, inline rename (pencil), create/delete affordances, and the router/filter wiring are the consumer's; obs-side-menu provides the searchable accordion/tree chrome + select/tab/search events."
+    }
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--code-tag-background-color",
+    "--nav-hover-bg",
+    "--neutral-light",
+    "--page-background-color",
+    "--page-text-color",
+    "--primary",
+    "--primary-alt",
+    "--secondary-yellow"
+  ],
+  "related": [
+    "sidebar",
+    "tabs",
+    "breadcrumbs",
+    "dropdown-picker",
+    "filters",
+    "radio",
+    "input",
+    "button",
+    "tag",
+    "logo"
+  ],
+  "changelog": [
+    {
+      "date": "2026-08-12",
+      "change": "Dark theme: panel background now #07101f via new token --side-menu-bg (light stays white #fff). Added a theme-aware scrollbar (--utility-scrollbar-thumb) so the scroll region no longer shows the browsers bright default bar on the dark surface."
+    },
+    "2026-08-09 — Discoverability (gap G0): added a routing selectHint + keywords (left nav, category list, saved views, section/settings menu) so search_components finds obs-side-menu by its obvious phrasings instead of returning the family guide.",
+    "2026-08-09 — Slots (consumer G10 follow-up): added a `logo` header slot (top) and a `default` footer slot (bottom, e.g. a \"+ New Category\" action) — both add zero height when unfilled. Previously only tabs-action/search-action existed, so consumers hand-built the footer.",
+    "2026-08-06 — Added the persistent RIGHT border (border-right: 1px --border-color) to the flush white panel — the product settings menu is a full-height column divided from the content by a right rule. (Still no card border/radius.)",
+    "2026-08-06 — Surface fix (owner): the panel used var(--page-background-color) + a 1px border + 6px radius (a card). In a real app --page-background-color is the grey content area, so the menu rendered GREY; and the product settings menu is actually flush (left-list.less: background:none, radius:0). Switched to a flush WHITE panel: background var(--common-widget-bg) (stays white on any page), removed the outer border + radius. Added a `surface` usageRule + do/dont so AI tools keep it white & flush, not a gray card.",
+    "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves. Reuse (obs-* composition) / props / variants / a11y verified current — no drift. No API change.",
+    {
+      "date": "2026-07-20",
+      "change": "Completeness pass: the component ships every variant (sections · categories · tree · list) with full functionality — reused sub-components (obs-input search, obs-tabs / obs-radio as-button tabs, obs-button ＋/toggle, obs-icon, obs-logo type logos, obs-tag counts), search filter + auto-expand, expand/collapse, click-to-select, per-mode chrome, and the width-sizing contract (sizing{} + usageRules[mode].width). Props/usage/decisionFlow/a11y/known-issues all current."
+    },
+    {
+      "date": "2026-07-20",
+      "change": "Made the width contract AI-actionable: added usageRules[mode].width (per-mode width right where the AI picks the mode), a top-level `sizing` object (model + byMode + rule), split the sizes tree/list into per-mode entries, and stated the width model in the summary. An AI picking any mode now sees the exact width to define."
+    },
+    {
+      "date": "2026-07-20",
+      "change": "Documented the real width model — obs-side-menu is width:100% (fills its container); the product panels are RESIZABLE percentage panes (Settings 15%, Dashboard 30vw, explorers ~20%), not fixed px. Retuned the showcase demo widths to those proportions (Sections ~260, Categories ~500, Tree/List ~340)."
+    },
+    {
+      "date": "2026-07-20",
+      "change": "List variant: the active item is now font-weight 500 (was 600) — matching the real product .selection-menu selected weight (the story reproduction had used 600)."
+    },
+    {
+      "date": "2026-07-20",
+      "change": "Tree type nodes now REUSE the new obs-logo element (<obs-logo name=\"router|linux|windows\">) instead of an inlined data-URI — a `logo` item field accepts a logo NAME (→ obs-logo, the logos library) or a URL/data-URI (→ img)."
+    },
+    {
+      "date": "2026-07-20",
+      "change": "Tree count now REUSES obs-tag with a new `numeric` option (JetBrains Mono) instead of a hand-styled span — so every count is the obs-tag component (tree = numeric mono, categories = regular)."
+    },
+    {
+      "date": "2026-07-20",
+      "change": "Tree variant, transcribed from log-item.vue: type nodes now render the real monitor-type LOGO (Router/Linux/Windows from the logos library, via a new `logo` item field / image), not a monochrome icon; and the count is the product .numeric-value — JetBrains Mono (--numeric-font-family), tabular figures, a muted rounded pill — replacing the tag-primary obs-tag for tree (categories keeps obs-tag). Data matched to the real Log Explorer."
+    },
+    {
+      "date": "2026-07-16",
+      "change": "Icon sizing (owner review vs product): bumped the menu icons to match the product — group/type icons 14→19px (the product .list-icon is 1.3rem/~20px), leaf item icons 14→16px, chevrons 10→12px, favourite star 13→16px. They were too small."
+    },
+    {
+      "date": "2026-07-16",
+      "change": "Reuse + interaction fixes (owner review, verified vs product): count badges now REUSE obs-tag (rounded tag-primary — the product dashboard-dropdown uses MTag rounded tag-primary), replacing the hand-built span (also bigger, as expected). The search-action toggle button now matches the search height (both 35px, via --input-height-base). Clicking any leaf now moves the active highlight (internal active state seeded from the `active` prop) — so List (and every mode) is selectable."
+    },
+    {
+      "date": "2026-07-16",
+      "change": "Reuse + fidelity pass (owner review): the tab strip now REUSES obs-tabs (underline, tree/list) and obs-radio as-button (the segmented Dashboard/NOC switcher, categories) instead of hand-built tabs; search reuses obs-input, ＋/toggle reuse obs-button, all glyphs obs-icon. Group headers now show the SAME hover background as child rows (--nav-hover-bg). Panels widened and the segmented switcher fills the header."
+    },
+    {
+      "date": "2026-07-16",
+      "change": "Fidelity pass (owner review): rebuilt each mode from its product source instead of a generic model. sections rows crisped to 9px/6px; categories now uses a SEGMENTED Dashboard/NOC switcher (tab-style) + a `tabs-action` ＋ slot + a `search-action` toggle slot + child icons; tree/list use UNDERLINE tabs with type icons + count badges (tree) / border-split rows + ★ favourite + weight-600 active + hover pencil (list). Search now reuses obs-input; ＋/toggle reuse obs-button; group headers no longer show a hover background; panels widened. New `tab-style` prop (underline|segmented)."
+    },
+    {
+      "date": "2026-07-16",
+      "change": "Added obs-side-menu — the in-module section panel, ONE element with a `mode` axis (sections · categories · tree · list) folding the four product side-menu forms. Recursive `items` model, optional segmented `tabs` + a filtering/auto-expanding search, active-leaf highlight (--primary; sections adds a left rule). Emits select/search/tab; composes obs-icon. Source-derived (the live trees are store/worker-bound). Part of the Navigation-family decomposition (one element per reusable purpose + route-aways)."
+    }
+  ],
+  "storybook": "Molecules/Navigation (SideMenu · Tree · Categories · List)",
+  "figma": {
+    "status": "not-started",
+    "component": "Side Menu"
+  },
+  "sizing": {
+    "model": "obs-side-menu is width:100% and fills its container — YOU must set the container width. In the product these are RESIZABLE percentage panes, not fixed px.",
+    "byMode": {
+      "sections": "~15% viewport (~260px)",
+      "categories": "~30vw (~500px, widest)",
+      "tree": "~15–25% viewport (~340px)",
+      "list": "~15–25% viewport (~340px)"
+    },
+    "rule": "When you pick a mode, wrap <obs-side-menu> in a container of that width (a % pane, or the px in parentheses if your layout is fixed). See usageRules[mode].width."
+  },
+  "selectHint": "The in-module SECTION / category navigation panel — a left menu / left nav for a module (settings menu, category list, saved-views list, sections/tree). NOT the module rail (obs-sidebar) and NOT sibling views (obs-tabs).",
+  "keywords": [
+    "side menu",
+    "left menu",
+    "left nav",
+    "section menu",
+    "category list",
+    "categories",
+    "saved views",
+    "settings menu",
+    "report sidebar",
+    "nav panel",
+    "secondary navigation",
+    "facet list",
+    "tree menu"
+  ]
+}

@@ -1,0 +1,1328 @@
+{
+  "$description": "Page & flow composition recipes for the ObserveOps design system. Each recipe is a product-faithful blueprint for assembling catalogued components into a whole screen/flow. `id`s + `variant`s reference components/index.json + the registries. This is the layer above per-component docs — it tells an AI HOW to lay out a page, not just which parts exist.",
+  "$howToUse": [
+    "1. Match the user's screen to a recipe by `whenToUse` / `examples`.",
+    "2. Build the `regions` top-to-bottom / outer-to-inner: each region names component `id`s + `variant`s — open those in components/registry/ for props.",
+    "3. Apply `layout.shell` + `layout.tokens` (resolve via tokens/variables.json + tokens/structural.json) for spacing/sizing.",
+    "4. Honour `gotchas` (known traps) and `a11y`.",
+    "5. The product content (which columns/fields/options) is domain data the DS does not own — fill from the user's spec.",
+    "6. A region marked `$gap` references a layer NOT catalogued in the DS yet — do NOT improvise it. STOP and ASK the user (see ../AGENTS.md deviation rule)."
+  ],
+  "$knownGaps": {
+    "$note": "Charts, the topology graph and the dashboard widget-grid are catalogued as the `data-viz` GUIDE family (registry/data-viz.json), not as obs-* web components. Wherever a recipe region needs one: (1) pick the TYPE via data-viz decisionFlow, (2) colour from tokens/chart-palette.json, (3) render with the PRODUCT'S component in-repo — Chart (components/chart), Graph (monitor-graph), Widgets (components/widgets) — or STOP-and-ASK if standalone. The region still carries `$gap` to mark the app-coupled boundary.",
+    "charts": "Charts / stat tiles (line/bar/donut/gauge/heatmap/sparkline/topn/…): no obs-* — see registry/data-viz.json for the type + palette; render with the product Chart component (Highcharts). Standalone -> STOP and ASK.",
+    "topologyGraph": "The Cytoscape topology / node-graph canvas: no obs-* — see data-viz `topology-graph`; render with monitor-graph/graph.vue. Standalone -> STOP and ASK.",
+    "widgetGrid": "The dashboard widget-grid (resizable tiles, vue-grid-layout): no obs-* — see data-viz `widget-grid`; render with components/widgets. Standalone -> STOP and ASK."
+  },
+  "layout": {
+    "appShell": "Every authenticated page sits inside the app shell: the Primary nav (navigation/primary-nav, left, 65px collapsed) + the App header (toolbars/app-header, top, @header-height 55px) come from the layout, not the page. A page renders inside the main content area (--common-main-bg).",
+    "tokens": {
+      "pageBackground": "--page-background-color",
+      "contentBackground": "--common-main-bg",
+      "navWidth": "@nav-icon-width (50px) collapsed / 170px expanded",
+      "headerHeight": "@header-height (55px)",
+      "gutter": "@padding-md (16px)",
+      "sectionPad": "@padding-lg (24px)"
+    }
+  },
+  "recipes": [
+    {
+      "id": "list-view",
+      "name": "List view (CRUD list)",
+      "whenToUse": "A paginated list/grid of records with create/edit, filtering, row + bulk actions (Monitors, Alerts, Users, Policies, most Settings lists).",
+      "examples": [
+        "inventory monitors list",
+        "alert list",
+        "users-settings users list"
+      ],
+      "regions": [
+        {
+          "region": "page-header",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "page-header"
+            }
+          ],
+          "contains": [
+            {
+              "title": "the FlotoPageHeader title (+ optional count via title-append)"
+            },
+            {
+              "search": {
+                "id": "input",
+                "variant": "search"
+              }
+            },
+            {
+              "export": {
+                "id": "button",
+                "variant": "transparent",
+                "icon": "export"
+              }
+            },
+            {
+              "add": {
+                "id": "button",
+                "variant": "primary",
+                "label": "Add <Noun>"
+              }
+            }
+          ]
+        },
+        {
+          "region": "filter (optional, above the grid)",
+          "use": [
+            {
+              "id": "filters",
+              "variant": "filter-bar"
+            }
+          ],
+          "alt": [
+            {
+              "id": "filters",
+              "variant": "expression-builder",
+              "note": "for nested AND/OR query"
+            },
+            {
+              "id": "filters",
+              "variant": "vertical-filter",
+              "note": "a left faceted sidebar instead, for explorer-style lists"
+            }
+          ]
+        },
+        {
+          "region": "table",
+          "use": [
+            {
+              "id": "table",
+              "variant": "selectable"
+            }
+          ],
+          "cells": [
+            {
+              "status": {
+                "id": "tag",
+                "variant": "MStatusTag",
+                "note": "status string -> colour + label"
+              }
+            },
+            {
+              "name": "plain text / link (id: link, variant: text-link)"
+            },
+            {
+              "actions": {
+                "id": "menu",
+                "variant": "context-menu",
+                "note": "the row ⋯ kebab = FlotoGridActions"
+              }
+            }
+          ]
+        },
+        {
+          "region": "bulk actions (conditional)",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "bulk-action-bar"
+            }
+          ],
+          "trigger": "appears when >= minSelection rows are checked"
+        },
+        {
+          "region": "pagination",
+          "use": [
+            {
+              "id": "table",
+              "variant": "pagination"
+            }
+          ]
+        },
+        {
+          "region": "create / edit",
+          "use": [
+            {
+              "id": "drawer",
+              "variant": "FlotoDrawerForm"
+            }
+          ],
+          "contains": "a form (see the form-view recipe) opened from the Add button / a row action"
+        }
+      ],
+      "layout": {
+        "shell": "page-header (top) -> filter (optional) -> table (fills) -> pagination (bottom); drawer slides from the right over all",
+        "tokens": {
+          "rowHover": "--neutral-lighter (do NOT hardcode; the live Kendo grid paints rgba(165,186,208,.4) internally, but emit the token)",
+          "rowSelected": "--neutral-lightest + inset 2px var(--primary)",
+          "headerBg": "--grid-header-bg"
+        }
+      },
+      "gotchas": [
+        "Row actions are the Menu/context-menu (FlotoGridActions) — its prop/event contract is in menu.json apis.ContextMenu; NOT a Dropdown picker.",
+        "Status cell: tag/MStatusTag — the status->colour+label map is in tag.json statusMap.",
+        "Drawer footer: Cancel (mr-2) + Save right; mind the footer-gap (drawer F3).",
+        "The live grid is Kendo + web workers — search/sort/page run there.",
+        "Bulk bar action[] shape + events: toolbars.json apis.BulkActionBar."
+      ],
+      "a11y": [
+        "Grid roles/aria-sort/aria-selected survive custom cells",
+        "bulk bar role=toolbar + aria-label"
+      ]
+    },
+    {
+      "id": "form-view",
+      "name": "Form view (create / edit)",
+      "whenToUse": "A create or edit form for one record (Settings policy/profile forms, Add Monitor, drawer/modal forms).",
+      "examples": [
+        "notification policy form",
+        "monitor template form",
+        "user create/edit"
+      ],
+      "regions": [
+        {
+          "region": "header",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "page-header"
+            }
+          ],
+          "contains": [
+            {
+              "back": {
+                "id": "navigation",
+                "variant": "back-button",
+                "note": "in the page-header back-button slot"
+              }
+            },
+            {
+              "title": "form title"
+            },
+            {
+              "actions": "Save (button/primary) + Cancel (button/default), OR a bottom footer"
+            }
+          ]
+        },
+        {
+          "region": "form body",
+          "use": [
+            {
+              "id": "form-item",
+              "variant": "vertical"
+            }
+          ],
+          "wrap": "FlotoForm + MValidationObserver; each field is a FlotoFormItem with rules",
+          "fields": [
+            {
+              "text": {
+                "id": "input",
+                "variant": "text"
+              }
+            },
+            {
+              "number": {
+                "id": "input",
+                "variant": "number"
+              }
+            },
+            {
+              "textarea": {
+                "id": "form-item",
+                "note": "type=textarea"
+              }
+            },
+            {
+              "single-select": {
+                "id": "dropdown-picker",
+                "variant": "single"
+              }
+            },
+            {
+              "multi-select": {
+                "id": "dropdown-picker",
+                "variant": "multiple"
+              }
+            },
+            {
+              "toggle": {
+                "id": "switch",
+                "note": "for Enabled; product uses Switch even on Save-gated forms"
+              }
+            },
+            {
+              "one-of-few": {
+                "id": "radio",
+                "variant": "list"
+              }
+            },
+            {
+              "tags": {
+                "id": "loose-tags",
+                "variant": "editable"
+              }
+            }
+          ]
+        },
+        {
+          "region": "delete confirm (if editable)",
+          "use": [
+            {
+              "id": "modal",
+              "variant": "FlotoConfirmModal",
+              "note": "variant=error for destructive"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "header -> MRow/MCol grid of FlotoFormItems (size 6 = 50%, 12 = full) -> footer Save/Cancel",
+        "tokens": {
+          "fieldHeight": "@input-height-base (32px)",
+          "gutter": "16 (MRow :gutter)",
+          "labelColour": "--page-text-color",
+          "errorBorder": "--secondary-red"
+        }
+      },
+      "gotchas": [
+        "Wrap EVERY field in FlotoFormItem inside FlotoForm (its api — validate()/@submit/@reset/showNotification — is in form-item.json apis.FlotoForm).",
+        "Put non-text controls (Select/Radio/Switch) in the FlotoFormItem slot.",
+        "`required` goes in the `rules` string, not a prop (form-item F1).",
+        "Input v-model is @update not @input; Switch model is `checked` not `value`.",
+        "Multi-select cap = maxValues, not the dead maxAllowedSelection.",
+        "Select-vs-DropdownPicker: use FlotoDropdownPicker (the product standard), not MSelect."
+      ],
+      "a11y": [
+        "required via aria + asterisk",
+        "error text linked to field",
+        "SF-001 focus ring is removed system-wide"
+      ]
+    },
+    {
+      "id": "detail-view",
+      "name": "Detail view (record detail with tabs)",
+      "whenToUse": "Viewing one record's details across related sections (monitor detail, alert detail, NCM device detail).",
+      "examples": [
+        "monitor detail",
+        "alert detail drawer",
+        "ncm view-detail-drawer"
+      ],
+      "regions": [
+        {
+          "region": "header",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "page-header"
+            }
+          ],
+          "contains": [
+            "back-button",
+            "title + status indicator: MStatusTag (tag) for a STATUS string, OR `severity` (Severity dot) for an alert/monitor SEVERITY level (critical/major/warning/clear — MStatusTag does NOT cover these)",
+            "actions (button + menu/context-menu for ⋯)"
+          ]
+        },
+        {
+          "region": "section nav",
+          "use": [
+            {
+              "id": "tabs",
+              "variant": "line"
+            }
+          ],
+          "note": "Hardware / Metrics / Alerts / Config tabs"
+        },
+        {
+          "region": "section content",
+          "$gap": "If a tab needs a CHART, the chart component is NOT catalogued (only its tooltips) — STOP and ASK. Tables + key-value grids ARE in the DS. See $knownGaps.charts. -> See registry/data-viz.json (pick the type + palette; render with the product Chart/Graph/Widgets component in-repo).",
+          "use": [
+            {
+              "id": "table",
+              "variant": "basic"
+            },
+            {
+              "id": "data-viz-tooltips",
+              "note": "chart tooltips only — the chart body itself is the $gap"
+            }
+          ],
+          "note": "per-tab: tables, charts, key-value grids"
+        },
+        {
+          "region": "edit",
+          "use": [
+            {
+              "id": "drawer",
+              "variant": "FlotoDrawerForm"
+            },
+            {
+              "id": "modal",
+              "variant": "MModal"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "header -> tabs -> active tab content; OR the whole detail in a Drawer (ncm view-detail-drawer = Drawer + Tabs)",
+        "tokens": {
+          "tabActive": "--primary + ink bar",
+          "sectionPad": "@padding-lg (24px)"
+        }
+      },
+      "gotchas": [
+        "Tabs-in-a-Drawer is a real pattern (Drawer + Tabs), not a new component.",
+        "Status next to title = MStatusTag."
+      ],
+      "a11y": [
+        "tablist/tab/tabpanel roles",
+        "aria-current on active tab"
+      ]
+    },
+    {
+      "id": "dashboard-view",
+      "name": "Dashboard view",
+      "whenToUse": "A grid of widgets/charts for a monitoring overview, with a dashboard picker and a global time range.",
+      "examples": [
+        "dashboard module",
+        "NOC view"
+      ],
+      "regions": [
+        {
+          "region": "dashboard picker (left)",
+          "use": [
+            {
+              "id": "navigation",
+              "variant": "side-menu-categories",
+              "note": "Dashboard/NOC tabs + categories + counts (dashboard-dropdown)"
+            }
+          ]
+        },
+        {
+          "region": "global time range",
+          "use": [
+            {
+              "id": "date-time-pickers",
+              "variant": "TimeRangePicker"
+            }
+          ]
+        },
+        {
+          "region": "widgets",
+          "$gap": "The widget CHART/tile itself is NOT catalogued (only its tooltips are) — STOP and ASK before implementing the chart. The widget chrome (toolbars/widget-header) + tooltips ARE in the DS. See $knownGaps.charts. -> See registry/data-viz.json (pick the type + palette; render with the product Chart/Graph/Widgets component in-repo).",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "widget-header",
+              "note": "title + time pill + ⋯ kebab per widget"
+            },
+            {
+              "id": "data-viz-tooltips",
+              "note": "the chart tooltips (the chart body itself is the $gap)"
+            }
+          ],
+          "note": "a GridLayout of widget cards (--common-widget-bg)"
+        },
+        {
+          "region": "widget actions",
+          "use": [
+            {
+              "id": "menu",
+              "variant": "context-menu",
+              "note": "Edit/Clone/Full Screen/Share/Export via FlotoGridActions"
+            }
+          ]
+        },
+        {
+          "region": "wallboard mode (optional)",
+          "use": [
+            {
+              "id": "navigation",
+              "variant": "noc-player"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "left dashboard picker (size 3) + main widget grid (size 9); time range top-right",
+        "tokens": {
+          "widgetBg": "--common-widget-bg",
+          "canvasBg": "--dashboard-background"
+        }
+      },
+      "gotchas": [
+        "Widget chrome = toolbars/widget-header; its kebab = Menu/context-menu.",
+        "Chart tooltips are owned by the chart layer (data-viz-tooltips), not MTooltip."
+      ],
+      "a11y": [
+        "NOC rotator must be pausable + respect reduced-motion"
+      ]
+    },
+    {
+      "id": "explorer-view",
+      "name": "Explorer view (left panel + results + time range)",
+      "whenToUse": "An explorer that browses a tree/saved-views/facets on the left and shows results (grid/chart) on the right (Log, Metric, APM, RUM, NCM explorers).",
+      "examples": [
+        "log explorer",
+        "metric explorer",
+        "apm explorer",
+        "ncm explorer"
+      ],
+      "regions": [
+        {
+          "region": "left panel",
+          "use": [
+            {
+              "id": "navigation",
+              "variant": "side-menu-tree",
+              "note": "Log/Topology hierarchy"
+            }
+          ],
+          "alt": [
+            {
+              "id": "navigation",
+              "variant": "metric-picker",
+              "note": "Metric Explorer ⊕-add + drag (a picker)"
+            },
+            {
+              "id": "filters",
+              "variant": "vertical-filter",
+              "note": "APM/RUM/NCM faceted checkbox sidebar"
+            },
+            {
+              "id": "navigation",
+              "variant": "side-menu-list",
+              "note": "saved-views list (APM/RUM)"
+            }
+          ]
+        },
+        {
+          "region": "toolbar",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "grid-toolbar"
+            }
+          ],
+          "contains": [
+            "search (input/search)",
+            "filter",
+            "time range (date-time-pickers/TimeRangePicker)"
+          ]
+        },
+        {
+          "region": "results",
+          "$gap": "If results render as a CHART, the chart component is NOT catalogued (only its tooltips) — STOP and ASK. The table result IS in the DS. See $knownGaps.charts. -> See registry/data-viz.json (pick the type + palette; render with the product Chart/Graph/Widgets component in-repo).",
+          "use": [
+            {
+              "id": "table",
+              "variant": "basic"
+            },
+            {
+              "id": "data-viz-tooltips",
+              "note": "chart tooltips only — the chart body itself is the $gap"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "left panel (size 2-3, class left-side-list-view-panel) + results (fills)",
+        "tokens": {
+          "panelBorder": "--border-color",
+          "countBadge": "--code-tag-background-color"
+        }
+      },
+      "gotchas": [
+        "Pick the right left-panel: tree (nav) vs faceted filter (Filters/vertical-filter) vs picker (navigation/metric-picker) vs saved-views (nav/side-menu-list) — they LOOK alike but differ in archetype.",
+        "The faceted checkbox sidebar FILTERS (Filters), it does not navigate."
+      ]
+    },
+    {
+      "id": "wizard-flow",
+      "name": "Multi-step create / setup flow",
+      "whenToUse": "An ordered, multi-step create or onboarding flow (report builder, product setup, 2FA).",
+      "examples": [
+        "report builder",
+        "product setup guide",
+        "two-factor setup"
+      ],
+      "regions": [
+        {
+          "region": "stepper",
+          "use": [
+            {
+              "id": "navigation",
+              "variant": "steps",
+              "note": "bespoke — report (horizontal) / setup-guide (vertical) / 2FA"
+            }
+          ]
+        },
+        {
+          "region": "step body",
+          "use": [
+            {
+              "id": "form-item",
+              "variant": "vertical"
+            }
+          ],
+          "note": "the form-view fields for the current step"
+        },
+        {
+          "region": "footer",
+          "use": [
+            {
+              "id": "button",
+              "variant": "primary",
+              "label": "Next/Finish"
+            },
+            {
+              "id": "button",
+              "variant": "default",
+              "label": "Back"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "stepper (top or left) -> current step content -> Back/Next footer",
+        "tokens": {
+          "stepDone": "--primary + ✓",
+          "stepCurrent": "--primary + ring",
+          "stepRemaining": "--neutral-lightest"
+        }
+      },
+      "gotchas": [
+        "No MSteps in the product — steppers are bespoke (report-steps / guide-section-step / 2FA).",
+        "Validate the current step before advancing."
+      ]
+    },
+    {
+      "id": "graph-canvas",
+      "name": "Graph / Canvas view (tree + interactive node graph)",
+      "whenToUse": "Relationships/topology matter more than rows or tiles — an interactive node graph the user pans, zooms and rearranges (Topology). Neither a Dashboard nor an Explorer.",
+      "examples": [
+        "topology map"
+      ],
+      "regions": [
+        {
+          "region": "left panel",
+          "use": [
+            {
+              "id": "navigation",
+              "variant": "side-menu-tree",
+              "note": "hierarchy tree"
+            }
+          ]
+        },
+        {
+          "region": "canvas",
+          "$gap": "NOT IN DS YET — the Cytoscape topology graph is not a catalogued component (`data-viz/topology-graph` is a placeholder id with no registry). STOP and ASK before implementing the canvas. See $knownGaps.topologyGraph.",
+          "use": [
+            {
+              "id": "data-viz",
+              "variant": "topology-graph",
+              "note": "Cytoscape: pan/zoom, node-drag (saved positions), Full-View vs Tree-View, keyboard nav — describes the product behaviour; no DS component exists for it yet"
+            }
+          ],
+          "contains": [
+            "minimap (cytoscape-navigator)",
+            "zoom / fit controls"
+          ]
+        },
+        {
+          "region": "node state",
+          "use": [
+            {
+              "id": "severity",
+              "variant": "dot",
+              "note": "node colour by severity level"
+            },
+            {
+              "id": "tag",
+              "variant": "status",
+              "note": "status string"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "two-pane: hierarchy tree (size 2-3) + Cytoscape canvas (fills) inside Layout",
+        "tokens": {
+          "canvasBg": "--common-main-bg",
+          "nodeColour": "--severity-<level>",
+          "edge": "--border-color"
+        }
+      },
+      "gotchas": [
+        "Persist node positions per target + view mode.",
+        "Severity colour alone isn't accessible — keep tooltips/labels.",
+        "Heavy graph layout runs in a web worker (D3 force)."
+      ]
+    },
+    {
+      "id": "bulk-action-flow",
+      "name": "Bulk action (multi-select → act on many)",
+      "whenToUse": "Act on multiple list rows at once (delete, sync, enable/disable, export).",
+      "examples": [
+        "inventory bulk ops",
+        "alert bulk suppress",
+        "ncm bulk backup/sync"
+      ],
+      "regions": [
+        {
+          "region": "select",
+          "use": [
+            {
+              "id": "table",
+              "variant": "selectable",
+              "note": "row checkboxes + header select-all"
+            }
+          ]
+        },
+        {
+          "region": "action bar",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "bulk-action-bar",
+              "note": "fixed-bottom; appears on selection; shows count + actions"
+            }
+          ]
+        },
+        {
+          "region": "confirm (destructive)",
+          "use": [
+            {
+              "id": "modal",
+              "variant": "FlotoConfirmModal",
+              "note": "variant=error for bulk delete"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "list view + a fixed bottom bar that animates in on selection",
+        "tokens": {
+          "bar": "--primary",
+          "barText": "--white-regular"
+        }
+      },
+      "gotchas": [
+        "Announce the bar's appearance to AT (role=toolbar).",
+        "Clear the selection after the action.",
+        "Hide/disable actions the user lacks permission for."
+      ]
+    },
+    {
+      "id": "inline-edit-flow",
+      "name": "Inline edit (edit a row/cell in place)",
+      "whenToUse": "Quick edits to a table row without opening a form or drawer.",
+      "examples": [
+        "metric-collection tables",
+        "mapping tables (flow/log settings)"
+      ],
+      "regions": [
+        {
+          "region": "trigger",
+          "use": [
+            {
+              "id": "table",
+              "variant": "inline-editing",
+              "note": "click a cell / row edit icon → the cell becomes a control"
+            }
+          ]
+        },
+        {
+          "region": "controls",
+          "use": [
+            {
+              "id": "input"
+            },
+            {
+              "id": "select"
+            },
+            {
+              "id": "dropdown-picker"
+            }
+          ]
+        },
+        {
+          "region": "commit",
+          "use": [
+            {
+              "id": "button",
+              "variant": "icon-circle",
+              "note": "save (✓) / cancel (×) per row"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "the row swaps display cells for inline controls",
+        "tokens": {
+          "editingRow": "--neutral-lightest"
+        }
+      },
+      "gotchas": [
+        "Validate inline (error on the cell).",
+        "Esc cancels, Enter commits.",
+        "Keep focus within the editing row."
+      ]
+    },
+    {
+      "id": "search-filter-flow",
+      "name": "Search & filter a list",
+      "whenToUse": "Narrow a list by free-text search + structured filters.",
+      "examples": [
+        "every list view",
+        "log / metric explorers",
+        "ncm explorer"
+      ],
+      "regions": [
+        {
+          "region": "search",
+          "use": [
+            {
+              "id": "input",
+              "variant": "search",
+              "note": "debounced free-text"
+            }
+          ]
+        },
+        {
+          "region": "filters",
+          "use": [
+            {
+              "id": "filters",
+              "variant": "filter-bar",
+              "note": "field/operator/value conditions, groups, Apply/Reset"
+            }
+          ],
+          "alt": [
+            {
+              "id": "toolbars",
+              "variant": "grid-toolbar",
+              "note": "quick filters + column chooser"
+            }
+          ]
+        },
+        {
+          "region": "results",
+          "use": [
+            {
+              "id": "table"
+            }
+          ],
+          "contains": [
+            "empty state (MNoData) when nothing matches"
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "toolbar (search + filters) above the table",
+        "tokens": {}
+      },
+      "gotchas": [
+        "Always show a no-results/empty state.",
+        "Reflect active filters as removable chips.",
+        "Persist filters where useful."
+      ]
+    },
+    {
+      "id": "export-flow",
+      "name": "Export a list / report (PDF / CSV)",
+      "whenToUse": "Download the current grid or render a report.",
+      "examples": [
+        "inventory / alerts / audit grids (exportGrid)",
+        "report render (EmptyLayout)"
+      ],
+      "regions": [
+        {
+          "region": "trigger",
+          "use": [
+            {
+              "id": "toolbars",
+              "variant": "page-header",
+              "note": "export button (transparent + export icon)"
+            }
+          ],
+          "alt": [
+            {
+              "id": "menu",
+              "variant": "context-menu",
+              "note": "format dropdown: PDF / CSV"
+            }
+          ]
+        },
+        {
+          "region": "output",
+          "use": [
+            {
+              "id": "table",
+              "note": "exportGrid(columns, items, 'pdf'|'csv'); honour per-column exportType"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "export action in the page header; the print-safe report render uses the EmptyLayout shell",
+        "tokens": {}
+      },
+      "gotchas": [
+        "Respect column exportType (datetime/duration).",
+        "Large exports → progress / async.",
+        "Print/PDF render via EmptyLayout (no chrome)."
+      ]
+    },
+    {
+      "id": "confirm-delete-flow",
+      "name": "Confirm a destructive action",
+      "whenToUse": "Any delete / irreversible action triggered from a row, detail, or bulk bar.",
+      "examples": [
+        "delete monitor",
+        "remove user",
+        "bulk delete"
+      ],
+      "regions": [
+        {
+          "region": "trigger",
+          "use": [
+            {
+              "id": "menu",
+              "variant": "context-menu",
+              "note": "row ⋯ Delete (danger=red)"
+            },
+            {
+              "id": "toolbars",
+              "variant": "bulk-action-bar",
+              "note": "bulk Delete"
+            }
+          ]
+        },
+        {
+          "region": "confirm",
+          "use": [
+            {
+              "id": "modal",
+              "variant": "FlotoConfirmModal",
+              "note": "variant=error; name the verb (Delete), not Yes/OK"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "trigger opens FlotoConfirmModal(error) centered over a dimmed/blurred backdrop",
+        "tokens": {
+          "danger": "--secondary-red",
+          "backdrop": "blur(3px)"
+        }
+      },
+      "gotchas": [
+        "Use variant=error + a named verb button (Delete), never 'Yes'/'OK'.",
+        "Danger actions in menus use --secondary-red + an icon (not colour-only)."
+      ]
+    },
+    {
+      "id": "user-menu",
+      "name": "User / account menu (header avatar dropdown)",
+      "whenToUse": "The header account control — an avatar/initials button (top-right of obs-app-header) that opens account links + a theme toggle + Logout. TURNKEY: <obs-user-menu slot=\"user\" name=… items=…>. GRANULAR (below): compose obs-menu yourself. One per app shell.",
+      "examples": [
+        "header avatar -> My Profile / Product Setup Guide / Documentation / theme toggle / Logout"
+      ],
+      "regions": [
+        {
+          "region": "trigger",
+          "use": [
+            {
+              "id": "app-header",
+              "variant": "default",
+              "note": "the `user` slot (app-header.json slots.user) — replaces the default initials avatar"
+            }
+          ],
+          "contains": [
+            {
+              "avatar": "initials or an img/obs-logo avatar as the menu trigger"
+            }
+          ]
+        },
+        {
+          "region": "menu",
+          "use": [
+            {
+              "id": "menu",
+              "variant": "context-menu",
+              "note": "an obs-menu opened from the avatar; icon+label rows, a divider, a danger row"
+            }
+          ],
+          "items": [
+            {
+              "My Profile": {
+                "id": "menu",
+                "note": "icon my-profile -> route my-account/my-profile"
+              }
+            },
+            {
+              "Product Setup Guide": {
+                "id": "menu",
+                "note": "-> product-setup"
+              }
+            },
+            {
+              "Documentation": {
+                "id": "menu",
+                "note": "external docs link"
+              }
+            },
+            {
+              "theme toggle": {
+                "id": "switch",
+                "note": "a light/dark toggle row inside the menu (obs-switch), not a nav link"
+              }
+            },
+            {
+              "Logout": {
+                "id": "menu",
+                "note": "a DANGER row with a divider above it"
+              }
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "obs-app-header `user` slot -> avatar button -> obs-menu (context-menu) anchored bottom-right",
+        "tokens": {
+          "divider": "--action-dropdown-divider",
+          "danger": "--secondary-red",
+          "text": "--page-text-color"
+        }
+      },
+      "gotchas": [
+        "Prefer the turnkey <obs-user-menu> (App Chrome family) — it renders the avatar + top-layer dropdown + theme toggle + danger Logout for you. Compose obs-menu manually only for a bespoke layout.",
+        "Put the whole control in the app-header `user` slot — do NOT build a second header row.",
+        "Logout is a DANGER menu row with a divider above it (obs-menu supports danger colour + divider).",
+        "The theme toggle is an obs-switch row, not a nav link.",
+        "Product source: components/layout/user-dropdown.vue (MPopover + avatar trigger)."
+      ],
+      "a11y": [
+        "avatar trigger needs aria-label (e.g. \"Account menu\")",
+        "menu items keyboard-navigable; Logout reachable",
+        "announce the theme change (aria-live)"
+      ],
+      "turnkey": "obs-user-menu — the self-contained element (avatar trigger + account dropdown + theme toggle + danger Logout). Drop it into obs-app-header slot=\"user\". Use this unless you need a bespoke composition."
+    },
+    {
+      "id": "notification-dropdown",
+      "name": "Notification dropdown (header bell)",
+      "whenToUse": "The header bell with an unread-count badge that opens a panel of alerts/system notifications — tabs + a scrollable list + View all / Clear all. One per app shell. The Navigation route-away \"app-chrome: notification dropdown\".",
+      "examples": [
+        "bell + count -> Alerts / System Notification tabs -> list rows -> View all / Clear all"
+      ],
+      "regions": [
+        {
+          "region": "trigger",
+          "use": [
+            {
+              "id": "app-header",
+              "variant": "with-badge",
+              "note": "a bell icon action button carrying the unread-count badge"
+            }
+          ]
+        },
+        {
+          "region": "panel",
+          "use": [
+            {
+              "id": "menu",
+              "variant": "context-menu",
+              "note": "a popover panel for a short list; use obs-drawer instead when the list is long"
+            }
+          ],
+          "contains": [
+            {
+              "header": "title \"Alerts & Notifications\" + Clear all (button/text)"
+            },
+            {
+              "tabs": {
+                "id": "tabs",
+                "variant": "line",
+                "note": "Alerts / System Notification — peer tabs, NOT obs-steps"
+              }
+            },
+            {
+              "list": "a scrollable list of rows (virtualised in-product); each row = a severity dot + text + time"
+            },
+            {
+              "footer": "View all (button/link) -> the full alerts page"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "obs-app-header action(bell+badge) -> panel: header -> obs-tabs -> scroll list -> footer",
+        "tokens": {
+          "badge": "--secondary-red",
+          "panelBg": "--page-background-color",
+          "border": "--border-color"
+        }
+      },
+      "gotchas": [
+        "Prefer the turnkey <obs-notification-menu> (App Chrome family) — bell + badge + Alerts/System tabs + scrollable list + footer, all wired. Compose obs-app-header action + obs-tabs + obs-drawer manually only for a large/interactive notification centre.",
+        "The bell lives in the app-header action area; the count is a badge (app-header with-badge variant), not a separate element.",
+        "Use obs-tabs (line) for Alerts / System Notification — NOT obs-steps (these are peer tabs, not a sequence).",
+        "For a long list prefer obs-drawer over a popover so it scrolls cleanly; keep View all / Clear all pinned.",
+        "Product source: components/layout/notification-dropdown.vue (MPopover + MBadge + MTab + RecycleScroller)."
+      ],
+      "a11y": [
+        "bell needs an aria-label that includes the unread count",
+        "focus moves into the panel on open; Esc closes",
+        "rows readable without colour (severity dot + text, not colour alone)"
+      ],
+      "turnkey": "obs-notification-menu — the self-contained element (bell + unread badge + tabbed panel + list + View all / Clear all). Drop it into obs-app-header. Use this unless you need a bespoke composition (e.g. a full obs-drawer notification centre)."
+    },
+    {
+      "id": "command-palette",
+      "name": "Global search / command palette (omnibox)",
+      "whenToUse": "A global search / command surface (from the header) — a category picker + a query editor + Execute — for cross-app search or a command palette. NOT a plain list filter (that is the obs-input `search` type). The Navigation route-away \"app-chrome: global search / omnibox\".",
+      "examples": [
+        "header search -> category picker + query + Execute (Enter); inline parse-error + clear"
+      ],
+      "regions": [
+        {
+          "region": "trigger",
+          "use": [
+            {
+              "id": "app-header",
+              "variant": "default",
+              "note": "the header search field, or a search icon that opens the palette"
+            }
+          ]
+        },
+        {
+          "region": "palette",
+          "use": [
+            {
+              "id": "modal",
+              "variant": "plain",
+              "note": "a centered command surface (obs-modal, no title chrome) OR an inline dropdown panel"
+            }
+          ],
+          "contains": [
+            {
+              "category": {
+                "id": "dropdown-picker",
+                "variant": "not-searchable",
+                "note": "a leading category picker (what to search) BEFORE the query"
+              }
+            },
+            {
+              "query": {
+                "id": "input",
+                "variant": "search",
+                "note": "the query field (a CodeMirror query editor in-product)"
+              }
+            },
+            {
+              "execute": "run on Enter; show a parse-error state inline; a clear (x) resets"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "obs-app-header search -> obs-modal palette: [category picker][query input][Execute]",
+        "tokens": {
+          "surfaceBg": "--page-background-color",
+          "border": "--border-color",
+          "error": "--secondary-red"
+        }
+      },
+      "gotchas": [
+        "Prefer the turnkey <obs-command-palette> (App Chrome family) — one bar with category + query + Execute + parse-error + clear, all wired. Compose obs-modal + obs-command-palette manually only for a full Cmd+K palette with a results list.",
+        "This is NOT a list filter — a plain search of a list is the obs-input `search` type. Use the palette only for global/cross-app search or a command menu.",
+        "The category picker is an obs-select (not-searchable) BEFORE the query, not a tab.",
+        "A dedicated obs-command-palette element is deferred — compose from obs-modal + obs-select + obs-input until real demand appears (then list_gaps / STOP-and-ASK for a bespoke widget).",
+        "Product source: components/omnibox/searchbar.vue (MSelect category + CodeMirror + Execute)."
+      ],
+      "a11y": [
+        "Enter executes, Esc closes",
+        "the query field is labelled",
+        "parse errors announced via aria-live"
+      ],
+      "turnkey": "obs-command-palette — the self-contained omnibox element (search icon + category obs-select + query obs-input + Execute + parse-error + clear). Drop it into obs-app-header. Use this unless you need a full Cmd+K modal palette with a live results list (then obs-modal + this bar)."
+    },
+    {
+      "id": "metric-picker",
+      "name": "Metric picker (hierarchical searchable select)",
+      "whenToUse": "Pick a metric/counter from a large hierarchical, searchable catalogue (widget/report builders, threshold config). A domain-configured SELECT, not a nav element. The Navigation route-away \"metric picker\".",
+      "examples": [
+        "widget editor: choose a metric from the monitor-type -> category -> metric tree"
+      ],
+      "regions": [
+        {
+          "region": "picker",
+          "use": [
+            {
+              "id": "dropdown-picker",
+              "variant": "tree-select",
+              "note": "a searchable tree of metrics (monitor-type / category / metric)"
+            }
+          ],
+          "contains": [
+            {
+              "search": "the built-in search of the tree-select filters the tree"
+            },
+            {
+              "tree": "expandable groups -> leaf metrics; single or multiple selection"
+            }
+          ]
+        }
+      ],
+      "layout": {
+        "shell": "obs-select variant=tree-select (searchable) — a single control",
+        "tokens": {
+          "border": "--border-color",
+          "activeText": "--primary"
+        }
+      },
+      "gotchas": [
+        "Reuse obs-select tree-select (+ its search) — do NOT build a bespoke metric widget; the \"picker\" is just a configured dropdown-picker.",
+        "For very large catalogues lean on the search; the tree is virtualised in-product.",
+        "If a metric needs an aggregation/function alongside it, pair the picker with a second obs-select (function) — still no new element."
+      ],
+      "a11y": [
+        "tree nodes keyboard-navigable",
+        "the search field is labelled",
+        "the selected metric is announced"
+      ],
+      "turnkey": "obs-metric-picker — the two-part metric selection panel (Select Monitor obs-select + a searchable grouped counter tree). Use this; the recipe below is the granular obs-select tree-select path."
+    },
+    {
+      "id": "module-screen",
+      "name": "Module screen (full app-chrome page)",
+      "whenToUse": "A COMPLETE product module screen — not just the content area. Start here when building a page from scratch: it composes the app chrome (module rail + app header + module title + tab row + optional section menu) AROUND a content region. Use this instead of a bare content page; the rail/header/tabs come from the shell, the content from an inner recipe (list-view / explorer-view / detail-view).",
+      "examples": [
+        "Report module (category side-menu + reports grid)",
+        "inventory module screen",
+        "alert module screen",
+        "any settings sub-module screen"
+      ],
+      "regions": [
+        {
+          "region": "module rail (left, full height)",
+          "use": [
+            {
+              "id": "sidebar"
+            }
+          ],
+          "contains": [
+            {
+              "note": "the product 16 modules — COPY the canonical key/label/icon list from the sidebar registry `productModules.items` (get_component('sidebar')); do NOT pick icons by eye (e.g. Topology = 'topology' a node tree, NOT 'networkTopology' a switch). Set `active` to the current module. 65px collapsed, hover-expands as an OVERLAY. Ships the ObserveOps logo by default — keep it."
+            }
+          ]
+        },
+        {
+          "region": "app header (top)",
+          "use": [
+            {
+              "id": "app-header"
+            }
+          ],
+          "contains": [
+            {
+              "note": "global search + notifications + account via slots — compose obs-command-palette / obs-notification-menu / obs-user-menu (the user menu also drives Dark/Light/Auto)."
+            }
+          ]
+        },
+        {
+          "region": "module title strip",
+          "use": [
+            {
+              "id": "page-header"
+            }
+          ],
+          "contains": [
+            {
+              "note": "module title + optional count + a primary action (e.g. Create). White with its own inset (--page-header-padding)."
+            }
+          ]
+        },
+        {
+          "region": "module tabs (sibling views of THIS module)",
+          "use": [
+            {
+              "id": "tabs"
+            }
+          ],
+          "contains": [
+            {
+              "note": "switch the module tabbed views (Metric/Log/Flow…). NOT between-page nav."
+            }
+          ]
+        },
+        {
+          "region": "in-module section menu (optional left column)",
+          "use": [
+            {
+              "id": "side-menu"
+            }
+          ],
+          "contains": [
+            {
+              "note": "the module section/category rail (mode list/sections/tree). Flush white + right border; use its `logo` (header) + default (footer, e.g. + New Category) slots."
+            }
+          ]
+        },
+        {
+          "region": "content area",
+          "use": [
+            {
+              "id": "table"
+            },
+            {
+              "id": "toolbar"
+            },
+            {
+              "id": "filters"
+            }
+          ],
+          "alt": [
+            {
+              "recipe": "list-view"
+            },
+            {
+              "recipe": "explorer-view"
+            },
+            {
+              "recipe": "detail-view"
+            }
+          ],
+          "contains": [
+            {
+              "note": "the actual content — usually one of the content recipes; list-view is the most common."
+            }
+          ]
+        },
+        {
+          "region": "overlays",
+          "use": [
+            {
+              "id": "drawer"
+            },
+            {
+              "id": "modal"
+            }
+          ],
+          "contains": [
+            {
+              "note": "settings drawer (slide-over, actions slot for the footer) + confirm dialogs (obs-modal variant=confirm), top-layer."
+            }
+          ]
+        }
+      ],
+      "layout": "rail (fixed 65px, overlays on expand) | { app-header (top) / module-title / module-tabs / [ side-menu (optional left) | content ] }. Rail + header are the shell; title + tabs + side-menu + content stack inside the main area.",
+      "gotchas": [
+        "A screen STARTS FROM THE APP SHELL, not a bare content page — build rail + header + title + tabs first, then drop a content recipe inside. A bare content page is a harness, not a screen.",
+        "Three different navs, do not conflate: between-MODULE = obs-sidebar (rail); sibling VIEWS of one module = obs-tabs; in-module SECTION/category = obs-side-menu.",
+        "The side-menu is optional — only modules with sub-sections/categories have one.",
+        "obs-layout-appshell renders but has no data contract (reference-only) — assemble these regions from the elements above rather than expecting one shell component."
+      ],
+      "a11y": "One <main> for the content; the rail is <nav aria-label=\"Primary\">, the side-menu another <nav>; the module tab row is a tablist. Do not nest multiple <main>."
+    }
+  ]
+}

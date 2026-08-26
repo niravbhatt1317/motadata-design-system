@@ -1,0 +1,399 @@
+{
+  "name": "button",
+  "component": "MButton",
+  "display": "Button",
+  "tier": "atom",
+  "family": "Button",
+  "source": "mkit",
+  "status": "core",
+  "summary": "Primary action control. Triggers an operation or navigation.",
+  "variants": [
+    {
+      "name": "primary",
+      "what": "Navy filled, main action",
+      "usage": "91×"
+    },
+    {
+      "name": "primary-alt",
+      "what": "Slate filled, secondary emphasis",
+      "usage": "36×"
+    },
+    {
+      "name": "default",
+      "what": "White with border",
+      "usage": "301×"
+    },
+    {
+      "name": "neutral-lighter",
+      "what": "Light gray filled",
+      "usage": "17×"
+    },
+    {
+      "name": "neutral-lightest",
+      "what": "Pale blue filled",
+      "usage": "320×"
+    },
+    {
+      "name": "transparent",
+      "what": "No fill, text-style",
+      "usage": "255×"
+    },
+    {
+      "name": "error",
+      "what": "Red filled, destructive",
+      "usage": "31×"
+    },
+    {
+      "name": "success",
+      "what": "Green filled, approve",
+      "usage": "5×"
+    },
+    {
+      "name": "danger",
+      "what": "Light ghost (rare)",
+      "usage": "3×"
+    },
+    {
+      "name": "icon-circle",
+      "what": "shape=circle icon button",
+      "usage": "218×"
+    },
+    {
+      "name": "squared-button",
+      "what": "35x35 icon button",
+      "usage": "365×"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "small",
+      "value": "~24px",
+      "note": ""
+    },
+    {
+      "name": "default",
+      "value": "~34px",
+      "note": ""
+    },
+    {
+      "name": "large",
+      "value": "~34px",
+      "note": "same as default (F5)"
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "what": "resting"
+    },
+    {
+      "name": "hover",
+      "what": "bg darkens"
+    },
+    {
+      "name": "active",
+      "what": "pressed"
+    },
+    {
+      "name": "focus",
+      "what": "no visible ring (SF-001)"
+    },
+    {
+      "name": "disabled",
+      "what": "reduced, no pointer"
+    },
+    {
+      "name": "loading",
+      "what": "spinner, clicks blocked"
+    }
+  ],
+  "props": {
+    "variant": {
+      "type": "string",
+      "default": "primary",
+      "enum": [
+        "primary",
+        "primary-alt",
+        "default",
+        "danger",
+        "success",
+        "error",
+        "neutral-lighter",
+        "neutral-lightest",
+        "transparent",
+        "dashed",
+        "ghost"
+      ],
+      "note": "These render distinctly. See knownIssues for variants that fall back to navy."
+    },
+    "size": {
+      "type": "string",
+      "default": "default",
+      "enum": [
+        "small",
+        "default",
+        "large"
+      ]
+    },
+    "rounded": {
+      "type": "boolean",
+      "default": true
+    },
+    "outline": {
+      "type": "boolean",
+      "default": false
+    },
+    "block": {
+      "type": "boolean",
+      "default": false
+    },
+    "loading": {
+      "type": "boolean|object",
+      "default": false
+    },
+    "shadow": {
+      "type": "boolean",
+      "default": true,
+      "note": "INVERTED (F6): shadow=true applies .button-shadow which sets box-shadow:none"
+    },
+    "shape": {
+      "type": "string",
+      "enum": [
+        "circle"
+      ],
+      "note": "icon-button (218x); renders 4px radius not circular due to default rounded (F7)"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "iconButtons": {
+    "shape=circle": {
+      "usage": 218,
+      "note": "Ant circular icon button; needs aria-label"
+    },
+    "class=squared-button": {
+      "usage": 365,
+      "size": "35x35",
+      "note": "buttons.less square icon button — most common icon form; needs aria-label"
+    },
+    "contextual": [
+      "model-header-button (3x)",
+      "button-topology-overlay (5x)"
+    ]
+  },
+  "events": [
+    "click"
+  ],
+  "do": [
+    "Use variant=primary for the single main action on a view.",
+    "Use danger/error for destructive actions, paired with a confirm.",
+    "Use neutral-* variants for secondary/tertiary actions.",
+    "Show :loading during async work to prevent double-submits."
+  ],
+  "dont": [
+    "More than one primary button in the same action group.",
+    "Hardcoding colors — variants already map to design tokens.",
+    "Using a button for what is really a link (use FlotoLink)."
+  ],
+  "whenToUse": "Any user-triggered action (submit, create, delete, apply).",
+  "decisionFlow": [
+    "Navigates (route/URL/anchor)? -> link (FlotoLink), not a button.",
+    "Destructive (delete/remove/abort)? -> variant=error + confirm.",
+    "Single most-important action on the view/dialog? -> variant=primary (primary-alt for confirm inside a modal).",
+    "Cancel/Reset/secondary next to the primary? -> variant=default.",
+    "Quiet utility in toolbar/list/grid/filter? -> variant=neutral-lightest.",
+    "Inline text-like action (Add/Create New/Clear All)? -> variant=transparent.",
+    "Icon-only / space-tight? -> icon button (class=squared-button, or shape=circle).",
+    "Modifiers: block=full width; outline=ghost/bordered; size=small for dense. Avoid neutral/info (navy, F1)."
+  ],
+  "usageRules": {
+    "primary": {
+      "useWhen": "the ONE most-important action on a view/form/wizard",
+      "dontUse": "if a primary already exists, or action is destructive/navigation",
+      "example": "Apply (filter), Save (form), Verify Password (login)"
+    },
+    "primary-alt": {
+      "useWhen": "the confirm/save inside a modal where full navy is too heavy",
+      "dontUse": "for the page-level main action (use primary)",
+      "example": "Save/Confirm/Restore in dialogs"
+    },
+    "default": {
+      "useWhen": "the secondary next to a primary: Cancel/Reset/Clear/Back",
+      "dontUse": "for the main action or destructive action",
+      "example": "Cancel beside Save; Reset on a filter"
+    },
+    "neutral-lightest": {
+      "useWhen": "quiet utility controls in toolbar/list/grid/filter",
+      "dontUse": "for the main or inline-text action",
+      "example": "Filter bar, Hide all, granularity toggles"
+    },
+    "neutral-lighter": {
+      "useWhen": "subtle add/secondary slightly stronger than transparent (rare)",
+      "dontUse": "when unsure (prefer transparent or default)",
+      "example": "Add New Controls, Export"
+    },
+    "transparent": {
+      "useWhen": "inline text-like actions: Create New/+Add/Clear All/in-content",
+      "dontUse": "for navigation (use FlotoLink) or when more prominence is needed",
+      "example": "Create New, Add Credential, Clear All"
+    },
+    "error": {
+      "useWhen": "destructive: delete/remove/abort/discard, with a confirm",
+      "dontUse": "for normal saves",
+      "example": "Delete Selected, Abort"
+    },
+    "success": {
+      "useWhen": "explicit approve/accept in a review flow (rare)",
+      "dontUse": "for a generic save (use primary)",
+      "example": "Approve (sync-approval drawer)"
+    },
+    "outline": {
+      "useWhen": "secondary needing a clear edge, e.g. on busy/colored/image backgrounds",
+      "dontUse": "when default/transparent reads clearly on a plain surface",
+      "example": "bordered action on a colored panel"
+    },
+    "squared-button": {
+      "useWhen": "recognizable repeated space-tight icon action (row edit/delete, toolbar, modal close); 35x35",
+      "must": "aria-label",
+      "dontUse": "when the icon meaning isn't obvious",
+      "example": "row delete, toolbar tools"
+    },
+    "shape=circle": {
+      "useWhen": "standalone/floating icon action (overlays)",
+      "must": "aria-label; add :rounded=false for a true circle (F7)",
+      "example": "topology/chart overlay controls"
+    },
+    "block": {
+      "useWhen": "button should fill its container: drawers, mobile, single-action forms, login",
+      "dontUse": "in a row with other buttons"
+    },
+    "link(FlotoLink)": {
+      "useWhen": "the control navigates (route/URL/anchor)",
+      "dontUse": "for actions that change data/state (use a button)"
+    },
+    "danger": {
+      "useWhen": "Avoid in new work — it is a rare (3×) light/ghost style, NOT solid red (finding F2). For anything destructive prefer error + a confirm.",
+      "dontUse": "For real destructive actions (use error) or for a normal save (use primary); the ghost rendering under-signals danger.",
+      "example": "Legacy light ghost-danger action; migrate to error for delete/remove flows."
+    },
+    "icon-circle": {
+      "useWhen": "An icon-only action where a circular/standalone/floating affordance is wanted — overlay and floating controls (topology/chart overlays). Must provide an aria-label.",
+      "dontUse": "For a repeated in-table/toolbar icon action (use squared-button) or when the icon's meaning isn't obvious (use a labelled button). Note: renders as a 4px rounded square unless you add :rounded=false (finding F7).",
+      "example": "Topology / chart overlay controls (button-topology-overlay); floating map controls."
+    }
+  },
+  "insteadOf": [
+    "raw a-button",
+    "an anchor styled as a button"
+  ],
+  "tokensUsed": [
+    "--primary-button-bg",
+    "--primary-button-text",
+    "@btn-height",
+    "@btn-radius"
+  ],
+  "usage": {
+    "total": 1373,
+    "files": 424,
+    "byVariant": {
+      "default": 301,
+      "neutral-lightest": 320,
+      "transparent": 255,
+      "primary": 91,
+      "neutral": 77,
+      "primary-alt": 36,
+      "error": 31,
+      "neutral-lighter": 17,
+      "info": 7,
+      "success": 5,
+      "danger": 3
+    },
+    "bySize": {
+      "small": 76,
+      "large": 9,
+      "default": "majority (implicit)"
+    },
+    "modifiersApprox": {
+      "outline": 225,
+      "rounded=false": 273,
+      "loading": 518,
+      "block": 0
+    },
+    "note": "Most-used component in the product. byVariant is exact; bySize/modifiers are approximate (shared props)."
+  },
+  "knownIssues": [
+    "F1 (high): variant=info/neutral/neutral-light/warning render as the navy primary because buttons.less only allow-lists transparent/error/success/primary-alt/neutral-lighter/neutral-lightest to escape navy (high-specificity :not). `neutral` used 77x yet renders navy.",
+    "F2 (low): danger renders a light/ghost style, not solid red; use error for destructive actions.",
+    "F3 (high, a11y): focused buttons have outline:none and no focus shadow — no visible focus indicator (WCAG 2.4.7). Add a :focus-visible ring (outline 2px var(--primary)).",
+    "F4 (medium, a11y): small (~24px) is below the 44-48px touch target; large (~34px) equals default. Reserve small for dense desktop.",
+    "F5 (low): large renders the same height as default (used 9x).",
+    "F6 (low): shadow prop is inverted — shadow=true (default) applies .button-shadow which removes box-shadow. Rename to noShadow/flat or invert.",
+    "F7 (medium): shape=circle isn't circular — default rounded class (4px) overrides Ant .ant-btn-circle (50%); measured 4px radius. Real product behaviour: of 198 shape=circle buttons only 24 pass :rounded=false (true circle), ~174 render as rounded squares (~88% mislabeled). Pass :rounded=false for a true circle, or make circle shape override radius."
+  ],
+  "maturity": "stable",
+  "anatomy": [
+    "container",
+    "leading icon (optional)",
+    "label",
+    "trailing icon (optional)",
+    "loading spinner"
+  ],
+  "accessibility": {
+    "role": "native button",
+    "keyboard": "Enter/Space activate",
+    "iconOnly": "needs aria-label",
+    "focus": "F3 — no visible ring (fix needed)",
+    "targetSize": "default/large ~34px, small ~24px (F4)"
+  },
+  "related": [
+    "MConfirmBtn",
+    "MDropdown",
+    "FlotoGridActions",
+    "FlotoLink (link button, 67x)",
+    "MRadioGroup as-button (segmented control, 255x)"
+  ],
+  "changelog": [
+    "2026-06-05: added; variants corrected to distinct set + primary-alt; navy-fallback flagged (F1); light/dark verified.",
+    "2026-06-06: enhanced doc standard — anatomy/behaviors/content/accessibility (F3/F4/F5), related, changelog.",
+    "2026-06-07: thorough button audit — added icon buttons (shape=circle 218x + squared-button 365x) story + section; findings F6 (inverted shadow) + F7 (circle not circular); noted FlotoLink + segmented-control relatives.",
+    "2026-06-30: fixed the `block` (full-width) modifier — the custom-element host defaulted to inline so width:100% had nothing to fill; added :host([block]){display:block;width:100%} (+ the showcase stage now expands for any [block] element). Block buttons now span their container.",
+    "2026-07-01: fixed font-weight 500→400 (owner) — the product/Storybook button is Ant's default 400 (@btn-font-weight override is commented out; no LESS sets a weight). Button had never been diff-gated, so the wrong weight was never caught.",
+    "2026-07-01: fixed the large size (owner) — it was inheriting the default 0.8rem font. The product large button keeps the DEFAULT height/padding but bumps the font to --font-size-lg (1rem) (@font-size-lg: @text-regular; @btn-font-size-lg: @font-size-lg) — bigger text, same box height. .s-large now sets font-size: var(--font-size-lg, 1rem).",
+    "2026-07-01: built specs/button.spec.mjs and diff-gated the button for the first time (13 scenarios, light+dark) — the gate caught the small-button padding (12px→7px, now Ant's 7px) and confirms weight 400 / radius 4px / Poppins / large-1rem. Two intentional divergences declared: ghost (navy vs Ant dark-bg white) and primary-hover (DS token 0.7 vs product render 0.89).",
+    "2026-07-01: added the icon+text button example (owner asked) — the product has 83× leading-icon+label buttons (MIcon in the slot) and 538× icon-only (circle/squared). obs-button already supports both via the default slot (.btn is inline-flex gap:6px); showcased both in the Elements gallery. Note: the Storybook button story only shows icon-ONLY.",
+    "2026-07-01: replaced the placeholder button-example icons with the REAL product icons (from src/assets/icons/icons.js); also added a dedicated Icons page (542 Font Awesome Light glyphs) with search + copy SVG/PNG + download."
+  ],
+  "storybook": "Atoms/Button",
+  "figma": {
+    "status": "todo",
+    "component": "Button"
+  },
+  "a11y": {
+    "summary": "Native <button>; Enter/Space activate. Icon-only (shape=circle / .squared-button) needs an aria-label. small ≈24px (sub-44 target).",
+    "issues": [
+      "No visible focus ring (SF-001 / WCAG 2.4.7) — :focus-visible planned."
+    ],
+    "doc": "Atoms/Button/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "slots": {
+    "default": "button label / content (text and/or an icon)"
+  },
+  "variantEnum": [
+    "primary",
+    "primary-alt",
+    "default",
+    "neutral-lighter",
+    "neutral-lightest",
+    "transparent",
+    "error",
+    "success",
+    "danger",
+    "info",
+    "neutral",
+    "neutral-light",
+    "warning"
+  ]
+}

@@ -1,0 +1,40 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Navigation/Accessibility" />
+
+# Navigation — Accessibility
+
+Navigation is a place where landmarks and current-state semantics matter most.
+
+## Verify
+
+- ⚠️ **Landmarks** — the Primary nav and Side menus should be in a `<nav>` / `role="navigation"` with a
+  distinguishing `aria-label` ("Primary", "Settings", "Dashboards", "Log types").
+- ⚠️ **`aria-current`** — the active module / section / step / dashboard should carry
+  `aria-current="page"` (or `step`), not be conveyed by color alone.
+- ⚠️ **Focus-visible ring (SF-001)** on nav items, menu rows, steps, the back button, header-menu items.
+- ⚠️ **Stepper** — convey **completed / current / remaining** to assistive tech (text or `aria-*`),
+  not just the fill/ring color.
+- ⚠️ **Collapsible side menus** (section / tree / categories) — headers need `aria-expanded`;
+  Enter/Space toggle; the **tree** needs `role="tree"`/`treeitem` + arrow-key navigation.
+- ⚠️ **App-chrome menus** — the **user menu**, **notification** bell and **omnibox** triggers are
+  icon/avatar-only → each needs an `aria-label`; the open popovers need `role="menu"`/`menuitem`, Esc to
+  close, and focus return. The **theme toggle** is a radio group (`aria-checked`).
+- ⚠️ **Notification** count badge — expose the count to AT (`aria-label="3 unread alerts"`), not a bare
+  number.
+- ⚠️ **NOC Player / Timeline scrollbar** — icon-only prev/next/play controls need labels; the rotator
+  should respect **reduced-motion** / offer pause (it does — the pause button).
+- ⚠️ **Graph breadcrumb** — the expanded-node tags' **×** needs an accessible name (e.g. `Collapse core-switch-01`).
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| `role=navigation` + label (all nav + side-menu forms) | ⚠️ verify |
+| `aria-current` on active item/step/dashboard | ⚠️ verify |
+| Focus-visible ring (incl. header-menu items) | ⚠️ verify (SF-001) |
+| Stepper state (not color-only) | ⚠️ verify |
+| Collapse / tree `aria-expanded` + `role=tree` | ⚠️ verify |
+| App-chrome triggers `aria-label` + popover `role=menu` / Esc / focus return | ⚠️ verify |
+| Notification badge count exposed to AT | ⚠️ verify |
+| Rotator/timeline icon controls labelled + pausable | ⚠️ verify |

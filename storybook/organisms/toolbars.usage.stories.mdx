@@ -1,0 +1,60 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Toolbars/Usage" />
+
+# Toolbars — Usage
+
+🟢 **Stable** · Organism — the product's **toolbars**, as variants of one family. Rules in
+[`registry/toolbars.json`](../../components/registry/toolbars.json).
+
+## The variants
+
+| Variant | Usage | What it is |
+| --- | --- | --- |
+| **Page header** (`FlotoPageHeader`) | **54×** | back + title + right-side actions |
+| **Widget header** (`widget-title`) | **58×** | title + time-range pill + kebab of widget actions |
+| **Bulk action bar** (`_base-bulk-action-bar`) | — | a floating **N-selected** toolbar |
+| **Grid toolbar** | — | search + filter + columns + Add over a grid |
+| **Column chooser** (`column-selector`) | 174× | the eye-button column show/hide dropdown |
+
+## Which toolbar? (decision)
+
+1. **Top of a list/detail page** (title + actions)? → **Page header**.
+2. **A dashboard widget's chrome**? → **Widget header**.
+3. **Acting on N selected rows**? → **Bulk action bar**.
+4. **Controls above a data grid**? → **Grid toolbar** (composes Filters + Column chooser).
+5. **Show/hide grid columns**? → **Column chooser**.
+
+## A toolbar is a composition
+
+Toolbars are **organisms** that arrange **molecules/atoms** — they **compose** the
+**[Molecules/Filters](?path=/docs/molecules-filters-usage--docs)** (Filter bar, Quick filters, …),
+**search** (Input `search` type), and **action buttons**. Don't re-implement a filter inside a
+toolbar — drop in the filter molecule.
+
+> **Taxonomy note (2026-06-16):** the product's toolbars were consolidated into this one family. The
+> former *Grid Toolbar* entry was folded in (Grid toolbar + Column chooser variants), and its filter
+> pieces moved to **Filters**.
+
+> **Reproduction note:** the live Page/Widget headers use the router / widget store, so these are
+> reproductions with real tokens.
+
+## Do
+
+- Use the **Page header** for every list/detail page.
+- **Compose** toolbars from Filters + search + actions.
+- Use the **Bulk action bar** for multi-select; put destructive actions in `--secondary-red`.
+
+## Don't
+
+- Don't duplicate a filter inside a toolbar — compose the molecule.
+- Don't build a per-screen toolbar component — use these variants.
+- Don't rely on the column chooser to reorder columns (that's grid-header drag).
+
+## Related
+
+**Filters** · **Table** · `FlotoDropdownPicker` · `MPopover` (kebabs) · **Date & Time Pickers**.
+
+## Other variants
+
+Also available (see `registry/toolbars.json` `usageRules` for the full when/why): **app-header**.

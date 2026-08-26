@@ -1,0 +1,368 @@
+{
+  "name": "tabs",
+  "display": "Tabs",
+  "tier": "molecule",
+  "family": "Tabs",
+  "source": "ui/components/Tabs/Tab.vue (MTab — wraps Ant a-tabs) + ui/components/Tabs/TabPane.vue (MTabPane). Persisted state: src/components/_base-persisted-tab.vue (MPersistedTab — renderless localStorage wrapper).",
+  "status": "stable",
+  "summary": "In-page tabbed navigation that switches between sibling views of ONE page (Overview / Performance / Logs) — NOT between-page routing (obs-sidebar / obs-breadcrumbs). Data-driven: the tabs attr is a JSON array of {key,label,count?,icon?,disabled?} (or a simple \"A,B,C\" list); content goes in one named slot per key; only the active pane shows. Class-based variants via the variant attr: line (default) · no-border (drops the bar rule, 21x dominant) · sticky (pins the bar in a scroll pane) · grey (tinted bar). A label can carry a count (\"Alerts (12)\") or a leading obs-icon. persist-key remembers the active tab in localStorage across reloads. Selecting is reflow-free (the active weight-500 width is reserved). Active tab = --primary (text + 4px underline, weight 500); inactive = --tabs-text-color; bar rule = --border-color. Render-faithful to the product MTab/a-tabs (line/top/default only — Ant card/vertical/size are unused and intentionally not built).",
+  "variants": [
+    {
+      "name": "line",
+      "what": "line tabs (default)",
+      "usage": "86×"
+    },
+    {
+      "name": "no-border",
+      "what": "no bottom border",
+      "usage": "21×"
+    },
+    {
+      "name": "sticky-tab",
+      "what": "pinned tab bar",
+      "usage": "8×"
+    },
+    {
+      "name": "with-counts",
+      "what": "'Label (N)'",
+      "usage": ""
+    },
+    {
+      "name": "with-icons",
+      "what": "leading icon (tab slot)",
+      "usage": ""
+    },
+    {
+      "name": "dynamic",
+      "what": "v-for data-driven",
+      "usage": ""
+    },
+    {
+      "name": "persisted",
+      "what": "MPersistedTab localStorage",
+      "usage": ""
+    },
+    {
+      "name": "grey",
+      "what": "tinted tab bar (--neutral-lightest)",
+      "usage": ""
+    },
+    {
+      "name": "closable-addable",
+      "what": "an editable tab strip — closable (× per tab, only when >1) + addable (a + at the far right). Emits close/add.",
+      "usage": "the metric-explorer monitor tabs (obs-metric-picker) / any add-remove tab set"
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "active",
+      "what": "--primary text + underline"
+    },
+    {
+      "name": "inactive",
+      "what": "unselected"
+    },
+    {
+      "name": "disabled",
+      "what": "not selectable"
+    },
+    {
+      "name": "hover",
+      "what": "over inactive tab"
+    }
+  ],
+  "usage": {
+    "total": 86,
+    "files": 70,
+    "topModules": [
+      "settings (20)",
+      "shared components (17)",
+      "rum (7)",
+      "alert (5)",
+      "log (4)",
+      "apm (3)"
+    ],
+    "alwaysLineTopDefault": "No real <MTab> passes type=, position=, or size= — every usage is line / top / default.",
+    "variantClasses": {
+      "no-border": 21,
+      "sticky-tab": 8,
+      "topology-hierarchy-tab": 3,
+      "metric-picker-tabs": 1,
+      "grey-tab": "defined, ~0 (near-unused)",
+      "flex-tabs": "content flex helper"
+    },
+    "labelPatterns": {
+      "count-in-label": "`Alerts (${count})`, `${tab.title} (${getCounts(tab)})` — count appended to the string, not a badge component",
+      "icon-in-label": "tab slot with a leading MIcon",
+      "dynamic": "v-for over a tabs config array (tab.text/key/name)"
+    },
+    "tabBarExtraContent": "0x — the extra-content slot exists but is unused in the product"
+  },
+  "props": {
+    "tabs": {
+      "type": "string",
+      "note": "the tab set — a JSON array of {key,label,count?,icon?,disabled?} OR a simple comma list \"Overview,Performance,Logs\"."
+    },
+    "value": {
+      "type": "string",
+      "note": "the active tab key; reflected onto the host (el.value) and emitted via `change` when a tab is clicked."
+    },
+    "variant": {
+      "type": "string",
+      "default": "line",
+      "options": [
+        "line",
+        "no-border",
+        "sticky",
+        "grey"
+      ],
+      "note": "class-based style (the product reality): line (default) · no-border (drops the bar rule, 21× dominant) · sticky (pins the bar in a scroll pane) · grey (tinted bar). Ant card/vertical/size are unused in-product and intentionally not built."
+    },
+    "persist-key": {
+      "type": "string",
+      "note": "persist the active tab in localStorage under `${persist-key}-tab` — it survives reload/navigation (the product MPersistedTab behaviour). Omit for non-persisted tabs."
+    },
+    "closable": {
+      "type": "boolean",
+      "default": false,
+      "note": "show a × on each tab (ONLY when there is more than one) → emits `close` {key}. For an editable tab strip like the metric-explorer monitor tabs."
+    },
+    "addable": {
+      "type": "boolean",
+      "default": false,
+      "note": "show a \"+\" button at the far RIGHT of the bar → emits `add`. Pair with `closable` for an add/remove tab strip."
+    }
+  },
+  "slots": {
+    "[key]": "one NAMED slot per tab key holds that pane’s content — <obs-tabs ...><div slot=\"overview\">…</div></obs-tabs>; only the active pane renders.",
+    "MTab.default": "the MTabPane children",
+    "MTab.tabBarExtraContent": "right-aligned content on the tab bar (available, unused in product)",
+    "MTabPane.default": "the pane content",
+    "MTabPane.tab": "rich tab label (icon + text + count) — overrides the `tab` prop",
+    "MPersistedTab.default": "scoped slot receiving { tab, setTab } — wire to <MTab :value=tab @change=setTab>"
+  },
+  "tokensUsed": [
+    "--primary",
+    "--tabs-text-color",
+    "--border-color",
+    "--page-background-color",
+    "--neutral-light",
+    "--neutral-lightest"
+  ],
+  "decisionFlow": [
+    "Switching between sibling VIEWS of the SAME page (Overview / Performance / Logs)? -> obs-tabs. For BETWEEN-page navigation use obs-sidebar (primary) or obs-breadcrumbs (trail), NOT tabs.",
+    "Tabs sitting on a card/panel that already has its own edges? -> variant=\"no-border\" (the 21x dominant variant).",
+    "A long scrolling pane where the tab bar must stay visible? -> variant=\"sticky\".",
+    "Tab bar on a plain surface that needs a tint? -> variant=\"grey\".",
+    "A tab label needs a live count? -> put it on the tab: tabs=[{\"label\":\"Alerts\",\"count\":12}] renders \"Alerts (12)\" (not a separate badge).",
+    "A tab needs a leading icon? -> add icon: {\"label\":\"List\",\"icon\":\"list\"} (a product icon name; reuses obs-icon).",
+    "Data-driven tab set? -> pass the whole array to tabs (JSON) or a simple \"A,B,C\" list; add/remove by changing it.",
+    "Remember the user's last tab across reload / navigation? -> persist-key=\"<module>\" (stores it in localStorage as <module>-tab).",
+    "An EDITABLE tab set — the user CREATES / CLOSES tabs at runtime (the metric-explorer monitor tabs, worksheet/query tabs)? -> `closable` (a × per tab, shown only when >1) + `addable` (a + at the far right); they emit `close` {key} / `add` for you to update the `tabs` array. (Card / vertical tabs remain unbuilt — the product doesn’t use them.)"
+  ],
+  "usageRules": {
+    "line": {
+      "useWhen": "the default in-page tab strip — switching sibling sections of one page/entity.",
+      "dontUse": "to navigate between routes -> obs-sidebar / obs-breadcrumbs.",
+      "example": "Monitor detail: Overview / Performance / Logs / Configuration."
+    },
+    "no-border": {
+      "useWhen": "the tabs sit inside a card/panel that already draws its own edges (the 21x dominant case).",
+      "dontUse": "as a page-level tab strip that needs the separating rule.",
+      "example": "variant=\"no-border\" on a widget/settings card."
+    },
+    "sticky": {
+      "useWhen": "a long scrolling detail/settings pane where the tab bar must stay in view.",
+      "dontUse": "short panes that don't scroll.",
+      "example": "variant=\"sticky\" inside a scroll container."
+    },
+    "grey": {
+      "useWhen": "the tab bar sits on a plain background and needs a subtle tinted strip.",
+      "dontUse": "the default page context (keep line).",
+      "example": "variant=\"grey\"."
+    },
+    "with-counts": {
+      "useWhen": "a tab names a collection whose size matters (correlated Alerts / Logs / Metrics).",
+      "dontUse": "a static section with no count.",
+      "example": "tabs=[{label:\"Alerts\",count:12}] -> \"Alerts (12)\"."
+    },
+    "with-icons": {
+      "useWhen": "tabs read better with a leading glyph (List / Grid / Topology views).",
+      "dontUse": "text-only section tabs.",
+      "example": "tabs=[{label:\"List\",icon:\"list\"}] (reuses obs-icon)."
+    },
+    "dynamic": {
+      "useWhen": "the tab set comes from data/config (widget editor: Attributes / Metric / Style / Sorting / Column Setting).",
+      "dontUse": "a fixed known set (still fine, just inline the array).",
+      "example": "bind tabs to your config array."
+    },
+    "persisted": {
+      "useWhen": "a module-level tab set the user returns to — remember their last tab across reloads.",
+      "dontUse": "transient/ephemeral tab sets.",
+      "example": "persist-key=\"monitors\" -> restores from localStorage on mount."
+    },
+    "closable-addable": {
+      "useWhen": "the user creates/removes tabs at runtime (monitor tabs, worksheet tabs)",
+      "dontUse": "a fixed set of sibling views (plain tabs)",
+      "example": "closable addable → × on each (when >1) + a + that emits add"
+    }
+  },
+  "do": [
+    "Use for sibling views of the same context.",
+    "Use class='no-border' when the tabs sit on a card.",
+    "Append counts to the label string; keep labels short.",
+    "Build data-driven tab sets with v-for.",
+    "Use MPersistedTab where users return to a remembered tab.",
+    "Use `closable` + `addable` for an EDITABLE tab strip (e.g. the metric-explorer monitor tabs) — wire the `close` / `add` events to update your tab array; the × only shows when there is more than one tab."
+  ],
+  "dont": [
+    "Don't use tabs to navigate between separate pages — that's routing.",
+    "Don’t reach for card / vertical tabs (still unbuilt — not in the product); the supported editable pattern is `closable` + `addable` on the line tabs.",
+    "Don't build a separate count badge — the product appends '(N)' to the label.",
+    "Don't rely on the tabBarExtraContent slot to match the product — it's unused there.",
+    "Don’t expect obs-tabs to add/remove tabs itself — it emits close/add; the `tabs` array is data-driven, so the parent updates it (see obs-metric-picker for a component that manages this)."
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "a11y": true,
+      "issue": "Catalog-wide focus-ring removal (SF-001) can affect the tab triggers' :focus-visible outline; verify keyboard focus is visible on the active/!active tab."
+    },
+    "editable": {
+      "severity": "Info",
+      "issue": "Closable / addable are data-driven: obs-tabs emits `close` {key} / `add` but does NOT mutate its own tab set — the parent owns the `tabs` array and updates it (obs-metric-picker does this for the monitor tabs). A standalone static example therefore shows the × / + but won’t self-remove/add."
+    }
+  },
+  "accessibility": {
+    "providedByAnt": "a-tabs renders role=tablist / role=tab / role=tabpanel, aria-selected on the active tab, and supports Left/Right arrow-key navigation between tabs.",
+    "verify": "Keyboard focus-visibility on tab triggers (SF-001); that a meaningful label is present for icon-only tabs."
+  },
+  "storybook": "Molecules/Tabs",
+  "related": [
+    "dropdown-picker",
+    "table",
+    "radio",
+    "sidebar",
+    "breadcrumbs",
+    "menu",
+    "toolbars"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "events": {
+    "change": "(key) — the active tab changed (fired on click; also reflected to el.value).",
+    "MTab.change": "(activeKey) — active tab changed; this is the v-model event (`:value.sync` ⇄ `@change`).",
+    "MPersistedTab": "renderless — exposes { tab, setTab } via its scoped slot; wire setTab to MTab @change to persist the active tab.",
+    "close": "{key} — a tab’s × was clicked (closable).",
+    "add": "none — the + was clicked (addable)."
+  },
+  "a11y": {
+    "summary": "role=tablist/tab/tabpanel; active=aria-selected, disabled=aria-disabled; Left/Right arrows move, Enter/Space activate; Ant links tab↔panel via aria-controls. Closable: each × is a role=button with aria-label \"Close tab\" (emits close; does not switch tabs). Addable: the + is an obs-button with aria-label \"Add\" (emits add). Both are keyboard-reachable.",
+    "issues": [
+      "SF-001 focus ring.",
+      "Icon-only tabs need an accessible name.",
+      "Count updates while focused — announce.",
+      {
+        "severity": "low",
+        "issue": "The × (close) sits inside the tab button — ensure a click on it does not also switch to that tab (it calls stopPropagation) and that its aria-label conveys which tab it closes for screen-reader users."
+      }
+    ],
+    "doc": "Molecules/Tabs/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "apis": {
+    "MTab": {
+      "value": {
+        "type": "string|number",
+        "note": "the active key; v-model via @change (model event=change). 41x bind @change."
+      },
+      "variant": {
+        "type": "string",
+        "default": "",
+        "note": "applied as a CLASS on a-tabs (:class=[variant]). NOTE: in practice the product applies variant classes via plain class= (e.g. class='no-border'), not this prop — both land on the .ant-tabs root and behave identically."
+      },
+      "defaultActive": {
+        "type": "string",
+        "note": "defaultActiveKey when uncontrolled"
+      },
+      "animated": {
+        "type": "boolean",
+        "default": false
+      },
+      "size": {
+        "type": "string",
+        "default": "default",
+        "note": "UNUSED in product (no usage passes it)"
+      },
+      "position": {
+        "type": "string",
+        "default": "top",
+        "note": "tabPosition; UNUSED beyond 'top' (no vertical tabs in product)"
+      },
+      "type": {
+        "type": "string",
+        "default": "line",
+        "note": "UNUSED beyond 'line' (no card/editable-card in product)"
+      },
+      "tabBarGutter": {
+        "type": "number"
+      },
+      "tabBarStyle": {
+        "type": "object"
+      }
+    },
+    "MTabPane": {
+      "tab": {
+        "type": "string",
+        "note": "the tab label (string). For a rich label (icon/count markup) use the `tab` SLOT instead."
+      },
+      "key": {
+        "type": "string",
+        "note": "the pane's key — matches MTab value"
+      },
+      "forceRender": {
+        "type": "boolean",
+        "default": false,
+        "note": "render pane content even when inactive"
+      }
+    },
+    "MPersistedTab": {
+      "moduleKey": {
+        "type": "string",
+        "required": true,
+        "note": "localStorage key prefix → `${moduleKey}-tab`"
+      },
+      "useLocalStorageTab": {
+        "type": "boolean",
+        "default": true
+      },
+      "defaultValue": {
+        "type": "string"
+      },
+      "value": {
+        "type": "string"
+      }
+    }
+  },
+  "changelog": [
+    "2026-07-23 — Full doc pass for the closable/addable variant: playground gained Closable + Addable toggles; decisionFlow now routes the editable-tab-set case; a11y covers the × (close) / + (add) controls; do/dont + a knownIssue clarify that obs-tabs emits close/add while the parent owns the tab array.",
+    "2026-07-23 — Polish (owner): the addable + button is now obs-button size=small (~29×25, was the 35×35 squared) so it sits proportionate to the tab labels; keeps the 4px radius.",
+    "2026-07-23 — Reuse (owner): the addable \"+\" now REUSES obs-button (variant neutral-lightest, squared) instead of a hand-built button; the × / + glyphs already reuse obs-icon.",
+    "2026-07-23 — Added a closable + addable tab strip: `closable` shows a × per tab (only when >1 tab, emits close) and `addable` shows a + at the far right (emits add) — so an editable tab set (e.g. the metric-explorer monitor tabs) reuses obs-tabs instead of hand-rolling it.",
+    {
+      "date": "2026-07-15",
+      "change": "Docs pass: element-centric summary (dropped the unused ink-bar wording; added variants/count/icon/persist-key/reflow-free); rewrote decisionFlow + usageRules in obs-tabs attribute syntax (was product MTab/MPersistedTab Vue); added the grey variant + persist-key. Playground gains Dynamic + persist-key."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Fixed the active↔inactive weight-change reflow (jerk) by reserving the bold-500 label width (invisible ::after ghost) — no layout shift on select, all variants. Added native persist-key (localStorage) for the Persisted variant, and explicit Dynamic (config-array) + Persisted gallery examples."
+    },
+    {
+      "date": "2026-07-15",
+      "change": "Added obs-tabs element — render-faithful line-style tabs (variants line/no-border/sticky/grey; count + icon labels; data-driven tabs + named-pane slots). diff.mjs ✅ MATCH (8 scenarios, light+dark); reuses obs-icon for tab icons. First of the Structure & Navigation page-structure set."
+    }
+  ],
+  "group": "Structure & Navigation"
+}

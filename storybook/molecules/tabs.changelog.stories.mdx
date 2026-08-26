@@ -1,0 +1,39 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Tabs/Changelog" />
+
+# Tabs — Changelog
+
+- **2026-06-15 (deep-dive recheck — no variants missed)** — Owner asked for an exhaustive re-audit.
+  Extracted **every** `<MTab>` opening tag (66) and every `<MTabPane>`: confirmed the only attributes
+  ever used are `v-model`/`:value`, `@change`, `class`, `v-if` — **no** `type` / `size` / `position` /
+  `animated` / `editable` / `closable` / `tabBarExtraContent` / `tabBarGutter` / `defaultActive`
+  anywhere (line/top/default is airtight). All variant classes accounted for and counts confirmed at
+  file level: **`no-border` 21× · `sticky-tab` 8× · `topology-hierarchy-tab` 3×** (icon-only
+  topology/health, `v-for` category tabs) **· `metric-picker-tabs` 1×**; `grey-tab` defined-but-unused;
+  `flex-tabs` is the content helper. No direct `<a-tabs>` bypass, no custom tab component (the
+  `segmented` controls belong to the Radio `as-button` family). **One fidelity fix:** the product
+  applies these via **`class="no-border"`**, not the `variant` prop — updated the No-border story +
+  docs to the real `class=` idiom (both behave identically; `Tab.vue` maps `variant`→class).
+- **2026-06-15 (fix — Persisted story was blank)** — Owner spotted the **Persisted** story rendered
+  empty. Cause: `MPersistedTab` is a Floto **`_base-`** component (app-registered via `_globals.js`,
+  which Storybook doesn't run), so `<MPersistedTab>` was an **unknown component → silently rendered
+  nothing**. Fixed by importing + registering it **locally** in the story (`components: { MPersistedTab }`).
+  Verified: tabs render, clicking writes `ds-demo-tab` to localStorage, no console errors. (My miss:
+  I'd screenshotted all 7 stories but only opened 3 — now a documented pitfall: open every shot.)
+- **2026-06-15** — Added — **Tabs** (`MTab` + `MTabPane`, wrapping Ant `a-tabs`, **86×** across 70
+  files), plus the renderless **`MPersistedTab`** (localStorage state). **Key fidelity finding:** no
+  real `<MTab>` passes `type=`, `position=`, or `size=` — the product uses **line / top / default**
+  tabs **only**; Ant's card / editable-card / vertical / size / `tabBarExtraContent` features are
+  available but **unused**. The genuine variants are **class-based**: **`no-border`** (21×, dominant),
+  **`sticky-tab`** (8×), plus **count** and **icon** label patterns and the **persisted** wrapper.
+- **Stories** (built with the **real** `MTab`/`MTabPane`, not a reproduction): **Basic · No border ·
+  Sticky · With counts · Dynamic · With icons · Persisted**. Verified by rendering + screenshotting:
+  the active indicator is **`--primary` navy** (`rgb(17,28,44)` — text, underline, **and** ink bar),
+  clicking switches panes, counts (`Alerts (12)`) render in the label, and there are **no console
+  errors**. Caught and fixed a **blank `map` icon** (not in the curated 543-set → swapped to
+  `sitemap`) — the silent-fail trap.
+- **A11y:** Ant provides `role=tablist/tab/tabpanel`, `aria-selected`, and arrow-key navigation
+  (good). Flagged F1 (focus-visible ring → **SF-001**) and the icon-only-tab label gap.
+- Related: **Table (Grid)** — tabs frequently head a grid detail pane; **DropdownPicker** /
+  **Radio (segmented)** — the other "pick one" controls.

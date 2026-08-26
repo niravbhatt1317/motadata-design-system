@@ -1,0 +1,87 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Drawer/Usage" />
+
+# Drawer — Usage
+
+🟢 **Stable** · Organism — a **slide-in side panel** (`FlotoDrawer` 99× + `FlotoDrawerForm` 59×
+= the product's **most-used overlay**). Rules mirrored in `registry/drawer.json`.
+
+## Modal or drawer? (decision)
+
+First match wins:
+
+1. **A short yes/no or destructive confirmation?** → **`FlotoConfirmModal`** (a modal).
+2. **A short focused task that should center-interrupt?** → **`MModal`** (dialog).
+3. **A detail view, or long content contextual to a record?** → **`FlotoDrawer`** (side panel).
+4. **An Add/Edit form in a panel?** → **`FlotoDrawerForm`** (vertical form + validation + footer Save).
+
+Rule of thumb: **short + decision → modal; rich/contextual + form → drawer.** The product
+leans heavily on drawers (158× vs ~110× for modals).
+
+## Types
+
+### `FlotoDrawer` — detail / content panel
+
+- **Use when:** showing **details of a record** or long content beside the current context.
+- **How:** open via the **`open`** prop (or a `trigger` slot); `title` (text-primary) + a
+  scrollable body + an **`actions`** footer (`{ hide }`). `width` default **40%**.
+- **As seen in:** **incident details**, **view-detail / view-more** drawers, **gauge /
+  compliance drilldown**, **credential / catalog selection** drawers.
+
+### `FlotoDrawerForm` — edit form panel
+
+- **Use when:** an **Add/Edit form**. It wraps a vertical `FlotoForm` with validation; the
+  **footer Save** submits (it suppresses `MForm`'s default Submit).
+- **How:** `open` prop; `header` (title) + fields in the body + `actions` (`{ hide, submit }`).
+- **As seen in:** most **Add/Edit** flows, **sync / runbook / firmware-upgrade approval**
+  drawers, **attach-rules / attach-storage**, **email-dispatch** form.
+
+## Width / size (the full range)
+
+- **`360`px / 40%** (default) — simple detail / form panels.
+- **50–70%** — richer content / editors.
+- **85–96%** — **large / full-screen** drawers for complex **multi-pane** flows (left nav +
+  main form + right reference panel), e.g. **APM Application Registration** at `width="96%"`.
+  Used ~30× — reach for a **wide drawer, not a modal**, for config/registration wizards. See the
+  **Large / full-screen** story.
+
+## Behaviors to know
+
+- The drawer has a **built-in close ×** (Ant `a-drawer` — unlike `MModal`), plus the footer.
+- **Backdrop-click does NOT close** (`maskClosable:false`) — avoids losing form input.
+- The **body scrolls** inside the panel (title + actions footer stay pinned).
+- `@hide` fires ~500ms after close (slide-out animation).
+
+## Footer actions — button layout (2 / 3 / 4)
+
+The footer/`actions` bar is **right-aligned** with **no built-in gap** — space buttons with
+**`mr-2`** (8px) on the non-last (the product convention). See the **Footer actions** story.
+
+- **2** — `[ … Cancel  Save ]`: Cancel `mr-2`, **primary far-right**.
+- **3** — all right-aligned (`Reset · Cancel · Save`, `mr-2` gaps), **or** split: a
+  **destructive** action (Delete) on the **left**, the **Cancel + Save** group on the right
+  (`justify-between`).
+- **4** — **split**: a tertiary action or a "* mandatory" note on the **left**, the confirm
+  group on the right. Beyond this, move rarely-used actions into a **menu**.
+
+Rules: **primary far-right**, **Cancel** just left of it; **destructive / tertiary / notes go
+left**, separated from the confirm group.
+
+## Do
+
+- Use a Drawer for **detail views, edit forms, and record-contextual content**.
+- Use **`FlotoDrawerForm`** for Add/Edit (vertical form + footer submit).
+- In the `actions` footer: space buttons with **`mr-2`** (the bar has no gap — F3); **Cancel**
+  left, **Save** right.
+
+## Don't
+
+- Don't use a Drawer for a short confirmation — use **`FlotoConfirmModal`**.
+- Don't rely on backdrop-click to close (disabled) — use the × or a footer Cancel.
+- Don't add a bare `MForm` without suppressing its default Submit (two submit buttons).
+
+## Related
+
+`MModal` / `FlotoConfirmModal` (modals) · `FlotoDrawerForm` (form variant) · `FlotoForm` /
+`FlotoFormItem` (fields) · `MButton` (footer actions).

@@ -1,0 +1,104 @@
+{
+  "name": "layout-screen-regions",
+  "component": "screenRegions / contentLayouts",
+  "display": "Screen regions",
+  "tier": "foundation",
+  "section": "Foundations",
+  "family": "Layout",
+  "status": "stable",
+  "summary": "Inside the content panel a standard page stacks four regions top-to-bottom: Page header (required) → Toolbar / filter bar (optional) → Body (required) → Footer / pagination (optional). The body takes one of 6 content layouts — single column, two-pane, master-detail, dashboard grid, three-pane, chart-over-grid.",
+  "props": {
+    "shape": {
+      "type": "string",
+      "default": "two-pane",
+      "enum": [
+        "single",
+        "two-pane",
+        "master-detail",
+        "dashboard",
+        "three-pane",
+        "chart-over-grid"
+      ],
+      "note": "the body's content layout"
+    },
+    "toolbar": {
+      "type": "boolean",
+      "default": "false",
+      "note": "show the optional toolbar / filter bar"
+    },
+    "footer": {
+      "type": "boolean",
+      "default": "false",
+      "note": "show the optional footer / pagination"
+    },
+    "callouts": {
+      "type": "boolean",
+      "default": "false",
+      "note": "render the annotated 4-region wireframe instead of the interactive panel"
+    }
+  },
+  "regions": [
+    "Page header — required; the page title + primary actions (carries the --primary left accent)",
+    "Toolbar / filter bar — optional; search, filters, view switches",
+    "Body — required; one of the 6 content layouts",
+    "Footer / pagination — optional; pagination, bulk-action summary"
+  ],
+  "contentLayouts": [
+    "single column — list / form",
+    "two-pane — left tree/menu + content",
+    "master-detail — list + drawer slide-over",
+    "dashboard grid — tiles",
+    "three-pane — saved-views rail + picker + content (e.g. Metric Explorer)",
+    "chart-over-grid — a fixed chart above a grid (e.g. Trap Viewer / log dashboards)"
+  ],
+  "do": [
+    "Compose top-down: Page header → Toolbar → Body → Footer.",
+    "Mark required regions (Page header, Body) with the primary left accent.",
+    "Pick the content layout that matches the task (two-pane for tree+content, master-detail for list+record)."
+  ],
+  "dont": [
+    "Don't omit the Page header (it's required).",
+    "Don't use a drawer for a panel-sized record where two-pane reads better."
+  ],
+  "tokensUsed": [
+    "--border-color",
+    "--page-background-color",
+    "--primary",
+    "--code-tag-background-color",
+    "--nav-panel-bg",
+    "--neutral-shadow-light"
+  ],
+  "related": [
+    "layout-app-shell",
+    "layout-grid"
+  ],
+  "storybook": "Foundations/Layout/Screen regions",
+  "a11y": {
+    "summary": "Region grammar. The Page header hosts the page heading (h1) + primary actions; the Body is the <main> content. Required regions carry the primary left accent.",
+    "issues": []
+  },
+  "knownIssues": [
+    "Shape references for the body — not live components.",
+    "[element] The obs-layout-* WEB COMPONENT is a fixed visual demo, not a slotted layout primitive — you can't put a real page inside it. Use the layout GUIDANCE (decisionFlow/regions) + compose the shell from atoms + the 12-col grid + tokens."
+  ],
+  "changelog": [
+    "2026-06-29: added — the 4-region stack + 6 content layouts; interactive shape/toolbar/footer.",
+    "2026-06-29: fixed two-pane (30/70) and three-pane (18/26/56) column proportions (were rendering as equal columns).",
+    "2026-06-29: Usage enriched — when-to-use + where-it's-used."
+  ],
+  "whenToUse": "Compose a page top-to-bottom — header → (toolbar) → body → (footer) — then give the body one of six content layouts.",
+  "usedIn": [
+    "Every in-app page's content panel.",
+    "Two-pane → explorers, settings · Master-detail → alert/inventory records · Dashboard grid → dashboards.",
+    "Three-pane → metric / apm explorers · Chart-over-grid → trap viewer / log dashboards."
+  ],
+  "decisionFlow": [
+    "Start EVERY page with a Page header (title + primary action). Then the body picks ONE content layout:",
+    "A flat list of records? -> Single column (Toolbar/Filter bar + Table + pager).",
+    "A tree/hierarchy on the left + detail on the right? -> Two-pane (master-detail).",
+    "A list where selecting a row opens a record beside/over it? -> Master-detail (list + Drawer).",
+    "Metric tiles? -> Dashboard grid. A chart above a supporting table? -> Chart-over-grid.",
+    "Only escalate to Three-pane when a saved-views rail AND a picker are BOTH needed. Don't combine two content layouts on one screen."
+  ],
+  "referenceOnly": true
+}

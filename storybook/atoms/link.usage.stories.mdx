@@ -1,0 +1,68 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Link/Usage" />
+
+# Link — Usage
+
+🟢 **Stable** · Atom — the **navigation** control (`FlotoLink`). Use it when something takes the
+user *somewhere*. Used 67× / 48 files.
+
+Decision rules below are mirrored in `registry/link.json` (`decisionFlow` + `usageRules`).
+
+## Which link? (decision)
+
+First match wins:
+
+1. **Performs an action** (save, delete, apply, change state)? → **Button**, not a link.
+2. **External URL / opens in a new tab?** → a **plain `<a href target="_blank"
+   rel="noopener noreferrer">`** — `FlotoLink` is **internal-only** (can't resolve external
+   URLs). Always set `rel` (finding **SF-004**).
+3. **Internal navigation** (route)? → **FlotoLink**.
+4. Internal navigation that should look like a **prominent CTA/button**? → **FlotoLink
+   `as-button`** (with a `variant`).
+5. **Inline** internal navigation in content / menus / breadcrumbs / a clickable value? →
+   **FlotoLink** (text link).
+6. A **subtle clickable text inside a table/grid**? → `class="k-link"`.
+
+Rule of thumb: if it should still "go somewhere" without JavaScript, it's a link; if it "does
+something", it's a button.
+
+## Use cases by type
+
+### Text link (default)
+
+- **Use when:** inline navigation — links inside content, menu items, breadcrumbs, a logo, or a
+  clickable value that opens a detail.
+- **Example:** "go to **the inventory list**", a breadcrumb segment.
+- **Affordance:** links inherit text color; add `class="text-primary"` so they read as links.
+
+### As button (`as-button`)
+
+- **Use when:** a **prominent navigation call-to-action** that should look like a button.
+- **Example:** a **Go to settings** CTA. Takes any Button `variant`.
+- ⚠️ It renders a `<button>` (no `href`), so **open-in-new-tab / middle-click won't work**
+  (finding F1) — don't use it where users expect those.
+
+### External link (plain anchor)
+
+- **Use when:** the destination is an **external URL** or should **open in a new tab** (docs,
+  help, files). `FlotoLink` can't do this — it's internal-only.
+- **How:** `<a href="…" target="_blank" rel="noopener noreferrer">`. The `rel` is required
+  (SF-004: 147 such links in the app, none currently set it).
+
+### In-table link (`k-link`, 25×)
+
+- **Use when:** a **subtle clickable text inside a table/grid** that shouldn't shout — neutral
+  text color with a hover affordance (not brand-colored).
+
+## Content
+
+Name the destination ("Settings", "the inventory list") — never "click here".
+
+## In the product
+
+**As seen in:** The **navbar**, **header**, and **user menu** (the logo and menu navigation links).
+
+## Related
+
+`MButton` (actions) · `MDropdown` (menus). This is the Button family's **navigation** member.

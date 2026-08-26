@@ -1,0 +1,4 @@
+{
+  "$note": "KNOWN icon-reuse debt: elements that inline an SVG icon instead of composing <obs-icon>. The deploy gate (scripts/icon-reuse-preflight.mjs) HARD-FAILS on any element NOT in this list, so no NEW component can ship with an inline SVG. This list may only SHRINK — when you fix one, remove it (the gate enforces that too). Do not add to it to bypass the gate. As of 2026-07-11 the debt is fully burned down: every element composes <obs-icon>.",
+  "knownDebt": []
+}

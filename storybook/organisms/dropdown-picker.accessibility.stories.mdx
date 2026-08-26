@@ -1,0 +1,32 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/DropdownPicker/Accessibility" />
+
+# DropdownPicker — Accessibility
+
+⚠️ This is the **highest-impact a11y gap in the system** — a control used 510× that is not an
+accessible combobox. Promoted to the system findings register as **SF-003** (spec finding F1).
+
+## Keyboard
+
+- **Once open:** ↑/↓ move the active row, **Enter** selects, **Escape** closes.
+- ⚠️ **Opening:** the trigger opens **on click only** — there is no Enter/Space/↓ handler on
+  the trigger, so keyboard-only users may be **unable to open** the dropdown.
+
+## Screen reader
+
+- ⚠️ No combobox semantics: there is **no** `role="combobox"`/`listbox"`/`option`, no
+  `aria-expanded`, and no `aria-activedescendant`. Assistive tech doesn't announce it as a
+  select or report the open/active state. The trigger is a readonly `MInput`.
+
+## Focus
+
+- ⚠️ No visible keyboard focus indicator system-wide
+  ([SF-001](../../findings/SF-001-focus-visible.md)).
+
+## Recommended fix (SF-003)
+
+Add combobox ARIA (`role`, `aria-expanded`, `aria-controls`, `aria-activedescendant` synced
+to the active index), open on **Enter / Space / ↓** from the trigger, and a focus ring. This
+single component carries enough usage that fixing it materially improves the product's
+accessibility. Full evidence + solution: system finding **SF-003**.

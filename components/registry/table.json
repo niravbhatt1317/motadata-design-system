@@ -1,0 +1,460 @@
+{
+  "name": "table",
+  "display": "Table (Grid)",
+  "tier": "organism",
+  "family": "Table",
+  "element": "obs-table",
+  "source": "src/components/crud/_base-grid.vue (MGrid) — wraps the Kendo Vue Grid (@progress/kendo-vue-grid) + gridWorker/arrayWorker. Usually driven by FlotoPaginatedCrud.",
+  "status": "stable",
+  "summary": "The product's primary data table. Resizable/reorderable/sortable columns, client + server paging, grouping, selection (with bulk-action bar), expandable detail rows, per-column cell slots. MGrid is the grid; FlotoPaginatedCrud is the fetch+paginate wrapper around it.",
+  "variants": [
+    {
+      "name": "basic",
+      "what": "columns + rows, sortable",
+      "usage": ""
+    },
+    {
+      "name": "selectable",
+      "what": "checkboxes + bulk bar",
+      "usage": ""
+    },
+    {
+      "name": "expandable",
+      "what": "detail rows",
+      "usage": ""
+    },
+    {
+      "name": "grouping",
+      "what": "grouped rows + counts",
+      "usage": ""
+    },
+    {
+      "name": "cell-types",
+      "what": "per-column cell slots",
+      "usage": ""
+    },
+    {
+      "name": "pagination",
+      "what": "client/server paging",
+      "usage": ""
+    },
+    {
+      "name": "tree",
+      "what": "hierarchical rows via children",
+      "usage": ""
+    },
+    {
+      "name": "pivot",
+      "what": "pivot/report grid (grouping, group-collapsible=false: no chevron, all rows always visible)",
+      "usage": ""
+    },
+    {
+      "name": "editable",
+      "what": "[element] inline editing — a pencil per row; columns with editable:true become obs-inputs while editing, with Save/Cancel (obs-link)",
+      "usage": ""
+    },
+    {
+      "name": "style-variants",
+      "what": "[element] variant: bordered (internal grid, no outer frame) | borderless-rows (no row dividers, airy) · header-style: default | tinted · hide-header (compact widget grids)",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "default",
+      "what": "normal"
+    },
+    {
+      "name": "hover",
+      "what": "row highlight"
+    },
+    {
+      "name": "selected",
+      "what": "checked + accent bar"
+    },
+    {
+      "name": "expanded",
+      "what": "detail row open"
+    },
+    {
+      "name": "empty",
+      "what": "no records"
+    },
+    {
+      "name": "loading",
+      "what": "content loader"
+    },
+    {
+      "name": "editing",
+      "what": "[element] a row in inline-edit mode — editable cells are obs-inputs, Save/Cancel shown"
+    }
+  ],
+  "usage": {
+    "MGrid": 75,
+    "FlotoPaginatedCrud": 76,
+    "topModules": [
+      "settings",
+      "apm",
+      "ncm",
+      "slo",
+      "alert"
+    ]
+  },
+  "props": {
+    "columns": {
+      "type": "Array",
+      "required": true,
+      "note": "column defs. obs-table: [{key,title,width?,align?,sortable?,type?,editable?,colorKey?}] — type: text (default) | severity (composes <obs-severity> dot + the row's name; level from the row's sev/severity field) | dot (composes <obs-severity> dot + its level label) | status (obs-tag) | type (server/cog icons) | tags (obs-tag chips) | sparkline (inline trend line) | heat (cell filled with the --severity token named by the row's colorKey field) | bar (inline relative-percent bar). editable:true marks the column editable when the table has `editable`. product MGrid: {field,title,width,cell,sortable}"
+    },
+    "rows": {
+      "type": "string|array",
+      "note": "[element] obs-table rows [{id, …}] (the product MGrid names this `data`)"
+    },
+    "selected": {
+      "type": "string|array",
+      "note": "[element] obs-table selected id array; reflects to el.selected"
+    },
+    "row-actions": {
+      "type": "string|array",
+      "note": "[element] obs-table per-row actions [{key,label,icon,danger?}] → a ⋯ menu (obs-menu)"
+    },
+    "sortable": {
+      "type": "Boolean",
+      "default": true,
+      "note": "[element] obs-table: enable sorting on columns with sortable:true"
+    },
+    "page-size": {
+      "type": "Number",
+      "default": 0,
+      "note": "[element] obs-table: 0 → no pagination; >0 → paginate (product MGrid uses default-page-size/paging)"
+    },
+    "loading": {
+      "type": "Boolean",
+      "default": false,
+      "note": "[element] obs-table: show the loading row"
+    },
+    "empty-text": {
+      "type": "String",
+      "default": "No records found",
+      "note": "[element] obs-table empty-state message"
+    },
+    "header-style": {
+      "type": "String",
+      "default": "default",
+      "note": "[element] obs-table: default (transparent .k-grid header) | tinted (.item-list-table bar)"
+    },
+    "expandable": {
+      "type": "Boolean",
+      "default": false,
+      "note": "chevron column + detailRow slot"
+    },
+    "group-by": {
+      "type": "String",
+      "note": "[element] obs-table: group rows under collapsible group-header rows (with counts) by a column key"
+    },
+    "group-collapsible": {
+      "type": "Boolean",
+      "default": true,
+      "note": "[element] obs-table: when combined with group-by. true (default) = collapsible bands (chevron + count, click to collapse). false = pivot/report grid: no chevron, no count, every child row is always visible (a static report layout)"
+    },
+    "editable": {
+      "type": "Boolean",
+      "default": false,
+      "note": "[element] obs-table: inline editing. Adds a pencil column per row; while a row is edited, each column marked `editable:true` becomes an obs-input. Emits `edit` (id) on entering edit, `save` ({id, values}) on Save, `canceledit` on Cancel"
+    },
+    "variant": {
+      "type": "String",
+      "default": "default",
+      "note": "[element] obs-table: default | bordered (internal column+row grid, NO outer left/right frame) | borderless-rows (no row dividers, just the header underline, airy spacing)"
+    },
+    "hide-header": {
+      "type": "Boolean",
+      "default": false,
+      "note": "[element] obs-table: hide the header row (compact widget grids)"
+    },
+    "data": {
+      "type": "Array",
+      "note": "the rows (client mode)"
+    },
+    "selectable": {
+      "type": "Boolean",
+      "default": false,
+      "note": "checkbox column + selection"
+    },
+    "paging": {
+      "type": "Boolean",
+      "default": false
+    },
+    "defaultPageSize": {
+      "type": "Number",
+      "default": 50
+    },
+    "defaultSort": {
+      "type": "Object/Array",
+      "note": "initial sort"
+    },
+    "defaultGroup": {
+      "type": "String/Array",
+      "note": "grouping column(s)"
+    },
+    "filters": {
+      "type": "Object/Array"
+    },
+    "searchTerm": {
+      "type": "String",
+      "note": "external search; with use-search-term-loading shows a spinner"
+    },
+    "maxAllowedSelection": {
+      "type": "Number",
+      "note": "cap selection count (0 = unlimited)"
+    },
+    "preSelectedItems": {
+      "type": "Array"
+    },
+    "selectionDisabledItems": {
+      "type": "Array"
+    },
+    "disablePreSelectedItem": {
+      "type": "Boolean",
+      "default": false
+    },
+    "hideSelectionInfo": {
+      "type": "Boolean",
+      "default": false,
+      "note": "hide the 'N selected' tag"
+    },
+    "rowHeight": {
+      "type": "Number",
+      "note": "virtualization row height (non-paging mode)"
+    },
+    "totalCount": {
+      "type": "Number",
+      "note": "server total"
+    },
+    "externalSkip": {
+      "type": "Number",
+      "note": "server paging offset"
+    },
+    "externalTake": {
+      "type": "Number",
+      "note": "server page size"
+    },
+    "useExpandKey": {
+      "type": "Boolean",
+      "default": false
+    },
+    "useSearchTermLoading": {
+      "type": "Boolean",
+      "default": false
+    },
+    "tree": {
+      "type": "Boolean",
+      "default": false,
+      "note": "[element] obs-table: hierarchical rows — each row has a `children` array; chevron + indent per level (starts expanded)"
+    }
+  },
+  "slots": {
+    "perColumn": "a slot per column field renders that cell (status, name, tags, severity, value, duration, action, monitorType, timestamp, count, …)",
+    "detailRow": "expanded row content (when expandable)"
+  },
+  "events": {
+    "selection-change": "selection set changed",
+    "selection-change-single": "single-select changed",
+    "column-change": "columns reordered/resized/toggled",
+    "data-state-change": "sort/filter/page changed (server mode)",
+    "loaded": "data loaded",
+    "edit": "[element] obs-table (editable): a row entered inline-edit mode — payload is the row id",
+    "save": "[element] obs-table (editable): inline edit saved — payload {id, values} with the edited draft",
+    "canceledit": "[element] obs-table (editable): inline edit cancelled — draft discarded"
+  },
+  "consumerClasses": [
+    "hide-expand-column",
+    "hide-header",
+    "hide-grouping",
+    "tabular-content-grid",
+    "service-grid",
+    "rum-grid",
+    "mgrid-container"
+  ],
+  "tokensUsed": [
+    "--grid-header-bg",
+    "--border-color",
+    "--neutral-lightest",
+    "--neutral-lighter",
+    "--primary",
+    "--neutral-dark",
+    "--page-background-color"
+  ],
+  "decisionFlow": [
+    "Just a few static key/values for ONE record, not a dataset? -> obs-key-value (a definition/detail list), NOT a grid.",
+    "A short list of big metric/KPI values (value + unit + label), not rows-of-records? -> obs-metric-list, NOT a grid.",
+    "Need to fetch + paginate a list with CRUD? -> FlotoPaginatedCrud (wraps MGrid; handles fetch/paging/search/filters). [element] obs-table with columns + rows.",
+    "Have data already in memory to show in a table? -> MGrid with :data + :columns. [element] obs-table columns + rows.",
+    "Large/server dataset? -> MGrid server paging (external-take/external-skip + total-count + @data-state-change).",
+    "Rows edited in place (no separate form/drawer)? -> [element] obs-table `editable` (a pencil per row; columns with editable:true become obs-inputs, Save/Cancel). For a full record form use a drawer/modal instead.",
+    "Rows need actions? -> a row-actions kebab cell (FlotoGridActions); multi-select -> selectable + the bulk-action bar.",
+    "Rows have drill-down detail? -> expandable + the detailRow slot.",
+    "Genuinely hierarchical (parent/child levels)? -> [element] obs-table `tree` (rows carry a `children` array; chevron + indent per level).",
+    "Rows bucketed under group headers with counts? -> `grouping` ([element] group-by). If it's a static report where children never collapse (no chevron, all rows always visible) -> add group-collapsible=\"false\" (the pivot/report grid).",
+    "Columns need rich rendering (status tag, severity dot/ring, tags, sparkline, heat cell, percent bar, type icons)? -> per-column `type` on the column (cell-types)."
+  ],
+  "usageRules": {
+    "crudList": {
+      "useWhen": "a fetched, paginated, searchable list (the default)",
+      "how": "FlotoPaginatedCrud + columns",
+      "example": "settings list views, inventory"
+    },
+    "inMemory": {
+      "useWhen": "data already loaded",
+      "how": "MGrid :data :columns",
+      "example": "drill-down sub-tables, preview grids"
+    },
+    "selectable": {
+      "useWhen": "bulk operations on rows",
+      "how": "selectable + selection-change + the bulk-action bar",
+      "example": "monitor bulk enable/disable/delete"
+    },
+    "expandable": {
+      "useWhen": "each row has detail",
+      "how": "expandable + detailRow slot",
+      "example": "discovered services, trace spans, interface details"
+    },
+    "basic": {
+      "useWhen": "You have a plain dataset to render as columns + rows with sortable headers — either data already in memory (`MGrid` with `:data` + `:columns`) or a fetched/paginated/searchable list page (the default, via `FlotoPaginatedCrud`, which wraps MGrid and owns fetch/paging/search/filters). The main `.k-grid` data-grid header (transparent, UPPERCASE, 600) is the standard chrome.",
+      "dontUse": "Don't use a grid for a handful of static key/values — use a definition list / cards instead. If rows need multi-select bulk operations use `selectable`; if each row has drill-down detail use `expandable`; if rows must be grouped with counts use `grouping`; if the dataset is large/server-driven use `pagination` with server paging.",
+      "example": "Settings list views and inventory monitor lists rendered via FlotoPaginatedCrud; drill-down sub-tables and preview grids rendered via MGrid :data :columns."
+    },
+    "grouping": {
+      "useWhen": "Rows should be bucketed under group headers with per-group counts, and each band can COLLAPSE. In the product drive it with `default-group` (the grouping column(s)). [element] obs-table: `group-by=\"<columnKey>\"` renders a grey group-header band with a chevron + count; click to collapse/expand. Hide the grouping UI with `.hide-grouping` when needed.",
+      "dontUse": "Don't use grouping to show nested record hierarchy — that's the `tree` variant. If the bands must NOT collapse (a static report where all child rows stay visible and there's no chevron) use the `pivot` variant (group-collapsible=false). For a flat sorted list, plain `basic` is enough.",
+      "example": "Alert / event lists grouped by a column (e.g. by severity or source) with a count badge per group; [element] group-by=\"env\" buckets monitors under Production / Staging."
+    },
+    "cell-types": {
+      "useWhen": "Columns need rich, non-plain-text rendering. Each column renders through a named slot (`status`, `name`, `tags`, `severity`, `value`, `duration`, `action`, `monitorType`, `timestamp`, `count`, …), so a cell can be a status tag, a severity dot, tags, a sparkline, a color-coded threshold cell (`color-coded-cell.vue`, heatmap-style / `relative-percent` inline bar), or a row-actions kebab (`FlotoGridActions`).",
+      "dontUse": "Don't reach for custom cell slots when a column is plain sortable text — leave it as `basic`. Don't put a bulk multi-select checkbox here (that's `selectable`) or the row expander (that's `expandable`); those are dedicated props/columns, not cell slots.",
+      "example": "Monitor grid cells: a status tag (MStatusTag), a severity dot, tags, a value sparkline, and a trailing kebab cell (FlotoGridActions) for per-row actions."
+    },
+    "pagination": {
+      "useWhen": "The dataset spans multiple pages. Use client paging (`paging` + `default-page-size`) for in-memory lists; use server paging (`external-take` / `external-skip` + `total-count` + `@data-state-change`) to fetch only the visible page for large/server-driven datasets. FlotoPaginatedCrud wires this up for fetched list pages.",
+      "dontUse": "Don't client-load huge datasets — server-page them. Don't hand-roll paging controls; MGrid / FlotoPaginatedCrud own paging, sort, and filter. For live socket/widget-pushed feeds use the streaming grid (`api-socket-grid`, no paging) rather than paginating.",
+      "example": "Large inventory / settings list pages server-paged through FlotoPaginatedCrud, fetching only the current page from the API."
+    },
+    "tree": {
+      "useWhen": "Data is genuinely hierarchical — parent rows with nested child rows across levels. Use the `tabular-content-grid` tree (`expandable` with a `detailRow` of nested child rows, chevron + indentation per level).",
+      "dontUse": "Don't use `tree` for a single row's flat detail panel — plain `expandable` is enough. Don't use it for flat grouped buckets (`grouping`) or cross-tab metric summaries (`pivot`).",
+      "example": "SNMP OID / MIB trees — expand a parent OID to reveal indented child OID rows level by level."
+    },
+    "pivot": {
+      "useWhen": "A static report/pivot grid: rows grouped under band headers that NEVER collapse — no chevron, no count, every child row always visible. [element] obs-table: `group-by=\"<key>\"` + `group-collapsible=\"false\"`. NOTE: this is a custom-element boolean attribute, so it must be the string \"false\" (group-collapsible=\"false\") — omitting it leaves grouping collapsible (the default).",
+      "dontUse": "Don't use `pivot` for ordinary grouped list rows that a user collapses/expands — that's `grouping` (the collapsible default). Don't use it for a single-record transposed key/value view — that's obs-key-value — or a big-value metric list — that's obs-metric-list.",
+      "example": "A report widget grouping monitors by environment where every row must stay visible (no expand/collapse) — group-by=\"env\" group-collapsible=\"false\"."
+    },
+    "editable": {
+      "useWhen": "A user edits row values IN PLACE, without opening a separate form/drawer/modal — quick edits to a couple of fields. [element] obs-table: set `editable`, and mark each editable column with `editable:true`. A pencil appears per row; clicking it turns that row's editable columns into obs-inputs with Save / Cancel (obs-link). Listen to `save` ({id, values}) to persist, `canceledit` to discard.",
+      "dontUse": "Don't use inline editing for a full record with many fields, validation, or related sections — use a drawer or modal form (obs-drawer / obs-modal) instead. Don't make identity/computed/status columns editable (leave those as display cells).",
+      "example": "A monitor list where an operator quickly renames a monitor or fixes its IP/owner inline, then Save — without leaving the list."
+    },
+    "styleVariants": {
+      "useWhen": "You need to tune the grid chrome for a context. [element] obs-table: `variant=\"bordered\"` (internal column+row grid, no outer frame) for a dense data grid; `variant=\"borderless-rows\"` (no row dividers, airy spacing) for a light widget list; `header-style=\"tinted\"` for the item-list tinted header bar; `hide-header` for compact widget grids with no header row.",
+      "dontUse": "Don't add an outer surrounding border — the product grid is borderless (bordered only draws the internal cell grid). Don't mix hide-header with sortable headers (there's no header to click).",
+      "example": "A compact dashboard widget grid using borderless-rows + hide-header; a dense settings table using variant=\"bordered\"."
+    },
+    "header-style": {
+      "useWhen": "header-style=\"default\" (transparent header + bottom rule) for LIST/report screens — this is what the product uses. header-style=\"tinted\" (grey band) only for a dense item-list table where the product uses the tinted header.",
+      "dontUse": "tinted on a normal list/report grid — it paints a grey band the product does not have (both values pass conformance, so this wrong guess is invisible to automated checks).",
+      "must": "default is the list-screen norm (it is also the element default — omit the attribute).",
+      "example": "<obs-table columns=... rows=...></obs-table>  (default header — correct for list screens)"
+    },
+    "cell-content": {
+      "useWhen": "a column needs a real control/link, not text: type=\"switch\" (boolean cell → obs-switch), type=\"icon\" (clickable obs-icon; cell = icon name or {icon,label}), type=\"link\" (cell = {text,href,icon?} or a string), type=\"button\" (cell = {text?,icon?,variant?}). Activating any of them emits `cellaction` {id,key,type,value}.",
+      "dontUse": "passing raw <obs-*> markup as a cell VALUE — cell values are escaped as text. Use the typed cell instead.",
+      "must": "handle `cellaction` to react. For a two-control cell (the product NAME column: a ★ that favourites + text that opens), use type=\"link\" with a leading icon and read `part` in the payload — `part:\"icon\"` (the icon was clicked) vs `part:\"text\"` (the label was clicked).",
+      "example": "columns:[{key:\"name\",type:\"link\"}] with row.name={text:\"Report 1\",icon:\"star\"} → @cellaction gives {type:\"link\",part:\"icon\"|\"text\",id,key,value}"
+    },
+    "sticky-header": {
+      "useWhen": "the header should stay visible while the body scrolls — set sticky-header AND max-height=\"<px>\" for a self-contained scroll box.",
+      "dontUse": "sticky-header without a bounded height (nothing scrolls) unless an ancestor is the scroll container.",
+      "example": "<obs-table sticky-header max-height=\"420px\" ...>"
+    }
+  },
+  "do": [
+    "Use FlotoPaginatedCrud for fetched lists",
+    "Server-page large datasets",
+    "Put row actions in a kebab cell; multi-select via the bulk bar",
+    "Keep the header visible in empty/loading states",
+    "[element] Give rows a stable `id`; drive rich cells via each column's `type`; persist inline edits from the `save` event",
+    "[element] Use group-collapsible=\"false\" for a static report grid; `tree` (children) for real hierarchy"
+  ],
+  "dont": [
+    "Don't use a grid for a handful of static key/values (use obs-key-value) or big-value metrics (use obs-metric-list)",
+    "Don't client-load huge datasets (server-page)",
+    "Don't hand-roll selection/paging — MGrid/FlotoPaginatedCrud own it",
+    "Don't inline-edit a whole record with validation — use a drawer/modal form; keep inline editing to a few quick fields",
+    "Don't add an outer surrounding border — the product grid is borderless (bordered = internal cell grid only)"
+  ],
+  "knownIssues": {
+    "F1": {
+      "severity": "Low",
+      "issue": "Heavy: Kendo grid + 2 web workers (gridWorker/arrayWorker) — not trivially renderable outside the app (Storybook shows reproductions)."
+    },
+    "F2": {
+      "severity": "Medium",
+      "a11y": true,
+      "issue": "Kendo grid semantics — verify rows/cells expose proper table roles, sort state (aria-sort), and selection (aria-selected); the custom cell slots can lose them."
+    },
+    "F3": {
+      "severity": "Info",
+      "element": true,
+      "issue": "[element] obs-table is FUNCTIONAL: pass columns + rows (JSON/array); it sorts, selects (reflects el.selected), paginates, supports grouping (collapsible OR pivot/report via group-collapsible=false) + inline editing (editable), and emits change/sort/rowaction/pagechange/rowclick/edit/save/canceledit. It reproduces the product's Kendo <Grid> chrome (the live grid is store/worker/virtualised-bound) and COMPOSES the DS primitives — obs-checkbox (selection), obs-tag (status cells), obs-menu (row actions), obs-icon (glyphs) — rather than re-implementing them."
+    }
+  },
+  "changelog": [
+    "2026-08-09 — Cell content follow-up (gap G15): a `link` cell can now carry TWO independent controls — the leading icon vs the text. `cellaction` includes `part`:\"icon\"|\"text\" so a consumer distinguishes \"favourite this\" (icon) from \"open this\" (text), exactly like the product NAME column. The icon click no longer navigates the link. Removes the shadow-root workaround.",
+    "2026-08-07 — Tier 3 (gaps G1 + G13a): added interactive CELL CONTENT — column type=\"switch\"|\"icon\"|\"link\"|\"button\" render real DS elements (obs-switch/obs-icon/obs-link-style anchor/obs-button) and emit a `cellaction` {id,key,type,value} event (previously cell values were escaped as text, blocking 4 columns of the product Report grid). Added a STICKY HEADER: `sticky-header` + `max-height` pin the header while the body scrolls (no more injecting position:sticky into the shadow root).",
+    "2026-08-07 — Docs (gap G13b): stated that list/report screens use header-style=\"default\" (the element default); \"tinted\" is only for the dense item-list variant. A wrong guess here is invisible to conformance (both are valid styles).",
+    {
+      "date": "2026-07-20",
+      "change": "Fixed: sortable is now [Boolean,String] so sortable=\"false\" actually disables column sorting (a pure Boolean coerced the string to true). Playground toggle can now turn sorting off."
+    },
+    "2026-07-14: pager first-page arrow fixed (owner) — the « (first) button used chevronDoubleRight + a scaleX(-1) class, which doesn't reliably flip on obs-icon; switched to the real chevronDoubleLeft icon so it renders « correctly.",
+    "2026-07-13: severity cells compose <obs-severity> + tighter checkbox column (owner) — the `severity` and `dot` cell types were hand-drawing their own ring/dot spans; they now render the DS <obs-severity> indicator (shape=dot; `dot` cells use display-text for the level label). Also tightened the selection checkbox column (was a double-16px gap: checkbox-cell pad-right + first-column pad-left) so the checkbox sits close to the first column. Both flow into obs-grid-select (which composes obs-table).",
+    "2026-07-13: dark-mode tinted header fix (owner) — header-style=\"tinted\" text used --neutral-dark, which resolves near-black (#172336) in dark mode → invisible on the dark tinted bar. Switched to --text-color-common-primery (the same token the default header uses; flips to white-80% in dark). Readable in both themes.",
+    "2026-07-13: inline-edit column left-aligned (owner) — the edit column (pencil + Save/Cancel) was centered, so the pencil and the Save/Cancel links sat at different x positions row-to-row; changed .edit-col to text-align:left so they line up on a consistent left edge.",
+    "2026-07-13: inline-edit Save/Cancel now use obs-link (owner) — the inline-edit actions were plain anchors; swapped to the DS <obs-link> so they get the standard dotted-underline link treatment (obs-link owns colour + underline). Reuses the DS link primitive instead of ad-hoc anchors.",
+    "2026-07-13: pivot/report + inline-editing (owner) — the two previously-deferred variants are now real element features. (1) `group-collapsible=\"false\"` turns grouping into a pivot/report grid: no chevron, no count, every child row always visible (a static report layout). (2) `editable` adds inline editing — a pencil per row; while a row is edited each column marked `editable:true` becomes an obs-input, with Save/Cancel; emits `edit`/`save` {id,values}/`canceledit`. Both showcased in the Elements gallery.",
+    "2026-07-13: variant completeness (owner) — added the remaining table-native Storybook variants: `heat` + `bar` cell types (color-coded threshold cells via column colorKey, and inline relative-percent bars) and the `tree` variant (hierarchical rows via `children`, chevron + indent, default-expanded). vertical-value + key-value were split into their OWN components (obs-metric-list, obs-key-value) since they are metric/detail LAYOUTS, not data tables. Pivot + inline-editing were the last deferred items (now shipped, see the later entry).",
+    "2026-07-13: vertical-align — REAL fix (owner re-caught). td vertical-align:middle alone left checkbox/actions/tag a few px high because the composed hosts (obs-tag/obs-checkbox/obs-menu) render display:inline → their host box is line-height-sized (15px) while the visible content is 19-22px, so it overflows and centering is thrown off. Forced those hosts to display:inline-flex in table cells → the host sizes to its content and vertical-align:middle now centers the VISIBLE box. Every cell type now measures gapTop===gapBottom.",
+    "2026-07-13: style-variant tweaks (owner) — `bordered` now shows only the INTERNAL cell grid (column + row dividers), with the outer left/right frame removed; `divided` (column rules) was replaced by `borderless-rows` — no row dividers (just the header underline) with airy row spacing.",
+    "2026-07-13: cell-types completeness (owner) — added the missing rich cell types from the Storybook Cell-types story: `dot` (a filled --severity-<value> dot + label, distinct from the hollow `severity` ring) and `sparkline` (an inline trend line from a numeric array). The Cell-types gallery now shows name · status · severity dot · tags · sparkline · actions, matching the product per-column slots.",
+    "2026-07-13: vertical-align fix (owner) — cell content was top-aligned (td default vertical-align:baseline) when a row was taller than a cell; added vertical-align:middle on th/td so EVERY cell type (checkbox · severity · type icons · status tag · text · actions) centers vertically, across all variants.",
+    "2026-07-13: grouping divider (owner) — adjacent collapsed group-header rows merged (same grey + the --border-color rule is invisible against it); added a 2px --page-background-color separator between group bands so they read as distinct sections. Keeps the neutral grey.",
+    "2026-07-13: expandable + grouping polish (owner) — the expandable detail row now fills the ENTIRE row width (not just from the first column) with a LIGHTER tint (--neutral-lightest #ecf1f9, was the darker #e3e8f2), content still aligned to the first data column; the grouping group-header rows now use a NEUTRAL GREY (--neutral-lighter #e3e8f2) instead of the light blue, so they read as a section divider distinct from the blue row-selection.",
+    "2026-07-13: expandable detail-row fix (owner-caught) — the detail now matches the product .ds-grid-detail: a --table-details-bg framed box that starts at the FIRST DATA column (empty leading cells for the chevron/checkbox columns), left-aligned under the parent's first column content — not a full-width fill from the left edge.",
+    "2026-07-13: variant coverage — added the Storybook table variants as real element features: expandable (chevron column + detail rows), group-by (collapsible group-header rows with counts), header-style tinted (item-list bar), variant (bordered / divided / borderless), hide-header, disabled selection (row `disabled` → disabled checkbox), and a `tags` cell type (obs-tag chips). Showcased all in the Elements gallery; the playground is now full-width. Advanced Kendo-only variants (tree, pivot, inline-editing, key-value / vertical-value, color-coded heatmap cells) remain Storybook reproductions, not yet in the obs-table element.",
+    "2026-07-13: fidelity fix #5 (owner-caught) — (1) reverted the pager first/last to the real library icons (chevronDoubleRight, flipped « for first) instead of the hand-composed seekFirst/seekLast (removed from _icons.js — no hand-drawn glyphs); (2) tightened the header row (padding 6px→4px, now ~28px vs ~41px data rows) so the header — including the select-all checkbox — reads crisp/compact like the product, not spacious.",
+    "2026-07-13: fidelity fix #4 (owner-caught) — pager first/last arrows now match the product Kendo .k-grid-pager: |◀ (seekFirst) and ▶| (seekLast) — a chevron + bar — instead of the double-chevrons (« ») used before. Added seekFirst/seekLast to the icon library (the Kendo pager glyphs, not in the FA icons.js), rendered via obs-icon.",
+    "2026-07-13: fidelity fix #3 (owner-caught, vs the real product screenshot) — matched obs-table to the PRODUCT list grid: (1) the select-all header checkbox now shows the INDETERMINATE (mixed) state when SOME but not all rows are selected (obs-checkbox :indeterminate); (2) the header row is COMPACT (py-1, shorter than the data rows); (3) the table is BORDERLESS (horizontal rules only — header bottom, row dividers, pager top — no surrounding box). The .ds-grid storybook is a bordered card reproduction (a different context); obs-table matches the borderless/compact product list. diff.mjs ✅ MATCH.",
+    "2026-07-13: fidelity fix #2 (owner-caught) — sort indicator, pager, and border corrected: the sorted column now turns --primary and shows a straight long-arrow-up/down (obs-icon longArrowUp/longArrowDown; the first pass used a chevron with no colour change), the pager first/last arrows render correctly (« … ») with the page-size 'items per page' select added, and one border now encloses the table + pager as a single .box. Added an initial `sort` prop (the product's default-sort). Extended specs/table.mjs to MEASURE the sort arrow + pager (the gaps that let the first two misses through) → diff.mjs ✅ MATCH, 6 scenarios.",
+    "2026-07-13: fidelity fix (owner-caught) — the first pass used a TINTED sticky header (the item-list variant) and a non-matching pager; corrected to the rendered Storybook .ds-grid chrome: DEFAULT header is transparent + UPPERCASE + letter-spacing + 600 with a top & bottom rule (header-style=\"tinted\" for the item-list variant), the Kendo .k-grid-pager (first/prev · numbered page links, selected=--pagination-active-bg · next/last · '1 - N of M items'), a left-aligned checkbox column, and the 'N items selected' obs-tag. Verified with match-component diff.mjs (specs/table.mjs) → ✅ MATCH, 2 intentional divergences (no column drag-reorder).",
+    "2026-07-13: shipped the real <obs-table> web component — the DS data table (Kendo Grid / VirtualTable chrome). Columns + rows, sortable headers, checkbox selection + select-all (reflects el.selected), rich cells (severity ring / status tag / type icons), a per-row actions menu, pagination, empty + loading states. Composes obs-checkbox / obs-tag / obs-menu / obs-icon (full DS reuse — no hand-rolled checkbox, status pill, or icon)."
+  ],
+  "storybook": "Organisms/Table",
+  "related": [
+    "popover (row-actions kebab + bulk-action bar)",
+    "tag (status cells)",
+    "checkbox (selection)",
+    "dropdown-picker (column filters)"
+  ],
+  "figma": {
+    "status": "todo"
+  },
+  "a11y": {
+    "summary": "Expose grid semantics (role=grid/table, row, columnheader); sortable headers → aria-sort; selectable rows → aria-selected (header = select-all); arrow-key cell nav; announce 'No records'/loading via a live region.",
+    "issues": [
+      "Verify the Kendo grid actually exposes the above (semantics / aria-sort / live region)."
+    ],
+    "doc": "Organisms/Table/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

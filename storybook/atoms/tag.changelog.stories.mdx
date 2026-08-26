@@ -1,0 +1,15 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Atoms/Tag/Changelog" />
+
+# Tag — Changelog
+
+- **2026-06-05** — Added to Storybook (batch 1) with placeholder variants.
+- **2026-06-06** — Full deep-dive: found real variant set (ColorPalette keys) and that the
+  color variants are **illegible** (white text on neutral bg) — refocused examples on the
+  real plain/removable usage; documented findings (broken variants, `neutral-ligher` typo,
+  non-focusable remove control, `closable` default). Option B pages added.
+- **2026-06-11** — Back-catalog re-audit (prop-value distribution sweep): added a **State
+  classes** story rendering the tinted state chips `used-count-pill` (48×), `new`, `provision`,
+  `unprovision` — previously documented in text but not shown. Verified each renders with a
+  distinct color. Usage page updated with the State chips use-case.

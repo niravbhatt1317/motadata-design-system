@@ -1,0 +1,34 @@
+{
+  "$description": "The product's layout GRID — MRow / MCol (wrappers over Ant Design Vue 1.x a-row / a-col), a 12-column system. The single way form/page content is laid out.",
+  "system": "MRow + MCol",
+  "columns": 12,
+  "usage": "MRow ~540 files · MCol ~522 files",
+  "sizes": [
+    { "size": 12, "pct": "100%", "use": "full width / single column", "count": "716×" },
+    { "size": 6, "pct": "50%", "use": "half — the default form field width", "count": "729×" },
+    { "size": 3, "pct": "25%", "use": "quarter — 4-up rows, compact fields", "count": "466×" },
+    { "size": 4, "pct": "33.3%", "use": "third — 3-up rows", "count": "256×" },
+    { "size": 2, "pct": "16.6%", "use": "sixth — dense rows", "count": "217×" },
+    { "size": 5, "pct": "41.6%", "use": "occasional asymmetric split", "count": "125×" }
+  ],
+  "gutter": {
+    "form": ":gutter=\"16\" — standard spacing between form fields/rows",
+    "structural": ":gutter=\"0\" — ONLY for structural wrappers (page headers, full-height containers)",
+    "token": "@padding-md = 16px"
+  },
+  "autoSize": "<MCol auto-size> shrinks the column to its content width — for action buttons / compact cells.",
+  "breakpoints": "Ant responsive props (xs/sm/md/lg/xl) supported via per-breakpoint size objects, but rarely used in-product (the app is desktop-first).",
+  "do": [
+    "Use MRow/MCol for all form field layouts.",
+    "Sizes: 6 = half, 12 = full, 3 = quarter, 4 = third.",
+    "gutter 16 for form rows; gutter 0 only for structural wrappers.",
+    "auto-size for action/compact cells; align inside a cell with flex utilities."
+  ],
+  "dont": [
+    "Don't hand-roll a flex grid for form layouts.",
+    "Don't put a gutter on full-height structural wrappers (use gutter 0).",
+    "Don't nest deep grids where a single MRow of sized MCols works."
+  ],
+  "tokensUsed": ["@padding-md"],
+  "storybook": "Foundations/Layout/Grid"
+}

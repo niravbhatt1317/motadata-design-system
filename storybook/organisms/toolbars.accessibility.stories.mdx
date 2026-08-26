@@ -1,0 +1,32 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Toolbars/Accessibility" />
+
+# Toolbars — Accessibility
+
+## Provided
+
+- **Bulk action bar** — uses `role="toolbar"` + `aria-label="Bulk actions"`; the clear checkbox has an
+  `aria-label`.
+- Titles are real headings (`<h4>` in the Page header).
+
+## Verify
+
+- ⚠️ **Focus-visible ring (SF-001)** on all toolbar buttons (search, export, filter, columns, Add,
+  kebab, More).
+- ⚠️ **Icon-only buttons** — export, the **kebab** (`ellipsis-v`), **More**, and any **×** need an
+  `aria-label`.
+- ⚠️ **Bulk bar appearance** — when the bar appears/disappears on selection, ensure it's announced
+  (it has `role="toolbar"`) and doesn't trap or lose focus.
+- ⚠️ **Kebab menu** (Widget header) — `aria-haspopup` / `aria-expanded` on the trigger; Escape closes
+  and returns focus.
+
+## Summary
+
+| Area | State |
+| --- | --- |
+| Bulk bar `role=toolbar` + labelled checkbox | ✅ |
+| Page-header heading | ✅ |
+| Focus-visible ring | ⚠️ verify (SF-001) |
+| Icon-only button names | ⚠️ add aria-label |
+| Kebab disclosure semantics | ⚠️ verify |

@@ -1,0 +1,57 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Tooltip/Changelog" />
+
+# Tooltip — Changelog
+
+- **2026-06-12 (light-theme fix)** — Owner spotted the **live-graph** tooltips only rendered in dark
+  mode. Bug: their surface `--topology-graph-tooltip-bg` is **dark navy in both themes** (fixed-dark
+  overlays), but I'd set the text to `--page-text-color`, which flips **dark** in light mode →
+  invisible. Fixed all 9 graph tooltips to **`--tooltip-text-color`** (light in both) and dropped
+  `text-primary` from the headers. Verified contrast in **both** themes (graph: 16.4 light / 12.9
+  dark; chart tooltips were already correct via `--chart-tooltip-background`).
+- **2026-06-11 (exhaustive per-module sweep)** — Owner: "you've still missed many, in different
+  modules / charts — hunt every page." Ran an exhaustive 4-area sweep (charts/widgets ·
+  topology/netroute · APM/RUM · alert/SLO/log/flow/misc). Added **11 more** module-specific
+  data-viz tooltips: **APM service-map node**, **SDN tunnel edge**, **Cisco ACI endpoint** & **fabric
+  link**, **network-interface edge**, **netroute hop node** & **edge** (transit likelihood), **RUM
+  resource waterfall**, **geo-map marker** (apdex/demographics), **availability-bar segment**, and
+  **log pattern value-distribution**. Data-Viz Tooltips now has **28 stories**; the Usage lookup
+  table lists every type → where-used → renderer → surface → story.
+- **2026-06-11 (every type storied)** — Owner: "you haven't added all types in Storybook." Read
+  each chart's real formatter and added a story for **every** remaining data-viz type — **bubble,
+  map/geo, radar, sankey, timeline/x-range, gauge, treemap**, and the **live-graph edge** tooltip
+  — so Data-Viz Tooltips now has **17 stories** (one per kind). Added a **"which tooltip → where
+  used"** lookup table (chart/graph/place → tooltip → renderer → surface → story) to the Usage page.
+- **2026-06-11 (deep data-viz sweep)** — Owner: "there are many many more, incl. live-graph
+  tooltips — dig deeper." Exhaustive sweep of the charting + graph layers. Added two more
+  archetypes: **Live graph — node tooltip** (topology/netroute/APM service-map canvas, 15
+  components, `--topology-graph-tooltip-bg`) and **Flame graph tooltip** (`d3-flame-graph`, APM
+  trace / RUM, 14 files). Expanded the Data-Viz Usage into an **exhaustive by-renderer taxonomy**:
+  10+ Highcharts chart types (bar/donut/sparkline storied; bubble/map/radar/sankey/timeline/gauge/
+  treemap share the `hc-tooltip-bg` surface), heatmap, live-graph node/edge, flame graph.
+- **2026-06-11 (data-viz tooltips)** — Owner shared screenshots of chart/widget hover tooltips
+  ("you're still missing some"). Traced the charting layer (**Highcharts** + d3) and found a whole
+  family I'd collapsed: the **Highcharts chart tooltip** (`TooltipBuilder` → `hc-tooltip-bg` —
+  title + color-square series rows + value; bar & donut), the **sparkline** tooltip, and the
+  **heatmap** tooltip (`heatmap-tooltip.vue`). Catalogued them under **Molecules → Data-Viz
+  Tooltips** (reference reproductions) and added the **full 7-kind tooltip taxonomy** to Usage.
+- **2026-06-11 (chart-like variant)** — Added the **Variant: chart-like-tooltip** story —
+  `overlay-class-name="chart-like-tooltip"` swaps the default dark bubble for a light
+  chart-surface background (`--chart-tooltip-background`) with page text (as in the traceroute
+  info-tooltip). Previously documented but not rendered.
+- **2026-06-11 (nth-level audit)** — Owner: "check every kind of tooltip exists." Swept all
+  tooltip mechanisms and documented the **three intentional kinds**: native **`title=""`** (~59×,
+  browser tooltip for plain/truncated text), **`MTooltip`** (VTippy, 94× — this page), and
+  **graph/canvas tooltips** (topology/netroute/APM edge & node — domain-specific, not MTooltip).
+  Confirmed the `v-tooltip` directive is negligible (1×). Documented the real placement
+  distribution (`top-start` 73× default · `top` 11× · `left` 6×) and that Tooltip uses **VTippy**
+  names vs Popover's **Ant** names. Usage + registry updated.
+- **2026-06-11** — Added (decision-grade Usage) — the **Tooltip**, first member of the
+  **Popover/Tooltip family** to be catalogued. Deep-dive of `_base-tooltip.vue` (94×) — the Floto
+  override that ships instead of the kit `MTooltip`, rendering via **VTippy** (vue-tippy). API:
+  `trigger` slot (anchor) + default slot (content); props `placement` (default `top-start`) ·
+  `disabled` · `overlayClassName`. Stories: **Basic** (info-circle idiom) · **Placements** ·
+  **Disabled** · **Rich content** · **Playground** — verified the bubble shows on hover with the
+  hint text, no console errors. Findings: **F1** (`trigger` prop declared but not wired), **F2**
+  (no focus ring → SF-001), **F3** (no `aria-describedby` / icon trigger has no accessible name).

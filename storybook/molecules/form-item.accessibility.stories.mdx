@@ -1,0 +1,30 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/FormItem/Accessibility" />
+
+# Form Field — Accessibility
+
+## Label & association
+
+- The `label` is associated with the control via `MFormItem` — clicking the label focuses the
+  field. Always provide a `label` (or, for a bare control, an `aria-label`).
+
+## Required & errors
+
+- The **required asterisk** is **visual** — make sure the `required` rule is present so the
+  requirement is also enforced/announced (the error message conveys it to AT).
+- **Error messages are text**, not color-only (good). Keep them specific and actionable.
+- Errors are **pristine-gated** — the message appears after interaction. Ensure the validation
+  on submit also surfaces all messages (via `MValidationObserver`) so nothing is missed.
+
+## Known a11y gotcha
+
+- ⚠️ The wrapped controls have **no visible keyboard focus ring** system-wide
+  ([SF-001](../../findings/SF-001-focus-visible.md)). For form fields this is the most important
+  place to fix it — keyboard users navigating a form can't see where they are.
+
+## Help & tooltip
+
+- `help` text is always visible (good for screen readers). `info-tooltip` content is behind an
+  (i) icon — ensure that icon is reachable/!announced if it carries essential information; don't
+  hide required guidance only in a hover tooltip.

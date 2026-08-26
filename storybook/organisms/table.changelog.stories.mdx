@@ -1,0 +1,53 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Table/Changelog" />
+
+# Table (Grid) — Changelog
+
+- **2026-06-16 (audit)** — Added two variant stories: **Selection: disabled (locked) rows**
+  (`selection-disabled-items` — locked checkboxes, dimmed rows) and **Sort: default-sorted column**
+  (`default-sort` — active ↑ header indicator + rows pre-ordered).
+
+- **2026-06-14 (column reorder — drag headers)** — Made the **Basic** grid **column-driven** and wired
+  **drag-to-reorder on the column headers** — the real Kendo behavior (`_base-grid.vue` `:reorderable`
+  + `@columnreorder`). Drag a header onto another and the whole column (header + its cells) moves; a
+  `--primary` insertion line marks the drop target; click-to-sort still works (drag suppresses the
+  click). Verified by synthetic HTML5 DnD: `NAME↑ · STATUS · IP · LAST POLL` → drag IP → Name →
+  `IP · NAME↑ · STATUS · LAST POLL`.
+- **2026-06-12 (tree + pivot variants)** — Added the two remaining genuine grid variants: **Tree /
+  hierarchical** (`tabular-content-grid` — `expandable` with nested child rows, chevron + indent;
+  SNMP OID trees, 17×) and **Pivot / report** (`report-pivot-group-header` — merged 1rem group-header
+  rows over grouped metrics, 24×). Also fixed the pager nav icons: the FA names I'd used
+  (`angle-*`) aren't in the product's 543-icon curated set (silent blank), and the real Kendo pager
+  uses filled caret+bar glyphs — redrawn as **inline SVG** (`|◀ ◀ … ▶ ▶|`).
+- **2026-06-12 (second review — pager + missed variants)** — Owner: "review again; the pagination
+  differs from the product." Corrected the **pager** to the real Kendo `.k-grid-pager` — **text page
+  links** (selected = subtle `--pagination-active-bg`, not a solid button) + nav arrows + a page-size
+  `<select>` + "1 – 50 of N items" (was a row of MButtons). Also fixed two rows I'd reproduced wrong:
+  **grouping row** → `--primary-alt` text on `--table-group-header-highlight` (was neutral-lighter);
+  **detail row** → a **3px `--table-details-bg` frame** with bottom radius (was a flat fill). Added the
+  missed variants: **Color-coded cells** (threshold cell backgrounds + relative-percent bars) and
+  **Inline editing** (`FlotoPaginatedCrud :inline-editing` — cells become inputs + Save/Cancel).
+- **2026-06-12 (variants sweep + header fix)** — Owner: "this is only one variant — there are many,
+  incl. a different header UI." Ran the agent fan-out across `widgets/views/grid/**`, `table.less`,
+  and the structural grid components. **Key fix:** my default header was wrong — the main `.k-grid`
+  header is **transparent + UPPERCASE + letter-spacing** (I'd reproduced the *tinted* `item-list`
+  header, non-uppercase). Corrected `.ds-grid th` to the real Kendo style and added the variants:
+  **Header styles** (k-grid vs item-list), **borders & header visibility** (`.bordered` /
+  `.with-out-border` / `.hide-header`), **vertical-value** layout, **key-value (transposed)** layout.
+  Documented the **structural variants** (server-grid · virtual-table · api-socket-grid · the
+  grid-in-picker selectors · rediscovery type-switched grid) in Usage.
+- **2026-06-12** — Added (decision-grade Usage) — the **Table / Grid**, the product's primary data
+  table. Ran the **`/component-sweep`** on `MGrid` (75×) + `FlotoPaginatedCrud` (76×): found it
+  wraps the **Kendo Vue Grid** (`@progress/kendo-vue-grid`) + `gridWorker`/`arrayWorker`, with the
+  states **selectable** (7×) · **expandable** (8×) · grouping · server/client paging · per-column
+  cell slots; consumer classes `hide-expand-column` / `hide-header` / `hide-grouping`; events
+  `selection-change` / `column-change` / `data-state-change`.
+- **Storybook:** 8 **reference reproductions** (the live grid is Kendo + workers, too heavy for the
+  preview) using the real `table.less` chrome + tokens — **Basic · Selectable · Expandable · Cell
+  types · Grouping · Empty state · Loading · Pagination**. Verified each renders; the **selected
+  row** shows `--neutral-lightest` bg + a `--primary` left accent; no console errors.
+- **Findings:** **F1** (heavy — Kendo + 2 workers, hence reproductions), **F2** (a11y — verify the
+  Kendo grid + custom cell slots keep table roles / `aria-sort` / `aria-selected` + SF-001 focus).
+- Decision-grade Usage: **FlotoPaginatedCrud** for fetched list pages · **MGrid** for in-memory ·
+  **server paging** for large data · cells are slots · selection → the bulk-action bar.

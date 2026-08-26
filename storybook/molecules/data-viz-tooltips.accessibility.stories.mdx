@@ -1,0 +1,30 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Data-Viz Tooltips/Accessibility" />
+
+# Data-Viz Tooltips — Accessibility
+
+These tooltips are rendered by the **chart layer** (Highcharts, vis-network / d3) and by a few widget
+Vue components — not by `MTooltip`. That shapes their accessibility profile.
+
+## Verify
+
+- **Not keyboard-reachable** — they are **hover-only** over SVG/canvas marks; there is no focusable
+  trigger, so keyboard and screen-reader users cannot summon them. This is a limitation of the chart
+  libraries, not a per-widget bug.
+- **Not in the a11y tree** — canvas-drawn graph tooltips (topology / netroute / APM, flame graph) are
+  invisible to assistive tech. **The same data must also exist in an accessible form** — a **table**,
+  a **legend**, or a detail panel beside the chart. Verify each widget offers one.
+- **Colour is not the only signal** — severity is conveyed by the `--severity-*` swatch **and** the
+  label/value text, so the meaning survives without colour (WCAG 1.4.1).
+- **Contrast** — the translucent `--chart-tooltip-background` (`blur(15px)`) and the fixed-dark
+  `--topology-graph-tooltip-bg` must keep text legible in **both** themes; verify on light dashboards.
+- **Motion / dismissal** — tooltips follow the cursor; ensure they don't trap or obscure adjacent marks
+  and dismiss on mouse-out.
+
+## Status
+
+Tracked as **F2** in the [spec](../../components/specs/data-viz-tooltips.md). The hover-only / canvas
+nature is inherent to the chart layer — the actionable requirement is the **table/legend fallback** for
+the underlying data, verified per widget. These are **reference reproductions**; the real rendering and
+its a11y behaviour are owned by Highcharts / vis-network / d3.

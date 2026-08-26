@@ -1,0 +1,54 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Foundations/Layout/Screen regions/Usage" />
+
+# Screen regions — Usage
+
+> **In plain terms:** build a page top-to-bottom — **header → (toolbar) → body → (footer)** — then give
+> the **body** one of six shapes (single column, two-pane, master-detail, dashboard grid, three-pane, or
+> chart-over-grid). Items in (brackets) are optional.
+
+Inside the content panel, a standard page stacks four regions. Map each to its component below. Machine
+spec: [`layout/layouts.json`](../../layout/layouts.json) → `screenRegions` / `contentLayouts`.
+
+## Regions → components
+
+| Region | Required | Component(s) |
+| --- | --- | --- |
+| **Page header** | yes | [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → PageHeader (title · breadcrumb · actions) |
+| **Toolbar / filter bar** | optional | [Molecules/Filters](?path=/docs/molecules-filters-usage--page) → FilterBar · [Organisms/Toolbars](?path=/docs/organisms-toolbars-usage--page) → GridToolbar / BulkActionBar |
+| **Explorer control bar** *(variant)* | explorers | type radio + filters + saved-view, between header and body ([Molecules/Filters](?path=/docs/molecules-filters-usage--page)) |
+| **Time-range** *(variant)* | dashboards / explorers | [Molecules/Date & Time Pickers](?path=/docs/molecules-date-time-pickers-usage--page) → picker / slider, scopes the whole body |
+| **Body** | yes | [Organisms/Table](?path=/docs/organisms-table-usage--page) · [Molecules/FormItem](?path=/docs/molecules-formitem-usage--page) · [Molecules/Data-Viz Tooltips](?path=/docs/molecules-data-viz-tooltips-usage--page) |
+| **Footer / pagination** | optional | [Organisms/Table](?path=/docs/organisms-table-usage--page) → FlotoPaginatedCrud pager · [Atoms/Button](?path=/docs/atoms-button-usage--page) (Save/Cancel) |
+
+## The content layouts (the body's shape)
+
+The four common shapes, plus two the product sweep surfaced
+([`foundation/screen-regions.md`](../../foundation/screen-regions.md)).
+
+| Layout | When | Built with |
+| --- | --- | --- |
+| **Single column** | list views, simple forms | a stacked [Grid](?path=/docs/foundations-layout-grid-usage--page) |
+| **Two-pane** (tree/menu + content) | explorers, settings | `MonitorHierarchyLayout` · Settings `splitpanes` |
+| **Master-detail** (list + drawer) | alert / inventory records | list + [Organisms/Drawer](?path=/docs/organisms-drawer-usage--page) |
+| **Dashboard grid** | dashboards | `vue-grid-layout` tiles (+ masonry) |
+| **Three-pane** *(new)* | metric / apm explorers | saved-views rail + metric-picker + chart |
+| **Chart-over-grid** *(new)* | trap viewer, log dashboards | a fixed chart region above a grid |
+
+> **Left-panel variants** within a two-pane aren't one thing: **hierarchy tree** (log),
+> **saved-views sidebar** (metric/apm explorer), **metric-picker** (`MTab`+`MCollapse`), and
+> **vertical filter** (ncm). Pick the one that matches the data.
+
+## Best practices
+
+- Always start with a **Page header** (title + breadcrumb); put the **primary action** there.
+- Reach for the **toolbar/filter bar** only when there's something to filter or act on in bulk.
+- The body picks **one** content layout — don't mix a two-pane and a master-detail drawer on the same screen.
+- Open/move/resize behaviour (drawer, collapse, split, affix) is covered in
+  [**Panel behaviours**](?path=/docs/foundations-layout-panel-behaviours-usage--page).
+
+## Related
+
+- [**Page templates**](?path=/docs/foundations-layout-page-templates-usage--page) — these regions assembled into full page types.
+- [**App shell**](?path=/docs/foundations-layout-app-shell-usage--page) — where the content panel sits in the frame.

@@ -1,0 +1,398 @@
+{
+  "name": "modal",
+  "component": "MModal",
+  "element": "obs-modal",
+  "display": "Modal",
+  "tier": "organism",
+  "category": "overlay",
+  "props": {
+    "open": {
+      "type": "boolean",
+      "default": "false",
+      "note": "[element] visibility; reflects to el.open. el.show()/el.hide() also work."
+    },
+    "title": {
+      "type": "string",
+      "note": "header title (default variant) AND the bold heading in the confirm variant (variant=\"confirm\")."
+    },
+    "width": {
+      "type": "number|string",
+      "default": "560",
+      "note": "[element] panel width in px"
+    },
+    "variant": {
+      "type": "string",
+      "default": "default",
+      "note": "[element] default | confirm (centered icon + message + Cancel/action)",
+      "enum": [
+        "default",
+        "confirm"
+      ]
+    },
+    "icon": {
+      "type": "string",
+      "note": "[element] confirm-variant icon (a library key, e.g. timesCircle)"
+    },
+    "confirm-text": {
+      "type": "string",
+      "default": "Save"
+    },
+    "cancel-text": {
+      "type": "string",
+      "default": "Cancel"
+    },
+    "confirm-variant": {
+      "type": "string",
+      "default": "primary",
+      "note": "the footer confirm button variant — any obs-button variant; primary (default) or error (destructive) are the common ones.",
+      "enum": [
+        "primary",
+        "error"
+      ]
+    },
+    "hide-footer": {
+      "type": "boolean",
+      "default": "false",
+      "note": "[element] no footer (read-only/detail)"
+    },
+    "no-padding": {
+      "type": "boolean",
+      "default": "false",
+      "note": "[element] full-bleed body (8px)"
+    },
+    "scrollable": {
+      "type": "boolean",
+      "default": "false",
+      "note": "[element] fixed-height body with its own scroll"
+    },
+    "restrict-width": {
+      "type": "boolean",
+      "default": "false",
+      "note": "[element] force a fixed 1020px (wide/compare modal)"
+    },
+    "esc-closable": {
+      "type": "boolean",
+      "default": "true"
+    },
+    "mask-closable": {
+      "type": "boolean",
+      "default": "false",
+      "note": "[element] backdrop click closes (product default: false)"
+    }
+  },
+  "events": [
+    "confirm — the footer confirm button",
+    "cancel — Cancel / ✕ / Esc",
+    "close / show / hide — dialog lifecycle"
+  ],
+  "source": "mkit",
+  "sourceFile": "ui/components/Modal/Modal.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "Centered dialog over a dimmed backdrop. MModal (39x) is the base; FlotoConfirmModal (71x) is the confirm variant. Open via trigger slot or open prop. No x/backdrop-close (footer/Escape only).",
+  "variants": [
+    {
+      "name": "MModal",
+      "what": "centered dialog",
+      "usage": "39×"
+    },
+    {
+      "name": "FlotoConfirmModal",
+      "what": "confirm yes/no",
+      "usage": "71×"
+    },
+    {
+      "name": "hide-footer",
+      "what": "read-only/detail",
+      "usage": "4×"
+    },
+    {
+      "name": "scrollable-modal",
+      "what": "fixed-height scroll body",
+      "usage": ""
+    },
+    {
+      "name": "restrict-width",
+      "what": "capped 1020px",
+      "usage": ""
+    },
+    {
+      "name": "no-padding-modal",
+      "what": "full-bleed content",
+      "usage": "11×"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "560px",
+      "note": ""
+    },
+    {
+      "name": "confirm",
+      "value": "450px",
+      "note": ""
+    },
+    {
+      "name": "restrict-width",
+      "value": "1020px",
+      "note": ""
+    }
+  ],
+  "states": [
+    {
+      "name": "closed",
+      "what": "hidden"
+    },
+    {
+      "name": "open",
+      "what": "over backdrop"
+    },
+    {
+      "name": "loading",
+      "what": "confirmLoading"
+    }
+  ],
+  "family": "Overlay",
+  "components": {
+    "MModal": {
+      "usage": 39,
+      "open": "trigger slot { open }",
+      "props": [
+        "width",
+        "centered",
+        "confirmLoading",
+        "preventAutoCloseOnConfirm",
+        "overlayClassName"
+      ],
+      "slots": [
+        "trigger { open, close, toggle }",
+        "title",
+        "default (body)",
+        "footer { cancel, success }"
+      ],
+      "events": [
+        "success",
+        "cancel"
+      ]
+    },
+    "FlotoConfirmModal": {
+      "usage": 71,
+      "open": "open prop (Boolean)",
+      "props": [
+        "open",
+        "variant(default error)",
+        "width(450)",
+        "successText(Yes)",
+        "cancelText(No)",
+        "hideIcon",
+        "iconShadow",
+        "disableAutoHide"
+      ],
+      "slots": [
+        "icon",
+        "message",
+        "header",
+        "cancel-action",
+        "confirm-action"
+      ],
+      "events": [
+        "confirm",
+        "hide"
+      ]
+    }
+  },
+  "anatomy": [
+    "title (no x close)",
+    "body (default slot)",
+    "footer (cancel + success)",
+    "dimmed backdrop/mask"
+  ],
+  "behaviors": {
+    "open": "trigger slot (open fn) or open prop",
+    "close": "header x / footer Cancel / Escape (verified) / success — NO built-in x, NO backdrop-close (closable/maskClosable hardcoded false)",
+    "destroyOnClose": true,
+    "confirm": "Cancel(default) left, action right; error variant for destructive"
+  },
+  "headerPattern": "built-in x is off, so real modals (~26) add their own header in the title slot: flex row with a text-primary title + a close x (MIcon times wired to hide())",
+  "overlayVariants": {
+    "hide-footer": "removes footer (read-only/detail) — 4x",
+    "scrollable-modal": "fixed-height scrollable body, top 50px, rounded header; modifiers restrict-width (1020px), smaller-modal (50vh)",
+    "no-padding-modal / no-padding-confrim-modal": "strip content padding — 11x",
+    "backdrop": "blurred (backdrop-filter: blur(3px))"
+  },
+  "tokensUsed": [
+    "--page-background-color",
+    "--border-color",
+    "--page-text-color"
+  ],
+  "accessibility": {
+    "semantics": "role=dialog; Ant traps + restores focus; Escape closes (even with x hidden)",
+    "gaps": "F1 no visible close besides footer; SF-001 no focus ring inside"
+  },
+  "decisionFlow": [
+    "A yes/no or DESTRUCTIVE confirmation? -> obs-modal variant=\"confirm\" (confirm-variant=\"error\" for destructive).",
+    "A focused short task/form that must INTERRUPT the flow? -> obs-modal (the default dialog).",
+    "Long/complex content, or a panel CONTEXTUAL to a record (details/edit in place)? -> obs-drawer (side panel), NOT a modal.",
+    "A full-screen flow / wizard? -> a page or obs-drawer, NOT a modal.",
+    "Just a brief transient message? -> a notification/toast, not a modal."
+  ],
+  "usageRules": {
+    "dialog(MModal)": {
+      "useWhen": "a focused task/form that interrupts the flow; short content",
+      "must": "include a footer Cancel (only visible way out — F1)",
+      "example": "Edit/Filter/Note dialogs"
+    },
+    "confirm(FlotoConfirmModal)": {
+      "useWhen": "confirm a yes/no or destructive action",
+      "example": "Delete monitor? (error variant, Cancel/Delete); delete in CRUD lists, inline-name-edit, trap-profile"
+    },
+    "hide-footer": {
+      "useWhen": "view-only content (no Save/Cancel); header x is the way out",
+      "example": "metric-explorer Compare/Anomaly/Arithmetic/Outlier modals"
+    },
+    "scrollable-modal": {
+      "useWhen": "long body that must scroll (lists/editors); wrap content in flex:1;min-height:0;overflow-y:auto (F3)",
+      "example": "Compare metric, linked-records detail, widget JSON editor, column configurator"
+    },
+    "no-padding": {
+      "useWhen": "content manages its own padding (editor/full-bleed)",
+      "example": "log-collection profile list, view-query, LAMA integration, activation-code modal"
+    },
+    "drawer-instead": {
+      "useWhen": "content is long or contextual to a record -> use FlotoDrawer (158x), not a modal",
+      "example": "incident details, approval drawers"
+    },
+    "MModal": {
+      "useWhen": "A focused, self-contained task or short form must interrupt the flow until the user finishes or dismisses it. Open via the trigger slot ({ open }); build your own header (title + close x) and a footer ({ cancel, success }); size with width/centered, use confirmLoading for async Save.",
+      "dontUse": "Don't use for yes/no or destructive confirmations (use FlotoConfirmModal), and don't use for long or record-contextual content like details/edit-in-place (use FlotoDrawer). Don't rely on the x or backdrop-click to close — both are disabled (F1), so always include a footer Cancel.",
+      "example": "The metric-explorer Forecast / Anomaly / Compare / Arithmetic analysis modals, the Error modal, password-verify, chart capture, and linked-records detail dialogs."
+    },
+    "FlotoConfirmModal": {
+      "useWhen": "Confirming a yes/no or destructive action before it runs. Drive the open prop (boolean); use icon + message slots, successText/cancelText, variant=\"error\" for destructive; listen to @confirm / @hide. Cancel sits left, the action right.",
+      "dontUse": "Don't use for a focused task or form that needs body input (use MModal). Don't label the actions Yes/OK — name the verb (Delete, Save). For a brief success/error message, use a notification instead of a confirm modal.",
+      "example": "Delete confirmations across CRUD lists (paginated-crud), inline name edit, widgets, rediscover, domain-mapping, and trap-profile delete — Delete monitor? with error variant and Cancel/Delete."
+    },
+    "restrict-width": {
+      "useWhen": "You need a fixed wide modal (side-by-side comparison, wide tables) at 1020px regardless of the width prop. Apply overlay-class-name=\"restrict-width\" (forces content min = max = 1020px); often paired with scrollable-modal.",
+      "dontUse": "Don't use for normal-width dialogs (use the width prop on MModal). Beyond a wide fixed modal, prefer a FlotoDrawer (the 85–96% full-screen pattern) rather than forcing 1020px.",
+      "example": "The compare-metric and diff-view modals that show wide side-by-side content."
+    },
+    "no-padding-modal": {
+      "useWhen": "The content manages its own padding — a code editor, a full-bleed list, or an embedded form — and the default modal padding gets in the way. Apply overlay-class-name=\"no-padding-modal\" (body → 8px) or no-padding-confrim-modal (body → 0).",
+      "dontUse": "Don't use for standard form/text dialogs that expect the default inset padding. This only strips padding; for scrolling long content combine with scrollable-modal, and for wide content with restrict-width.",
+      "example": "The log-collection profile list, view-query, LAMA integration, and activation-code modals."
+    },
+    "view-edit": {
+      "useWhen": "[element/composition] a detail modal that toggles a read-only VIEW and an EDIT form (the product is-view pattern) — show the record with obs-key-value + an Edit button; on Edit swap to obs-input `block` fields + a Cancel/Save footer.",
+      "dontUse": "for a big multi-section record → a drawer or full page; for a one-shot create form the edit form alone is enough.",
+      "example": "Edit monitor: view (Monitor/IP/Type/Polling) → Edit → the form → Save/Cancel back to view."
+    },
+    "compare": {
+      "useWhen": "[element/composition] a side-by-side comparison — a restrict-width (1020px) modal holding two (or more) obs-key-value panels (e.g. two monitors' CPU/Memory/Disk/Status).",
+      "dontUse": "for a single record's detail (a normal-width detail modal) or many rows to compare (a table).",
+      "example": "Compare metrics: web-server-01 vs db-primary, colour-coded values + status tags."
+    }
+  },
+  "inProduct": {
+    "MModal": "Anomaly/Forecast/Outlier modals, Filter modal, Note modal, Compare modal",
+    "FlotoConfirmModal": "delete/abort confirmations across the app",
+    "FlotoDrawer": "detail/view drawers, form drawers (incident details, approval drawers)"
+  },
+  "do": [
+    "Use MModal for a focused dialog; FlotoConfirmModal for confirms.",
+    "Always include a footer Cancel (visible way out).",
+    "Use FlotoDrawer for long or record-contextual content."
+  ],
+  "dont": [
+    "Don't rely on a x or backdrop-click to close (disabled, F1).",
+    "Don't use a modal for content better inline or in a drawer.",
+    "Don't label actions Yes/OK — name the verb (Delete, Save)."
+  ],
+  "whenToUse": "A focused task, dialog, or confirmation that must interrupt the flow.",
+  "insteadOf": [
+    "raw a-modal",
+    "a hand-built overlay"
+  ],
+  "usage": {
+    "MModal": 39,
+    "FlotoConfirmModal": 71,
+    "FlotoDrawer": 158,
+    "FlotoDrawerForm": 59
+  },
+  "knownIssues": [
+    "[element] obs-modal is FUNCTIONAL: a centered dialog on the native <dialog> (showModal) — top-layer, focus-trap, Esc, a blurred ::backdrop. `open` reflects to el.open (el.show()/el.hide() too). Variants: confirm (icon+message), hide-footer, no-padding, scrollable, restrict-width (1020px), width. The header always has a close ✕ (unlike the product's F1 note). Composes obs-button (footer) + obs-icon (✕/icon). For a full-screen flow use obs-drawer.",
+    "F1 (medium, UX/a11y): no top-right x and no backdrop-close (closable/maskClosable hardcoded false). Escape + footer Cancel work, but a modal whose footer omits Cancel has no discoverable dismiss for mouse users. Make closable a prop (visible x) or require a footer Cancel.",
+    "F2 (high, a11y): no visible focus ring inside the dialog (SF-001).",
+    "F3 (low): scrollable-modal sets a fixed-height flex-column body but NO overflow on the body — long content spills out unless wrapped in a flex:1;min-height:0;overflow-y:auto child. Add overflow to the variant or document the required structure."
+  ],
+  "related": [
+    "FlotoConfirmModal",
+    "FlotoDrawer",
+    "FlotoDrawerForm",
+    "MButton",
+    "FlotoFormItem"
+  ],
+  "changelog": [
+    "2026-08-09 — Slots + docs (consumer G6 follow-up): added a `footer` slot (custom modal footer, replacing the built-in Cancel/confirm buttons) and documented that `title` renders in BOTH the default header AND the confirm variant.",
+    {
+      "date": "2026-07-16",
+      "change": "Completeness pass: declared the prop enums (variant: default/confirm; confirm-variant: primary/error), documented the default slot (body / confirm message) and the imperative show()/hide() API + the open pattern, and re-pointed the decision flow at the obs-* elements (obs-modal variant=confirm for confirms, obs-drawer for record-contextual/full-screen). Verified the playground reaches every variant (Detail · Confirm · Scrollable · Compare presets + hide-footer/no-padding/restrict-width/mask-closable toggles)."
+    },
+    "2026-07-14: full docs + playground pass (owner) — the Details playground now exposes the WHOLE variant surface: a Scenario preset (Detail / Confirm / Scrollable / Compare — swaps the body + defining attrs) plus controls for title, variant, confirm-variant, confirm-text, cancel-text, width, hide-footer, no-padding, scrollable, restrict-width, mask-closable. Added the element 'variants & when to use' table + element props + composition usageRules (view-edit, compare) to the prose spec. Everything toggleable on one live modal.",
+    "2026-07-14: two missing example patterns added (owner) — (1) 'Edit record (view ↔ edit)': a detail modal that toggles a read-only VIEW (obs-key-value + an Edit button) and an EDIT form (obs-input fields + Cancel/Save), modelling the product's is-view record pattern. (2) 'Compare metrics': the restrict-width (1020px) modal now holds REAL side-by-side comparison content — two obs-key-value panels (web-server-01 vs db-primary) with color-coded values + status tags — instead of a placeholder. Both are composition examples (no new component API); they reuse obs-key-value / obs-input / obs-button.",
+    "2026-07-14: confirm variant matched to the product (owner) — the destructive confirm dialog was a vertical centered layout (icon on top, centered message + filled button); the real FlotoConfirmModal (.floto-confirm-modal) is HORIZONTAL: a coloured-border card (2px top/bottom, 4px left/right — red for error), an icon in a coloured-border CIRCLE on the LEFT, and the message + LEFT-aligned actions on the RIGHT with the confirm button OUTLINE (not filled). Rebuilt to match; the delete example now uses the product `trash` icon. Grounded in src/components/_base-confirm-modal.vue + src/design/modal.less.",
+    "2026-07-14: REAL fix — closed modals were visible/stacked in the gallery (owner). The `.modal` panel set `display:flex` UNCONDITIONALLY, and author CSS beats the UA `dialog:not([open]){display:none}` — so every CLOSED <dialog> rendered its content inline (visible + stacked), which is what made the Examples page look like all modals were open. Scoped the layout to `.modal[open] { display:flex }` so a closed dialog falls back to the UA display:none. (The earlier single-modal-invariant / no-auto-open changes were real but addressed a different symptom; this display bug was the actual cause. Lesson: verify overlay CLOSED state by computed `display`/visibility, not just the `.open` property.)",
+    "2026-07-14: single-modal invariant + no auto-open (owner) — the docs Examples page could stack/hang: a native <dialog>.showModal() allows only ONE modal in the top layer, so opening a second while one was open threw and fell back to an inline (backdrop-less) dialog that stacked. Fixed two ways: (1) opening any obs-modal now first closes whichever obs-modal is open (a module-level invariant across instances); (2) the docs playground no longer auto-opens on load — the modal renders CLOSED behind an 'Open modal' trigger (auto-opening blocked the page). Verified: 0 open on load, exactly 1 true top-layer modal at a time.",
+    "2026-07-13: shipped the real <obs-modal> web component — a centered dialog on the native <dialog> (showModal: top-layer, focus-trap, Esc, blurred ::backdrop). --primary title + close ✕, 24px body, Cancel + confirm footer; 16px corners (20px confirm). Variants: confirm (centered icon + message + Cancel/action), hide-footer, no-padding, scrollable, restrict-width (1020px), width. Reflects el.open; composes obs-button + obs-icon. Verified with match-component diff.mjs (specs/modal.mjs).",
+    "2026-06-07: added (decision-grade). MModal (39x) + FlotoConfirmModal (71x). Trigger-slot / open-prop; title/body/footer slots; width/centered/confirmLoading. Verified Basic + Confirm open; Escape closes, no x (F1). Drawer (158x) = related own entry."
+  ],
+  "storybook": "Organisms/Modal",
+  "figma": {
+    "status": "todo",
+    "component": "Modal"
+  },
+  "$tokensNote": "Backdrop scrim is a blurred Ant literal rgba(0,0,0,.45) + blur(3px) — not tokenized; Ant Modal internals follow the kit.",
+  "apis": {
+    "MModal": {
+      "source": "ui/components/Modal/Modal.vue (kit)",
+      "props": {
+        "width": "[Number,String] — modal width",
+        "centered": "Boolean — vertically centre",
+        "confirmLoading": "Boolean — spinner on the confirm button",
+        "preventAutoCloseOnConfirm": "Boolean (false) — keep open after confirm",
+        "overlayClassName": "String — class on the backdrop mask"
+      },
+      "events": {
+        "success": "() — confirm / OK",
+        "cancel": "() — cancel / close"
+      },
+      "slots": {
+        "title": "header title",
+        "default": "modal body"
+      }
+    },
+    "FlotoConfirmModal": {
+      "source": "src/components/_base-confirm-modal.vue",
+      "note": "Confirm/alert wrapper — variant=error for destructive; commonly hosts a FlotoForm (form-in-modal)."
+    }
+  },
+  "a11y": {
+    "summary": "role=dialog; Ant traps + restores focus; Esc closes. No top-right × and no backdrop-close (closable/maskClosable hardcoded false). Give a clear title; state the consequence for confirms.",
+    "issues": [
+      "No visible focus ring inside the dialog.",
+      "Esc is the only dismiss (no × / backdrop-close)."
+    ],
+    "doc": "Organisms/Modal/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "slots": {
+    "default": "the modal body content.",
+    "footer": "replaces the built-in Cancel/confirm footer buttons with your own actions (default variant)."
+  },
+  "methods": {
+    "show": "el.show() — open the modal (takes the top layer; closes any other open overlay).",
+    "hide": "el.hide() — close it (emits close/hide).",
+    "note": "Or drive the `open` attribute. A modal must open on a user action (a trigger button), never auto-open on load."
+  }
+}

@@ -1,0 +1,27 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Scheduler/Changelog" />
+
+# Scheduler / Recurrence — Changelog
+
+- **2026-06-16 (sweep recheck — no variants missed)** — Census of every `<ScheduleInput>` (16×):
+  **types are Once/Daily/Weekly/Monthly only** (the `'Hourly'` found elsewhere is a *granularity*
+  dropdown in policy anomaly/forecast conditions, not a recurrence type). Added the missed **`:disabled`**
+  passthrough (2×). Confirmed three adjacent things are **separate**, not variants: **`MetricPollTime`/
+  `metric-collection-time`** (metric polling-frequency config), **`MonitoringHourPicker`**, and
+  **`monitor-schedules.vue`** (a CRUD list that edits via a form using `ScheduleInput`). Nothing missed.
+- **2026-06-16** — Added — the **Scheduler / Recurrence** family (`ScheduleInput`, **16×**) — surfaced
+  as the large date/time-*adjacent* family during the Date & Time Pickers cross-check. A **"Scheduler
+  Type"** segmented control (`Once · Daily · Weekly · Monthly`) swaps in a sub-form: **Once/Daily** →
+  Start Date + Hours · **Weekly** → Days (Mon–Sun) + Start Date + Hours · **Monthly** → Months + Dates
+  (1–31) + Start Date + Hours.
+- **Stories** (reference reproduction — importing the real `ScheduleInput` pulls the local DB
+  **lokijs → Node `fs`**, so it can't render live): **Default** (the full switcher), **Excluded types**
+  (`:excluded-schedule-options`), **Show only once** (`:show-only-once`) — rebuilt from the **real**
+  primitives `MRadioGroup as-button` + `MDatePicker` + `FlotoDropdownPicker`, interactive (the
+  sub-form swaps on type). Verified Monthly → Months + Dates fields and the `scheduleInfo` shape, no
+  console errors.
+- **Docs:** spec + registry + usage + accessibility. **Findings:** F1 — all three sub-forms declare
+  `name: 'OnceForm'` (copy-paste leftover); F2 — lokijs dependency → reproduction.
+- Related: **Radio** (the segmented type control) · **Date & Time Pickers** (`MDatePicker` + the
+  embedded custom `TimePicker`) · **DropdownPicker** (Days/Months/Dates) · **FormItem**.

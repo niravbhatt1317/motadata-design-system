@@ -1,0 +1,74 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Tooltip/Usage" />
+
+# Tooltip — Usage
+
+🟢 **Stable** · Molecule — a transient **hover/focus label** (`MTooltip`, 94×). The kit tooltip is
+overridden by the Floto `_base-tooltip.vue`, which renders via **VTippy**. Rules mirrored in
+`registry/tooltip.json`.
+
+## Which tooltip mechanism? (decision)
+
+First match wins:
+
+1. **Is the content interactive** (buttons, inputs, links)? → **`MPopover`** (a tooltip dismisses
+   on mouse-out).
+2. **Just the full text of a truncated/plain element** (a cell, a label)? → the **native
+   `title=""`** attribute (browser tooltip; ~59× in the product — cheapest, no component).
+3. **A styled / rich / precisely-placed hint on hover/focus?** → **`MTooltip`** (the 94× default).
+4. **A chart/series hover card?** → **`MTooltip`** + `overlay-class-name="chart-like-tooltip"`.
+5. **Should the hint be conditionally hidden?** → `:disabled="true"`.
+
+> **There are 7 distinct tooltip kinds in the product** — see the full taxonomy on **Molecules →
+> Data-Viz Tooltips → Usage**. This page covers the DS **`MTooltip`** (and its `chart-like` variant).
+> The others: native **`title=""`** (plain truncation hints); **chart tooltips** (Highcharts
+> `TooltipBuilder` — bar/line/donut widget hovers); **sparkline** and **heatmap** widget tooltips;
+> and **graph/topology** edge & node tooltips. Use `MTooltip` for general UI hints; the data-viz
+> kinds are owned by the chart layer, not this component.
+
+## Use cases by type
+
+### Info hint — `info-circle` trigger + text
+
+- **Use when:** explaining a field, setting, or icon with a short text hint.
+- **How:** an `info-circle` `MIcon` in the `trigger` slot, the hint text in the default slot.
+- **As seen in:** form-field labels across **settings** (log parser, policy, monitor forms). See
+  the **Basic** story.
+
+### Rich hover card — structured content
+
+- **Use when:** a small **non-interactive** card (title + a few key/values).
+- **How:** put structured markup in the default slot; keep it brief.
+- **As seen in:** **topology / host** hover cards. See the **Rich content** story.
+
+### Chart-like tooltip — `chart-like-tooltip`
+
+- **Use when:** the tooltip should match a **chart/graph surface** — a **light** bubble instead of
+  the default **dark** one.
+- **How:** `overlay-class-name="chart-like-tooltip"` (swaps to `--chart-tooltip-background` + page
+  text). See the **Variant: chart-like-tooltip** story.
+- **As seen in:** the **traceroute** Timeout info-tooltip (`tooltip-props`).
+
+## Placement (VTippy names)
+
+`placement` defaults to **`top-start`** (used 73× — the default dominates), with `top` (11×),
+`left` (6×), `bottomRight`/`topLeft`/`right` rare. Set `top` / `bottom` / `left` / `right`
+(+ `-start`/`-end`) as the layout needs. No arrow. See the **Placements** story. **Note:** Tooltip
+uses **VTippy** placement names (`top-start`), whereas **`MPopover`** uses **Ant** names
+(`bottomLeft`) — they are not interchangeable.
+
+## Do
+
+- Keep content **brief and non-interactive**.
+- Use the **info-circle** idiom for field hints.
+- Use `:disabled` when the hint is redundant.
+
+## Don't
+
+- Don't put **buttons / links / inputs** in a tooltip — it dismisses on mouse-out. Use **Popover**.
+- Don't rely on the **`trigger`** prop to change activation — it isn't wired (F1).
+
+## Related
+
+`MPopover` (interactive panel) · `FlotoDropdownPicker` (select) · `MModal` (dialog).

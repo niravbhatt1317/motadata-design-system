@@ -1,0 +1,419 @@
+{
+  "name": "tag",
+  "component": "MTag",
+  "display": "Tag",
+  "tier": "atom",
+  "source": "mkit",
+  "sourceFile": "ui/components/Tags/Tag.vue",
+  "status": "core",
+  "maturity": "stable-but-flawed",
+  "summary": "Compact label for categorization or removable selections. Used as a plain tag; color variants are broken.",
+  "variants": [
+    {
+      "name": "tag-red",
+      "what": "red tinted",
+      "usage": "75×"
+    },
+    {
+      "name": "tag-green",
+      "what": "green tinted",
+      "usage": "57×"
+    },
+    {
+      "name": "tag-yellow",
+      "what": "yellow tinted",
+      "usage": "15×"
+    },
+    {
+      "name": "tag-orange",
+      "what": "orange tinted",
+      "usage": "9×"
+    },
+    {
+      "name": "tag-purple",
+      "what": "purple tinted",
+      "usage": "1×"
+    },
+    {
+      "name": "tag-unknown",
+      "what": "neutral tinted",
+      "usage": "2×"
+    },
+    {
+      "name": "tag-primary",
+      "what": "neutral chip",
+      "usage": "49×"
+    },
+    {
+      "name": "MStatusTag",
+      "what": "status string → colour+label",
+      "usage": "30×"
+    },
+    {
+      "name": "used-count-pill",
+      "what": "rounded count chip",
+      "usage": "48×"
+    },
+    {
+      "name": "numeric",
+      "what": "count/metric tag in the numeric font (tabular figures)",
+      "usage": "counts"
+    }
+  ],
+  "sizes": [],
+  "states": [
+    {
+      "name": "display",
+      "what": "non-closable label"
+    },
+    {
+      "name": "closable",
+      "what": "× to remove (default true)"
+    },
+    {
+      "name": "rounded",
+      "what": "pill styling"
+    },
+    {
+      "name": "disabled",
+      "what": "muted"
+    }
+  ],
+  "props": {
+    "closable": {
+      "type": "boolean",
+      "default": false,
+      "note": "default true (F5)"
+    },
+    "color": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string",
+      "enum": [
+        "default",
+        "primary",
+        "success",
+        "error",
+        "warning",
+        "orange",
+        "neutral-lighter"
+      ],
+      "note": "ColorPalette keys; colored variants illegible (F2) — use colorClasses instead"
+    },
+    "rounded": {
+      "type": "boolean"
+    },
+    "confirmable": {
+      "type": "boolean"
+    },
+    "visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "numeric": {
+      "type": "boolean",
+      "default": false,
+      "note": "count/metric tag — renders JetBrains Mono (--numeric-font-family) with tabular figures (the product .numeric-value). Pair with rounded for a count pill."
+    }
+  },
+  "events": [
+    "close"
+  ],
+  "slots": [
+    "default (label)",
+    "confirm-title"
+  ],
+  "colorClasses": {
+    "note": "The working colored-tag mechanism — colored text on a tint, themes both modes. Apply via class, not variant.",
+    "tag-red": 75,
+    "tag-green": 57,
+    "tag-yellow": 15,
+    "tag-orange": 9,
+    "tag-purple": 1,
+    "tag-unknown": 2,
+    "tag-primary": "49 (neutral chip, not blue)",
+    "stateClasses": [
+      "new",
+      "provision",
+      "unprovision",
+      "used-count-pill (48)"
+    ]
+  },
+  "anatomy": [
+    "container (.ant-tag)",
+    "label",
+    "remove × (when closable)"
+  ],
+  "styling": {
+    "plainBg": "--tag-bg-color (#e3e8f2 light / #2b394f dark, themed) — the neutral tag-primary bg. NOTE: --tag-bg is a DIFFERENT token (#ecf1f9) used by the broken `variant` prop (F2).",
+    "variantColors": "ColorPalette static hex (not tokens)"
+  },
+  "accessibility": {
+    "plain": "span label, legible both themes",
+    "removeControl": "F4 — <a> not focusable, no aria-label",
+    "focus": "no ring (SF-001)"
+  },
+  "do": [
+    "Use a plain tag for labels; :closable=true for removable chips; :rounded for pills.",
+    "Use MStatusTag for status/severity."
+  ],
+  "dont": [
+    "Using color variants (broken/illegible — F2).",
+    "Assuming info/neutral exist (F1); forgetting closable defaults to true (F5)."
+  ],
+  "whenToUse": "Labels, metadata, removable selection chips.",
+  "decisionFlow": [
+    "User types/adds tags? -> LooseTags (input), not Tag.",
+    "Shows status/severity? -> MStatusTag.",
+    "Removable selection/filter chip? -> MTag :closable=true.",
+    "Colored category label? -> MTag + tag-* class.",
+    "Plain read-only label/metadata? -> MTag :closable=false.",
+    "A COUNT / metric value (not a text label)? -> add `numeric` (JetBrains Mono, tabular figures)."
+  ],
+  "usageRules": {
+    "plain": {
+      "useWhen": "read-only label/metadata",
+      "dontUse": "if user can remove it (add :closable)",
+      "example": "OS name, environment label"
+    },
+    "closable": {
+      "useWhen": "a selection the user can dismiss (filters, picked items)",
+      "note": "closable defaults true; display tags need :closable=false",
+      "example": "active filter chip with x"
+    },
+    "colored(tag-*)": {
+      "useWhen": "color-coding categories",
+      "dontUse": "the color variant PROP (broken/illegible F2) — use the class",
+      "example": "tag-red/tag-green/... category"
+    },
+    "status(MStatusTag)": {
+      "useWhen": "reflecting a status string (up/down/critical/...)",
+      "example": "monitor Up/Down"
+    },
+    "rounded": {
+      "useWhen": "a fully-rounded pill look (cosmetic)"
+    },
+    "tag-red": {
+      "useWhen": "Color-coding a negative/critical category label with a red tint — the most common colored tag (75×). Applied as a class (MTag class=\"tag-red\"), legible in both themes.",
+      "dontUse": "Don't use the color `variant` prop (variant=\"error\" is broken/illegible — F2). If the chip is driven by a status STRING (error/down/failed/critical/stopped/offline), use MStatusTag instead — its TAG_MAP resolves those to tag-red automatically.",
+      "example": "A red-tinted 'Failed' job-run label or a 'Critical'/'Down' state chip in an inventory or alert grid."
+    },
+    "tag-green": {
+      "useWhen": "Color-coding a positive/success category with a green tint (57×). Apply as MTag class=\"tag-green\".",
+      "dontUse": "Don't use variant=\"success\" (broken — F2). For a status STRING (up/success/active/enabled/completed/online), let MStatusTag map it to tag-green instead of hand-applying the class.",
+      "example": "A green 'Up'/'Enabled'/'Succeeded' chip in a monitor or job status grid."
+    },
+    "tag-yellow": {
+      "useWhen": "Color-coding a warning or transitional state with a yellow tint (15×). Apply as MTag class=\"tag-yellow\".",
+      "dontUse": "Don't use variant=\"warning\" (broken — F2). Note MStatusTag's TAG_MAP maps halted/paused/queued/aborted/starting to tag-yellow, but it lacks true severity 'warning' — for severity LEVELS use the Severity component, not this class.",
+      "example": "A yellow 'Paused'/'Queued'/'Halted' job-run state chip."
+    },
+    "tag-orange": {
+      "useWhen": "Color-coding a caution/intermediate state with an orange tint (9×). Apply as MTag class=\"tag-orange\".",
+      "dontUse": "Don't use variant=\"orange\" (broken — F2). Prefer tag-yellow for transient/queued states and tag-red for hard failures; orange is for the in-between (suspended/fair).",
+      "example": "An orange 'Suspended' monitor state or a 'Fair' quality-rating chip."
+    },
+    "tag-purple": {
+      "useWhen": "A rarely-used purple tint reserved for the 'unreachable' condition (1× — maps from --severity-unreachable). Apply as MTag class=\"tag-purple\".",
+      "dontUse": "Don't reach for purple as a generic color — it carries the 'unreachable' meaning. Use tag-red/tag-green/tag-yellow for ordinary category coding, and the Severity component for severity levels.",
+      "example": "A purple 'Unreachable' chip for a monitor that cannot be contacted (statusMap: unreachable → tag-purple)."
+    },
+    "tag-unknown": {
+      "useWhen": "A neutral 'unknown' tint (2×) for indeterminate state — text is --severity-unknown on a light tint. Apply as MTag class=\"tag-unknown\".",
+      "dontUse": "Don't use for a plain neutral metadata label — that's tag-primary. Reserve tag-unknown for genuinely unknown/indeterminate status.",
+      "example": "An 'Unknown' status chip where a monitor's state can't be determined (statusMap: unknown → tag-unknown)."
+    },
+    "tag-primary": {
+      "useWhen": "A neutral chip (NOT blue) — the default gray tag on --tag-bg-color, for read-only category/metadata labels and neutral states (49×). Apply as MTag class=\"tag-primary\" (or forcePrimary on MStatusTag).",
+      "dontUse": "Don't use it for a semantic status — pick tag-red/green/yellow (or MStatusTag) so the color carries meaning. Don't confuse it with a blue/brand chip; it renders neutral gray.",
+      "example": "A neutral device-category or environment metadata chip, or a 'Maintenance'/'Connected'/'Standby' state (statusMap maps those to tag-primary)."
+    },
+    "MStatusTag": {
+      "useWhen": "The chip is driven by a status STRING (up/down/critical/paused/success/failed…) — MStatusTag looks the value up in TAG_MAP and renders the right tag-* color + capitalized label automatically. Always rounded and non-closable.",
+      "dontUse": "For true severity LEVELS (critical/major/warning/clear) use the Severity component — TAG_MAP lacks major/warning/clear and silently falls through to a plain gray tag (F7). For a static hand-picked color label, apply a tag-* class directly rather than routing through a status string. Beware F7: poweredoff→'Up', poweredon→'Down' (intentional inversion), and unmapped statuses render a silent plain tag.",
+      "example": "A monitor's Up/Down state in the monitor status sidebar and instance grids: <MStatusTag :status=\"row.status\" />."
+    },
+    "used-count-pill": {
+      "useWhen": "A rounded neutral COUNT chip — primary-text on a tint, always :rounded (48×) — for showing how many times something is used/referenced.",
+      "dontUse": "Don't use it to convey status or severity (use MStatusTag or a tag-* color class). It's a neutral count pill, not a semantic color, and it's distinct from the tag-* color classes.",
+      "example": "A '3 used' count pill next to a template/credential in a usage list."
+    },
+    "numeric": {
+      "useWhen": "a COUNT or metric tag (log-type counts, used-counts, percentages) — the numeric font aligns figures",
+      "dontUse": "a text label tag (leave numeric off; text uses the normal font)",
+      "example": "the Log tree counts (6.77 M, 653.32 K) render in JetBrains Mono; default 4px squarish, add rounded for a pill"
+    }
+  },
+  "insteadOf": [
+    "raw a-tag",
+    "MStatusTag (for status)"
+  ],
+  "tokensUsed": [
+    "--tag-bg",
+    "--tag-color",
+    "--tag-bg-color"
+  ],
+  "usage": {
+    "total": 150,
+    "files": 87,
+    "variant": "~3 (effectively unused)",
+    "MStatusTag": 30
+  },
+  "knownIssues": [
+    "F2 (high): colored variants are illegible — bg forced to --tag-bg regardless of variant, variant only sets white text → white on #e3e8f2 in light. Use MStatusTag for status.",
+    "F4 (high, a11y): remove × is an <a> with no href/role/aria-label/tabindex — not focusable, unlabeled. Make it a real button + aria-label + focus ring (SF-001).",
+    "F1 (medium): variants = ColorPalette keys only (no info/neutral); static hex differs from severity tokens.",
+    "F5 (medium): closable defaults to true — display tags get an unexpected ×.",
+    "F3 (low): Tag.vue applies misspelled class 'neutral-ligher' so the .neutral-lighter themed override never matches.",
+    "F7 (low): MStatusTag textMap inverts poweredoff->'Up'/poweredon->'Down'; status not in TAG_MAP renders a silent plain tag (no colour). Add an unknown/default mapping.",
+    "SF-002 (medium, tooling, FIXED 2026-06-07): Storybook now runs the app's PostCSS (tailwindcss+autoprefixer) via postcss-loader, so Tailwind utilities (incl. MStatusTag inline-flex alignment) render like the product. See findings/SF-002."
+  ],
+  "related": [
+    "MStatusTag",
+    "loose-tags",
+    "tags-list",
+    "MIcon",
+    "severity"
+  ],
+  "family": "Tag",
+  "members": {
+    "MTag": "base tag (this entry)",
+    "MStatusTag": "VARIANT of Tag (not a separate component, D12). _base-status-tag.vue, 30x/28 files. Maps status string -> tag-* colour + Capitalize(label). Props: status (String|Number), forcePrimary (Boolean). Always rounded+non-closable. LIVE in Storybook (Atoms/Tag/Examples -> 'Status / severity'). Quirks F7: poweredoff->'Up'/poweredon->'Down'; unmapped status -> silent plain tag.",
+    "SelectedItemPills": "dropdown-trigger/ — teal ant-tag-has-color picker pills, truncated, +N overflow popover (maxItems default 1); teal via --main-tags-* in input.less (:tags adds .loose-tags-input). LIVE in Storybook (Atoms/Tag/Examples → 'Selected pills'); full behaviour with DropdownPicker",
+    "MultipleTrigger/SingleTrigger": "picker triggers using SelectedItemPills",
+    "LooseTags": "free-form tag input — spec TODO",
+    "TagsList": "read-only tag list — spec TODO",
+    "appClasses": [
+      "filter-alert-tag (7)",
+      "os-tag",
+      "nav-beta-tag",
+      "main-tags (teal)"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-07-20",
+      "change": "Added `numeric` — a count/metric tag in the numeric font (--numeric-font-family JetBrains Mono + tnum), matching the product .numeric-value used on count tags (e.g. the Log tree). Reused by obs-side-menu tree counts."
+    },
+    "2026-06-05: added (placeholder variants).",
+    "2026-06-06: full deep-dive — real variant set found, colored variants measured illegible (F2); examples refocused on plain/removable; findings F1-F5 + SF-001; Option B pages.",
+    "2026-06-07: family surfaced in Storybook — ColoredTags (tag-* classes) + SelectedItemPills teal +N picker pills (verified teal #cdf1ed/#218b81 + +N overflow)."
+  ],
+  "storybook": "Atoms/Tag",
+  "figma": {
+    "status": "todo",
+    "component": "Tag"
+  },
+  "statusMap": {
+    "$source": "src/components/_base-status-tag.vue TAG_MAP",
+    "$usage": "MStatusTag: <MStatusTag :status=\"row.status\" /> -> looks up status.toLowerCase() in `map` for the tag-* colour class; label = Capitalize(status) unless overridden by `textOverrides`. Unmapped status -> plain tag (silent). `forcePrimary` forces tag-primary.",
+    "map": {
+      "off": "tag-red",
+      "on": "tag-green",
+      "poweredoff": "tag-red",
+      "poweredon": "tag-green",
+      "success": "tag-green",
+      "error": "tag-red",
+      "up": "tag-green",
+      "active": "tag-green",
+      "down": "tag-red",
+      "inactive": "tag-red",
+      "unknown": "tag-unknown",
+      "completed": "tag-green",
+      "halted": "tag-yellow",
+      "paused": "tag-yellow",
+      "succeeded": "tag-green",
+      "failed": "tag-red",
+      "fail": "tag-red",
+      "running": "tag-green",
+      "queued": "tag-yellow",
+      "aborted": "tag-yellow",
+      "suspended": "tag-orange",
+      "stopped": "tag-red",
+      "yes": "tag-green",
+      "no": "tag-red",
+      "starting": "tag-yellow",
+      "enable": "tag-green",
+      "disable": "tag-red",
+      "maintenance": "tag-primary",
+      "unreachable": "tag-purple",
+      "good": "tag-green",
+      "poor": "tag-red",
+      "fair": "tag-orange",
+      "online": "tag-green",
+      "offline": "tag-red",
+      "available": "tag-green",
+      "connected": "tag-primary",
+      "standby": "tag-primary",
+      "disconnected": "tag-red",
+      "ready": "tag-green",
+      "critical": "tag-red",
+      "shutdown": "tag-red",
+      "healthy": "tag-green",
+      "normal": "tag-green",
+      "ok": "tag-green",
+      "optimal": "tag-green",
+      "operational": "tag-green",
+      "enabled": "tag-green",
+      "absent": "tag-red",
+      "unavailable": "tag-red",
+      "unresponsive": "tag-red"
+    },
+    "textOverrides": {
+      "poweredoff": "Up",
+      "poweredon": "Down"
+    },
+    "quirk": "F7 — poweredoff renders label 'Up' (green), poweredon renders 'Down' (red). Intentional inversion.",
+    "tagColors": {
+      "$source": "src/design/tags.less",
+      "$note": "Each tag-* class = a TEXT token (resolve via tokens/variables.json) + a bg. Most bgs are a 20% rgba tint of the text hue (literal); tag-primary/unknown/purple use bg tokens.",
+      "tag-green": {
+        "text": "--secondary-green",
+        "bg": "rgba(54,213,118,0.2)"
+      },
+      "tag-red": {
+        "text": "--secondary-red",
+        "bg": "rgba(236,91,91,0.2)"
+      },
+      "tag-yellow": {
+        "text": "--secondary-yellow",
+        "bg": "rgba(250,209,0,0.2)"
+      },
+      "tag-orange": {
+        "text": "--secondary-orange",
+        "bg": "rgba(250,153,80,0.2)"
+      },
+      "tag-primary": {
+        "text": "--default-tag-text-color",
+        "bg": "--tag-bg-color"
+      },
+      "tag-unknown": {
+        "text": "--severity-unknown",
+        "bg": "--severity-unknown-lighter"
+      },
+      "tag-purple": {
+        "text": "--severity-unreachable",
+        "bg": "--severity-unreachable-lightest"
+      }
+    },
+    "severityNote": "For severity LEVELS (critical/major/warning/clear/up/down/…) use the **Severity** component (severity.json) — NOT MStatusTag. MStatusTag's TAG_MAP lacks major/warning/clear (they fall through to a grey plain tag, F7)."
+  },
+  "a11y": {
+    "summary": "Plain tag = non-interactive <span> (fine as a label); default contrast legible in both themes.",
+    "issues": [
+      "Removable tag × is not keyboard-accessible (keyboard/AT blocker)."
+    ],
+    "doc": "Atoms/Tag/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  },
+  "variantEnum": [
+    "tag-primary",
+    "tag-green",
+    "tag-red",
+    "tag-yellow",
+    "tag-orange",
+    "tag-purple",
+    "tag-unknown"
+  ]
+}

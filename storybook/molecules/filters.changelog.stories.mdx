@@ -1,0 +1,31 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Molecules/Filters/Changelog" />
+
+# Filters — Changelog
+
+- **2026-06-16 (Vertical filter added)** — Added the **Vertical filter** archetype — the faceted
+  **left-panel sidebar** (`components/filters/vertical-filter/filters.vue`, shared by **APM Explorer /
+  APM Error Tracker / RUM Sessions**, with **NCM**’s `explorer-grid-virtical-filter.vue` as a richer
+  variant): a search atop **collapsible groups** of **checkbox + icon + count** rows that filter the
+  grid. Surfaced during the Navigation left-panel sweep — it *looks* like a side menu but it **filters**,
+  so it belongs here, not in Navigation. Reference reproduction; verified light + dark.
+
+- **2026-06-16 (Expression builder — popover + functional)** — Corrected the **Expression builder** to
+  match the product: it now lives inside an **`MPopover`** opened from a **`FilterTrigger`** input (it
+  was an inline panel before), with **Pre / Post Filters** tabs, a close ×, and a **Reset / Clear /
+  Apply** footer. Made it **fully functional** — open/close, switch tabs, add/remove conditions (max 3)
+  and groups (3 pre / 1 post), Include/Exclude + All/Any selects, **Between** → From/To, and **Apply**
+  renders the query back into the trigger. Verified interaction + light/dark.
+- **2026-06-16 (new family — by component archetype)** — Created the **Filters** family to gather the
+  product's filtering components by *what they are*, not the screen they sit in. **Catalogued the
+  missing Expression builder** (`FiltersContainer`, **32×** — a nested AND/OR query builder:
+  `Group(s) matching All/Any` → groups → `field · operator · value` conditions). **Moved** the
+  **Filter bar** (`FlotoFilterBar`, ~50×) and **Quick filters** out of the context-shaped *Grid
+  Toolbar*. **Re-homed** the **Filter row** from the retired *Monitoring config* (Collection Filters).
+- **Stories:** Expression builder · Filter bar (fully interactive — chips/picker/Match/Clear) · Quick
+  filters · Filter row. Reproductions (store-bound; `FilterCondition` is 500+ lines). Verified render +
+  the moved Filter bar still interactive, no console errors.
+- Part of the **taxonomy correction**: every catalogue entry names a component *archetype*, never a
+  module/screen. Related: **DropdownPicker** · **Input** (search type) · **Tag** · **Table** ·
+  **Toolbars**.

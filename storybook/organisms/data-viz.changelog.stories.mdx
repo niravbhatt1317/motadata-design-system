@@ -1,0 +1,31 @@
+import { Meta } from '@storybook/addon-docs'
+
+<Meta title="Organisms/Data Visualization/Changelog" />
+
+# Data Visualization — Changelog
+
+## 2026-07-06 — Product-fidelity + theming fix
+
+- The Examples charts now render through the product's **real config pipeline** — `default-config.js`
+  (transparent bg, Poppins, CSS-variable colours) **+ `getWidgetChartCommonOptions()`** (legend, gridlines,
+  axis label weight, the product tooltip box, plotOptions) — instead of hand-authored options. So the charts
+  **match the product** (gridlines + legend + tooltip + the ObserveOps categorical palette) and **flip with
+  light/dark** (the CSS-var colours re-resolve on `data-theme`).
+- Added the 6 non-Highcharts types (geo-map, topology-graph, widget-grid, flame-graph via their real engines;
+  topn + kpi-tile as static references) and themed the flame-graph labels.
+- **Gate hardened:** added a per-story theme-awareness probe (warns if a story renders identically in
+  light + dark) — the check that would have caught the original generic, non-theming charts.
+
+## 2026-07-05 — Catalogued as a decision guide
+
+- Added the **Data Visualization** family as a **decision guide, not an `obs-*` web component** — charts are
+  Highcharts v10 (commercially licensed), the topology map is Cytoscape, the dashboard grid is
+  vue-grid-layout; all app-coupled, so there is intentionally no framework-agnostic component.
+- Shipped `tokens/chart-palette.json` (the categorical series palette, light + dark) and
+  `registry/data-viz.json` (a type-selection `decisionFlow` + 18 per-type `usageRules` covering
+  charts / stat-tiles / topology-graph / widget-grid).
+- **Examples** mount the real product `Chart` (Highcharts) for the bundled-module types (`trend-line`,
+  `area`, `bar-column`, `pie-donut`, `sparkline`, `sankey-flow`, `timeline-xrange`); the remaining types
+  render via specialised product views/engines and are documented, not mounted.
+- Reconciled with `data-viz-tooltips` (the hover layer of this family) and upgraded the recipe `$gap`
+  markers from dead-ends into pointers to this guide.

@@ -1,0 +1,332 @@
+{
+  "name": "drawer",
+  "component": "FlotoDrawer",
+  "display": "Drawer",
+  "tier": "organism",
+  "category": "overlay",
+  "source": "app",
+  "sourceFile": "src/components/_base-drawer.vue",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "Slide-in side panel (from the right) for detail views, edit forms, and record-contextual content. The product's MOST-used overlay (FlotoDrawer 99x + FlotoDrawerForm 59x = 158x). Open via open prop or trigger slot.",
+  "variants": [
+    {
+      "name": "FlotoDrawer",
+      "what": "detail side panel",
+      "usage": "99×"
+    },
+    {
+      "name": "FlotoDrawerForm",
+      "what": "form + drawer (Add/Edit)",
+      "usage": "59×"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "360px",
+      "value": "360px",
+      "note": "simple"
+    },
+    {
+      "name": "40%",
+      "value": "40%",
+      "note": "default"
+    },
+    {
+      "name": "50-70%",
+      "value": "50-70%",
+      "note": "richer"
+    },
+    {
+      "name": "85-96%",
+      "value": "85-96%",
+      "note": "large multi-pane"
+    }
+  ],
+  "states": [
+    {
+      "name": "open",
+      "what": "slid in from right"
+    },
+    {
+      "name": "closed",
+      "what": "hidden"
+    },
+    {
+      "name": "scrolling",
+      "what": "body scrolls, title/footer pinned"
+    }
+  ],
+  "family": "Overlay",
+  "components": {
+    "FlotoDrawer": {
+      "usage": 99,
+      "props": [
+        "open(toggles)",
+        "width(px/%, default 40%)",
+        "scrolledContent(default true -> FlotoScrollView)",
+        "usePadding",
+        "(a-drawer attrs: placement, ...)"
+      ],
+      "slots": [
+        "trigger {open,close,toggle}",
+        "title / title-row",
+        "default (body, scrollable)",
+        "actions {hide} (fixed footer)"
+      ],
+      "events": [
+        "show",
+        "hide"
+      ]
+    },
+    "FlotoDrawerForm": {
+      "usage": 59,
+      "summary": "FlotoForm (vertical) + FlotoDrawer; suppresses MForm default Submit so only the footer submits",
+      "slots": [
+        "trigger",
+        "header / header-row",
+        "default {submit}",
+        "actions {hide, submit}"
+      ]
+    }
+  },
+  "anatomy": [
+    "title (text-primary) + built-in close x",
+    "scrollable body (FlotoScrollView)",
+    "actions fixed footer (Cancel/Save)",
+    "dimmed backdrop"
+  ],
+  "behaviors": {
+    "open": "open prop (toggles) or trigger slot",
+    "close": "built-in x (Ant a-drawer) + actions footer + Escape — maskClosable:false (no backdrop-close)",
+    "scroll": "body scrolls (FlotoScrollView); title/footer pinned; ~65px reserved at bottom when actions slot present",
+    "hide-delay": "@hide fires ~500ms after close (slide-out animation)"
+  },
+  "tokensUsed": [
+    "--page-background-color",
+    "--border-color",
+    "--page-text-color"
+  ],
+  "accessibility": {
+    "semantics": "role=dialog, focus trap, BUILT-IN close x (better than MModal which has none), Escape closes",
+    "focus": "no visible ring inside (SF-001)"
+  },
+  "decisionFlow": [
+    "Short yes/no or destructive confirmation? -> FlotoConfirmModal, not a drawer.",
+    "Long content, a detail view, or a form contextual to a record? -> FlotoDrawer.",
+    "An Add/Edit FORM in a panel? -> FlotoDrawerForm (vertical form + validation + footer submit).",
+    "A short focused task that must center-interrupt? -> MModal (dialog)."
+  ],
+  "usageRules": {
+    "detail(FlotoDrawer)": {
+      "useWhen": "view details / long content contextual to a record",
+      "example": "incident details, view-detail/view-more drawers, gauge/compliance drilldown"
+    },
+    "form(FlotoDrawerForm)": {
+      "useWhen": "Add/Edit form in a panel (vertical form + validation; footer Save submits)",
+      "example": "most Add/Edit flows; approval drawers (sync/runbook/firmware), email-dispatch form"
+    },
+    "width": {
+      "useWhen": "default 40%; narrower (px) for simple panels, wider (%) for rich content",
+      "example": "360px detail, 60% rich editor"
+    },
+    "large-fullscreen(85-96%)": {
+      "useWhen": "complex MULTI-PANE flows (left nav + main form + right reference panel) — config/registration wizards",
+      "example": "APM Application Registration (width=96%); used ~30x at 90%/96%/85%/100%. Use a wide drawer, not a modal."
+    },
+    "FlotoDrawer": {
+      "useWhen": "You need a slide-in side panel to show the details of a record, or long/rich content contextual to the current context. Open it via the `open` prop (use .sync) or a `trigger` slot; give it a `title`, a scrollable body, and an `actions` footer with `{ hide }`. Default `width` is 40% — narrow to 360px for simple panels, widen to 50-70% for richer editors, or 85-96% for large multi-pane flows (left nav + main form + right reference panel) like config/registration wizards. It's the product's most-used overlay (99x).",
+      "dontUse": "Not for a short yes/no or destructive confirmation (use FlotoConfirmModal), nor a short focused task that should center-interrupt (use MModal). If the panel's whole purpose is an Add/Edit form with validation and a footer Save, reach for FlotoDrawerForm instead so MForm's default Submit is suppressed. Don't rely on backdrop-click to close (maskClosable:false) — use the built-in x or a footer Cancel.",
+      "example": "Incident details panel; view-detail / view-more drawers; gauge / compliance drilldown; credential / catalog selection drawers; APM Application Registration at width=96% (a wide multi-pane drawer, not a modal)."
+    },
+    "FlotoDrawerForm": {
+      "useWhen": "The panel is an Add/Edit FORM. It wraps a vertical FlotoForm with validation inside the drawer and suppresses MForm's default Submit so only the footer Save submits. Provide a `header` (title), fields in the body, and an `actions` footer exposing `{ hide, submit }`. Same open / width / scrolledContent props as FlotoDrawer (59x usage).",
+      "dontUse": "Not for a read-only detail view or non-form content — use plain FlotoDrawer there. Not for a short confirmation (FlotoConfirmModal) or a small center-interrupting task (MModal). Don't hand-roll a bare MForm inside a FlotoDrawer without suppressing its default Submit, or you get two submit buttons — that's exactly what FlotoDrawerForm solves.",
+      "example": "Most Add/Edit flows across the product; sync / runbook / firmware-upgrade approval drawers; attach-rules / attach-storage; the email-dispatch form."
+    },
+    "large (multi-pane, 85-96%)": {
+      "useWhen": "a rich configuration/registration WIZARD that needs multiple panes (nav + form + info) side by side; too much for a form drawer",
+      "example": "APM Application Registration; multi-pane setup wizards. Use width 85-96% + scrolled-content=false so each column scrolls independently. NOT a modal."
+    },
+    "left placement": {
+      "useWhen": "a filter or secondary-nav side sheet that conceptually belongs on the LEFT (not a record detail)",
+      "example": "faceted filter panel, left nav drawer. Set placement=\"left\"."
+    },
+    "footer=close": {
+      "useWhen": "a READ-ONLY detail drawer — nothing to submit, just dismiss",
+      "example": "view monitor details, drilldown. Single Close button."
+    },
+    "footer=cancel-save": {
+      "useWhen": "the STANDARD Add/Edit form — one primary commit",
+      "example": "add/edit a record. Cancel (left) + Save (primary, far right)."
+    },
+    "footer=reset-cancel-save": {
+      "useWhen": "a form where RESET-to-defaults is a common need (filters, config, thresholds)",
+      "example": "filter/config drawers. Reset + Cancel + Save, all right-aligned."
+    },
+    "footer=delete-split": {
+      "useWhen": "an EDIT drawer where DELETING the record is a primary, destructive action that must be visually separated from Save",
+      "example": "edit + delete a policy/monitor. Delete (error outline) on the LEFT via justify-between; Cancel + Save on the right."
+    },
+    "footer=note-split": {
+      "useWhen": "a multi-step form (needs Back) or a form that must surface a mandatory-fields note on the left",
+      "example": "wizard step, mandatory-field form. Note or Back on the LEFT; confirm group (Cancel/Save) on the right. 4+ actions → move extras into a menu."
+    },
+    "inset-alignment": {
+      "useWhen": "the heading, body and footer share ONE horizontal inset (--drawer-inset, default 15px) so they ALIGN. Set the `--drawer-inset` custom property on the drawer for any value; `use-padding` bumps all three to 24px together.",
+      "dontUse": "expecting `use-padding` to pad only the body — it now widens the WHOLE panel (header+body+footer) so they stay aligned.",
+      "example": "<obs-drawer style=\"--drawer-inset: 20px\"> aligns all three regions at 20px; use-padding → 24px"
+    }
+  },
+  "inProduct": {
+    "FlotoDrawer": "IncidentDetails, ViewDetail/ViewMore, Gauge/Compliance drilldown, Credential/Catalog selection drawers",
+    "FlotoDrawerForm": "Add/Edit forms, SyncApproval/RunbookApproval/FirmwareUpgradeApproval, AttachRules/AttachStorage, EmailDispatch form"
+  },
+  "do": [
+    "Use a Drawer for detail views, edit forms, long/record-contextual content.",
+    "Use FlotoDrawerForm for Add/Edit forms (vertical form + footer submit).",
+    "Put actions in the footer (Cancel left, Save right)."
+  ],
+  "dont": [
+    "Don't use a Drawer for a short confirmation (use FlotoConfirmModal).",
+    "Don't rely on backdrop-click to close (disabled) — use the x or footer Cancel.",
+    "Don't add an MForm inside without suppressing its default Submit (two submit buttons)."
+  ],
+  "whenToUse": "Detail views, edit forms, and long/record-contextual content that doesn't fit a centered modal.",
+  "insteadOf": [
+    "raw a-drawer",
+    "a modal for long/record-contextual content"
+  ],
+  "usage": {
+    "FlotoDrawer": 99,
+    "FlotoDrawerForm": 59,
+    "total": 158,
+    "open": 27,
+    "width": 14
+  },
+  "props": {
+    "open": {
+      "type": "boolean",
+      "default": "false",
+      "note": "visibility; reflects to el.open"
+    },
+    "title": {
+      "type": "string",
+      "note": "header title text (or use the `title` slot)"
+    },
+    "width": {
+      "type": "string|number",
+      "default": "40%",
+      "note": "Number → px; string %/px passthrough (product: 360→40%→50-70%→85-96%)"
+    },
+    "placement": {
+      "type": "string",
+      "default": "right",
+      "enum": [
+        "right",
+        "left"
+      ]
+    },
+    "mask-closable": {
+      "type": "boolean",
+      "default": "false",
+      "note": "product default: clicking the backdrop does NOT close"
+    },
+    "scrolled-content": {
+      "type": "boolean",
+      "default": "true",
+      "note": "wrap body in a scroll region; false = multi-pane (columns scroll independently)"
+    },
+    "use-padding": {
+      "type": "boolean",
+      "default": "false",
+      "note": "add horizontal body padding"
+    },
+    "esc-closable": {
+      "type": "boolean",
+      "default": "true",
+      "note": "Escape closes"
+    },
+    "footer": {
+      "type": "string",
+      "enum": [
+        "none",
+        "close",
+        "cancel-save",
+        "reset-cancel-save",
+        "delete-split",
+        "note-split"
+      ],
+      "note": "built-in footer action pattern, rendered from obs-buttons when the actions slot is EMPTY. Cancel/Close close the drawer; Save/Reset/Delete/Back emit a footer-action event with {action}. Provide the actions slot to fully customise instead."
+    }
+  },
+  "knownIssues": [
+    "[element] obs-drawer (web component) is FUNCTIONAL: native <dialog> showModal → top-layer render, focus-trap + Esc for free. `open` reflects to el.open; ✕ / Esc / a slotted [data-close] element emit `close` then `after-close` (~slide-out). Slots: default (scrollable body), `title`, `actions` (60px footer). Backdrop is BLUR-ONLY and inert (mask-closable=false by default). Right or left placement. Imperative el.show() / el.hide(). Diff-gated vs the real FlotoDrawer (header/title/panel, light+dark).",
+    "F1 (low): @hide emits ~500ms after close (setTimeout for the slide-out animation) — parents should account for the delay.",
+    "F2 (high, a11y): no visible focus ring inside the panel (SF-001).",
+    "F3 (low): .actions footer is justify-end with NO gap -> adjacent buttons touch (0px). Product convention is mr-2 on the non-last button. Fix: add gap:8px to .actions in drawer.less. Footer layout: 2=Cancel(mr-2)+Save right; 3=Reset/Cancel/Save right OR destructive left + confirm group right (justify-between); 4=tertiary/note left + confirm group right; primary far-right, Cancel just left of it, destructive/tertiary on the left."
+  ],
+  "related": [
+    "MModal",
+    "FlotoConfirmModal",
+    "FlotoDrawerForm",
+    "FlotoForm",
+    "FlotoFormItem",
+    "MButton"
+  ],
+  "changelog": [
+    "2026-08-10 — Inset alignment (consumer G19): heading, body AND footer now share ONE horizontal inset via the `--drawer-inset` custom property (default 15px) — the footer was hardcoded to 24px with no knob, so the three regions could never line up. `use-padding` now widens the WHOLE panel to 24px (was body-only), and consumers can set `--drawer-inset` directly (like --drawer-background-color). Verified all three align at 15/24/custom.",
+    "2026-07-14: full docs pass (owner) — added the element 'variants & when to use' table (detail/form · placement · width tiers · multi-pane via scrolled-content=false · use-padding), the footer presets, element props, behaviour (esc/mask-closable, events) and the drawer-vs-modal-vs-page-vs-popover routing to the prose spec. Added a use-padding control to the playground. Overlay guarantees verified: never auto-opens, ONE overlay (drawer/modal) open at a time (shared single-overlay registry), and a closed drawer is display:none (no stacking) — the same class of bug fixed on the modal does NOT affect the drawer.",
+    "2026-07-09: added a  prop (elements@0.1.18) — built-in footer action presets (close · cancel-save · reset-cancel-save · delete-split · note-split) rendered from obs-buttons when the actions slot is empty; Save/Reset/Delete/Back emit footer-action{action}. Playground now has a Footer select + a Type slotPreset (Detail/Form/Large). usageRules document when to use each drawer TYPE and each FOOTER pattern for AI tools.",
+    "2026-06-08: added (decision-grade). FlotoDrawer (99x) + FlotoDrawerForm (59x) = 158x, the most-used overlay. open-prop/trigger; title/body(scrollable)/actions(fixed footer) slots; width 40%; built-in x + maskClosable:false. Verified Basic + Form drawer render. F1 (delayed hide), F2 (focus).",
+    "2026-07-08: shipped the real <obs-drawer> web component (elements@0.1.8) — native <dialog> (top-layer, focus-trap, Esc), blur-only inert backdrop, right/left placement, open reflected to el.open, close/after-close events, [data-close] + el.hide(). Fixed the product's SF-001 (F2) with a focus-visible ring inside.",
+    "2026-07-09: every drawer icon now uses the reusable <obs-icon> library element (elements@0.1.17) — the close ✕ switched from an inlined <svg> (ICONS.times) to <obs-icon name=\"times\"> (nested custom element), matching the large-drawer nav (obs-icon vm/docker/kubernetes). Zero inlined/hand-drawn SVG across all variants.",
+    "2026-07-09: fixed the kubernetes nav icon (elements@0.1.15) — the extraction had truncated its path at 3000 chars (real path is 4525), so it rendered a clipped partial wheel; now byte-identical to the product icons.js (vm/docker were already correct).",
+    "2026-07-09: fixed scrolled-content=\"false\" (elements@0.1.14) — a plain Boolean prop made attribute=\"false\" cast to TRUE, so multi-pane drawers stayed in single-scroll with 15px body padding; now String-inclusive with an off() check (same for esc-closable). So the Large drawer body is edge-to-edge. Also redid the showcase's frameworks table to the product style (rounded container, horizontal separators only) + namespaced all its classes (apm-*) to stop a .panel collision that stretched the Verification box to full height.",
+    "2026-07-09: pixel-fidelity pass on the Large / full-screen showcase (elements@0.1.13) after an owner miss — re-matched the real APM-registration render exactly: real product nav icons (vm/docker/kubernetes, added to _icons.js), exact ds-primitives values (ds-main-heading 18/600, ds-section-heading 14/600, ds-helper-text 12px primary, ds-divider 1rem+1rem, ds-accent-bar 24px navy r10, ds-panel help-card-bg fill, fully-bordered ds-spec-table), material Service Name input, inline nav (icon+label). Fixed a .nav class collision with the site's sidebar (flex-direction leaked to column).",
+    "2026-07-09: body top padding 5px → 15px across all drawer variants (owner choice — more breathing room under the header than the product's 5px). Body padding drops to 0 when scrolled-content=false so multi-pane columns go edge-to-edge. Added the two missing showcase variants (elements@0.1.12): Footer actions (2/3/4-button bars) + the Large / full-screen 96% multi-pane drawer (2:6:4 nav/form/info, real obs-radio/obs-input/obs-button).",
+    "2026-07-08: pixel-fidelity pass (elements@0.1.9) after an owner miss — the first spec under-covered. Re-measured the rendered FlotoDrawer and fixed: header padding 15px 0 / margin 0 15px (was 16/24, mis-indented + mis-aligned with body); title weight 500 + lh 22px + full-width (was 600, narrowed by a stray padding-right); close ✕ pinned top-right spanning full header height (was a small centred 24×24 button); base line-height 1.5; box-sizing so width is exactly 480; footer 60px / margin 0 24px / NO top border / 15px bottom-left radius; :host Poppins so slotted content inherits the product font; suppressed the panel focus ring on open. Diff-gated over 6 scenarios (header/title/footer/panel, light+dark) → MATCH, 0 intentional."
+  ],
+  "storybook": "Organisms/Drawer",
+  "figma": {
+    "status": "todo",
+    "component": "Drawer"
+  },
+  "$tokensNote": "Title text = --page-text-color. Backdrop scrim is Ant's literal rgba(0,0,0,.45) — not tokenized; Ant Drawer internals follow the kit.",
+  "apis": {
+    "FlotoDrawer": {
+      "source": "src/components/_base-drawer.vue",
+      "props": {
+        "open": "Boolean (false) — visibility (use .sync)",
+        "width": "[String,Number] ('40%') — drawer width",
+        "usePadding": "Boolean (false) — pad the body",
+        "scrolledContent": "Boolean (true) — wrap the body in a scroll view"
+      },
+      "events": {
+        "show": "() — opened",
+        "hide": "() — closed (backdrop / ESC / close)"
+      },
+      "slots": {
+        "default": "drawer body"
+      }
+    },
+    "FlotoDrawerForm": {
+      "source": "src/components/crud/_base-drawer-form.vue",
+      "note": "Form-in-drawer variant — same open / width / scrolledContent props.",
+      "slots": {
+        "trigger": "element that opens the drawer",
+        "header": "custom header",
+        "header-row": "header action row",
+        "default": "form body"
+      }
+    }
+  },
+  "a11y": {
+    "summary": "Ant a-drawer → role=dialog; focus trapped + restored on close; built-in close ×; Esc closes; backdrop-click doesn't close (maskClosable:false). Give a clear title.",
+    "issues": [
+      "No visible focus ring inside the panel."
+    ],
+    "doc": "Organisms/Drawer/Accessibility",
+    "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
+  }
+}

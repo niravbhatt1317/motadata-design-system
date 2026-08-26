@@ -1,0 +1,275 @@
+/*
+ * DS primitives — shared composite classes
+ * ------------------------------------------------------------------
+ * Extracted from repeated product patterns (originally `<style scoped>` in
+ * apm-application-registration-drawer.vue and similar config screens) so stories — and
+ * eventually the product — reuse ONE definition instead of inline copies. Every value
+ * comes from a design token (var(--…)); once the token pipeline is wired these bind to
+ * the generated --mds-* variables with zero visual change.
+ *
+ * Product class → DS primitive (1:1 mapping, same computed style):
+ *   main-heading          → .ds-main-heading
+ *   section-heading       → .ds-section-heading
+ *   section-text          → .ds-section-text
+ *   helper-text           → .ds-helper-text
+ *   (text-neutral-light 12px subtitle) → .ds-caption
+ *   white-var-text        → .ds-body-text
+ *   divider               → .ds-divider
+ *   vertical-line         → .ds-accent-bar
+ *   right-column-heading  → .ds-panel-heading
+ *   bordered-section      → .ds-panel
+ *   deployment-menu-item  → .ds-nav-item / .ds-nav-item-selected
+ *   param-table           → .ds-spec-table
+ */
+
+/* Typography roles */
+.ds-main-heading {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ds-section-heading {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ds-section-text {
+  font-size: 14px;
+}
+
+.ds-helper-text {
+  font-size: 12px;
+  color: var(--text-color-common-primery);
+}
+
+.ds-caption {
+  font-size: 12px;
+}
+
+.ds-body-text {
+  color: var(--text-color-common-primery);
+}
+
+/* Layout primitives */
+.ds-divider {
+  width: 100%;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.ds-accent-bar {
+  display: inline-block;
+  width: 3px;
+  height: 24px;
+  margin-right: 6px;
+  background-color: var(--primary);
+  border-radius: 10px;
+}
+
+.ds-panel {
+  padding-right: 10px;
+  padding-left: 10px;
+  background-color: var(--help-card-bg-color);
+  border: 1px solid var(--border-color);
+}
+
+.ds-panel-heading {
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Vertical (sidebar) nav item — color/selection only; layout stays as utilities */
+.ds-nav-item {
+  color: var(--left-menu-text-color);
+}
+
+.ds-nav-item:hover,
+.ds-nav-item-selected {
+  color: var(--page-text-color);
+  background: var(--code-tag-background-color);
+}
+
+/* Data grid (MGrid / k-grid chrome) — header, rows, hover, selected, group, detail */
+.ds-grid {
+  width: 100%;
+  font-size: 13px;
+  color: var(--page-text-color);
+  background: var(--page-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+/* Default header = the MAIN Kendo .k-grid header: TRANSPARENT bg, UPPERCASE, letter-spacing,
+   600 weight, top + bottom border. (NOT the tinted item-list header — that's the .ds-grid-tinted
+   variant below.) */
+.ds-grid th {
+  padding: 9px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  color: var(--text-color-common-primery);
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: transparent;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ds-grid td {
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Header-style variant — tinted, normal-case (the .item-list-table / selection-table header) */
+.ds-grid-tinted th {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--neutral-dark);
+  background: var(--grid-header-bg);
+  border-top: none;
+}
+
+/* Border variants */
+.ds-grid-borderless td { border-bottom-color: transparent; }
+.ds-grid-bordered th,
+.ds-grid-bordered td { border: 1px solid var(--border-color); }
+.ds-grid-divided td:not(:last-child) { border-right: 1px solid var(--border-color); }
+
+/* Hide the header entirely (.hide-header) */
+.ds-grid-hide-header thead { display: none; }
+
+.ds-grid tbody tr:hover td {
+  background: rgba(165, 186, 208, 0.4);
+}
+
+.ds-grid-row-selected td {
+  background: var(--neutral-lightest);
+}
+
+.ds-grid-row-selected td:first-child {
+  box-shadow: inset 2px 0 0 var(--primary);
+}
+
+/* Grouping row — real Kendo .k-grouping-row: --primary-alt text on --table-group-header-highlight */
+.ds-grid-group td {
+  font-weight: 600;
+  color: var(--primary-alt);
+  background: var(--table-group-header-highlight) !important;
+}
+
+/* Detail row — real Kendo .k-detail-row: a 3px --table-details-bg frame with bottom radius */
+.ds-grid-detail td {
+  border: 3px solid var(--table-details-bg);
+  border-top: none;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+/* Pager — real .k-grid-pager: text page links; selected = --pagination-active-bg */
+.ds-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px;
+  font-size: 0.75rem;
+  color: var(--page-text-color);
+  border: 1px solid var(--border-color);
+  border-top: none;
+}
+
+.ds-pager-page {
+  min-width: 22px;
+  padding: 2px 6px;
+  font-weight: 400;
+  text-align: center;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.ds-pager-page-selected {
+  color: var(--pagination-active-text);
+  background: var(--pagination-active-bg);
+}
+
+.ds-pager select {
+  padding: 2px 5px;
+  color: var(--pagination-select-text);
+  background: var(--pagination-select-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 2px;
+}
+
+/* Spec / reference data table (key → value) */
+.ds-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-color);
+}
+
+.ds-spec-table th,
+.ds-spec-table td {
+  text-align: left;
+  border: 1px solid var(--border-color);
+}
+
+.ds-spec-table th {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ds-spec-table td {
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--text-color-common-primery);
+}
+
+// ── Re-skin the kit a-date-picker / a-time-picker to the product's NAVY branding ──
+// Storybook loads the kit's precompiled Ant CSS (default BLUE accents); the product recompiles Ant
+// to navy via index.less (not loaded here). Map the calendar accents to the product tokens so the
+// MDatePicker / MTimePicker match the product branding.
+// `!important` because the kit's precompiled Ant CSS hardcodes its cyan primary on these; the product
+// overrides the same way. Forces the product's navy onto the selection / today / Ok.
+.ant-calendar-today .ant-calendar-date {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.ant-calendar-selected-day .ant-calendar-date,
+.ant-calendar-selected-date .ant-calendar-date,
+.ant-calendar-selected-start-date .ant-calendar-date,
+.ant-calendar-selected-end-date .ant-calendar-date {
+  color: var(--page-background-color) !important;
+  background: var(--calendar-selected-day-background-color) !important;
+}
+
+.ant-calendar-date:hover,
+.ant-calendar-time-picker-select li:hover {
+  background: var(--neutral-lighter) !important;
+}
+
+.ant-calendar-header a:hover,
+.ant-calendar-month-panel-month:hover,
+.ant-calendar-year-panel-year:hover {
+  color: var(--primary) !important;
+}
+
+.ant-calendar-ok-btn {
+  color: var(--page-background-color) !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.ant-calendar-time-picker-select li.ant-calendar-time-picker-select-option-selected {
+  font-weight: 600;
+  background: var(--neutral-lighter);
+}
