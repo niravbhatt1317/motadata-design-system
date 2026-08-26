@@ -1,0 +1,67 @@
+name: DS validation
+
+# Lightweight checks on every PR to main (and pushes to main). Runs the DS's own
+# validators — no npm install, no product tree needed (the full Storybook/vite build
+# can't run here because it reads from the product; those checks are intentionally omitted).
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 1. Every registry / recipe / index / token JSON must parse.
+      - name: JSON validity
+        run: |
+          bad=0
+          for f in $(find components tokens layout foundation -name '*.json' 2>/dev/null); do
+            node -e "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))" "$f" \
+              || { echo "::error file=$f::invalid JSON"; bad=1; }
+          done
+          exit $bad
+
+      # 2. index.json counts must match reality (catches "added a component but didn't update counts").
+      - name: Counts integrity (index.json)
+        run: |
+          node -e '
+            const idx = require("./components/index.json");
+            const c = idx.counts || {}, comps = idx.components || [];
+            let bad = 0;
+            const chk = (name, exp, got) => { if (exp !== got) { console.error(`::error::${name}: stored ${exp} but computed ${got}`); bad = 1; } };
+            chk("counts.components", c.components, comps.length);
+            chk("counts.families", c.families, Object.keys(idx.families || {}).length);
+            for (const k of Object.keys(c.coverage || {})) chk(`counts.coverage.${k}`, c.coverage[k], comps.filter(x => x.has && x.has[k] === true).length);
+            process.exit(bad);
+          '
+
+      # 3. The published spec package must stay in sync with the source registries
+      #    (edit a registry -> you must `node scripts/build-spec-package.js` and commit package/).
+      - name: Spec package in sync with registries
+        run: |
+          if ! diff -rq components/registry package/components/registry; then
+            echo "::error::components/registry and package/components/registry differ — run 'node scripts/build-spec-package.js' and commit package/."
+            exit 1
+          fi
+
+      # 4. The spec package validates (tokens resolve, no strict errors).
+      - name: Validate spec package
+        run: node scripts/validate-spec.js
+
+      # 5. Full registry schema-completeness report — ADVISORY (there is pre-existing
+      #    schema debt on some foundation registries; this surfaces it without blocking).
+      - name: Registry schema report (advisory)
+        continue-on-error: true
+        run: node scripts/validate-registries.mjs
