@@ -5,8 +5,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { pageHtml, indexHtml, iconsPageHtml, logosPageHtml, buildWithAiPageHtml, setBrandHtml } from './lib/templates.mjs'
+import { pageHtml, indexHtml, iconsPageHtml, logosPageHtml, buildWithAiPageHtml, chartsOverviewPageHtml, chartCategoryPageHtml, CHART_CATEGORIES, setBrandHtml } from './lib/templates.mjs'
 import { controlAttr } from './lib/controls.mjs'
+import { productRoot } from '../scripts/lib/product-root.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const SITE = __dirname
@@ -14,6 +15,85 @@ const LIB = path.resolve(SITE, '..') // components-lib/
 const REG = path.resolve(LIB, '..', 'components', 'registry')
 const CSS_DIST = path.resolve(LIB, '..', 'css-package', 'dist', 'observeops-ds.css')
 const OUT = path.join(SITE, 'dist')
+const FIXTURES = path.join(SITE, 'fixtures')
+const ROOT = productRoot() // product checkout (assets/engine source); null → site still builds, asset pages skip
+
+/**
+ * The charting engine is a PEER DEPENDENCY and is never committed. For local preview we copy it
+ * out of whichever node_modules can supply it; if none can, the Charts page still builds and says
+ * so plainly rather than rendering blank.
+ */
+function resolveEngine() {
+  const candidates = [
+    path.resolve(LIB, 'node_modules', 'highcharts'),
+    ROOT ? path.join(ROOT, 'node_modules', 'highcharts') : null,
+  ].filter(Boolean)
+  const MODULES = ['highcharts-more', 'modules/solid-gauge', 'modules/sankey', 'modules/heatmap', 'modules/treemap', 'modules/no-data-to-display', 'modules/map']
+  for (const base of candidates) {
+    const main = path.join(base, 'highcharts.js')
+    if (!fs.existsSync(main)) continue
+    const vendor = path.join(OUT, 'vendor')
+    fs.mkdirSync(vendor, { recursive: true })
+    fs.copyFileSync(main, path.join(vendor, 'highcharts.js'))
+    const mods = []
+    for (const m of MODULES) {
+      const src = path.join(base, `${m}.js`)
+      if (!fs.existsSync(src)) continue
+      const name = `${m.replace('modules/', '')}.js`
+      fs.copyFileSync(src, path.join(vendor, name))
+      mods.push(`./vendor/${name}`)
+    }
+    let version = ''
+    try { version = JSON.parse(read(path.join(base, 'package.json'))).version } catch {}
+    // the map widget's world geometry (the product pins @highcharts/map-collection's
+    // custom/world-india-disputed topo) + Leaflet for the Online Map type. Local-only like the engine.
+    let mapTopo = null
+    const topoSrc = ROOT ? path.join(ROOT, 'node_modules', '@highcharts', 'map-collection', 'custom', 'world-india-disputed.topo.json') : ''
+    if (exists(topoSrc)) {
+      fs.copyFileSync(topoSrc, path.join(vendor, 'world-map.topo.json'))
+      mapTopo = './vendor/world-map.topo.json'
+    }
+    let leaflet = null
+    const ldir = ROOT ? path.join(ROOT, 'node_modules', 'leaflet', 'dist') : ''
+    if (exists(path.join(ldir, 'leaflet.js'))) {
+      const lv = path.join(vendor, 'leaflet')
+      fs.mkdirSync(lv, { recursive: true })
+      fs.copyFileSync(path.join(ldir, 'leaflet.js'), path.join(lv, 'leaflet.js'))
+      fs.copyFileSync(path.join(ldir, 'leaflet.css'), path.join(lv, 'leaflet.css'))
+      leaflet = { js: './vendor/leaflet/leaflet.js', css: './vendor/leaflet/leaflet.css' }
+    }
+    return { src: './vendor/highcharts.js', modules: mods, version, mapTopo, leaflet }
+  }
+  return null
+}
+
+/** Copy fixtures into dist and summarise them for the Charts page. */
+function loadFixtures() {
+  if (!fs.existsSync(FIXTURES)) return []
+  const dst = path.join(OUT, 'fixtures')
+  fs.mkdirSync(dst, { recursive: true })
+  const out = []
+  for (const f of fs.readdirSync(FIXTURES).filter((x) => x.endsWith('.json'))) {
+    fs.copyFileSync(path.join(FIXTURES, f), path.join(dst, f))
+    const j = JSON.parse(read(path.join(FIXTURES, f)))
+    const id = f.replace(/\.json$/, '')
+    const cfg = j.config || {}
+    // config fixtures carry their series; result-payload fixtures (custom-renderer families)
+    // carry them under result.Chart.series — count whichever exists so badges stay honest
+    const series = (cfg.series || []).length || (j.result?.Chart?.series || j.result?.series || []).length
+    const eng = j.engines || {}
+    out.push({
+      id,
+      display: id.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+      widgetType: j.variant?.widgetType || null,
+      series,
+      hasConfig: !!cfg.chart || series > 0,
+      engine: eng.highcharts ? 'highcharts' : eng.leaflet ? 'leaflet' : eng.table ? 'table' : (cfg.chart ? 'highcharts' : 'custom'),
+    })
+  }
+  // engine-rendered first, then by name
+  return out.sort((a, b) => (a.id < b.id ? -1 : 1))
+}
 
 // The shipped custom elements (only those with a built element get a page).
 const COMPONENTS = ['button', 'icon', 'tag', 'checkbox', 'switch', 'selected-pills', 'radio', 'input', 'link', 'dropdown', 'severity', 'loose-tags',
@@ -84,11 +164,28 @@ async function main() {
   })
   const components = built.map((b) => ({ id: b.id, display: b.registry.display, summary: b.registry.summary || '',
     section: b.registry.section || 'Components', family: b.registry.family || '' }))
+  // Charts are generated pages (not manifest-driven element pages), so their nav entries are added
+  // here and the list re-sorted with the same comparator. All chart pages share the 'Charts' family,
+  // which the sidebar renderer turns into a collapsible sub-group whose LINKED HEADER is the overview
+  // (navGroupLink) followed by the category pages — no self-referential "Charts" child entry.
+  components.push({ id: 'charts', display: 'Charts', summary: 'Every product chart variant, rendered from captured configurations.',
+    section: 'Components', family: 'Charts', navGroupLink: true })
+  for (const cat of CHART_CATEGORIES) {
+    components.push({ id: 'charts-' + cat.id, display: cat.display, summary: cat.blurb,
+      section: 'Components', family: 'Charts' })
+  }
+  components.sort((a, b) => {
+    const ar = a.section === 'Foundations' ? 0 : 1
+    const br = b.section === 'Foundations' ? 0 : 1
+    if (ar !== br) return ar - br
+    if ((a.family || '') !== (b.family || '')) return (a.family || '').localeCompare(b.family || '')
+    return a.display.localeCompare(b.display)
+  })
 
   // assets + bundle + token css
   copyDir(path.join(SITE, 'assets'), OUT)
   // brand: use the product's Motadata DONUT ICON (icon-only mark) as the nav brand (light + dark variants)
-  const logoDir = path.resolve(LIB, '..', '..', 'src', 'assets', 'images', 'logo')
+  const logoDir = ROOT ? path.join(ROOT, 'src', 'assets', 'images', 'logo') : ''
   let brand = ''
   if (exists(path.join(logoDir, 'motadata.png'))) {
     fs.copyFileSync(path.join(logoDir, 'motadata.png'), path.join(OUT, 'brand-logo.png'))
@@ -118,6 +215,38 @@ async function main() {
   }
   fs.writeFileSync(path.join(OUT, 'index.html'), indexHtml(components, version, tokenCssHref, assetV))
   fs.writeFileSync(path.join(OUT, 'build-with-ai.html'), buildWithAiPageHtml(components, version, tokenCssHref, assetV, bundleSrc))
+  // Charts — captured configurations rendered through the real engine. One overview page + one page
+  // per category. COVERAGE IS FAIL-CLOSED: every fixture file must be claimed by exactly one
+  // category entry — an uncategorised capture is a bug (a silently missing chart), not a skip.
+  const fixtures = loadFixtures()
+  const engine = resolveEngine()
+  const categorised = new Set(CHART_CATEGORIES.flatMap((c) => c.sections.flatMap((s) => s.fixtures.map(([id]) => id))))
+  const known = new Set(fixtures.map((f) => f.id))
+  for (const id of categorised) {
+    if (!known.has(id)) console.warn(`  ⚠ category references missing fixture: ${id}.json`)
+  }
+  for (const f of fixtures) {
+    if (!categorised.has(f.id)) console.warn(`  ⚠ fixture ${f.id}.json matches NO category — file it into CHART_CATEGORIES (fail-closed: charts must not silently disappear)`)
+  }
+  const chartNav = [{ id: 'charts', display: 'Charts' }, ...CHART_CATEGORIES.map((c) => ({ id: 'charts-' + c.id, display: c.display }))]
+  fs.writeFileSync(path.join(OUT, 'charts.html'), chartsOverviewPageHtml({
+    categories: CHART_CATEGORIES, fixtures, components, version, tokenCssHref, assetV,
+    engineSrc: engine?.src || null, engineModules: engine?.modules || [],
+  }))
+  for (let i = 0; i < CHART_CATEGORIES.length; i++) {
+    const cat = CHART_CATEGORIES[i]
+    // arrows walk the overview → every category in declared order
+    const prev = i === 0 ? chartNav[0] : chartNav[i]
+    const next = chartNav[i + 2] || null
+    fs.writeFileSync(path.join(OUT, `charts-${cat.id}.html`), chartCategoryPageHtml({
+      cat, fixtures, components, version, tokenCssHref, assetV, bundleSrc,
+      engineSrc: engine?.src || null, engineModules: engine?.modules || [],
+      mapTopo: engine?.mapTopo || null, leaflet: engine?.leaflet || null, prev, next,
+    }))
+  }
+  if (!fixtures.length) console.warn('  ⚠ no fixtures — charts pages will be empty')
+  else if (!engine) console.warn(`  ⚠ charting engine not installed — charts pages built with ${fixtures.length} fixtures but cannot render`)
+  else console.log(`✓ charts — overview + ${CHART_CATEGORIES.length} category pages, ${fixtures.length} fixtures, engine v${engine.version} (${engine.modules.length} modules, local only)`)
   // Icons page — extract the product's real icon set from src/assets/icons/icons.js (build-time only).
   const icons = await loadProductIcons()
   if (icons.length) {
@@ -183,7 +312,7 @@ function titleize(s) { return String(s).replace(/[-_]+/g, ' ').replace(/\b\w/g, 
  *  Parses via a text→CJS transform (NOT `import()`): icons.js is a typeless ESM file that Node 18 (the
  *  deploy runtime) can't dynamically import — so we rewrite `export const X =` → `exports.X =` and eval it. */
 async function loadProductIcons() {
-  const p = path.resolve(LIB, '..', '..', 'src', 'assets', 'icons', 'icons.js')
+  const p = ROOT ? path.join(ROOT, 'src', 'assets', 'icons', 'icons.js') : ''
   if (!exists(p)) return []
   try {
     const cjs = read(p).replace(/export\s+const\s+/g, 'exports.')
@@ -258,7 +387,7 @@ function lineSvg(pathMarkup) {
 
 /** Extract the product's logo library: color monitor-type logos, monochrome line-icons, brand + software logos. */
 function loadProductLogos() {
-  const SRC = path.resolve(LIB, '..', '..', 'src', 'assets')
+  const SRC = ROOT ? path.join(ROOT, 'src', 'assets') : ''
   const out = []
   let uid = 0 // per-svg id namespace, so shared gradient/clip ids across logos don't collide on one page
   // 1) color monitor-type logos (242 SVGs)

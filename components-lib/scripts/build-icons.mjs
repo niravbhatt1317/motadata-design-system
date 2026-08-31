@@ -5,10 +5,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { productRoot } from './lib/product-root.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const LIB = path.resolve(HERE, '..')
-const SRC = path.resolve(LIB, '..', '..', 'src', 'assets', 'icons', 'icons.js')
+const ROOT = productRoot()
+if (!ROOT) {
+  console.error('✗ product checkout not found — set OBSERVEOPS_ROOT or clone ObserveOps at ../PROJECT/ObserveOps')
+  process.exit(1)
+}
+const SRC = path.join(ROOT, 'src', 'assets', 'icons', 'icons.js')
 const OUT = path.resolve(LIB, 'src', 'elements', '_icons.js')
 
 // obs-* shorthand names that map to a differently-named product icon (kept working, not a second library).

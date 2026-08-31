@@ -9,10 +9,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { productRoot } from './lib/product-root.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const LIB = path.resolve(HERE, '..')
-const ASSETS = path.resolve(LIB, '..', '..', 'src', 'assets', 'icons')
+const ROOT = productRoot()
+if (!ROOT) {
+  console.error('✗ product checkout not found — set OBSERVEOPS_ROOT or clone ObserveOps at ../PROJECT/ObserveOps')
+  process.exit(1)
+}
+const ASSETS = path.join(ROOT, 'src', 'assets', 'icons')
 const SRC = path.join(ASSETS, 'monitor-type-icons', 'icons')
 const LINE_SRC = path.join(ASSETS, 'monitor-type-line-icons', 'monitor-type-line-icons.js')
 const OUT = path.resolve(LIB, 'src', 'elements', '_logos.js')
@@ -64,7 +70,7 @@ for (const f of fs.readdirSync(SRC).filter((x) => x.endsWith('.svg'))) {
 }
 // brand + software marks (images/logo, images/software-logos): SVG → inline; PNG → base64 data-URI (obs-logo renders
 // either). Skip *_dark duplicates. Lower-case the key so names are consistent (SEBI → sebi).
-const IMG = path.resolve(LIB, '..', '..', 'src', 'assets', 'images')
+const IMG = ROOT ? path.join(ROOT, 'src', 'assets', 'images') : null
 const addImages = (dir, skipDark) => {
   if (!fs.existsSync(dir)) return
   // process SVG before PNG so when BOTH exist for one name (e.g. motadata_full.svg + .png) the VECTOR wins —

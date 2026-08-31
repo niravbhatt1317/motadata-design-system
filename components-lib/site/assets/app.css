@@ -55,6 +55,13 @@ code, pre, .props td:first-child { font-family: var(--mono); }
 .nav-grp-h .nav-chev { width: 9px; height: 9px; opacity: .45; }
 .nav-sub-h { font-size: 13.5px; font-weight: 500; color: var(--neutral-regular, #516381); padding: 5px 8px; margin: 2px 0; }
 .nav-sub-h:hover { background: var(--neutral-lighter, #e3e8f2); }
+/* linked sub-group header (Charts): the label navigates to the family's overview page, the
+   chevron-only button keeps the collapse toggle — clicking one must not do the other's job */
+.nav-sub-link { flex: 1; text-decoration: none; font-weight: 600; color: var(--page-text-color); }
+.nav-sub-link:hover { color: var(--primary, #111c2c); }
+.nav-sub-link.active { color: var(--primary, #111c2c); }
+.nav-sub-chev { display: flex; align-items: center; border: 0; background: none; padding: 2px 4px; cursor: pointer; border-radius: 4px; color: inherit; }
+.nav-sub-chev:hover { background: var(--neutral-lighter, #e3e8f2); }
 .nav-chev { flex-shrink: 0; opacity: .7; transition: transform .18s ease; }
 .nav-grp.collapsed > .nav-grp-h .nav-chev, .nav-sub.collapsed > .nav-sub-h .nav-chev { transform: rotate(-90deg); }
 .nav-grp.collapsed > .nav-grp-body, .nav-sub.collapsed > .nav-sub-body { display: none; }

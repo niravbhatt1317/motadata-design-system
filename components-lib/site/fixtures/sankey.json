@@ -1,0 +1,76 @@
+{
+  "$fixture": "sankey",
+  "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
+  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised.",
+  "variant": {
+    "category": "Sankey"
+  },
+  "engines": {
+    "highcharts": true,
+    "leaflet": false,
+    "table": false
+  },
+  "config": {},
+  "result": {
+    "name": "Flow",
+    "keys": [
+      "from",
+      "to",
+      "weight",
+      "rowId"
+    ],
+    "counter": "metric.series.v1",
+    "type": "sankey",
+    "data": [
+      [
+        "198.51.100.1",
+        "198.51.100.2",
+        21418547340,
+        "dfdc4e9c-1f69-4369-867e-7258767c236d"
+      ],
+      [
+        "198.51.100.3",
+        "198.51.100.4",
+        15771059670,
+        "07fda923-bad6-4630-a144-049e633e70e6"
+      ],
+      [
+        "198.51.100.5",
+        "198.51.100.6",
+        13910514204,
+        "b82026e1-071f-4313-9435-963346a27991"
+      ],
+      [
+        "198.51.100.7",
+        "198.51.100.8",
+        13306407156,
+        "3197fbc0-990e-48d1-a9f7-e6824d8e019d"
+      ],
+      [
+        "198.51.100.9",
+        "198.51.100.10",
+        11159069355,
+        "acc08d93-c047-4c68-996f-f9f6253ca49d"
+      ],
+      [
+        "198.51.100.9",
+        "198.51.100.11",
+        9140620361.25,
+        "41c51b3d-f87c-4a29-baa4-e90bacc4d6d8"
+      ],
+      [
+        "198.51.100.1",
+        "198.51.100.12",
+        5109778080,
+        "980cdafc-d1b9-4a0a-9356-14739efb7174"
+      ],
+      [
+        "198.51.100.13",
+        "198.51.100.14",
+        4377981870,
+        "bcef2888-cd0a-4274-81d6-a5e17d9a03fc"
+      ]
+    ],
+    "linkOpacity": 0.4
+  }
+}
