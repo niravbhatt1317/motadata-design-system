@@ -136,8 +136,8 @@
     },
     {
       "path": "components/registry/icon.json",
-      "bytes": 20704,
-      "sha256": "96a5b38653e79cd9d87a2e0a91dceec55029cc9ed61f430fc7ea80d6a122ce5b"
+      "bytes": 21143,
+      "sha256": "eb1e74dc7bc38215cf79bad241d704d75087aa120ff0be346aa16b4da2cb00bd"
     },
     {
       "path": "components/registry/input.json",

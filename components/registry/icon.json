@@ -4,7 +4,7 @@
   "tier": "atom",
   "family": "Foundation",
   "status": "stable",
-  "summary": "The reusable icon element (<obs-icon>) — renders a real product glyph from the shared library (_icons.js, extracted from src/assets/icons/icons.js; ~548 glyphs) by `name`. Accepts kebab (chevron-double-left) or camelCase (chevronDoubleLeft). Reactive: change `name` and the glyph swaps. Inherits the surrounding text color (currentColor) and takes a px/CSS-length `size`. Renders per-icon fill-rule/clip-rule, so glyphs with holes/overlaps (e.g. the theme-auto half-circle) draw correctly. Decorative by default; pass `label` for an accessible name. This is how any icon should be used across the DS — never hand-drawn/inlined SVG.",
+  "summary": "The reusable icon element (<obs-icon>) — renders a real product glyph from the shared library (_icons.js, extracted from src/assets/icons/icons.js; ~635 glyphs) by `name`. Accepts kebab (chevron-double-left) or camelCase (chevronDoubleLeft). Reactive: change `name` and the glyph swaps. Inherits the surrounding text color (currentColor) and takes a px/CSS-length `size`. Renders per-icon fill-rule/clip-rule, so glyphs with holes/overlaps (e.g. the theme-auto half-circle) draw correctly. Decorative by default; pass `label` for an accessible name. This is how any icon should be used across the DS — never hand-drawn/inlined SVG.",
   "props": {
     "name": {
       "type": "string",
@@ -42,6 +42,7 @@
     "Some product glyphs need EVEN-ODD fill (holes/overlapping paths — e.g. the theme-auto half-circle). The icon data carries a per-glyph `fr:\"evenodd\"` (set in build-icons.mjs) and obs-icon applies fill-rule/clip-rule so they render correctly; a new such glyph must be added to that even-odd set."
   ],
   "changelog": [
+    "2026-09-02 — Restored 5 icons (chevron-double-left, custom-report, moon, sun, theme-auto) + grip-vertical that were dropped when the widget-charts PR (#2) regenerated the icon library from a divergent product checkout; kept as a union with the 82 chart/monitoring icons that PR added. See task: fix icon/logo generated-file drift.",
     "2026-08-12 — Catalogued in components/index.json (was registry-only) so MCP search_components / get_component resolve it — an AI can now discover this element, not just its icon names. Added the required variants/sizes/states/related fields (obs-icon has no discrete variants/sizes/states — size is a freeform prop).",
     "2026-08-12 — Added the custom-report glyph (a folded-corner document with a person badge; 48×48, even-odd) to the library. Available as obs-icon name=\"custom-report\" and in the Assets → Icons gallery (with SVG/PNG download). Extended the Assets gallery render + SVG/PNG export to honor per-icon fill-rule so even-odd glyphs draw correctly there too. Also shipped an icon NAME manifest (icon.json names) + MCP list_icons / resolve_icon tools so AI can discover every glyph name (parallel to logos) and never hand-draw an icon.",
     "2026-08-09 — Added an OPEN-padlock glyph `lockOpen` (aliases unlock/lockOpenAlt) in the product 48×48 solid style, verified to pair with lockAlt at 14–20px — closes the G3 gap (there was no open padlock; consumers fell back to globe). unlockAlt remains the undo arrow (undo/rotateLeft).",
@@ -69,7 +70,7 @@
     }
   },
   "names": {
-    "total": 630,
+    "total": 635,
     "list": [
       "access-key",
       "accesses",
@@ -158,6 +159,7 @@
       "check",
       "check-circle",
       "check-point",
+      "chevron-double-left",
       "chevron-double-right",
       "chevron-down",
       "chevron-left",
@@ -209,6 +211,7 @@
       "cube",
       "custom",
       "custom-dashboard",
+      "custom-report",
       "dashboard",
       "data-element",
       "data-mover",
@@ -445,6 +448,7 @@
       "monitor-enable",
       "monitor-export",
       "monitor-import",
+      "moon",
       "mount-targets",
       "move-up",
       "multi-cluster",
@@ -615,6 +619,7 @@
       "subject-alternative-names",
       "success-message",
       "success-rate",
+      "sun",
       "support",
       "swap",
       "sync",
@@ -632,6 +637,7 @@
       "terminal",
       "test-credentials",
       "th-large",
+      "theme-auto",
       "threads",
       "throttled-iops",
       "throughput-status",
