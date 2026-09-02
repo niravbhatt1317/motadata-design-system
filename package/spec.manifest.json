@@ -1,7 +1,7 @@
 {
   "name": "@mtdt/observeops-ds-spec",
-  "version": "0.1.209",
-  "generated": "2026-09-02T10:14:03.074Z",
+  "version": "0.1.210",
+  "generated": "2026-09-02T10:56:30.205Z",
   "entry": "llms.txt",
   "contract": "AGENTS.md",
   "playbook": "authoring-playbook.md",
@@ -11,7 +11,7 @@
     "registries": 55,
     "recipes": 17,
     "specs": 32,
-    "files": 119
+    "files": 153
   },
   "files": [
     {
@@ -28,6 +28,176 @@
       "path": "authoring-playbook.md",
       "bytes": 9154,
       "sha256": "8fd9f09c9423df052e30201ca1315fab455f3780fd26a61fee8510aebfa3b337"
+    },
+    {
+      "path": "charts/fixtures/README.md",
+      "bytes": 2052,
+      "sha256": "4c3ebc7c01deef6322e6830ca71d9cbc13f90a47bb02a976d30ad6abceac3b97"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-area.json",
+      "bytes": 547089,
+      "sha256": "fa16e04b1d00c0b3edcdd12d12bbe27780edc113ad04b2927de69c8f0e43b1d1"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-cpu.json",
+      "bytes": 102324,
+      "sha256": "ad21ecc8eee47e30a5ea190b354c7c7d0b7ccf0ec132d524e96d89decc820067"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-horizontal-bar.json",
+      "bytes": 16514,
+      "sha256": "b7b9e4b0c1fbacb4316529216bc511cce19c8f8992dc5de3a9fe3ed5b9ea6faf"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-line.json",
+      "bytes": 547115,
+      "sha256": "bb67e04dc49618d4e0dbf68f9dca8b9e21966dc60f6f7b16a2b41a266dd25e97"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-stacked-area.json",
+      "bytes": 547143,
+      "sha256": "3eb196b26cf34c36174e84265b8190068733d936926e89c3149bbd50dfb2dd47"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-stacked-horizontal-bar.json",
+      "bytes": 16505,
+      "sha256": "ead206908fb0475fdfb85ea09f2a17ec77391a7b7603db4c82237777ac1d7f6d"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-stacked-line.json",
+      "bytes": 547169,
+      "sha256": "27e26cc595eabc334ea049f85061b0ed2407f6b88e7110afe226f988c5af9db6"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-stacked-vertical-bar.json",
+      "bytes": 16502,
+      "sha256": "b9857fae3d9844fa9decee4671fa5c0c4251d89a39fbf07ab466f81593df76f0"
+    },
+    {
+      "path": "charts/fixtures/chart-multi-vertical-bar.json",
+      "bytes": 16511,
+      "sha256": "c6e2a557277457b46f912f57add225d3059eb663c0f0f4cfbda5e4d1e46bc1a5"
+    },
+    {
+      "path": "charts/fixtures/chart-single-anomaly.json",
+      "bytes": 13943,
+      "sha256": "51197c2bd11aa5fd7c11629b2e7da38a544f2dc95a63e9a709f72fbaeb208da1"
+    },
+    {
+      "path": "charts/fixtures/chart-single-area.json",
+      "bytes": 21041,
+      "sha256": "39346ba88cd1d46255b9439a5ab38ef0732fa79f50bf6efc639c0a11543ee2e7"
+    },
+    {
+      "path": "charts/fixtures/chart-single-donut.json",
+      "bytes": 7897,
+      "sha256": "6908031aabcbbf864ce2f52251bf8637abdf510c083cdd4d86ab082ec76643d8"
+    },
+    {
+      "path": "charts/fixtures/chart-single-forecast.json",
+      "bytes": 6160,
+      "sha256": "89171a138451cda18f6586a7525a32688cd80895cdadc9e1dadc38d9ff8082fc"
+    },
+    {
+      "path": "charts/fixtures/chart-single-horizontal-bar.json",
+      "bytes": 7582,
+      "sha256": "72116fd7bcf6c5e6c84f9b728de5fd6344209571e89395b17e33c4e2d0851d5b"
+    },
+    {
+      "path": "charts/fixtures/chart-single-line.json",
+      "bytes": 21067,
+      "sha256": "b2b78751677f4302ad6dea5f6fde774c8c790c410a344d8efd0a6b7c682edaae"
+    },
+    {
+      "path": "charts/fixtures/chart-single-memory.json",
+      "bytes": 15289,
+      "sha256": "fb5c377f75f9262e04dee1e66af346e9d699f559b6bbb12d3db0825780f38529"
+    },
+    {
+      "path": "charts/fixtures/chart-single-pie.json",
+      "bytes": 7856,
+      "sha256": "4664c8d8357e2aadd251522acc2d085552ff093860e9720a55e8eaab6f738ad5"
+    },
+    {
+      "path": "charts/fixtures/chart-single-stacked-area.json",
+      "bytes": 21088,
+      "sha256": "a9d6e6f104556b874cace765a71341c24d3b54371ac26a7701ea36c0b4d1b5db"
+    },
+    {
+      "path": "charts/fixtures/chart-single-stacked-horizontal-bar.json",
+      "bytes": 7566,
+      "sha256": "9bb67a999cfc2a3906af3b95fc963a4576dd1a85d43398839ba051926ab77614"
+    },
+    {
+      "path": "charts/fixtures/chart-single-stacked-line.json",
+      "bytes": 21114,
+      "sha256": "14cc2413d0b91ab1d431c9c0561d14e44773d47a1a6afebe1629d0ecb38cfb1c"
+    },
+    {
+      "path": "charts/fixtures/chart-single-stacked-vertical-bar.json",
+      "bytes": 7565,
+      "sha256": "e083a4fc8b2459caa36605e1ff9518919a91c90c8a552df65c29cea6b3f1ca4d"
+    },
+    {
+      "path": "charts/fixtures/chart-single-vertical-bar.json",
+      "bytes": 7581,
+      "sha256": "8afaa895c5205a0e59932331e56d537f9bbae4981fc5cad2cfdbcedc9b419f0a"
+    },
+    {
+      "path": "charts/fixtures/gauge-dial.json",
+      "bytes": 571,
+      "sha256": "cdacb751c050c0433001a325b58652a9a1aaa0275d441b03deba66a415a292dd"
+    },
+    {
+      "path": "charts/fixtures/gauge-number.json",
+      "bytes": 572,
+      "sha256": "b85509940b7ab23efd5b60edcb98aa0805eb674fe60765503303e0b5394d0401"
+    },
+    {
+      "path": "charts/fixtures/heatmap-host.json",
+      "bytes": 2904,
+      "sha256": "f0653852c9f83290de031ef3cc7fecc2f32dfe649fc0fbfc5a6dc0ad3fcbde8c"
+    },
+    {
+      "path": "charts/fixtures/heatmap-palette.json",
+      "bytes": 3042,
+      "sha256": "b91082bbadd8e69d9e8b5aa062ec7e516de239e6fd989bfc19f96dd46d0ffc68"
+    },
+    {
+      "path": "charts/fixtures/heatmap.json",
+      "bytes": 3712,
+      "sha256": "3cd49175a6453ba65e8fbeb0c3ce421ba15b3c67d0925378bebbedd2d890209b"
+    },
+    {
+      "path": "charts/fixtures/map-points.json",
+      "bytes": 2664,
+      "sha256": "bc90b4763a6b5f966d018a09151b4f5fc9ac27f5b281a31be33cdb2edf44302c"
+    },
+    {
+      "path": "charts/fixtures/map.json",
+      "bytes": 15489,
+      "sha256": "ed6403eab4fc1d6735f349436e14cb2d5dc0b20e675092e5d38ae54a45b22cdd"
+    },
+    {
+      "path": "charts/fixtures/sankey.json",
+      "bytes": 1664,
+      "sha256": "c6c1a27ee835ac8ca233bd6df571554502723f5a018e4fd6a9bc8f650a21d5f6"
+    },
+    {
+      "path": "charts/fixtures/topn-views.json",
+      "bytes": 1357,
+      "sha256": "dea08391305ce6b700226398e254bf4e397b7560b575fbb33920ccfefab13d78"
+    },
+    {
+      "path": "charts/fixtures/topn.json",
+      "bytes": 97110,
+      "sha256": "d94f6d0f2082cc99e4a057662004bbf2818c7789b5b4ccb77ebee8af49296a24"
+    },
+    {
+      "path": "charts/manifest.json",
+      "bytes": 11233,
+      "sha256": "317eecbd69f63a20e199ac5e246df2d423405bfe5c52c56884c91cc056c4b53d"
     },
     {
       "path": "components/index.json",
@@ -96,8 +266,8 @@
     },
     {
       "path": "components/registry/data-viz.json",
-      "bytes": 11793,
-      "sha256": "c6795f42631b95a967ee33cfbb3242e07e45a2474a0243a8e4987a5bd437017b"
+      "bytes": 17167,
+      "sha256": "e9b83412a66cd5088fedf056248a38f47e3a5a41862120ebc7ca4f1c14eb8f8b"
     },
     {
       "path": "components/registry/date-time-pickers.json",
@@ -551,13 +721,13 @@
     },
     {
       "path": "llms.txt",
-      "bytes": 4074,
-      "sha256": "545b808359de64898b49d6b1ef6bb84f0cfe9476e1b17011d47195e703968236"
+      "bytes": 4586,
+      "sha256": "35434cbf392af59badab1e0fd94c78d2f2a993be01b1dd2cb6fda58f21e33757"
     },
     {
       "path": "package.json",
       "bytes": 1125,
-      "sha256": "df823386fc3d8f0f40202d870c11d0ced5f166c1570c6c07e7161e9f2e135326"
+      "sha256": "a27637914e3ceafb60f400474dc9e7839d17f6dc8c74c7fec858e87be0090b2a"
     },
     {
       "path": "tokens/README.md",

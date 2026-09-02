@@ -1,0 +1,369 @@
+{
+  "$note": "The DS now ships 32 CAPTURED chart configurations across 9 categories — the product's own chart-builder output, sanitised. They are shipped in this spec package under `charts/` (config JSON per fixture) with an index at `charts/manifest.json`, and are shown live at the showcase `…/elements/charts.html` (overview + a page per category). HOW TO USE: pick the category below, take the matching fixture's `config` and render it with Highcharts v10 — `Highcharts.chart(el, config)` (the custom-engine ones — gauge, heat-map, anomaly, forecast, some map/top-n — carry a `result` payload instead, drawn by a small custom renderer, not Highcharts). KNOWN GAPS (captured, not guessed): (1) formatter FUNCTIONS cannot be serialised — a \"«fn»\" marker means the product had a formatter there, so tooltips/axis labels fall back to engine defaults; (2) fixtures were captured in the product's DARK theme — a light-theme capture is still pending. Colour series from the categorical palette / severity tokens, never the brand navy --primary.",
+  "engine": "Highcharts v10 (+ highcharts-more, solid-gauge, sankey, heatmap, treemap, map, no-data-to-display); Leaflet for the online map",
+  "total": 32,
+  "categories": [
+    {
+      "key": "time-series",
+      "title": "Time Series",
+      "engine": "highcharts",
+      "useWhen": "trend over time — line/area/vertical+horizontal bar, each stacked; single- and multi-counter",
+      "fixtures": [
+        "chart-single-line",
+        "chart-single-area",
+        "chart-single-vertical-bar",
+        "chart-single-horizontal-bar",
+        "chart-single-stacked-line",
+        "chart-single-stacked-area",
+        "chart-single-stacked-vertical-bar",
+        "chart-single-stacked-horizontal-bar",
+        "chart-single-memory",
+        "chart-multi-line",
+        "chart-multi-area",
+        "chart-multi-cpu",
+        "chart-multi-vertical-bar",
+        "chart-multi-horizontal-bar",
+        "chart-multi-stacked-line",
+        "chart-multi-stacked-area",
+        "chart-multi-stacked-vertical-bar",
+        "chart-multi-stacked-horizontal-bar"
+      ]
+    },
+    {
+      "key": "topn-views",
+      "title": "Top N Views",
+      "engine": "highcharts + custom",
+      "useWhen": "the leaders — solid-gauge grid, packed bubble, tree view (one payload drives all three)",
+      "fixtures": [
+        "topn",
+        "topn-views"
+      ]
+    },
+    {
+      "key": "distribution",
+      "title": "Distribution (Pie / Donut)",
+      "engine": "highcharts",
+      "useWhen": "part-to-whole share — pie or donut (≤5 slices)",
+      "fixtures": [
+        "chart-single-pie",
+        "chart-single-donut"
+      ]
+    },
+    {
+      "key": "anomaly",
+      "title": "Anomaly",
+      "engine": "custom",
+      "useWhen": "AI/ML time series — actuals + confidence band, outliers coloured by zone",
+      "fixtures": [
+        "chart-single-anomaly"
+      ]
+    },
+    {
+      "key": "forecast",
+      "title": "Forecast",
+      "engine": "custom",
+      "useWhen": "AI/ML projection past the last actual with a widening confidence range",
+      "fixtures": [
+        "chart-single-forecast"
+      ]
+    },
+    {
+      "key": "gauge",
+      "title": "Gauge",
+      "engine": "custom",
+      "useWhen": "single value vs a threshold/range — solid-gauge dial or numeric metro tile",
+      "fixtures": [
+        "gauge-dial",
+        "gauge-number"
+      ]
+    },
+    {
+      "key": "heat-map",
+      "title": "Heat Map",
+      "engine": "custom",
+      "useWhen": "density across two dimensions (host × metric) — severity honeycomb",
+      "fixtures": [
+        "heatmap",
+        "heatmap-host",
+        "heatmap-palette"
+      ]
+    },
+    {
+      "key": "map",
+      "title": "Map",
+      "engine": "highcharts + leaflet",
+      "useWhen": "geography — country-intensity bubbles / labelled points, or the online Leaflet map",
+      "fixtures": [
+        "map",
+        "map-points"
+      ]
+    },
+    {
+      "key": "sankey",
+      "title": "Sankey",
+      "engine": "highcharts",
+      "useWhen": "flow/volume between source and destination nodes",
+      "fixtures": [
+        "sankey"
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "chart-multi-area",
+      "category": "Chart",
+      "widgetType": "Area",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-area.json"
+    },
+    {
+      "name": "chart-multi-cpu",
+      "category": "Chart",
+      "widgetType": "Area",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-cpu.json"
+    },
+    {
+      "name": "chart-multi-horizontal-bar",
+      "category": "Chart",
+      "widgetType": "HorizontalBar",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-horizontal-bar.json"
+    },
+    {
+      "name": "chart-multi-line",
+      "category": "Chart",
+      "widgetType": "Line",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-line.json"
+    },
+    {
+      "name": "chart-multi-stacked-area",
+      "category": "Chart",
+      "widgetType": "StackedArea",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-stacked-area.json"
+    },
+    {
+      "name": "chart-multi-stacked-horizontal-bar",
+      "category": "Chart",
+      "widgetType": "StackedHorizontalBar",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-stacked-horizontal-bar.json"
+    },
+    {
+      "name": "chart-multi-stacked-line",
+      "category": "Chart",
+      "widgetType": "StackedLine",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-stacked-line.json"
+    },
+    {
+      "name": "chart-multi-stacked-vertical-bar",
+      "category": "Chart",
+      "widgetType": "StackedVerticalBar",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-stacked-vertical-bar.json"
+    },
+    {
+      "name": "chart-multi-vertical-bar",
+      "category": "Chart",
+      "widgetType": "VerticalBar",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-multi-vertical-bar.json"
+    },
+    {
+      "name": "chart-single-anomaly",
+      "category": "Anomaly",
+      "widgetType": null,
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/chart-single-anomaly.json"
+    },
+    {
+      "name": "chart-single-area",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-area.json"
+    },
+    {
+      "name": "chart-single-donut",
+      "category": "TopN",
+      "widgetType": "Donut",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-donut.json"
+    },
+    {
+      "name": "chart-single-forecast",
+      "category": "Forecast",
+      "widgetType": null,
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/chart-single-forecast.json"
+    },
+    {
+      "name": "chart-single-horizontal-bar",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-horizontal-bar.json"
+    },
+    {
+      "name": "chart-single-line",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-line.json"
+    },
+    {
+      "name": "chart-single-memory",
+      "category": "Chart",
+      "widgetType": "Area",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-memory.json"
+    },
+    {
+      "name": "chart-single-pie",
+      "category": "TopN",
+      "widgetType": "Pie",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-pie.json"
+    },
+    {
+      "name": "chart-single-stacked-area",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-stacked-area.json"
+    },
+    {
+      "name": "chart-single-stacked-horizontal-bar",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-stacked-horizontal-bar.json"
+    },
+    {
+      "name": "chart-single-stacked-line",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-stacked-line.json"
+    },
+    {
+      "name": "chart-single-stacked-vertical-bar",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-stacked-vertical-bar.json"
+    },
+    {
+      "name": "chart-single-vertical-bar",
+      "category": null,
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/chart-single-vertical-bar.json"
+    },
+    {
+      "name": "gauge-dial",
+      "category": "Gauge",
+      "widgetType": "SolidGauge",
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/gauge-dial.json"
+    },
+    {
+      "name": "gauge-number",
+      "category": "Gauge",
+      "widgetType": "MetroTile",
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/gauge-number.json"
+    },
+    {
+      "name": "heatmap-host",
+      "category": "HeatMap",
+      "widgetType": "WithHostHeatMap",
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/heatmap-host.json"
+    },
+    {
+      "name": "heatmap-palette",
+      "category": "HeatMap",
+      "widgetType": "PlainHeatMap",
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/heatmap-palette.json"
+    },
+    {
+      "name": "heatmap",
+      "category": "HeatMap",
+      "widgetType": "PlainHeatMap",
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/heatmap.json"
+    },
+    {
+      "name": "map-points",
+      "category": "Map",
+      "widgetType": "Map",
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/map-points.json"
+    },
+    {
+      "name": "map",
+      "category": "Map",
+      "widgetType": "Map",
+      "engine": "highcharts",
+      "payload": "result",
+      "path": "charts/fixtures/map.json"
+    },
+    {
+      "name": "sankey",
+      "category": "Sankey",
+      "widgetType": null,
+      "engine": "highcharts",
+      "payload": "result",
+      "path": "charts/fixtures/sankey.json"
+    },
+    {
+      "name": "topn-views",
+      "category": "TopN",
+      "widgetType": "TopN Solid Gauge View",
+      "engine": "custom",
+      "payload": "result",
+      "path": "charts/fixtures/topn-views.json"
+    },
+    {
+      "name": "topn",
+      "category": "TopN",
+      "widgetType": "Horizontal TopN",
+      "engine": "highcharts",
+      "payload": "config",
+      "path": "charts/fixtures/topn.json"
+    }
+  ]
+}

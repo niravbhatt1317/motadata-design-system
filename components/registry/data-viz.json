@@ -4,7 +4,7 @@
   "tier": "organism",
   "family": "Data Visualization",
   "status": "stable",
-  "summary": "The product's charts, stat tiles, topology graph and dashboard grid — a decision GUIDE, not a web component. Charts are Highcharts v10, topology is Cytoscape, the dashboard grid is vue-grid-layout: all app-rendered and licensed/heavy, so the DS does not ship an obs-* for them. Use this to pick the RIGHT visualisation type and colour/token it on-brand, then render it with the product's Chart/Graph/Widgets component (in-repo) or STOP-and-ASK (standalone). The one SHIPPABLE element in this family is obs-metric-picker — the metric SELECTOR that AUTHORS a visualization (pick/drag an entity’s counters onto a chart/widget); the charts it feeds stay app-rendered guides.",
+  "summary": "The product's charts, stat tiles, topology graph and dashboard grid — a decision GUIDE, not a web component. Charts are Highcharts v10, topology is Cytoscape, the dashboard grid is vue-grid-layout: all app-rendered and licensed/heavy, so the DS does not ship an obs-* for them. The DS now ALSO ships 32 CAPTURED chart configs (9 categories) you can copy — see `chartLibrary` / `charts/` in this package / the showcase charts pages. Use this to pick the RIGHT visualisation type and colour/token it on-brand, then render it with the product's Chart/Graph/Widgets component (in-repo) or STOP-and-ASK (standalone). The one SHIPPABLE element in this family is obs-metric-picker — the metric SELECTOR that AUTHORS a visualization (pick/drag an entity’s counters onto a chart/widget); the charts it feeds stay app-rendered guides.",
   "selectHint": "Any CHART / graph / gauge / KPI tile / heatmap / topology map / dashboard grid: pick the type via decisionFlow, colour from chart-palette, then render with the product's Chart/Graph/Widgets component. No obs-* — standalone => STOP and ASK.",
   "decisionFlow": [
     "Rendering DATA as a visual? First pick the TYPE by the question you're answering, THEN render it (see the 'how' note below).",
@@ -16,7 +16,7 @@
     "FLOW between nodes? -> sankey-flow (volume) or topology-graph (a pan/zoom network/dependency map).",
     "STATUS / duration over time (SLO, availability)? -> timeline-xrange. By GEOGRAPHY? -> geo-map. A trace/call-stack? -> flame-graph.",
     "A whole DASHBOARD of these? -> widget-grid (resizable tiles).",
-    "HOW to render (important): these are drawn by the PRODUCT'S engines (Highcharts v10 for charts, Cytoscape for topology-graph, vue-grid-layout for widget-grid) — NOT framework-agnostic obs-* components. In the product repo -> use the product's Chart / Graph / Widgets components with the type above; colour series from tokens/chart-palette.json (categorical, NOT --primary navy); use severity tokens for status/threshold colours; theme with DS tokens; use data-viz-tooltips for hover. STANDALONE (outside the repo) -> the DS ships NO chart/graph web component: STOP and ASK."
+    "HOW to render (important): these are drawn by the PRODUCT'S engines (Highcharts v10 for charts, Cytoscape for topology-graph, vue-grid-layout for widget-grid) — NOT framework-agnostic obs-* components. In the product repo -> use the product's Chart / Graph / Widgets components with the type above; colour series from tokens/chart-palette.json (categorical, NOT --primary navy); use severity tokens for status/threshold colours; theme with DS tokens; use data-viz-tooltips for hover. STANDALONE (outside the repo) -> there is still NO obs-chart web component, BUT the DS now ships 32 CAPTURED configs (see `chartLibrary` / `charts/manifest.json`): copy the matching fixture's `config` and render with Highcharts v10 (`Highcharts.chart(el, config)`); the custom-engine types carry a `result` payload instead. Mind the known gaps (unserialised formatter fns; dark-theme capture)."
   ],
   "variants": [
     "trend-line",
@@ -187,6 +187,10 @@
   "storybook": "Organisms/Data Visualization",
   "figma": null,
   "changelog": [
+    {
+      "date": "2026-09-02",
+      "change": "Added the captured CHART LIBRARY (chartLibrary): 32 sanitised configs across 9 categories (time-series, top-n, distribution, anomaly, forecast, gauge, heat-map, map, sankey), now shipped in the spec package under charts/ + indexed in charts/manifest.json and live on the showcase. Turns the standalone \"STOP and ASK\" dead-end into copy-ready Highcharts v10 configs. Known gaps flagged (unserialised formatter fns; dark-theme capture)."
+    },
     "2026-07-23 — obs-metric-picker joined this family (owner): the charts/topology/grid stay decision GUIDES (no obs-*), but the metric SELECTOR that feeds them is a real shippable element and now lives here — the buildable authoring side of the data-viz workflow.",
     {
       "date": "2026-07-06",
@@ -207,5 +211,116 @@
       "topology-graph (Cytoscape)": 6,
       "widget-grid (vue-grid-layout)": 5
     }
+  },
+  "chartLibrary": {
+    "$note": "The DS now ships 32 CAPTURED chart configurations across 9 categories — the product's own chart-builder output, sanitised. They are shipped in this spec package under `charts/` (config JSON per fixture) with an index at `charts/manifest.json`, and are shown live at the showcase `…/elements/charts.html` (overview + a page per category). HOW TO USE: pick the category below, take the matching fixture's `config` and render it with Highcharts v10 — `Highcharts.chart(el, config)` (the custom-engine ones — gauge, heat-map, anomaly, forecast, some map/top-n — carry a `result` payload instead, drawn by a small custom renderer, not Highcharts). KNOWN GAPS (captured, not guessed): (1) formatter FUNCTIONS cannot be serialised — a \"«fn»\" marker means the product had a formatter there, so tooltips/axis labels fall back to engine defaults; (2) fixtures were captured in the product's DARK theme — a light-theme capture is still pending. Colour series from the categorical palette / severity tokens, never the brand navy --primary.",
+    "engine": "Highcharts v10 (+ highcharts-more, solid-gauge, sankey, heatmap, treemap, map, no-data-to-display); Leaflet for the online map",
+    "total": 32,
+    "categories": [
+      {
+        "key": "time-series",
+        "title": "Time Series",
+        "engine": "highcharts",
+        "useWhen": "trend over time — line/area/vertical+horizontal bar, each stacked; single- and multi-counter",
+        "fixtures": [
+          "chart-single-line",
+          "chart-single-area",
+          "chart-single-vertical-bar",
+          "chart-single-horizontal-bar",
+          "chart-single-stacked-line",
+          "chart-single-stacked-area",
+          "chart-single-stacked-vertical-bar",
+          "chart-single-stacked-horizontal-bar",
+          "chart-single-memory",
+          "chart-multi-line",
+          "chart-multi-area",
+          "chart-multi-cpu",
+          "chart-multi-vertical-bar",
+          "chart-multi-horizontal-bar",
+          "chart-multi-stacked-line",
+          "chart-multi-stacked-area",
+          "chart-multi-stacked-vertical-bar",
+          "chart-multi-stacked-horizontal-bar"
+        ]
+      },
+      {
+        "key": "topn-views",
+        "title": "Top N Views",
+        "engine": "highcharts + custom",
+        "useWhen": "the leaders — solid-gauge grid, packed bubble, tree view (one payload drives all three)",
+        "fixtures": [
+          "topn",
+          "topn-views"
+        ]
+      },
+      {
+        "key": "distribution",
+        "title": "Distribution (Pie / Donut)",
+        "engine": "highcharts",
+        "useWhen": "part-to-whole share — pie or donut (≤5 slices)",
+        "fixtures": [
+          "chart-single-pie",
+          "chart-single-donut"
+        ]
+      },
+      {
+        "key": "anomaly",
+        "title": "Anomaly",
+        "engine": "custom",
+        "useWhen": "AI/ML time series — actuals + confidence band, outliers coloured by zone",
+        "fixtures": [
+          "chart-single-anomaly"
+        ]
+      },
+      {
+        "key": "forecast",
+        "title": "Forecast",
+        "engine": "custom",
+        "useWhen": "AI/ML projection past the last actual with a widening confidence range",
+        "fixtures": [
+          "chart-single-forecast"
+        ]
+      },
+      {
+        "key": "gauge",
+        "title": "Gauge",
+        "engine": "custom",
+        "useWhen": "single value vs a threshold/range — solid-gauge dial or numeric metro tile",
+        "fixtures": [
+          "gauge-dial",
+          "gauge-number"
+        ]
+      },
+      {
+        "key": "heat-map",
+        "title": "Heat Map",
+        "engine": "custom",
+        "useWhen": "density across two dimensions (host × metric) — severity honeycomb",
+        "fixtures": [
+          "heatmap",
+          "heatmap-host",
+          "heatmap-palette"
+        ]
+      },
+      {
+        "key": "map",
+        "title": "Map",
+        "engine": "highcharts + leaflet",
+        "useWhen": "geography — country-intensity bubbles / labelled points, or the online Leaflet map",
+        "fixtures": [
+          "map",
+          "map-points"
+        ]
+      },
+      {
+        "key": "sankey",
+        "title": "Sankey",
+        "engine": "highcharts",
+        "useWhen": "flow/volume between source and destination nodes",
+        "fixtures": [
+          "sankey"
+        ]
+      }
+    ]
   }
 }

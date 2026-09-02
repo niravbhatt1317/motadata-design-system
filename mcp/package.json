@@ -1,6 +1,6 @@
 {
   "name": "@mtdt/observeops-ds-mcp",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "MCP server for the Motadata ObserveOps design system — serves @mtdt/observeops-ds-spec to AI agents as tools + resources (search/get components with resolved token values, resolve tokens, get theme, recipes, layout, validate usage, the operating contract).",
   "license": "UNLICENSED",
   "type": "module",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "@mtdt/observeops-ds-spec": "^0.1.206",
+    "@mtdt/observeops-ds-spec": "^0.1.210",
     "express": "^4.21.0",
     "zod": "^3.23.0"
   },

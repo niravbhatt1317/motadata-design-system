@@ -13,7 +13,7 @@ const SRC = path.join(__dirname, '..')
 const OUT = path.join(SRC, 'package')
 
 // Artifacts this script owns (cleaned + recopied each run). Canonical package files are NOT here.
-const SPEC_DIRS = ['components', 'tokens', 'layout', 'foundation']
+const SPEC_DIRS = ['components', 'tokens', 'layout', 'foundation', 'charts']
 const SPEC_ROOT_FILES = ['AGENTS.md', 'llms.txt', 'authoring-playbook.md']
 
 function rm(p) { fs.rmSync(p, { recursive: true, force: true }) }
@@ -38,6 +38,22 @@ copy('components/recipes/README.md', 'components/recipes/README.md')
 copy('components/specs', 'components/specs')
 // the ACTUAL element API (attributes/events/SLOTS/enums) — so the MCP knows every SHIPPED obs-* tag (G8/G10)
 copy('components-lib/dist/elements-api.json', 'elements-api.json')
+
+// 2b. captured CHART configs — ship the sanitised data-viz fixtures + an index so an AI can COPY a real Highcharts
+//     config instead of guessing (the charts are app-rendered guides; these are the canonical captured configs).
+const FIX_SRC = path.join(SRC, 'components-lib/site/fixtures')
+if (fs.existsSync(FIX_SRC)) {
+  copy('components-lib/site/fixtures', 'charts/fixtures')
+  const dv = JSON.parse(fs.readFileSync(path.join(SRC, 'components/registry/data-viz.json'), 'utf8'))
+  const fixtures = fs.readdirSync(FIX_SRC).filter((f) => f.endsWith('.json')).sort().map((f) => {
+    const j = JSON.parse(fs.readFileSync(path.join(FIX_SRC, f), 'utf8'))
+    const eng = j.engines?.highcharts ? 'highcharts' : j.engines?.leaflet ? 'leaflet' : j.engines?.table ? 'table' : (j.config?.chart ? 'highcharts' : 'custom')
+    return { name: f.replace('.json', ''), category: j.variant?.category ?? null, widgetType: j.variant?.widgetType ?? null, engine: eng, payload: j.config && Object.keys(j.config).length ? 'config' : 'result', path: `charts/fixtures/${f}` }
+  })
+  const manifest = { $note: dv.chartLibrary?.$note ?? '', engine: dv.chartLibrary?.engine ?? '', total: fixtures.length, categories: dv.chartLibrary?.categories ?? [], fixtures }
+  fs.writeFileSync(path.join(OUT, 'charts/manifest.json'), JSON.stringify(manifest, null, 2) + '\n')
+  console.log(`  charts: shipped ${fixtures.length} captured configs + charts/manifest.json`)
+}
 
 // 3. tokens/ + layout/ + foundation/ — wholesale (every file in these is consumer-facing)
 copy('tokens', 'tokens')

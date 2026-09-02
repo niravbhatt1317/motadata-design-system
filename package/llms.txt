@@ -67,6 +67,11 @@ npm install @mtdt/observeops-ds-elements @mtdt/observeops-ds-css @mtdt/observeop
 
 ## Known gaps (expect to ASK here)
 
-- Charts / data-viz / widget tiles / topology graph — only tooltips (`data-viz-tooltips`) are
-  catalogued; the chart/graph components themselves are not in the DS yet.
+- Charts / data-viz — there is no framework-agnostic `obs-chart` web component (the engines are
+  licensed/heavy, app-rendered). BUT the DS now ships 32 CAPTURED chart configs across 9 categories
+  (time-series, top-n, distribution, anomaly, forecast, gauge, heat-map, map, sankey): see
+  `charts/manifest.json` + `charts/fixtures/*.json` in this package, and the `data-viz` registry's
+  `chartLibrary`. Copy the matching fixture's `config` and render with Highcharts v10 — don't guess a
+  chart. (Known gaps: formatter fns aren't serialised; fixtures captured in dark theme.) Widget tiles /
+  topology graph are still catalogued only as guides + tooltips (`data-viz-tooltips`).
 - Figma library — not built.

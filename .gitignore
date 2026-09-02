@@ -6,3 +6,4 @@ storybook-static/
 
 # symlinked node_modules (build reuse) — never commit
 components-lib/node_modules
+mcp/node_modules

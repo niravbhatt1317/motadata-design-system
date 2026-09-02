@@ -271,7 +271,11 @@ export function buildServer(): McpServer {
           'For the FULL list of missing building blocks (charts/topology), call list_gaps. Logos: the brand mark + ' +
           "common set are built in; add `import '…/logos'` for all 247 (find names via list_logos / resolve_logo — " +
           'never hand-draw a mark). Icons: ~553 obs-icon glyphs ALL ship in the elements package (no opt-in import) — ' +
-          'find the exact name via list_icons / resolve_icon (never hand-draw/inline an SVG icon). Dark theme: set data-theme="dark-theme" on <html> (obs-user-menu can do this for ' +
+          'find the exact name via list_icons / resolve_icon (never hand-draw/inline an SVG icon). Charts: there is NO ' +
+          'obs-chart element, but the DS ships 32 CAPTURED chart configs across 9 categories (time-series, top-n, ' +
+          'distribution, anomaly, forecast, gauge, heat-map, map, sankey) — read charts/manifest.json + charts/fixtures/*.json ' +
+          'in the spec package (or get_component("data-viz").chartLibrary), copy the fixture config and render with Highcharts ' +
+          'v10; do NOT guess a chart (known gaps: formatter fns unserialised, dark-theme capture). Dark theme: set data-theme="dark-theme" on <html> (obs-user-menu can do this for ' +
           'you). A full page STARTS FROM THE APP SHELL, not a bare content area — call get_recipe("module-screen") ' +
           'for the rail → app-header → module-title → tabs → side-menu → content composition; a bare content page is a ' +
           'harness, not a screen. Events deliver the value in event.detail as an array — unwrap: ' +
