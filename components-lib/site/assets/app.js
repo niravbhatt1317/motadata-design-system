@@ -79,6 +79,7 @@
     var act = navEl.querySelector('.nav-item.active'), anc = act && act.parentElement
     while (anc && anc !== navEl) { if (anc.classList && (anc.classList.contains('nav-grp') || anc.classList.contains('nav-sub'))) setExpanded(anc, true); anc = anc.parentElement }
     navEl.addEventListener('click', function (e) {
+      if (e.target.closest('a')) return // a linked sub-group header navigates; only its chevron toggles
       var h = e.target.closest('.nav-grp-h, .nav-sub-h'); if (!h || !navEl.contains(h)) return
       var g = h.parentElement, collapsed = g.classList.toggle('collapsed')
       h.setAttribute('aria-expanded', collapsed ? 'false' : 'true')
