@@ -1,7 +1,7 @@
 {
   "$fixture": "chart-single-donut",
   "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
-  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised.",
+  "$note": "Renders directly (Highcharts.chart(config)); formatter/event functions were stripped for JSON so labels use engine defaults — attach a formatter from charts/formatters.js to the $formatters slots for product-accurate labels.",
   "variant": {
     "category": "TopN",
     "widgetType": "Donut"
@@ -42,10 +42,7 @@
           }
         }
       },
-      "events": {
-        "load": "«fn»",
-        "redraw": "«fn»"
-      }
+      "events": {}
     },
     "boost": {
       "useGPUTranslations": true,
@@ -107,8 +104,7 @@
         "style": {
           "color": "var(--page-text-color)",
           "fontSize": "0.65rem"
-        },
-        "formatter": "«fn»"
+        }
       },
       "title": {
         "style": {
@@ -139,8 +135,7 @@
       "animation": false,
       "borderRadius": 10,
       "valueSuffix": "percent",
-      "shared": true,
-      "formatter": "«fn»"
+      "shared": true
     },
     "legend": {
       "align": "right",
@@ -173,8 +168,7 @@
       "itemMarginTop": 8,
       "itemMarginBottom": 8,
       "verticalAlign": "middle",
-      "itemWidth": 200,
-      "labelFormatter": "«fn»"
+      "itemWidth": 200
     },
     "plotOptions": {
       "series": {
@@ -211,16 +205,11 @@
             "lineWidthPlus": 0
           }
         },
-        "events": {
-          "afterAnimate": "«fn»",
-          "click": "«fn»"
-        },
+        "events": {},
         "lineWidth": 2,
         "centerInCategory": true,
         "point": {
-          "events": {
-            "mouseOver": "«fn»"
-          }
+          "events": {}
         }
       },
       "bar": {
@@ -239,7 +228,6 @@
         "cursor": "pointer",
         "dataLabels": {
           "enabled": true,
-          "formatter": "«fn»",
           "rotation": 0,
           "style": {
             "fontWeight": "normal",
@@ -248,9 +236,7 @@
           }
         },
         "showInLegend": true,
-        "events": {
-          "click": "«fn»"
-        },
+        "events": {},
         "innerSize": "70%"
       }
     },
@@ -337,5 +323,10 @@
       }
     ],
     "timezone": "Asia/Calcutta"
-  }
+  },
+  "$formatters": [
+    "config.yAxis.labels.formatter",
+    "config.tooltip.formatter",
+    "config.plotOptions.pie.dataLabels.formatter"
+  ]
 }

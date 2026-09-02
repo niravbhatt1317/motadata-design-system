@@ -1,6 +1,6 @@
 {
   "name": "@mtdt/observeops-ds-css",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "The ObserveOps design-system \"look\" package — exact design tokens (light + dark) + structural scale + status-tag chips as a standalone CSS file. Import it in any project (HTML, React, Vue, anything) for pixel-exact ObserveOps styling.",
   "license": "UNLICENSED",
   "main": "dist/observeops-ds.css",

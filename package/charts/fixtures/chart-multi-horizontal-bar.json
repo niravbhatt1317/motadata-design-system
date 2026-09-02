@@ -1,7 +1,7 @@
 {
   "$fixture": "chart-multi-horizontal-bar",
   "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
-  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised. Display subsample: the captured 803-interval series is thinned to every 67th interval (~11 points, an hourly-equivalent rollup) so bar geometry stays readable — values are the real captured ones, unchanged.",
+  "$note": "Renders directly (Highcharts.chart(config)); formatter/event functions were stripped for JSON so labels use engine defaults — attach a formatter from charts/formatters.js to the $formatters slots for product-accurate labels.",
   "variant": {
     "category": "Chart",
     "widgetType": "HorizontalBar"
@@ -47,10 +47,7 @@
           }
         }
       },
-      "events": {
-        "load": "«fn»",
-        "redraw": "«fn»"
-      },
+      "events": {},
       "zoomType": "x"
     },
     "boost": {
@@ -102,8 +99,7 @@
         "style": {
           "color": "var(--page-text-color)",
           "fontSize": "0.65rem"
-        },
-        "formatter": "«fn»"
+        }
       },
       "title": {
         "style": {
@@ -135,8 +131,7 @@
       "animation": false,
       "borderRadius": 10,
       "valueSuffix": "percent",
-      "shared": true,
-      "formatter": "«fn»"
+      "shared": true
     },
     "legend": {
       "align": "center",
@@ -182,8 +177,7 @@
             "fontWeight": "normal",
             "textOutline": "none"
           },
-          "overflow": "none",
-          "formatter": "«fn»"
+          "overflow": "none"
         },
         "marker": {
           "enabled": false,
@@ -203,10 +197,7 @@
             "lineWidthPlus": 0
           }
         },
-        "events": {
-          "afterAnimate": "«fn»",
-          "click": "«fn»"
-        },
+        "events": {},
         "lineWidth": 2,
         "centerInCategory": true,
         "minPointLength": 0,
@@ -215,9 +206,7 @@
         "groupPadding": 0.25,
         "borderColor": "var(--widget-background)",
         "point": {
-          "events": {
-            "mouseOver": "«fn»"
-          }
+          "events": {}
         }
       },
       "bar": {
@@ -236,7 +225,6 @@
         "cursor": "pointer",
         "dataLabels": {
           "enabled": false,
-          "formatter": "«fn»",
           "rotation": 0,
           "style": {
             "fontWeight": "normal",
@@ -245,9 +233,7 @@
           }
         },
         "showInLegend": true,
-        "events": {
-          "click": "«fn»"
-        }
+        "events": {}
       }
     },
     "credits": {
@@ -841,5 +827,11 @@
     "data": {
       "metric.series.v3~field.v4": "Up"
     }
-  }
+  },
+  "$formatters": [
+    "config.yAxis.labels.formatter",
+    "config.tooltip.formatter",
+    "config.plotOptions.series.dataLabels.formatter",
+    "config.plotOptions.pie.dataLabels.formatter"
+  ]
 }

@@ -189,6 +189,10 @@
   "changelog": [
     {
       "date": "2026-09-02",
+      "change": "Closed the two chart-library gaps: (1) shipped configs are now DIRECTLY RENDERABLE — formatter/event «fn» markers stripped so Highcharts.chart(config) just works, with each fixture's stripped formatter slots recorded in $formatters + a real formatter library at charts/formatters.js (bytes/percent/bps/duration/dateTime + attachFormatters) for product-accurate labels; (2) confirmed the configs are THEME-ADAPTIVE via DS tokens (var(--…)) — same config in light+dark, no separate capture needed (added the missing --chart-font-family dark value)."
+    },
+    {
+      "date": "2026-09-02",
       "change": "Added the captured CHART LIBRARY (chartLibrary): 32 sanitised configs across 9 categories (time-series, top-n, distribution, anomaly, forecast, gauge, heat-map, map, sankey), now shipped in the spec package under charts/ + indexed in charts/manifest.json and live on the showcase. Turns the standalone \"STOP and ASK\" dead-end into copy-ready Highcharts v10 configs. Known gaps flagged (unserialised formatter fns; dark-theme capture)."
     },
     "2026-07-23 — obs-metric-picker joined this family (owner): the charts/topology/grid stay decision GUIDES (no obs-*), but the metric SELECTOR that feeds them is a real shippable element and now lives here — the buildable authoring side of the data-viz workflow.",
@@ -213,7 +217,7 @@
     }
   },
   "chartLibrary": {
-    "$note": "The DS now ships 32 CAPTURED chart configurations across 9 categories — the product's own chart-builder output, sanitised. They are shipped in this spec package under `charts/` (config JSON per fixture) with an index at `charts/manifest.json`, and are shown live at the showcase `…/elements/charts.html` (overview + a page per category). HOW TO USE: pick the category below, take the matching fixture's `config` and render it with Highcharts v10 — `Highcharts.chart(el, config)` (the custom-engine ones — gauge, heat-map, anomaly, forecast, some map/top-n — carry a `result` payload instead, drawn by a small custom renderer, not Highcharts). KNOWN GAPS (captured, not guessed): (1) formatter FUNCTIONS cannot be serialised — a \"«fn»\" marker means the product had a formatter there, so tooltips/axis labels fall back to engine defaults; (2) fixtures were captured in the product's DARK theme — a light-theme capture is still pending. Colour series from the categorical palette / severity tokens, never the brand navy --primary.",
+    "$note": "The DS ships 32 CAPTURED chart configs across 9 categories (product chart-builder output, sanitised), under charts/ in this package (config JSON per fixture) with an index at charts/manifest.json, and live at the showcase …/elements/charts.html. HOW TO USE: pick the category below, take the fixture's config and render with Highcharts v10 (Highcharts.chart(el, config)); the custom-engine types (gauge, heat-map, anomaly, forecast, some map/top-n) carry a result payload drawn by a small custom renderer. The configs are DIRECTLY RENDERABLE: formatter/event FUNCTIONS were stripped (they cannot survive JSON) so labels use engine defaults — for product-accurate unit labels (bytes→GB, bits→Mbps, seconds→'2d 3h') attach a formatter from charts/formatters.js to the slots each fixture lists in $formatters (see attachFormatters). THEME: every colour is a DS token (var(--…)), so the SAME config renders in LIGHT and DARK when the DS theme CSS (@mtdt/observeops-ds-css) is loaded — no separate light/dark config. Colour series from the categorical palette / severity tokens, never the brand navy --primary.",
     "engine": "Highcharts v10 (+ highcharts-more, solid-gauge, sankey, heatmap, treemap, map, no-data-to-display); Leaflet for the online map",
     "total": 32,
     "categories": [

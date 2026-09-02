@@ -275,7 +275,9 @@ export function buildServer(): McpServer {
           'obs-chart element, but the DS ships 32 CAPTURED chart configs across 9 categories (time-series, top-n, ' +
           'distribution, anomaly, forecast, gauge, heat-map, map, sankey) — read charts/manifest.json + charts/fixtures/*.json ' +
           'in the spec package (or get_component("data-viz").chartLibrary), copy the fixture config and render with Highcharts ' +
-          'v10; do NOT guess a chart (known gaps: formatter fns unserialised, dark-theme capture). Dark theme: set data-theme="dark-theme" on <html> (obs-user-menu can do this for ' +
+          'v10; do NOT guess a chart. Configs are directly renderable (formatter/event fns stripped → engine defaults; attach ' +
+          'charts/formatters.js to each fixture\'s $formatters for unit labels) and theme-adaptive (colours are DS tokens, same ' +
+          'config in light+dark). Dark theme: set data-theme="dark-theme" on <html> (obs-user-menu can do this for ' +
           'you). A full page STARTS FROM THE APP SHELL, not a bare content area — call get_recipe("module-screen") ' +
           'for the rail → app-header → module-title → tabs → side-menu → content composition; a bare content page is a ' +
           'harness, not a screen. Events deliver the value in event.detail as an array — unwrap: ' +

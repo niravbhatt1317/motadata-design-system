@@ -72,6 +72,8 @@ npm install @mtdt/observeops-ds-elements @mtdt/observeops-ds-css @mtdt/observeop
   (time-series, top-n, distribution, anomaly, forecast, gauge, heat-map, map, sankey): see
   `charts/manifest.json` + `charts/fixtures/*.json` in this package, and the `data-viz` registry's
   `chartLibrary`. Copy the matching fixture's `config` and render with Highcharts v10 — don't guess a
-  chart. (Known gaps: formatter fns aren't serialised; fixtures captured in dark theme.) Widget tiles /
-  topology graph are still catalogued only as guides + tooltips (`data-viz-tooltips`).
+  chart. The configs are DIRECTLY renderable (formatter/event fns stripped → engine defaults; attach a
+  formatter from `charts/formatters.js` to each fixture's `$formatters` slots for unit-accurate labels)
+  and THEME-ADAPTIVE (all colours are DS tokens — same config in light + dark). Widget tiles / topology
+  graph are still catalogued only as guides + tooltips (`data-viz-tooltips`).
 - Figma library — not built.

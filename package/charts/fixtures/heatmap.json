@@ -1,7 +1,7 @@
 {
   "$fixture": "heatmap",
   "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
-  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised.",
+  "$note": "Sanitised for JSON — renders directly.",
   "variant": {
     "category": "HeatMap",
     "widgetType": "PlainHeatMap"

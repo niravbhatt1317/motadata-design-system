@@ -1,6 +1,8 @@
 {
-  "$note": "The DS now ships 32 CAPTURED chart configurations across 9 categories — the product's own chart-builder output, sanitised. They are shipped in this spec package under `charts/` (config JSON per fixture) with an index at `charts/manifest.json`, and are shown live at the showcase `…/elements/charts.html` (overview + a page per category). HOW TO USE: pick the category below, take the matching fixture's `config` and render it with Highcharts v10 — `Highcharts.chart(el, config)` (the custom-engine ones — gauge, heat-map, anomaly, forecast, some map/top-n — carry a `result` payload instead, drawn by a small custom renderer, not Highcharts). KNOWN GAPS (captured, not guessed): (1) formatter FUNCTIONS cannot be serialised — a \"«fn»\" marker means the product had a formatter there, so tooltips/axis labels fall back to engine defaults; (2) fixtures were captured in the product's DARK theme — a light-theme capture is still pending. Colour series from the categorical palette / severity tokens, never the brand navy --primary.",
+  "$note": "The DS ships 32 CAPTURED chart configs across 9 categories (product chart-builder output, sanitised), under charts/ in this package (config JSON per fixture) with an index at charts/manifest.json, and live at the showcase …/elements/charts.html. HOW TO USE: pick the category below, take the fixture's config and render with Highcharts v10 (Highcharts.chart(el, config)); the custom-engine types (gauge, heat-map, anomaly, forecast, some map/top-n) carry a result payload drawn by a small custom renderer. The configs are DIRECTLY RENDERABLE: formatter/event FUNCTIONS were stripped (they cannot survive JSON) so labels use engine defaults — for product-accurate unit labels (bytes→GB, bits→Mbps, seconds→'2d 3h') attach a formatter from charts/formatters.js to the slots each fixture lists in $formatters (see attachFormatters). THEME: every colour is a DS token (var(--…)), so the SAME config renders in LIGHT and DARK when the DS theme CSS (@mtdt/observeops-ds-css) is loaded — no separate light/dark config. Colour series from the categorical palette / severity tokens, never the brand navy --primary.",
+  "usage": "Copy a fixture's `config` and render with Highcharts v10: `Highcharts.chart(el, config)`. Formatter/event functions were stripped (they can't survive JSON), so labels use engine defaults out of the box. For product-accurate unit labels (bytes→GB, bits→Mbps, seconds→\"2d 3h\", …) attach a formatter from charts/formatters.js to the slots listed in each fixture's `$formatters` (see attachFormatters). Colours are DS tokens (var(--…)) — the SAME config renders in LIGHT and DARK when the DS theme CSS (@mtdt/observeops-ds-css) is loaded; no separate light/dark config needed.",
   "engine": "Highcharts v10 (+ highcharts-more, solid-gauge, sankey, heatmap, treemap, map, no-data-to-display); Leaflet for the online map",
+  "formatters": "charts/formatters.js",
   "total": 32,
   "categories": [
     {
@@ -115,6 +117,7 @@
       "widgetType": "Area",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-multi-area.json"
     },
     {
@@ -123,6 +126,7 @@
       "widgetType": "Area",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-multi-cpu.json"
     },
     {
@@ -131,6 +135,7 @@
       "widgetType": "HorizontalBar",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 4,
       "path": "charts/fixtures/chart-multi-horizontal-bar.json"
     },
     {
@@ -139,6 +144,7 @@
       "widgetType": "Line",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-multi-line.json"
     },
     {
@@ -147,6 +153,7 @@
       "widgetType": "StackedArea",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-multi-stacked-area.json"
     },
     {
@@ -155,6 +162,7 @@
       "widgetType": "StackedHorizontalBar",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-multi-stacked-horizontal-bar.json"
     },
     {
@@ -163,6 +171,7 @@
       "widgetType": "StackedLine",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-multi-stacked-line.json"
     },
     {
@@ -171,6 +180,7 @@
       "widgetType": "StackedVerticalBar",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-multi-stacked-vertical-bar.json"
     },
     {
@@ -179,6 +189,7 @@
       "widgetType": "VerticalBar",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 4,
       "path": "charts/fixtures/chart-multi-vertical-bar.json"
     },
     {
@@ -187,6 +198,7 @@
       "widgetType": null,
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/chart-single-anomaly.json"
     },
     {
@@ -195,6 +207,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-area.json"
     },
     {
@@ -203,6 +216,7 @@
       "widgetType": "Donut",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-donut.json"
     },
     {
@@ -211,6 +225,7 @@
       "widgetType": null,
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/chart-single-forecast.json"
     },
     {
@@ -219,6 +234,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 4,
       "path": "charts/fixtures/chart-single-horizontal-bar.json"
     },
     {
@@ -227,6 +243,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-line.json"
     },
     {
@@ -235,6 +252,7 @@
       "widgetType": "Area",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-memory.json"
     },
     {
@@ -243,6 +261,7 @@
       "widgetType": "Pie",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-pie.json"
     },
     {
@@ -251,6 +270,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-stacked-area.json"
     },
     {
@@ -259,6 +279,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-stacked-horizontal-bar.json"
     },
     {
@@ -267,6 +288,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-stacked-line.json"
     },
     {
@@ -275,6 +297,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/chart-single-stacked-vertical-bar.json"
     },
     {
@@ -283,6 +306,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 4,
       "path": "charts/fixtures/chart-single-vertical-bar.json"
     },
     {
@@ -291,6 +315,7 @@
       "widgetType": "SolidGauge",
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/gauge-dial.json"
     },
     {
@@ -299,6 +324,7 @@
       "widgetType": "MetroTile",
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/gauge-number.json"
     },
     {
@@ -307,6 +333,7 @@
       "widgetType": "WithHostHeatMap",
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/heatmap-host.json"
     },
     {
@@ -315,6 +342,7 @@
       "widgetType": "PlainHeatMap",
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/heatmap-palette.json"
     },
     {
@@ -323,6 +351,7 @@
       "widgetType": "PlainHeatMap",
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/heatmap.json"
     },
     {
@@ -331,6 +360,7 @@
       "widgetType": "Map",
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/map-points.json"
     },
     {
@@ -339,6 +369,7 @@
       "widgetType": "Map",
       "engine": "highcharts",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/map.json"
     },
     {
@@ -347,6 +378,7 @@
       "widgetType": null,
       "engine": "highcharts",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/sankey.json"
     },
     {
@@ -355,6 +387,7 @@
       "widgetType": "TopN Solid Gauge View",
       "engine": "custom",
       "payload": "result",
+      "formatterSlots": 0,
       "path": "charts/fixtures/topn-views.json"
     },
     {
@@ -363,6 +396,7 @@
       "widgetType": "Horizontal TopN",
       "engine": "highcharts",
       "payload": "config",
+      "formatterSlots": 3,
       "path": "charts/fixtures/topn.json"
     }
   ]

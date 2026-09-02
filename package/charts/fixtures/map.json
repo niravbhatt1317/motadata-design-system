@@ -1,7 +1,7 @@
 {
   "$fixture": "map",
   "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
-  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised. NOTE: this is an engine-rendered map (country paths), NOT Leaflet. Leaflet belongs to the separate Geo Map screen.",
+  "$note": "Sanitised for JSON — renders directly.",
   "variant": {
     "category": "Map",
     "widgetType": "Map"

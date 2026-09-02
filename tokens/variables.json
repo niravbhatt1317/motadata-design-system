@@ -181,9 +181,9 @@
   },
   "--chart-font-family": {
     "light": "'JetBrains Mono', monospace",
-    "dark": null,
+    "dark": "'JetBrains Mono', monospace",
     "lightRaw": "'JetBrains Mono', monospace",
-    "darkRaw": null
+    "darkRaw": "'JetBrains Mono', monospace"
   },
   "--chart-fuchsia": {
     "light": "#c026d3",

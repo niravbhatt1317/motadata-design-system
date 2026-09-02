@@ -1,7 +1,7 @@
 {
   "name": "@mtdt/observeops-ds-spec",
-  "version": "0.1.210",
-  "generated": "2026-09-02T10:56:30.205Z",
+  "version": "0.1.211",
+  "generated": "2026-09-02T11:35:41.337Z",
   "entry": "llms.txt",
   "contract": "AGENTS.md",
   "playbook": "authoring-playbook.md",
@@ -30,54 +30,49 @@
       "sha256": "8fd9f09c9423df052e30201ca1315fab455f3780fd26a61fee8510aebfa3b337"
     },
     {
-      "path": "charts/fixtures/README.md",
-      "bytes": 2052,
-      "sha256": "4c3ebc7c01deef6322e6830ca71d9cbc13f90a47bb02a976d30ad6abceac3b97"
-    },
-    {
       "path": "charts/fixtures/chart-multi-area.json",
-      "bytes": 547089,
-      "sha256": "fa16e04b1d00c0b3edcdd12d12bbe27780edc113ad04b2927de69c8f0e43b1d1"
+      "bytes": 547063,
+      "sha256": "dd3ca553cbce391d21bb7e1f57951521ee43eed3209477d47ef7f04d65e393ab"
     },
     {
       "path": "charts/fixtures/chart-multi-cpu.json",
-      "bytes": 102324,
-      "sha256": "ad21ecc8eee47e30a5ea190b354c7c7d0b7ccf0ec132d524e96d89decc820067"
+      "bytes": 146010,
+      "sha256": "82246d21da18e2acc24cdb848c7052175c9ffd4023d40a17bb1eecd852b27e42"
     },
     {
       "path": "charts/fixtures/chart-multi-horizontal-bar.json",
-      "bytes": 16514,
-      "sha256": "b7b9e4b0c1fbacb4316529216bc511cce19c8f8992dc5de3a9fe3ed5b9ea6faf"
+      "bytes": 16300,
+      "sha256": "b6ff4d5780e405ef96c532aa36117cfe1df77214f7531c6b2c2ef3d8c1b11c6f"
     },
     {
       "path": "charts/fixtures/chart-multi-line.json",
-      "bytes": 547115,
-      "sha256": "bb67e04dc49618d4e0dbf68f9dca8b9e21966dc60f6f7b16a2b41a266dd25e97"
+      "bytes": 547089,
+      "sha256": "4ed3799133d4fcd344a8d0743ff32d341b088bd33d291b917b33d0463eeadad2"
     },
     {
       "path": "charts/fixtures/chart-multi-stacked-area.json",
-      "bytes": 547143,
-      "sha256": "3eb196b26cf34c36174e84265b8190068733d936926e89c3149bbd50dfb2dd47"
+      "bytes": 547117,
+      "sha256": "9fe03427fc739a31805d20d1c8f9b65be96bb4194df5aaa83d0f74c22fca39e2"
     },
     {
       "path": "charts/fixtures/chart-multi-stacked-horizontal-bar.json",
-      "bytes": 16505,
-      "sha256": "ead206908fb0475fdfb85ea09f2a17ec77391a7b7603db4c82237777ac1d7f6d"
+      "bytes": 16270,
+      "sha256": "94d46c31fd311ec0f7165506b16c33f6f3027b56bd310263d6ae14b93246e610"
     },
     {
       "path": "charts/fixtures/chart-multi-stacked-line.json",
-      "bytes": 547169,
-      "sha256": "27e26cc595eabc334ea049f85061b0ed2407f6b88e7110afe226f988c5af9db6"
+      "bytes": 547143,
+      "sha256": "9dab169b733a0f124055c27919dca85f94dae738080f23aecc55e514a5258210"
     },
     {
       "path": "charts/fixtures/chart-multi-stacked-vertical-bar.json",
-      "bytes": 16502,
-      "sha256": "b9857fae3d9844fa9decee4671fa5c0c4251d89a39fbf07ab466f81593df76f0"
+      "bytes": 16267,
+      "sha256": "20bcbfd2d38357dba6708ab6c467e5558c1ed32972b0203c3539870d052cb188"
     },
     {
       "path": "charts/fixtures/chart-multi-vertical-bar.json",
-      "bytes": 16511,
-      "sha256": "c6e2a557277457b46f912f57add225d3059eb663c0f0f4cfbda5e4d1e46bc1a5"
+      "bytes": 16297,
+      "sha256": "7c60450fe9cb3cfcc73fa49b4c5c0e14e68f7f3c999db8cee380420da27bc0e0"
     },
     {
       "path": "charts/fixtures/chart-single-anomaly.json",
@@ -86,13 +81,13 @@
     },
     {
       "path": "charts/fixtures/chart-single-area.json",
-      "bytes": 21041,
-      "sha256": "39346ba88cd1d46255b9439a5ab38ef0732fa79f50bf6efc639c0a11543ee2e7"
+      "bytes": 21015,
+      "sha256": "02c3dcf2355db762f1b5d306022ad5484da5cc1c51ef819d1bd33c24313f69b9"
     },
     {
       "path": "charts/fixtures/chart-single-donut.json",
-      "bytes": 7897,
-      "sha256": "6908031aabcbbf864ce2f52251bf8637abdf510c083cdd4d86ab082ec76643d8"
+      "bytes": 7837,
+      "sha256": "478e3922049a16e5d6fdeebe7ddc883b88e9a9bf0a2f2f4676aae13448144478"
     },
     {
       "path": "charts/fixtures/chart-single-forecast.json",
@@ -101,103 +96,108 @@
     },
     {
       "path": "charts/fixtures/chart-single-horizontal-bar.json",
-      "bytes": 7582,
-      "sha256": "72116fd7bcf6c5e6c84f9b728de5fd6344209571e89395b17e33c4e2d0851d5b"
+      "bytes": 7368,
+      "sha256": "d34c2b979ae0952e8033cc442304df3f640a4276d63f969547130f1213589892"
     },
     {
       "path": "charts/fixtures/chart-single-line.json",
-      "bytes": 21067,
-      "sha256": "b2b78751677f4302ad6dea5f6fde774c8c790c410a344d8efd0a6b7c682edaae"
+      "bytes": 21041,
+      "sha256": "268232475dc019b86462c14fcc296012512a354c94ff686326795abbeb0806bf"
     },
     {
       "path": "charts/fixtures/chart-single-memory.json",
-      "bytes": 15289,
-      "sha256": "fb5c377f75f9262e04dee1e66af346e9d699f559b6bbb12d3db0825780f38529"
+      "bytes": 20482,
+      "sha256": "851285b89cbdfbf88d5385f458fde042570c00d3a841dc75368126bc745f617e"
     },
     {
       "path": "charts/fixtures/chart-single-pie.json",
-      "bytes": 7856,
-      "sha256": "4664c8d8357e2aadd251522acc2d085552ff093860e9720a55e8eaab6f738ad5"
+      "bytes": 7796,
+      "sha256": "96babd45cd03019ee8ee9d9b24f9e71356bb802aa95823f228433ddf6c2d8cff"
     },
     {
       "path": "charts/fixtures/chart-single-stacked-area.json",
-      "bytes": 21088,
-      "sha256": "a9d6e6f104556b874cace765a71341c24d3b54371ac26a7701ea36c0b4d1b5db"
+      "bytes": 21062,
+      "sha256": "060985feef62a74e4de94d59c5fd859502acf17512df4e406a744e88492eb8c7"
     },
     {
       "path": "charts/fixtures/chart-single-stacked-horizontal-bar.json",
-      "bytes": 7566,
-      "sha256": "9bb67a999cfc2a3906af3b95fc963a4576dd1a85d43398839ba051926ab77614"
+      "bytes": 7331,
+      "sha256": "abd78ebd91127c8cd73cfd2fa4973d95450dd24dc6cb94e92a827f7bfd86ac4a"
     },
     {
       "path": "charts/fixtures/chart-single-stacked-line.json",
-      "bytes": 21114,
-      "sha256": "14cc2413d0b91ab1d431c9c0561d14e44773d47a1a6afebe1629d0ecb38cfb1c"
+      "bytes": 21088,
+      "sha256": "8be69d7676eac85ae9b985bf1b94698a2de6d7442021071c1fa292d45a4d411a"
     },
     {
       "path": "charts/fixtures/chart-single-stacked-vertical-bar.json",
-      "bytes": 7565,
-      "sha256": "e083a4fc8b2459caa36605e1ff9518919a91c90c8a552df65c29cea6b3f1ca4d"
+      "bytes": 7330,
+      "sha256": "0d6aa8ca67c4fa7b1552595c96582c68d1e95c326059e5c0bdca02d27441e90e"
     },
     {
       "path": "charts/fixtures/chart-single-vertical-bar.json",
-      "bytes": 7581,
-      "sha256": "8afaa895c5205a0e59932331e56d537f9bbae4981fc5cad2cfdbcedc9b419f0a"
+      "bytes": 7367,
+      "sha256": "bf98a0ae915ebcd4d80cc18d46496cdf8ac6b4e132f8d36b06514772f2957915"
     },
     {
       "path": "charts/fixtures/gauge-dial.json",
-      "bytes": 571,
-      "sha256": "cdacb751c050c0433001a325b58652a9a1aaa0275d441b03deba66a415a292dd"
+      "bytes": 524,
+      "sha256": "bcd169f433f5709fd3b0a47f79d4bdbe0205a9cd84c54a4f286dad8a2cea7df6"
     },
     {
       "path": "charts/fixtures/gauge-number.json",
-      "bytes": 572,
-      "sha256": "b85509940b7ab23efd5b60edcb98aa0805eb674fe60765503303e0b5394d0401"
+      "bytes": 525,
+      "sha256": "f6245833c993d7e522f4b1a2fa8ba68dcea2659757de2ce7b2c12248d91dadee"
     },
     {
       "path": "charts/fixtures/heatmap-host.json",
-      "bytes": 2904,
-      "sha256": "f0653852c9f83290de031ef3cc7fecc2f32dfe649fc0fbfc5a6dc0ad3fcbde8c"
+      "bytes": 3770,
+      "sha256": "e4561a340d17e9bdda2c0f5ef5c321d19ff7b740ca27d7ce219a59ceb92aa508"
     },
     {
       "path": "charts/fixtures/heatmap-palette.json",
-      "bytes": 3042,
-      "sha256": "b91082bbadd8e69d9e8b5aa062ec7e516de239e6fd989bfc19f96dd46d0ffc68"
+      "bytes": 3970,
+      "sha256": "483f92b57c1edf6d5a047f940b5d9d6988ec30ed806403a71db92d333bd3d419"
     },
     {
       "path": "charts/fixtures/heatmap.json",
-      "bytes": 3712,
-      "sha256": "3cd49175a6453ba65e8fbeb0c3ce421ba15b3c67d0925378bebbedd2d890209b"
+      "bytes": 3665,
+      "sha256": "de38a126b7f3d25e08befdc8f367a554d58b52e5eb278ef6025a2dc4f739d820"
     },
     {
       "path": "charts/fixtures/map-points.json",
-      "bytes": 2664,
-      "sha256": "bc90b4763a6b5f966d018a09151b4f5fc9ac27f5b281a31be33cdb2edf44302c"
+      "bytes": 4402,
+      "sha256": "b598c4ce254e489baaa623a202aa7524ee5303c83e4559bea1c35ec81a2fc25d"
     },
     {
       "path": "charts/fixtures/map.json",
-      "bytes": 15489,
-      "sha256": "ed6403eab4fc1d6735f349436e14cb2d5dc0b20e675092e5d38ae54a45b22cdd"
+      "bytes": 15327,
+      "sha256": "ac625dedb715a7541b5577402c527e02ebcc4420de3c7e59f670ebb00b2ca757"
     },
     {
       "path": "charts/fixtures/sankey.json",
-      "bytes": 1664,
-      "sha256": "c6c1a27ee835ac8ca233bd6df571554502723f5a018e4fd6a9bc8f650a21d5f6"
+      "bytes": 1617,
+      "sha256": "44f34d1b268512b74aa0768a4a5af321530c0fb1a1ed34e6ace7b1b58cc62045"
     },
     {
       "path": "charts/fixtures/topn-views.json",
-      "bytes": 1357,
-      "sha256": "dea08391305ce6b700226398e254bf4e397b7560b575fbb33920ccfefab13d78"
+      "bytes": 1735,
+      "sha256": "29d451247c55e39b12646fea056496dc70d62c00e8eb13e60573916ec2d34192"
     },
     {
       "path": "charts/fixtures/topn.json",
-      "bytes": 97110,
-      "sha256": "d94f6d0f2082cc99e4a057662004bbf2818c7789b5b4ccb77ebee8af49296a24"
+      "bytes": 97084,
+      "sha256": "62c5bfffd114aa19a6ef2cf91146ee71b31f88bdca4041c7d8f06d704f41219c"
+    },
+    {
+      "path": "charts/formatters.js",
+      "bytes": 4274,
+      "sha256": "2e3f6aaf8244e7d8bf7f8b5ef6899106ffed3aefffa058739dc0db76948d0437"
     },
     {
       "path": "charts/manifest.json",
-      "bytes": 11233,
-      "sha256": "317eecbd69f63a20e199ac5e246df2d423405bfe5c52c56884c91cc056c4b53d"
+      "bytes": 12812,
+      "sha256": "28315269be2a7e8fcc54f2153492dd5141eac2da303600a60cfdb842f21c0d53"
     },
     {
       "path": "components/index.json",
@@ -266,8 +266,8 @@
     },
     {
       "path": "components/registry/data-viz.json",
-      "bytes": 17167,
-      "sha256": "e9b83412a66cd5088fedf056248a38f47e3a5a41862120ebc7ca4f1c14eb8f8b"
+      "bytes": 17855,
+      "sha256": "c611c4dad668e74cc44314b66459274fed11f35c20c8f0814ea099a49dc4d85d"
     },
     {
       "path": "components/registry/date-time-pickers.json",
@@ -721,13 +721,13 @@
     },
     {
       "path": "llms.txt",
-      "bytes": 4586,
-      "sha256": "35434cbf392af59badab1e0fd94c78d2f2a993be01b1dd2cb6fda58f21e33757"
+      "bytes": 4788,
+      "sha256": "12ec6f3c2a003d6a2f237e6e0c7f02ca1f0315a2e8217d8345de972600edce45"
     },
     {
       "path": "package.json",
       "bytes": 1125,
-      "sha256": "a27637914e3ceafb60f400474dc9e7839d17f6dc8c74c7fec858e87be0090b2a"
+      "sha256": "0b940bf9c5e786eebe4297f082e15f49bf052d696f47983fe0bb42fc57b9f8c2"
     },
     {
       "path": "tokens/README.md",
@@ -776,8 +776,8 @@
     },
     {
       "path": "tokens/variables.json",
-      "bytes": 51712,
-      "sha256": "f1f3d65d97e9112857e4d4351aaf15dbdc358fe450dbf6841521401ca014ad4e"
+      "bytes": 51762,
+      "sha256": "5dbc17ea80db276c29be8f4ed162c1880639960723f9d1416e1cf664dfbeb914"
     }
   ]
 }

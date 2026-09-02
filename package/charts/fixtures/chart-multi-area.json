@@ -1,7 +1,7 @@
 {
   "$fixture": "chart-multi-area",
   "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
-  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised.",
+  "$note": "Renders directly (Highcharts.chart(config)); formatter/event functions were stripped for JSON so labels use engine defaults — attach a formatter from charts/formatters.js to the $formatters slots for product-accurate labels.",
   "variant": {
     "category": "Chart",
     "widgetType": "Area"
@@ -47,10 +47,7 @@
           }
         }
       },
-      "events": {
-        "load": "«fn»",
-        "redraw": "«fn»"
-      },
+      "events": {},
       "zoomType": "x"
     },
     "boost": {
@@ -102,8 +99,7 @@
         "style": {
           "color": "var(--page-text-color)",
           "fontSize": "0.65rem"
-        },
-        "formatter": "«fn»"
+        }
       },
       "title": {
         "style": {
@@ -135,8 +131,7 @@
       "animation": false,
       "borderRadius": 10,
       "valueSuffix": "percent",
-      "shared": true,
-      "formatter": "«fn»"
+      "shared": true
     },
     "legend": {
       "align": "center",
@@ -201,16 +196,11 @@
             "lineWidthPlus": 0
           }
         },
-        "events": {
-          "afterAnimate": "«fn»",
-          "click": "«fn»"
-        },
+        "events": {},
         "lineWidth": 2,
         "centerInCategory": true,
         "point": {
-          "events": {
-            "mouseOver": "«fn»"
-          }
+          "events": {}
         }
       },
       "bar": {
@@ -229,7 +219,6 @@
         "cursor": "pointer",
         "dataLabels": {
           "enabled": false,
-          "formatter": "«fn»",
           "rotation": 0,
           "style": {
             "fontWeight": "normal",
@@ -238,9 +227,7 @@
           }
         },
         "showInLegend": true,
-        "events": {
-          "click": "«fn»"
-        }
+        "events": {}
       }
     },
     "credits": {
@@ -32474,5 +32461,10 @@
     "data": {
       "metric.series.v3~field.v4": "Up"
     }
-  }
+  },
+  "$formatters": [
+    "config.yAxis.labels.formatter",
+    "config.tooltip.formatter",
+    "config.plotOptions.pie.dataLabels.formatter"
+  ]
 }

@@ -2,26 +2,140 @@
   "$fixture": "heatmap-host",
   "$provenance": "built for the WithHost variant — the row shape (name, object.type, instance, severity, percentage, formattedValue) is the product's per-monitor heat map result; hosts are the sanitiser's generic names and values are illustrative.",
   "$note": "object.type drives the monitor-type icon in the hex (the product's MonitorTypeLineIcons, expressed as this library's obs-icon names); the host name renders under each hex; hovering shows the product's heat map tooltip (name, instance, counter row, severity chip).",
-  "variant": { "category": "HeatMap", "widgetType": "WithHostHeatMap" },
+  "variant": {
+    "category": "HeatMap",
+    "widgetType": "WithHostHeatMap"
+  },
   "result": {
     "totalCount": 16,
     "data": [
-      { "name": "web-01", "object.type": "linux", "instance": "http", "severity": "critical", "percentage": 93, "formattedValue": "93%" },
-      { "name": "web-02", "object.type": "linux", "instance": "http", "severity": "clear", "percentage": 22, "formattedValue": "22%" },
-      { "name": "web-03", "object.type": "windows", "instance": "iis", "severity": "major", "percentage": 76, "formattedValue": "76%" },
-      { "name": "db-01", "object.type": "linux", "instance": "mysql", "severity": "warning", "percentage": 59, "formattedValue": "59%" },
-      { "name": "db-02", "object.type": "windows", "instance": "mssql", "severity": "clear", "percentage": 18, "formattedValue": "18%" },
-      { "name": "cache-01", "object.type": "linux", "instance": "redis", "severity": "critical", "percentage": 87, "formattedValue": "87%" },
-      { "name": "cache-02", "object.type": "linux", "instance": "redis", "severity": "clear", "percentage": 31, "formattedValue": "31%" },
-      { "name": "queue-01", "object.type": "linux", "instance": "rabbitmq", "severity": "down", "severityNumber": 1 },
-      { "name": "queue-02", "object.type": "linux", "instance": "kafka", "severity": "clear", "percentage": 12, "formattedValue": "12%" },
-      { "name": "edge-01", "object.type": "network", "instance": "bgp", "severity": "clear", "percentage": 27, "formattedValue": "27%" },
-      { "name": "edge-02", "object.type": "network", "instance": "ospf", "severity": "warning", "percentage": 64, "formattedValue": "64%" },
-      { "name": "worker-01", "object.type": "vm", "instance": "agent", "severity": "clear", "percentage": 9, "formattedValue": "9%" },
-      { "name": "worker-02", "object.type": "vm", "instance": "agent", "severity": "major", "percentage": 72, "formattedValue": "72%" },
-      { "name": "store-01", "object.type": "database", "instance": "cluster", "severity": "clear", "percentage": 36, "formattedValue": "36%" },
-      { "name": "store-02", "object.type": "database", "instance": "cluster", "severity": "critical", "percentage": 81, "formattedValue": "81%" },
-      { "name": "app-01", "object.type": "container", "instance": "k8s", "severity": "clear", "percentage": 15, "formattedValue": "15%" }
+      {
+        "name": "web-01",
+        "object.type": "linux",
+        "instance": "http",
+        "severity": "critical",
+        "percentage": 93,
+        "formattedValue": "93%"
+      },
+      {
+        "name": "web-02",
+        "object.type": "linux",
+        "instance": "http",
+        "severity": "clear",
+        "percentage": 22,
+        "formattedValue": "22%"
+      },
+      {
+        "name": "web-03",
+        "object.type": "windows",
+        "instance": "iis",
+        "severity": "major",
+        "percentage": 76,
+        "formattedValue": "76%"
+      },
+      {
+        "name": "db-01",
+        "object.type": "linux",
+        "instance": "mysql",
+        "severity": "warning",
+        "percentage": 59,
+        "formattedValue": "59%"
+      },
+      {
+        "name": "db-02",
+        "object.type": "windows",
+        "instance": "mssql",
+        "severity": "clear",
+        "percentage": 18,
+        "formattedValue": "18%"
+      },
+      {
+        "name": "cache-01",
+        "object.type": "linux",
+        "instance": "redis",
+        "severity": "critical",
+        "percentage": 87,
+        "formattedValue": "87%"
+      },
+      {
+        "name": "cache-02",
+        "object.type": "linux",
+        "instance": "redis",
+        "severity": "clear",
+        "percentage": 31,
+        "formattedValue": "31%"
+      },
+      {
+        "name": "queue-01",
+        "object.type": "linux",
+        "instance": "rabbitmq",
+        "severity": "down",
+        "severityNumber": 1
+      },
+      {
+        "name": "queue-02",
+        "object.type": "linux",
+        "instance": "kafka",
+        "severity": "clear",
+        "percentage": 12,
+        "formattedValue": "12%"
+      },
+      {
+        "name": "edge-01",
+        "object.type": "network",
+        "instance": "bgp",
+        "severity": "clear",
+        "percentage": 27,
+        "formattedValue": "27%"
+      },
+      {
+        "name": "edge-02",
+        "object.type": "network",
+        "instance": "ospf",
+        "severity": "warning",
+        "percentage": 64,
+        "formattedValue": "64%"
+      },
+      {
+        "name": "worker-01",
+        "object.type": "vm",
+        "instance": "agent",
+        "severity": "clear",
+        "percentage": 9,
+        "formattedValue": "9%"
+      },
+      {
+        "name": "worker-02",
+        "object.type": "vm",
+        "instance": "agent",
+        "severity": "major",
+        "percentage": 72,
+        "formattedValue": "72%"
+      },
+      {
+        "name": "store-01",
+        "object.type": "database",
+        "instance": "cluster",
+        "severity": "clear",
+        "percentage": 36,
+        "formattedValue": "36%"
+      },
+      {
+        "name": "store-02",
+        "object.type": "database",
+        "instance": "cluster",
+        "severity": "critical",
+        "percentage": 81,
+        "formattedValue": "81%"
+      },
+      {
+        "name": "app-01",
+        "object.type": "container",
+        "instance": "k8s",
+        "severity": "clear",
+        "percentage": 15,
+        "formattedValue": "15%"
+      }
     ]
   }
 }
