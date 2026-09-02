@@ -1,7 +1,7 @@
 {
   "name": "@mtdt/observeops-ds-spec",
-  "version": "0.1.208",
-  "generated": "2026-08-27T06:00:57.023Z",
+  "version": "0.1.209",
+  "generated": "2026-09-02T10:14:03.074Z",
   "entry": "llms.txt",
   "contract": "AGENTS.md",
   "playbook": "authoring-playbook.md",
@@ -186,8 +186,8 @@
     },
     {
       "path": "components/registry/logo.json",
-      "bytes": 22792,
-      "sha256": "2ffb11450aa126252608aef1344c97ef080095576156f47c8e535ab96fd7769a"
+      "bytes": 22818,
+      "sha256": "f70aae0897dc9ae62dac4630368fc463219e50578664886a6344a88ac6e7185b"
     },
     {
       "path": "components/registry/loose-tags.json",
@@ -557,7 +557,7 @@
     {
       "path": "package.json",
       "bytes": 1125,
-      "sha256": "1ef28b92b164c30f538b00540001413141a9ba98c961fbac2caa2b09e561be7c"
+      "sha256": "df823386fc3d8f0f40202d870c11d0ced5f166c1570c6c07e7161e9f2e135326"
     },
     {
       "path": "tokens/README.md",

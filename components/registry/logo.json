@@ -325,6 +325,7 @@
       "hp-ux",
       "hpe",
       "hpe-alletra",
+      "hpe-alletra-9000",
       "http",
       "hyper-v",
       "hyperv-cluster",
@@ -756,9 +757,9 @@
     ]
   },
   "counts": {
-    "colour": 264,
+    "colour": 265,
     "line": 215,
     "builtIn": 31,
-    "total": 479
+    "total": 480
   }
 }

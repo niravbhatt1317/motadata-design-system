@@ -1,6 +1,6 @@
 {
   "name": "@mtdt/observeops-ds-elements",
-  "version": "0.1.166",
+  "version": "0.1.167",
   "description": "ObserveOps design system as framework-agnostic Web Components (obs-*). The real DS components for React/Vue/HTML.",
   "license": "UNLICENSED",
   "type": "module",

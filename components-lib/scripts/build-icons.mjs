@@ -63,6 +63,25 @@ for (const [alias, target] of Object.entries(ALIASES)) {
 
 // icons whose single path relies on the even-odd fill rule (holes/half-fills) — obs-icon applies fr per-icon
 const EVENODD = new Set(['themeAuto', 'lockOpen', 'unlock', 'lockAltOpen', 'lockOpenAlt', 'customReport'])
+
+// UNION SAFETY (drift fix): preserve any icon already in the committed _icons.js that THIS product checkout happens
+// to lack — so regenerating from a different/older product never DROPS an icon other components rely on (a contributor
+// building from a newer product branch, or DS-local additions). Additive-only; it never removes. If you intend to
+// remove an icon, delete its line from _icons.js AND from the product in the same change.
+if (fs.existsSync(OUT)) {
+  const prev = fs.readFileSync(OUT, 'utf8')
+  const RE = /^\s*([A-Za-z0-9_]+):\s*\{\s*w:\s*(\d+),\s*h:\s*(\d+),\s*p:\s*'([^']*)'(?:,\s*fr:\s*'([^']*)')?\s*\},?\s*$/gm
+  let m, kept = 0
+  while ((m = RE.exec(prev))) {
+    if (m[1] in icons) continue
+    icons[m[1]] = { w: +m[2], h: +m[3], p: m[4] }
+    kebabName[m[1]] = toKebab(m[1])
+    if (m[5] === 'evenodd') EVENODD.add(m[1])
+    kept++
+  }
+  if (kept) console.warn(`  ⚠ union: kept ${kept} committed icon(s) this product checkout lacks (drift-safe; not dropped)`)
+}
+
 const keys = Object.keys(icons).sort((a, b) => a.localeCompare(b))
 const body = keys
   .map((k) => `  ${k}: { w: ${icons[k].w}, h: ${icons[k].h}, p: '${icons[k].p}'${EVENODD.has(k) ? ", fr: 'evenodd'" : ''} },`)

@@ -3,3 +3,6 @@ dist/
 storybook-static/
 *.log
 .DS_Store
+
+# symlinked node_modules (build reuse) — never commit
+components-lib/node_modules

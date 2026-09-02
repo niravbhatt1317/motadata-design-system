@@ -100,6 +100,17 @@ if (fs.existsSync(LINE_SRC)) {
   }
 } else console.warn('  ⚠ build-logos: line-icon registry not found')
 
+// UNION SAFETY (drift fix): preserve any logo already in the committed _logos.full.js that THIS product checkout
+// lacks — so regenerating from a different/older product never DROPS a logo (parallels build-icons). Additive-only.
+if (fs.existsSync(OUT_FULL)) {
+  const prev = fs.readFileSync(OUT_FULL, 'utf8')
+  const block = (name) => { const m = prev.match(new RegExp(`export const ${name} = \\{([\\s\\S]*?)\\n\\}`)); return m ? m[1] : '' }
+  const ENTRY = /^ {2}("(?:[^"\\]|\\.)*"):\s*("(?:[^"\\]|\\.)*"),?$/gm
+  const keep = (blk, target) => { let m, n = 0; while ((m = ENTRY.exec(blk))) { const k = JSON.parse(m[1]); if (!(k in target)) { target[k] = JSON.parse(m[2]); n++ } } return n }
+  const kc = keep(block('LOGOS'), colour), kl = keep(block('LINE_LOGOS'), line)
+  if (kc + kl) console.warn(`  ⚠ union: kept ${kc} colour + ${kl} line committed logo(s) this product checkout lacks (drift-safe)`)
+}
+
 const emit = (obj) => Object.keys(obj).sort().map((k) => `  ${JSON.stringify(k)}: ${JSON.stringify(obj[k])},`).join('\n')
 const aliasBody = Object.entries(ALIASES).map(([a, t]) => `  ${JSON.stringify(a)}: ${JSON.stringify(t)},`).join('\n')
 
