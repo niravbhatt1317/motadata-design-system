@@ -1,0 +1,36 @@
+{
+  "$fixture": "heatmap-palette",
+  "$provenance": "built for the palette variant — the row shape (name, severity, percentage, formattedValue) is the product's metric heat map result; hosts are the sanitiser's generic names and values are illustrative percentages.",
+  "$note": "each row carries a percentage, so the Select Color Palette control colours the hexes (low % = light end, high % = dark end, like getColorFromPalette); without a palette the severity colour shows. widgetProperties.selectedColorPalette is the widget's own captured palette — the panel control overrides it.",
+  "variant": { "category": "HeatMap", "widgetType": "PlainHeatMap" },
+  "widgetProperties": { "selectedColorPalette": "sky.blue.slate" },
+  "result": {
+    "totalCount": 24,
+    "data": [
+      { "name": "web-01", "severity": "critical", "percentage": 96, "formattedValue": "96%" },
+      { "name": "web-02", "severity": "critical", "percentage": 91, "formattedValue": "91%" },
+      { "name": "db-01", "severity": "major", "percentage": 78, "formattedValue": "78%" },
+      { "name": "db-02", "severity": "major", "percentage": 71, "formattedValue": "71%" },
+      { "name": "cache-01", "severity": "warning", "percentage": 63, "formattedValue": "63%" },
+      { "name": "cache-02", "severity": "warning", "percentage": 55, "formattedValue": "55%" },
+      { "name": "queue-01", "severity": "clear", "percentage": 44, "formattedValue": "44%" },
+      { "name": "queue-02", "severity": "clear", "percentage": 38, "formattedValue": "38%" },
+      { "name": "edge-01", "severity": "clear", "percentage": 29, "formattedValue": "29%" },
+      { "name": "edge-02", "severity": "clear", "percentage": 21, "formattedValue": "21%" },
+      { "name": "worker-01", "severity": "clear", "percentage": 14, "formattedValue": "14%" },
+      { "name": "worker-02", "severity": "clear", "percentage": 8, "formattedValue": "8%" },
+      { "name": "web-03", "severity": "critical", "percentage": 88, "formattedValue": "88%" },
+      { "name": "web-04", "severity": "major", "percentage": 67, "formattedValue": "67%" },
+      { "name": "db-03", "severity": "warning", "percentage": 52, "formattedValue": "52%" },
+      { "name": "db-04", "severity": "clear", "percentage": 33, "formattedValue": "33%" },
+      { "name": "cache-03", "severity": "clear", "percentage": 26, "formattedValue": "26%" },
+      { "name": "cache-04", "severity": "clear", "percentage": 17, "formattedValue": "17%" },
+      { "name": "queue-03", "severity": "critical", "percentage": 83, "formattedValue": "83%" },
+      { "name": "queue-04", "severity": "major", "percentage": 74, "formattedValue": "74%" },
+      { "name": "edge-03", "severity": "warning", "percentage": 58, "formattedValue": "58%" },
+      { "name": "edge-04", "severity": "clear", "percentage": 41, "formattedValue": "41%" },
+      { "name": "worker-03", "severity": "clear", "percentage": 11, "formattedValue": "11%" },
+      { "name": "worker-04", "severity": "clear", "percentage": 5, "formattedValue": "5%" }
+    ]
+  }
+}

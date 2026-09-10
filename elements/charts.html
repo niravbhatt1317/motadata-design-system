@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Charts — ObserveOps Elements</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%2314b8a6'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%230b1220'/%3E%3C/svg%3E" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" /><link rel="stylesheet" href="./observeops-ds.css" /><link rel="stylesheet" href="./app.css?v=b98c0152" />
+<style>
+
+.ch-sec { padding: 18px 28px 6px; font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--neutral-light); }
+.ch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 16px; padding: 6px 28px 32px; }
+.ch-card { margin: 0; border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; background: var(--page-background-color); }
+.ch-cap { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  padding: 10px 14px; border-bottom: 1px solid var(--border-color); }
+.ch-name { font-size: 13px; font-weight: 600; }
+.ch-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.ch-badge { font-size: 10.5px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border-color); color: var(--neutral-light); white-space: nowrap; }
+.ch-type { border-color: var(--primary-alt); color: var(--primary-alt); }
+.ch-plot { height: 300px; overflow: hidden; } /* never let a card's content spill into its neighbours */
+.ch-na { padding: 26px 14px; font-size: 12.5px; color: var(--neutral-light); text-align: center; }
+.ch-card-na { background: transparent; border-style: dashed; }
+.ch-missing { margin: 14px 28px; padding: 14px 16px; border: 1px solid var(--severity-major, #f78c1e); border-radius: 8px; font-size: 13px; max-width: 92ch; }
+.ch-note { margin: 10px 28px 0; padding: 10px 14px; border: 1px solid var(--border-color); border-left: 3px solid var(--primary-alt);
+  border-radius: 8px; font-size: 12.5px; max-width: 92ch; background: var(--dropdown-background); }
+.ch-note b { font-weight: 600; }
+.play-plot { height: 100%; min-height: 320px; }
+/* the chart stage fills the available width — engine charts set their own px width, but the
+   hand-built renderers (leaflet map, gauge, heatmap) are width:auto and would collapse the
+   content-sized .stage-inner flex item to 0 */
+#live-wrap { width: 100%; }
+/* metric grid (ChartWithGrid parity) — chart above, one row per series, aggregator columns */
+.play-grid { border-top: 1px solid var(--border-color); max-height: 180px; overflow: auto; }
+.play-grid table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.play-grid th, .play-grid td { padding: 4px 12px; text-align: right; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+.play-grid thead th { color: var(--neutral-light); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; }
+.play-grid tbody th { text-align: left; font-weight: 400; }
+.ctl-check { display: inline-flex; align-items: center; gap: 4px; margin-right: 10px; font-size: 12px; }
+.ctl-check input { accent-color: var(--primary-alt); }
+/* gauge family — the product's token values (variable.less): track #dee5ed light / #172336 dark.
+   The site theme mechanism is data-theme="dark-theme" on the root element (app.js + token CSS). */
+:root { --gauge-base-color: #dee5ed; }
+:root[data-theme="dark-theme"] { --gauge-base-color: #172336; }
+.gauge-dial { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
+/* value text anchored the way gauge.vue's foreignObject slot is: bottom-aligned at the dial's
+   centre line ((height − Y_CENTER)/height = 34.2/134.2 ≈ 25.5% up from the bottom), number and
+   unit at the SAME size (solid-gauge.vue renders both spans at textFontSizeValue) */
+.gauge-num { position: absolute; left: 0; right: 0; bottom: 25.5%; font-weight: 500;
+  display: flex; align-items: baseline; justify-content: center; line-height: 1; }
+.gauge-tile { position: relative; height: 100%; display: flex; align-items: center; gap: 12px; padding: 0 24px; font-weight: 500; }
+.gauge-tile-num { line-height: 1; }
+.gauge-trend { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Top N solid-gauge grid (topn-solid-gauge.vue): wrapping dial cells, monitor name below each —
+   dotted underline + ellipsis like the product's MonitorName link */
+.topn-grid { height: 100%; display: grid; grid-auto-rows: minmax(auto, max-content); gap: 10px;
+  align-content: center; justify-content: center; padding: 12px; overflow: auto; }
+.topn-cell { display: flex; flex-direction: column; align-items: center; min-width: 150px; max-width: 210px; }
+.topn-cell .gauge-dial { height: auto; width: 100%; }
+.topn-cell .gauge-dial svg { width: 100%; height: auto; display: block; }
+.topn-cell .gauge-num { font-size: 1.65rem; }
+.topn-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px;
+  color: var(--page-text-color); text-decoration: underline dotted; cursor: default; padding-top: 2px; }
+/* heatmap family — hex geometry + severity colours ported from heatmap-single-group.vue /
+   general.less (clip-path hexagon, height = s × 1.1547, honeycomb pull-up = s × 0.2885) */
+.hm-wrap { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: auto; padding: 12px; }
+.hm-counts { display: flex; justify-content: center; align-items: flex-end; padding: 4px 8px; font-size: 13px; }
+.hm-counts-n { font-size: 30px; font-weight: 600; line-height: 1; }
+.hm-counts-t { margin-left: 4px; color: var(--neutral-light); }
+.hm-container { display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center; }
+.hm-box { position: relative; display: inline-block; clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%); background: var(--border-color); }
+.hm-cell { position: absolute; inset: 1px; clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%); }
+/* the product's hover: the whole hex scales up (general.less .heatmap-box-border:hover) */
+.hm-box:hover { z-index: 3; transform: scale(1.5); }
+.hm-more { align-self: center; margin: 8px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--primary-alt); color: var(--primary-alt); font-size: 12px; }
+/* with-host cells (heatmap-box-with-host.vue): hex + monitor-type icon + host name below, in a
+   plain flex-wrap (no honeycomb pull-up in with-host mode), name column ~ cell width + 30px */
+.hm-hcell { display: inline-flex; flex-direction: column; align-items: center; margin: 4px 8px; min-width: 0; max-width: 210px; }
+.hm-hhex { position: relative; clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%); background: var(--border-color); }
+.hm-hicon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--page-text-color); pointer-events: none; }
+.hm-hname { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;
+  font-size: 12px; padding-top: 3px; color: var(--page-text-color); }
+/* hover tooltip (heatmap-tooltip.vue): left = primary/secondary/counter labels, right = severity
+   chip (capitalised) and/or the palette block with the percentage at 20px/700 */
+.hm-tt { position: fixed; z-index: 6; display: flex; align-items: stretch; max-width: 35vw;
+  background: var(--dropdown-background, #2b394f); border: 1px solid var(--border-color);
+  border-radius: 8px; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); pointer-events: none; }
+.hm-tt::after { content: ''; position: absolute; left: 50%; width: 10px; height: 10px; background: var(--dropdown-background, #2b394f);
+  transform: translateX(-50%) rotate(45deg); bottom: -6px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.hm-tt.below::after { bottom: auto; top: -6px; border: 0; border-left: 1px solid var(--border-color); border-top: 1px solid var(--border-color); }
+.hm-tt-left { display: flex; flex-direction: column; min-width: 0; flex: 1; padding: 8px 12px; gap: 2px; }
+.hm-tt-primary { font-weight: 500; font-size: 15px; color: var(--page-text-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hm-tt-secondary { font-size: 12px; color: var(--neutral-regular, #516381); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hm-tt-kv { font-size: 12px; color: var(--page-text-color); }
+.hm-tt-sev { display: flex; align-items: center; padding: 8px 16px; font-weight: 500; color: var(--page-text-color); }
+.hm-tt-pct { display: flex; align-items: center; padding: 8px 16px; font-size: 20px; font-weight: 700; color: var(--page-text-color); }
+/* severity fills = the design system's own --severity-* tokens (what the product's severity.less
+   generates), with the product's dark-theme values as fallbacks */
+.severity.down { background: var(--severity-down, #ad1111); }
+.severity.critical { background: var(--severity-critical, #ec5b5b); }
+.severity.major { background: var(--severity-major, #fa9950); }
+.severity.warning { background: var(--severity-warning, #fad100); }
+.severity.clear, .severity.up { background: var(--severity-clear, #36d576); }
+.severity.unknown { background: var(--severity-unknown, #b1b1b1); }
+.severity.none { background: var(--severity-none, #8ac1d3); }
+/* map family — product tokens (variable.less): bubble fill 50% teal, online 68%, null country fill */
+:root { --map-bubble-color: rgba(13, 148, 136, 0.5); --online-map-bubble-color: rgba(13, 148, 136, 0.68); --chart-null-color: #e8edf3; --chart-vivid-teal-faded: rgba(13, 148, 136, 0.35); --secondary-red-light: #ff8a8a; }
+:root[data-theme="dark-theme"] { --map-bubble-color: rgba(20, 184, 166, 0.5); --online-map-bubble-color: rgba(20, 184, 166, 0.68); --chart-null-color: #2b394f; --chart-vivid-teal-faded: rgba(20, 184, 166, 0.35); --secondary-red-light: #ff6b6b; }
+/* AI/ML tooltip: the Prediction Range row is dimmed (no swatch, muted value) */
+.ptt-dim { color: var(--neutral-light); font-weight: 400; }
+.ptt-row.ptt-range .ptt-val { font-weight: 400; color: var(--neutral-light); }
+.lf-map { width: 100%; height: 100%; background: var(--page-background-color); }
+.lf-zoom { position: absolute; right: 12px; bottom: 18px; display: flex; flex-direction: column; gap: 4px; z-index: 500; }
+.lf-zoom button { width: 26px; height: 26px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--page-background-color); color: var(--page-text-color); cursor: pointer; font-size: 15px; line-height: 1; }
+.lf-zoom button:hover { border-color: var(--primary-alt); }
+.lf-tip { background: var(--chart-tooltip-background, var(--dropdown-background, rgba(43, 57, 79, 0.9))) !important; border: 1px solid var(--border-color) !important; border-radius: 6px; color: var(--page-text-color) !important; font-size: 11px; box-shadow: none !important; }
+.leaflet-container { font-family: inherit; }
+/* product-parity tooltip (port of TooltipBuilder + .hc-tooltip-bg + .widget-tooltip-surface) */
+.hc-tooltip { backdrop-filter: blur(15px) !important; font-family: var(--chart-font-family, inherit);
+  box-shadow: 0 10px 15px -3px rgba(2, 6, 23, 0.3), 0 4px 6px -4px rgba(2, 6, 23, 0.3) !important; }
+/* the engine paints its default #666 tooltip text via inline style, unreadable on the dark-theme
+   tooltip surface — force the token text colour on the container and every product row */
+.hc-tooltip { color: var(--page-text-color) !important; }
+.hc-tooltip .ptt-head, .hc-tooltip .ptt-name, .hc-tooltip .ptt-val { color: var(--page-text-color); }
+.hc-tooltip .ptt-dim, .hc-tooltip .ptt-dim .ptt-name, .hc-tooltip .ptt-dim .ptt-val { color: var(--neutral-light); }
+.highcharts-tooltip-container { z-index: 30; }
+.ptt-head { font-size: 11px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; }
+.ptt-body { display: flex; flex-direction: column; max-width: 50vw; font-size: 11px; }
+.ptt-row { display: flex; align-items: center; gap: 6px; width: 100%; }
+.ptt-swatch { flex: none; display: inline-flex; }
+.ptt-name { min-width: 0; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ptt-val { flex-shrink: 0; margin-left: 12px; font-weight: 700; white-space: nowrap; }
+@media (max-width: 900px) { .ch-grid { grid-template-columns: 1fr; } }
+
+.ch-head { padding: 22px 28px 8px; }
+.ch-head h1 { margin: 0 0 4px; font-size: 22px; }
+.ch-head p { margin: 0 0 6px; font-size: 13px; max-width: 78ch; }
+.chcat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; padding: 16px 28px 40px; }
+.chcat-card { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border: 1px solid var(--border-color);
+  border-radius: 10px; background: var(--page-background-color); text-decoration: none; color: inherit; }
+.chcat-card:hover { border-color: var(--primary-alt); }
+.chcat-name { font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.chcat-count { font-size: 11px; color: var(--neutral-light); font-weight: 500; }
+.chcat-blurb { font-size: 12.5px; color: var(--neutral-regular, #516381); }
+.chcat-types { font-size: 11.5px; color: var(--neutral-light); }
+</style>
+</head>
+<body>
+<div class="layout no-panel">
+  <aside class="rail">
+  <a class="brand" href="./index.html"><img class="brand-logo brand-logo-light" src="./brand-logo.png" alt="Motadata" /><img class="brand-logo brand-logo-dark" src="./brand-logo-dark.png" alt="Motadata" /></a>
+  <div class="nav-search-wrap">
+    <svg class="nav-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="nav-search" class="nav-search" type="text" placeholder="Search components" aria-label="Search components" autocomplete="off" spellcheck="false" />
+    <kbd class="nav-search-kbd">/</kbd>
+  </div>
+  <div class="nav-scroll"><nav class="nav"><a class="nav-item nav-pinned" href="./build-with-ai.html" style="font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:8px"><span>Build with AI</span><span class="nav-spark" aria-hidden="true" style="color:var(--primary-alt);flex:none">✦</span></a><div class="nav-grp" data-grp="Foundations"><button class="nav-grp-h" type="button" aria-expanded="true"><span>Foundations</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-grp-body"><div class="nav-sub" data-grp="Layout"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Layout</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./layout-app-shell.html">App shell</a><a class="nav-item" href="./layout-grid.html">Grid</a><a class="nav-item" href="./layout-shells.html">Layout shells</a><a class="nav-item" href="./layout-page-templates.html">Page templates</a><a class="nav-item" href="./layout-panels.html">Panel behaviours</a><a class="nav-item" href="./layout-screen-regions.html">Screen regions</a></div></div></div></div><div class="nav-grp" data-grp="Components"><button class="nav-grp-h" type="button" aria-expanded="true"><span>Components</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-grp-body"><a class="nav-item" href="./button.html">Button</a><a class="nav-item" href="./date-time-pickers.html">Date &amp; Time Pickers</a><a class="nav-item" href="./divider.html">Divider</a><a class="nav-item" href="./banner.html">Banner</a><a class="nav-item" href="./filters.html">Filters</a><a class="nav-item" href="./icon.html">Icon</a><a class="nav-item" href="./link.html">Link</a><a class="nav-item" href="./logo.html">Logo</a><a class="nav-item" href="./menu.html">Menu</a><a class="nav-item" href="./table.html">Table</a><a class="nav-item" href="./tabs.html">Tabs</a><div class="nav-sub" data-grp="App Chrome"><button class="nav-sub-h" type="button" aria-expanded="true"><span>App Chrome</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./app-header.html">App Header</a><a class="nav-item" href="./command-palette.html">Command Palette</a><a class="nav-item" href="./notification-menu.html">Notification Menu</a><a class="nav-item" href="./user-menu.html">User Menu</a></div></div><div class="nav-sub" data-grp="Charts"><div class="nav-sub-h nav-sub-link-h"><a class="nav-sub-link active" href="./charts.html">Charts</a><button class="nav-sub-chev" type="button" aria-expanded="true" aria-label="Toggle Charts group"><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="nav-sub-body"><a class="nav-item" href="./charts-anomaly.html">Anomaly</a><a class="nav-item" href="./charts-forecast.html">Forecast</a><a class="nav-item" href="./charts-gauge.html">Gauge</a><a class="nav-item" href="./charts-heat-map.html">Heat Map</a><a class="nav-item" href="./charts-map.html">Map</a><a class="nav-item" href="./charts-distribution.html">Pie chart</a><a class="nav-item" href="./charts-sankey.html">Sankey</a><a class="nav-item" href="./charts-time-series.html">Time Series</a><a class="nav-item" href="./charts-topn-views.html">Top N Views</a></div></div><div class="nav-sub" data-grp="Dashboard"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Dashboard</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./widget-card.html">Widget Card</a><a class="nav-item" href="./widget-grid.html">Widget Grid</a></div></div><div class="nav-sub" data-grp="Data Display"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Data Display</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./key-value.html">Key-Value</a><a class="nav-item" href="./metric-list.html">Metric List</a></div></div><div class="nav-sub" data-grp="Data Visualization"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Data Visualization</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./gauge.html">Gauge</a><a class="nav-item" href="./metric-picker.html">Metric Picker</a><a class="nav-item" href="./severity-heatmap.html">Severity Heatmap</a></div></div><div class="nav-sub" data-grp="Form Controls"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Form Controls</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./color-picker.html">Color Picker</a><a class="nav-item" href="./dropdown.html">Dropdown</a><a class="nav-item" href="./grid-select.html">Grid Select</a><a class="nav-item" href="./input.html">Input</a></div></div><div class="nav-sub" data-grp="Navigation"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Navigation</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./breadcrumbs.html">Breadcrumbs</a><a class="nav-item" href="./side-menu.html">Side Menu</a><a class="nav-item" href="./sidebar.html">Sidebar</a><a class="nav-item" href="./steps.html">Steps</a></div></div><div class="nav-sub" data-grp="Overlay"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Overlay</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./drawer.html">Drawer</a><a class="nav-item" href="./modal.html">Modal</a></div></div><div class="nav-sub" data-grp="Playback &amp; Timeline"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Playback &amp; Timeline</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./noc-player.html">NOC Player</a><a class="nav-item" href="./timeline-scrollbar.html">Timeline Scrollbar</a></div></div><div class="nav-sub" data-grp="Popover &amp; Tooltip"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Popover &amp; Tooltip</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./data-viz-tooltips.html">Data-Viz Tooltips</a><a class="nav-item" href="./tooltip.html">Tooltip</a></div></div><div class="nav-sub" data-grp="Selection Controls"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Selection Controls</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./checkbox.html">Checkbox</a><a class="nav-item" href="./radio.html">Radio</a><a class="nav-item" href="./switch.html">Switch</a></div></div><div class="nav-sub" data-grp="Tag"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Tag</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./selected-pills.html">Selected Pills</a><a class="nav-item" href="./severity.html">Severity</a><a class="nav-item" href="./tag.html">Tag</a><a class="nav-item" href="./loose-tags.html">Tags Input</a></div></div><div class="nav-sub" data-grp="Toolbars"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Toolbars</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./page-header.html">Page Header</a><a class="nav-item" href="./toolbar.html">Toolbar</a></div></div></div></div><div class="nav-grp" data-grp="Assets"><button class="nav-grp-h" type="button" aria-expanded="true"><span>Assets</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-grp-body"><a class="nav-item" href="./icons.html">Icons</a><a class="nav-item" href="./logos.html">Logos</a></div></div><p class="nav-empty">No matches.</p></nav></div>
+  <div class="rail-foot">
+    <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+      <svg class="sun-moon" aria-hidden="true" width="22" height="22" viewBox="0 0 24 24">
+        <mask id="moon-mask"><rect x="0" y="0" width="24" height="24" fill="white"/><circle class="moon-dot" cx="24" cy="10" r="6" fill="black"/></mask>
+        <circle class="sun" cx="12" cy="12" r="5.5" fill="currentColor" mask="url(#moon-mask)"/>
+        <g class="sun-rays" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/>
+        </g>
+      </svg>
+      <span class="theme-label">Theme</span>
+    </button>
+    <p class="muted small">v0.1.189 · 51 components<br/>Web Components — framework-agnostic.</p>
+  </div>
+</aside>
+  <main class="canvas">
+    <div class="ch-head">
+      <h1>Charts</h1>
+      <p>Every chart variant in the product — 32 captured configurations across 9 categories, rendered
+      through the same engine and palette the product uses. Each category page follows the standard component-page
+      pattern: a live playground with controls, and every captured variant under Examples.</p>
+    </div>
+    <div class="ch-note">
+      <b>What these pages prove and what they don't.</b> The configurations are captured from the product's own chart
+      builder and fed in verbatim, so geometry, axes, palette, stacking and legend match the product. Two known gaps:
+      <b>formatter functions cannot be serialised</b>, so tooltips and axis labels fall back to engine defaults; and the
+      fixtures were captured in the product's <b>dark</b> theme, so the light theme needs its own capture.
+    </div>
+    
+    <div class="chcat-grid"><a class="chcat-card" href="./charts-time-series.html">
+      <span class="chcat-name">Time Series<span class="chcat-count">19 variants</span></span>
+      <span class="chcat-blurb">Trend charts over time — line, area, vertical and horizontal bars, plus each stacked variant; single-counter and multi-counter forms.</span>
+      <span class="chcat-types">Line · Area · Vertical bar · Horizontal bar · Stacked line · Stacked area · …</span>
+    </a><a class="chcat-card" href="./charts-topn-views.html">
+      <span class="chcat-name">Top N Views<span class="chcat-count">3 variants</span></span>
+      <span class="chcat-blurb">The Top N widget’s non-chart Style views — one solid-gauge dial per monitor in a wrapping grid, the packed bubble cluster, and the treemap (Tree View). One payload drives all three, like the product’s Style picker.</span>
+      <span class="chcat-types">Solid Gauge Grid · Packed Bubble · Tree View</span>
+    </a><a class="chcat-card" href="./charts-anomaly.html">
+      <span class="chcat-name">Anomaly<span class="chcat-count">1 variant</span></span>
+      <span class="chcat-blurb">AI/ML time series — the avg actuals with an anomaly confidence band, outliers leaving the band coloured by zone.</span>
+      <span class="chcat-types">Anomaly</span>
+    </a><a class="chcat-card" href="./charts-forecast.html">
+      <span class="chcat-name">Forecast<span class="chcat-count">1 variant</span></span>
+      <span class="chcat-blurb">AI/ML time series — the projection continuing past the last actual interval as one spline with a widening confidence range.</span>
+      <span class="chcat-types">Forecast</span>
+    </a><a class="chcat-card" href="./charts-distribution.html">
+      <span class="chcat-name">Pie chart<span class="chcat-count">2 variants</span></span>
+      <span class="chcat-blurb">Share-of-whole views — pie and donut (the pie geometry with the product’s 70% inner size), with rotation, legend and data-label configuration.</span>
+      <span class="chcat-types">Pie chart · Donut chart</span>
+    </a><a class="chcat-card" href="./charts-gauge.html">
+      <span class="chcat-name">Gauge<span class="chcat-count">2 variants</span></span>
+      <span class="chcat-blurb">Single-value instruments — the solid-gauge dial and the numeric metro tile, ported from the product’s own SVG gauge.</span>
+      <span class="chcat-types">Solid gauge dial · Metro tile (number)</span>
+    </a><a class="chcat-card" href="./charts-heat-map.html">
+      <span class="chcat-name">Heat Map<span class="chcat-count">3 variants</span></span>
+      <span class="chcat-blurb">Severity honeycomb of hexagonal cells (custom DOM, not engine-rendered): severity colours, a metric heat map coloured by the selected palette, and the with-host variant with monitor-type icons and host names.</span>
+      <span class="chcat-types">Severity heat map · Color palette heat map · Heat map with host</span>
+    </a><a class="chcat-card" href="./charts-map.html">
+      <span class="chcat-name">Map<span class="chcat-count">3 variants</span></span>
+      <span class="chcat-blurb">Geographic widget — country-intensity bubbles or labelled location points on the Highcharts world map, and the Online Map (Leaflet) variant; the same payload drives all renderers, like the product.</span>
+      <span class="chcat-types">Map bubble · Map points · Online Map (Leaflet)</span>
+    </a><a class="chcat-card" href="./charts-sankey.html">
+      <span class="chcat-name">Sankey<span class="chcat-count">1 variant</span></span>
+      <span class="chcat-blurb">Flow diagram between source and destination — the captured Flow result rendered through the engine’s sankey type, like the product’s sankey view.</span>
+      <span class="chcat-types">Sankey</span>
+    </a></div>
+  </main>
+</div>
+<script src="./app.js?v=b98c0152"></script>
+</body></html>

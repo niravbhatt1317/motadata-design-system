@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Build with AI — ObserveOps Elements</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%2314b8a6'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%230b1220'/%3E%3C/svg%3E" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" /><link rel="stylesheet" href="./observeops-ds.css" /><link rel="stylesheet" href="./app.css?v=b98c0152" />
+<style>
+  .bwa { max-width: 820px; padding: 40px 48px 72px; }
+  .bwa h2 { margin: 2.6rem 0 .5rem; font-size: 1.25rem; display: flex; align-items: center; gap: .6rem; }
+  .bwa h2 .n { flex: none; width: 1.6rem; height: 1.6rem; border-radius: 999px; background: var(--primary);
+    color: var(--primary-button-text, #fff); display: inline-grid; place-items: center; font-size: .82rem; font-weight: 700; }
+  .bwa p { color: var(--neutral-regular); line-height: 1.65; max-width: 64ch; }
+  .bwa-lede { font-size: 1.06rem; color: var(--page-text-color); max-width: 66ch; margin-top: .2rem; }
+  .bwa-sub { color: var(--neutral-light); font-size: .88rem; margin-top: .5rem; }
+  .bwa a.inline { color: var(--primary-alt); text-decoration: underline; text-underline-offset: 2px; }
+  .bwa-codewrap { position: relative; margin: .7rem 0 0; }
+  .bwa-code { background: var(--code-tag-background-color, var(--neutral-lightest)); border: 1px solid var(--border-color);
+    border-radius: 8px; padding: .8rem 3.6rem .8rem 1rem; font-size: .82rem; margin: 0;
+    color: var(--page-text-color); white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+  .bwa-copy { position: absolute; top: .45rem; right: .45rem; font-size: .68rem; font-weight: 600;
+    padding: .18rem .55rem; border-radius: 6px; border: 1px solid var(--border-color);
+    background: var(--page-background-color); color: var(--neutral-regular); cursor: pointer; opacity: .9; }
+  .bwa-copy:hover { color: var(--primary-alt); border-color: var(--primary-alt); opacity: 1; }
+  .bwa-copy.copied { color: var(--secondary-green); border-color: var(--secondary-green); }
+  /* button row (Download + Copy) for downloadable code blocks */
+  .bwa-btns { position: absolute; top: .45rem; right: .45rem; display: flex; gap: .4rem; align-items: center; }
+  .bwa-btns .bwa-copy { position: static; top: auto; right: auto; }
+  .bwa-dl { font-size: .68rem; font-weight: 600; padding: .18rem .6rem; border-radius: 6px;
+    border: 1px solid var(--primary-alt); background: var(--primary-alt); color: #fff; cursor: pointer; }
+  .bwa-dl:hover { filter: brightness(1.08); }
+  /* per-tool setup tabs */
+  .bwa-tabwrap { margin-top: 1rem; }
+  .bwa-tabs { display: flex; gap: .2rem; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
+  .bwa-tab { padding: .5rem .9rem; border: 0; background: none; cursor: pointer; font-size: .88rem; font-weight: 600;
+    color: var(--neutral-regular); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .bwa-tab:hover { color: var(--page-text-color); }
+  .bwa-tab.active { color: var(--primary-alt); border-bottom-color: var(--primary-alt); }
+  .bwa-panel { padding-top: 1.1rem; }
+  .bwa-panel.hidden { display: none; }
+  .bwa-note { border-left: 3px solid var(--primary-alt); padding: .6rem 1rem; margin-top: 1rem;
+    background: var(--neutral-lightest); border-radius: 0 8px 8px 0; font-size: .9rem; color: var(--neutral-regular); }
+  .bwa-what { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .7rem; }
+  .bwa-what li { display: flex; gap: .6rem; color: var(--neutral-regular); line-height: 1.55; max-width: 66ch; }
+  .bwa-what .ck { flex: none; color: var(--secondary-green); font-weight: 800; }
+  details.bwa-more { margin-top: .7rem; border: 1px solid var(--border-color); border-radius: 10px; padding: 0 1rem; }
+  details.bwa-more > summary { cursor: pointer; padding: .8rem 0; font-weight: 600; font-size: .9rem;
+    color: var(--page-text-color); list-style: none; display: flex; align-items: center; gap: .5rem; }
+  details.bwa-more > summary::-webkit-details-marker { display: none; }
+  details.bwa-more > summary::before { content: "›"; color: var(--neutral-light); font-size: 1.15rem; transition: transform .15s ease; }
+  details.bwa-more[open] > summary::before { transform: rotate(90deg); }
+  details.bwa-more[open] { padding-bottom: 1rem; }
+  .bwa-steps { list-style: none; padding: 0; margin: .3rem 0 0; }
+  .bwa-step { display: flex; gap: .75rem; padding: .5rem 0; border-bottom: 1px solid var(--border-color); font-size: .9rem; color: var(--neutral-regular); }
+  .bwa-step:last-child { border-bottom: 0; }
+  .bwa-num { flex: none; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: var(--neutral-lightest);
+    border: 1px solid var(--border-color); color: var(--neutral-regular); display: grid; place-items: center; font-size: .72rem; font-weight: 700; }
+  .bwa-links { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+  .bwa-links a { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .85rem; border: 1px solid var(--border-color);
+    border-radius: 9px; text-decoration: none; color: var(--page-text-color); font-size: .85rem; font-weight: 500; background: var(--page-background-color); }
+  .bwa-links a:hover { border-color: var(--primary-alt); color: var(--primary-alt); }
+  .bwa-links a .ext { flex: none; color: var(--neutral-light); }
+  .bwa-links a:hover .ext { color: var(--primary-alt); }
+</style>
+</head><body>
+<div class="layout no-panel">
+  <aside class="rail">
+  <a class="brand" href="./index.html"><img class="brand-logo brand-logo-light" src="./brand-logo.png" alt="Motadata" /><img class="brand-logo brand-logo-dark" src="./brand-logo-dark.png" alt="Motadata" /></a>
+  <div class="nav-search-wrap">
+    <svg class="nav-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="nav-search" class="nav-search" type="text" placeholder="Search components" aria-label="Search components" autocomplete="off" spellcheck="false" />
+    <kbd class="nav-search-kbd">/</kbd>
+  </div>
+  <div class="nav-scroll"><nav class="nav"><a class="nav-item nav-pinned active" href="./build-with-ai.html" style="font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:8px"><span>Build with AI</span><span class="nav-spark" aria-hidden="true" style="color:var(--primary-alt);flex:none">✦</span></a><div class="nav-grp" data-grp="Foundations"><button class="nav-grp-h" type="button" aria-expanded="true"><span>Foundations</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-grp-body"><div class="nav-sub" data-grp="Layout"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Layout</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./layout-app-shell.html">App shell</a><a class="nav-item" href="./layout-grid.html">Grid</a><a class="nav-item" href="./layout-shells.html">Layout shells</a><a class="nav-item" href="./layout-page-templates.html">Page templates</a><a class="nav-item" href="./layout-panels.html">Panel behaviours</a><a class="nav-item" href="./layout-screen-regions.html">Screen regions</a></div></div></div></div><div class="nav-grp" data-grp="Components"><button class="nav-grp-h" type="button" aria-expanded="true"><span>Components</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-grp-body"><a class="nav-item" href="./button.html">Button</a><a class="nav-item" href="./date-time-pickers.html">Date &amp; Time Pickers</a><a class="nav-item" href="./divider.html">Divider</a><a class="nav-item" href="./banner.html">Banner</a><a class="nav-item" href="./filters.html">Filters</a><a class="nav-item" href="./icon.html">Icon</a><a class="nav-item" href="./link.html">Link</a><a class="nav-item" href="./logo.html">Logo</a><a class="nav-item" href="./menu.html">Menu</a><a class="nav-item" href="./table.html">Table</a><a class="nav-item" href="./tabs.html">Tabs</a><div class="nav-sub" data-grp="App Chrome"><button class="nav-sub-h" type="button" aria-expanded="true"><span>App Chrome</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./app-header.html">App Header</a><a class="nav-item" href="./command-palette.html">Command Palette</a><a class="nav-item" href="./notification-menu.html">Notification Menu</a><a class="nav-item" href="./user-menu.html">User Menu</a></div></div><div class="nav-sub" data-grp="Charts"><div class="nav-sub-h nav-sub-link-h"><a class="nav-sub-link" href="./charts.html">Charts</a><button class="nav-sub-chev" type="button" aria-expanded="true" aria-label="Toggle Charts group"><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="nav-sub-body"><a class="nav-item" href="./charts-anomaly.html">Anomaly</a><a class="nav-item" href="./charts-forecast.html">Forecast</a><a class="nav-item" href="./charts-gauge.html">Gauge</a><a class="nav-item" href="./charts-heat-map.html">Heat Map</a><a class="nav-item" href="./charts-map.html">Map</a><a class="nav-item" href="./charts-distribution.html">Pie chart</a><a class="nav-item" href="./charts-sankey.html">Sankey</a><a class="nav-item" href="./charts-time-series.html">Time Series</a><a class="nav-item" href="./charts-topn-views.html">Top N Views</a></div></div><div class="nav-sub" data-grp="Dashboard"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Dashboard</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./widget-card.html">Widget Card</a><a class="nav-item" href="./widget-grid.html">Widget Grid</a></div></div><div class="nav-sub" data-grp="Data Display"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Data Display</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./key-value.html">Key-Value</a><a class="nav-item" href="./metric-list.html">Metric List</a></div></div><div class="nav-sub" data-grp="Data Visualization"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Data Visualization</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./gauge.html">Gauge</a><a class="nav-item" href="./metric-picker.html">Metric Picker</a><a class="nav-item" href="./severity-heatmap.html">Severity Heatmap</a></div></div><div class="nav-sub" data-grp="Form Controls"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Form Controls</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./color-picker.html">Color Picker</a><a class="nav-item" href="./dropdown.html">Dropdown</a><a class="nav-item" href="./grid-select.html">Grid Select</a><a class="nav-item" href="./input.html">Input</a></div></div><div class="nav-sub" data-grp="Navigation"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Navigation</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./breadcrumbs.html">Breadcrumbs</a><a class="nav-item" href="./side-menu.html">Side Menu</a><a class="nav-item" href="./sidebar.html">Sidebar</a><a class="nav-item" href="./steps.html">Steps</a></div></div><div class="nav-sub" data-grp="Overlay"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Overlay</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./drawer.html">Drawer</a><a class="nav-item" href="./modal.html">Modal</a></div></div><div class="nav-sub" data-grp="Playback &amp; Timeline"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Playback &amp; Timeline</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./noc-player.html">NOC Player</a><a class="nav-item" href="./timeline-scrollbar.html">Timeline Scrollbar</a></div></div><div class="nav-sub" data-grp="Popover &amp; Tooltip"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Popover &amp; Tooltip</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./data-viz-tooltips.html">Data-Viz Tooltips</a><a class="nav-item" href="./tooltip.html">Tooltip</a></div></div><div class="nav-sub" data-grp="Selection Controls"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Selection Controls</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./checkbox.html">Checkbox</a><a class="nav-item" href="./radio.html">Radio</a><a class="nav-item" href="./switch.html">Switch</a></div></div><div class="nav-sub" data-grp="Tag"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Tag</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./selected-pills.html">Selected Pills</a><a class="nav-item" href="./severity.html">Severity</a><a class="nav-item" href="./tag.html">Tag</a><a class="nav-item" href="./loose-tags.html">Tags Input</a></div></div><div class="nav-sub" data-grp="Toolbars"><button class="nav-sub-h" type="button" aria-expanded="true"><span>Toolbars</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-sub-body"><a class="nav-item" href="./page-header.html">Page Header</a><a class="nav-item" href="./toolbar.html">Toolbar</a></div></div></div></div><div class="nav-grp" data-grp="Assets"><button class="nav-grp-h" type="button" aria-expanded="true"><span>Assets</span><svg class="nav-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="nav-grp-body"><a class="nav-item" href="./icons.html">Icons</a><a class="nav-item" href="./logos.html">Logos</a></div></div><p class="nav-empty">No matches.</p></nav></div>
+  <div class="rail-foot">
+    <button class="theme-btn" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+      <svg class="sun-moon" aria-hidden="true" width="22" height="22" viewBox="0 0 24 24">
+        <mask id="moon-mask"><rect x="0" y="0" width="24" height="24" fill="white"/><circle class="moon-dot" cx="24" cy="10" r="6" fill="black"/></mask>
+        <circle class="sun" cx="12" cy="12" r="5.5" fill="currentColor" mask="url(#moon-mask)"/>
+        <g class="sun-rays" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/>
+        </g>
+      </svg>
+      <span class="theme-label">Theme</span>
+    </button>
+    <p class="muted small">v0.1.189 · 51 components<br/>Web Components — framework-agnostic.</p>
+  </div>
+</aside>
+  <main class="canvas">
+    <div class="bwa">
+      <div class="ix-hero"><h1>Build with AI</h1>
+        <p class="lead">Connect your AI coding assistant to the ObserveOps design system <b>once</b>. After that, just describe the screen you want in plain English — and it builds it with the real ObserveOps components, not a generic guess.</p></div>
+
+      <h2><span class="n">1</span> Set it up — pick your tool</h2>
+      <p>Two things make it work: (a) <b>connect</b> the design system, and (b) give your tool a <b>rules file</b> so it actually uses it on every request (connecting alone isn't enough — an AI won't reach for tools unless it's told to). Set this up <b>once</b> — you don't repeat it per screen.</p>
+      <div class="bwa-tabwrap">
+        <div class="bwa-tabs" role="tablist">
+          <button class="bwa-tab active" type="button" data-tab="general">General</button>
+          <button class="bwa-tab" type="button" data-tab="claudecode">Claude Code (terminal)</button>
+          <button class="bwa-tab" type="button" data-tab="claudeapp">Claude app (no terminal)</button>
+          <button class="bwa-tab" type="button" data-tab="cursor">Cursor / Windsurf / Cline</button>
+        </div>
+
+        <div class="bwa-panel" data-panel="general">
+          <p>Works with any AI coding tool. <b>Install</b> the packages, then <b>add the rules</b> to your tool's rules file.</p>
+          <div class="bwa-codewrap"><pre class="bwa-code"><code>npm install @mtdt/observeops-ds-elements @mtdt/observeops-ds-css @mtdt/observeops-ds-spec</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+          <p style="margin-top:1rem">Then add the rules — download the file and drop it in your project, or copy the text into your tool's rules file:</p>
+          <div class="bwa-codewrap"><pre class="bwa-code"><code># ObserveOps design system
+
+When building ANY UI in this project, use the ObserveOps design system — never guess a component or colour:
+
+1. Call the observeops-ds MCP: get_setup, get_contract, then search_components / get_component for each part.
+2. Build with the real components: @mtdt/observeops-ds-elements (the obs-* web components) + @mtdt/observeops-ds-css tokens.
+3. Resolve every colour with resolve_token; validate the result with validate_render before finishing.
+</code></pre><div class="bwa-btns"><button class="bwa-dl" type="button" data-file="CLAUDE.md">⬇ Download CLAUDE.md</button><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div></div>
+          <p class="bwa-sub">The rules file is named <code>CLAUDE.md</code> (Claude), <code>.cursorrules</code> (Cursor), or <code>AGENTS.md</code> (others). Once per project — or in your tool's <b>global</b> rules file to cover every project at once.</p>
+        </div>
+
+        <div class="bwa-panel hidden" data-panel="claudecode">
+          <p><b>Do it once — it then works in every project.</b></p>
+          <p><b>a.</b> Connect the tools (the <code>-s user</code> makes it global, so this is a one-time thing):</p>
+          <div class="bwa-codewrap"><pre class="bwa-code"><code>claude mcp add observeops-ds -s user -- npx -y @mtdt/observeops-ds-mcp</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+          <div class="bwa-note"><b>Says <code>already exists</code>?</b> Good — it's installed. Confirm with <code>claude mcp list</code> (look for <code>observeops-ds — ✓ Connected</code>).</div>
+          <p style="margin-top:1rem"><b>b.</b> Add the rules. Download this file, then move it to <b><code>~/.claude/CLAUDE.md</code></b> to cover <b>every</b> project — or to your project's <code>./CLAUDE.md</code> for just one:</p>
+          <div class="bwa-codewrap"><pre class="bwa-code"><code># ObserveOps design system
+
+When building ANY UI in this project, use the ObserveOps design system — never guess a component or colour:
+
+1. Call the observeops-ds MCP: get_setup, get_contract, then search_components / get_component for each part.
+2. Build with the real components: @mtdt/observeops-ds-elements (the obs-* web components) + @mtdt/observeops-ds-css tokens.
+3. Resolve every colour with resolve_token; validate the result with validate_render before finishing.
+</code></pre><div class="bwa-btns"><button class="bwa-dl" type="button" data-file="CLAUDE.md">⬇ Download CLAUDE.md</button><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div></div>
+          <p class="bwa-sub">Global (<code>~/.claude/CLAUDE.md</code>) = set up once, never again. Per-project (<code>./CLAUDE.md</code>) = only that project.</p>
+        </div>
+
+        <div class="bwa-panel hidden" data-panel="claudeapp">
+          <p><b>No terminal, no files.</b> Use a <b>Claude Project</b> — set it up once and reuse it for all your ObserveOps work.</p>
+          <ol style="padding-left:1.2rem;line-height:1.7">
+            <li>In Claude, create a new <b>Project</b>.</li>
+            <li>Open the Project's <b>custom instructions</b> and paste these rules:</li>
+          </ol>
+          <div class="bwa-codewrap"><pre class="bwa-code"><code># ObserveOps design system
+
+When building ANY UI in this project, use the ObserveOps design system — never guess a component or colour:
+
+1. Call the observeops-ds MCP: get_setup, get_contract, then search_components / get_component for each part.
+2. Build with the real components: @mtdt/observeops-ds-elements (the obs-* web components) + @mtdt/observeops-ds-css tokens.
+3. Resolve every colour with resolve_token; validate the result with validate_render before finishing.
+</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+          <ol start="3" style="padding-left:1.2rem;line-height:1.7">
+            <li>Start any chat <b>inside that project</b> and describe the screen — it follows the rules automatically. No per-chat setup.</li>
+          </ol>
+          <div class="bwa-note">This is per <b>Project</b>, not per code-folder — reuse the same Project every time. <b>Claude Desktop app</b> can also get the live tools: add the server to <code>claude_desktop_config.json</code> — `{ "mcpServers": { "observeops-ds": { "command": "npx", "args": ["-y", "@mtdt/observeops-ds-mcp"] } } }`. (Claude on the web can't run this local server, so the Project rules above are the way there.)</div>
+        </div>
+
+        <div class="bwa-panel hidden" data-panel="cursor">
+          <p><b>a.</b> Add the MCP server to your editor's config (e.g. <code>.cursor/mcp.json</code>):</p>
+          <div class="bwa-codewrap"><pre class="bwa-code"><code>{
+  &quot;mcpServers&quot;: {
+    &quot;observeops-ds&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;@mtdt/observeops-ds-mcp&quot;]
+    }
+  }
+}</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+          <p style="margin-top:1rem"><b>b.</b> Add the rules to your editor's rules file — download it as <code>.cursorrules</code> (Cursor) or <code>AGENTS.md</code> (Windsurf/Cline), or copy the text in:</p>
+          <div class="bwa-codewrap"><pre class="bwa-code"><code># ObserveOps design system
+
+When building ANY UI in this project, use the ObserveOps design system — never guess a component or colour:
+
+1. Call the observeops-ds MCP: get_setup, get_contract, then search_components / get_component for each part.
+2. Build with the real components: @mtdt/observeops-ds-elements (the obs-* web components) + @mtdt/observeops-ds-css tokens.
+3. Resolve every colour with resolve_token; validate the result with validate_render before finishing.
+</code></pre><div class="bwa-btns"><button class="bwa-dl" type="button" data-file=".cursorrules">⬇ Download .cursorrules</button><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div></div>
+        </div>
+      </div>
+
+      <h2><span class="n">2</span> Ask for what you want — in plain English</h2>
+      <p>Now just tell your AI what to build. No special syntax — describe the screen the way you'd describe it to a teammate. For example, paste this to your assistant:</p>
+      <div class="bwa-codewrap"><pre class="bwa-code"><code>Using the ObserveOps design system, build a Monitors list page. Add an &quot;Add Monitor&quot; form that opens in a side drawer, and a delete confirmation dialog.</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+      <p>That's the whole workflow: <b>connect once, then ask.</b> Change the words to build anything — a settings page, a login screen, an alerts table, a create-user form.</p>
+
+      <h2>What happens when you do this</h2>
+      <p>Your AI reads the design system and builds the screen the way the ObserveOps team would — you don't need to know any of the internals:</p>
+      <ul class="bwa-what">
+        <li><span class="ck">✓</span><span>It picks the right components and layout from the design system — no guessing, no made-up UI.</span></li>
+        <li><span class="ck">✓</span><span>It uses the exact ObserveOps colours, spacing and fonts, and works in both light and dark themes.</span></li>
+        <li><span class="ck">✓</span><span>It puts each part in the right place — a full page, a slide-in side drawer, or a small pop-up dialog.</span></li>
+        <li><span class="ck">✓</span><span>It builds with the genuine components, so the result looks and behaves like the real product.</span></li>
+        <li><span class="ck">✓</span><span>If the design system is missing something (like a chart), it <b>stops and asks</b> instead of inventing something off-brand.</span></li>
+      </ul>
+
+      <h2>Does it check its own work? Yes.</h2>
+      <p>You don't have to verify anything by hand. As its last step, your AI runs a built-in checker that scores the finished screen from <b>0–100</b> against the design system and fixes anything that's off — automatically.</p>
+      <p>If you ever want to grade a page yourself, you <i>can</i> run the same checker — but it's optional:</p>
+      <div class="bwa-codewrap"><pre class="bwa-code"><code>node node_modules/@mtdt/observeops-ds-spec/conformance/ds-conformance.mjs ./your-page.html</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+      <p class="bwa-sub">It reports any wrong colour, off-spec spacing, or non-ObserveOps element — with the fix. Aim for <b>90 or above</b>.</p>
+
+      <details class="bwa-more"><summary>Curious what your AI does behind the scenes?</summary>
+        <p>It follows an 8-step loop automatically — you never run these yourself:</p>
+        <ol class="bwa-steps">
+          <li class="bwa-step"><span class="bwa-num">1</span><div>Understands your request and lists the screens involved.</div></li>
+          <li class="bwa-step"><span class="bwa-num">2</span><div>Chooses the page layout and where everything goes.</div></li>
+          <li class="bwa-step"><span class="bwa-num">3</span><div>Decides page vs. side drawer vs. pop-up for each part.</div></li>
+          <li class="bwa-step"><span class="bwa-num">4</span><div>Picks the right component and style — and notes why.</div></li>
+          <li class="bwa-step"><span class="bwa-num">5</span><div>Builds with the real ObserveOps components and colours.</div></li>
+          <li class="bwa-step"><span class="bwa-num">6</span><div>Stops and asks if the design system is missing a piece.</div></li>
+          <li class="bwa-step"><span class="bwa-num">7</span><div>Checks its own result and fixes anything off.</div></li>
+          <li class="bwa-step"><span class="bwa-num">8</span><div>Hands you the finished screen with a short summary.</div></li>
+        </ol>
+        <p class="bwa-sub">The full method ships as <code>authoring-playbook.md</code> in the spec package.</p>
+      </details>
+
+      <details class="bwa-more"><summary>Prefer to write the components yourself (no AI)?</summary>
+        <p>The components are also a normal package you can use directly in React, Vue, or plain HTML. Install and register them once:</p>
+        <div class="bwa-codewrap"><pre class="bwa-code"><code>npm install @mtdt/observeops-ds-elements @mtdt/observeops-ds-css</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+        <div class="bwa-codewrap"><pre class="bwa-code"><code>import &#39;@mtdt/observeops-ds-elements&#39;                   // registers obs-button, obs-tag, …
+import &#39;@mtdt/observeops-ds-css/dist/observeops-ds.css&#39; // the DS tokens (light + dark)</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+        <div class="bwa-codewrap"><pre class="bwa-code"><code>&lt;obs-button variant=&quot;primary&quot;&gt;Save&lt;/obs-button&gt;
+&lt;obs-input type=&quot;search&quot; placeholder=&quot;Search…&quot;&gt;&lt;/obs-input&gt;
+&lt;obs-tag variant=&quot;tag-green&quot;&gt;Active&lt;/obs-tag&gt;</code></pre><button class="bwa-copy" type="button" aria-label="Copy to clipboard">Copy</button></div>
+        <div class="bwa-note">Events deliver the value in <code>event.detail</code> as an <b>array</b> — unwrap it:
+          <code>const v = Array.isArray(e.detail) ? e.detail[0] : e.detail</code></div>
+      </details>
+
+      <h2>Read more</h2>
+      <div class="bwa-links">
+        <a href="https://www.npmjs.com/package/@mtdt/observeops-ds-mcp" target="_blank" rel="noopener">MCP server <svg class="ext" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+        <a href="https://www.npmjs.com/package/@mtdt/observeops-ds-spec" target="_blank" rel="noopener">Spec package <svg class="ext" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+        <a href="https://www.npmjs.com/package/@mtdt/observeops-ds-elements" target="_blank" rel="noopener">Components package <svg class="ext" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+        <a href="https://cdn.jsdelivr.net/npm/@mtdt/observeops-ds-spec/AGENTS.md" target="_blank" rel="noopener">The rules (AGENTS.md) <svg class="ext" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+        <a href="https://cdn.jsdelivr.net/npm/@mtdt/observeops-ds-spec/authoring-playbook.md" target="_blank" rel="noopener">Authoring playbook <svg class="ext" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="kbd-overlay" id="kbd-overlay" aria-hidden="true">
+  <div class="kbd-card" role="dialog" aria-label="Keyboard shortcuts">
+    <div class="kbd-head"><h2>Keyboard shortcuts</h2><button class="kbd-close" id="kbd-close" aria-label="Close">×</button></div>
+    <div class="kbd-body"><div class="kbd-sec"><h3>Navigation</h3><div class="kbd-row"><span class="kbd-keys"><kbd>/</kbd><span class="kbd-or">or</span><kbd>⌘K</kbd></span><span class="kbd-label">Search components</span></div><div class="kbd-row"><span class="kbd-keys"><kbd>T</kbd></span><span class="kbd-label">Toggle theme</span></div><div class="kbd-row"><span class="kbd-keys"><kbd>←</kbd><span class="kbd-or">or</span><kbd>→</kbd></span><span class="kbd-label">Previous / next component</span></div><div class="kbd-row"><span class="kbd-keys"><kbd>?</kbd></span><span class="kbd-label">Show this help</span></div><div class="kbd-row"><span class="kbd-keys"><kbd>Esc</kbd></span><span class="kbd-label">Close / blur</span></div></div></div>
+  </div>
+</div>
+<script src="./app.js?v=b98c0152"></script>
+<script>
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest) return
+    var codeOf = function (btn) { var w = btn.closest('.bwa-codewrap'); return w && w.querySelector('code') }
+    var cp = e.target.closest('.bwa-copy')
+    if (cp) {
+      var c = codeOf(cp); if (!c || !navigator.clipboard) return
+      navigator.clipboard.writeText(c.textContent).then(function () {
+        var prev = cp.textContent; cp.textContent = 'Copied'; cp.classList.add('copied')
+        setTimeout(function () { cp.textContent = prev; cp.classList.remove('copied') }, 1400)
+      })
+      return
+    }
+    var dl = e.target.closest('.bwa-dl')
+    if (dl) {
+      var cc = codeOf(dl); if (!cc) return
+      var blob = new Blob([cc.textContent], { type: 'text/markdown' })
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = dl.dataset.file || 'CLAUDE.md'
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href) }, 1000)
+      var prev2 = dl.textContent; dl.textContent = '✓ Downloaded'
+      setTimeout(function () { dl.textContent = prev2 }, 1600)
+      return
+    }
+    var tab = e.target.closest('.bwa-tab')
+    if (tab) {
+      var wrap = tab.closest('.bwa-tabwrap'); if (!wrap) return
+      var name = tab.getAttribute('data-tab')
+      wrap.querySelectorAll('.bwa-tab').forEach(function (x) { x.classList.toggle('active', x === tab) })
+      wrap.querySelectorAll('.bwa-panel').forEach(function (pn) { pn.classList.toggle('hidden', pn.getAttribute('data-panel') !== name) })
+    }
+  })
+</script>
+</body></html>
