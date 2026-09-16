@@ -1,0 +1,177 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Webpack App</title><meta name="viewport" content="width=device-width,initial-scale=1"/><style>html, body {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }</style><script>/* globals window */
+  /* eslint-disable no-underscore-dangle */
+  try {
+    if (window.top !== window) {
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.top.__REACT_DEVTOOLS_GLOBAL_HOOK__;
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('unable to connect to top frame for connecting dev tools');
+  }
+
+  window.onerror = function onerror(message, source, line, column, err) {
+    if (window.CONFIG_TYPE !== 'DEVELOPMENT') return;
+    // eslint-disable-next-line no-var, vars-on-top
+    var xhr = new window.XMLHttpRequest();
+    xhr.open('POST', '/runtime-error');
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.send(
+      JSON.stringify({
+        /* eslint-disable object-shorthand */
+        message: message,
+        source: source,
+        line: line,
+        column: column,
+        error: err && { message: err.message, name: err.name, stack: err.stack },
+        origin: 'manager',
+        /* eslint-enable object-shorthand */
+      })
+    );
+  };</script><script>(function () {
+    var KEY = 'mds-storybook-gate'
+    var EXPECTED_HASH =
+      '8572492f14eaa388b2188c8f5128db12a455e31b61e9dfe69991378fcc191a68' // sha256("motadata")
+
+    function isUnlocked() {
+      try {
+        return localStorage.getItem(KEY) === EXPECTED_HASH
+      } catch (e) {
+        return false
+      }
+    }
+    function sha256(text) {
+      return crypto.subtle
+        .digest('SHA-256', new TextEncoder().encode(text))
+        .then(function (buf) {
+          return Array.from(new Uint8Array(buf))
+            .map(function (b) {
+              return b.toString(16).padStart(2, '0')
+            })
+            .join('')
+        })
+    }
+    function showGate() {
+      if (document.getElementById('mds-gate')) return
+      var o = document.createElement('div')
+      o.id = 'mds-gate'
+      o.style.cssText =
+        'position:fixed;inset:0;z-index:2147483647;background:#111c2c;color:#fff;display:flex;align-items:center;justify-content:center;font-family:Poppins,system-ui,sans-serif'
+      o.innerHTML =
+        '<form id="mds-gate-form" style="background:#1d2a3e;padding:28px 32px;border-radius:8px;display:flex;flex-direction:column;gap:12px;min-width:300px;box-shadow:0 10px 40px rgba(0,0,0,.4)">' +
+        '<div style="font-size:16px;font-weight:600">Motadata Design System</div>' +
+        '<div style="font-size:12px;opacity:.7;margin-bottom:4px">Enter the access password to view the catalog.</div>' +
+        '<input id="mds-gate-input" type="password" autocomplete="current-password" autofocus placeholder="Password" style="padding:10px 12px;border-radius:4px;border:1px solid #2b394f;background:#07101f;color:#fff;outline:none" />' +
+        '<button type="submit" style="padding:10px;border-radius:4px;border:0;background:#099dd9;color:#fff;font-weight:600;cursor:pointer">Unlock</button>' +
+        '<div id="mds-gate-err" style="color:#ec5b5b;font-size:12px;min-height:14px"></div>' +
+        '</form>'
+      document.body.appendChild(o)
+      document.documentElement.style.overflow = 'hidden'
+      document
+        .getElementById('mds-gate-form')
+        .addEventListener('submit', function (e) {
+          e.preventDefault()
+          sha256(document.getElementById('mds-gate-input').value).then(function (h) {
+            if (h === EXPECTED_HASH) {
+              try {
+                localStorage.setItem(KEY, EXPECTED_HASH)
+              } catch (e) {}
+              o.remove()
+              document.documentElement.style.overflow = ''
+            } else {
+              document.getElementById('mds-gate-err').textContent =
+                'Incorrect password'
+            }
+          })
+        })
+    }
+    if (isUnlocked()) return
+    if (document.body) showGate()
+    else document.addEventListener('DOMContentLoaded', showGate)
+  })()</script><script>(function () {
+    function hardReload() {
+      var btn = document.getElementById('mds-hard-reload')
+      if (btn) { btn.textContent = '⟳ Clearing…'; btn.disabled = true }
+      function finish() {
+        try {
+          var u = new URL(window.location.href)
+          u.searchParams.set('_hr', Date.now())
+          window.location.replace(u.toString())
+        } catch (e) {
+          window.location.reload()
+        }
+      }
+      var tasks = []
+      try {
+        if (window.caches && caches.keys) {
+          tasks.push(
+            caches.keys().then(function (keys) {
+              return Promise.all(keys.map(function (k) { return caches.delete(k) }))
+            })
+          )
+        }
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+          tasks.push(
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              return Promise.all(regs.map(function (r) { return r.unregister() }))
+            })
+          )
+        }
+      } catch (e) {}
+      if (tasks.length) Promise.all(tasks).then(finish, finish)
+      else finish()
+    }
+
+    function ensureButton() {
+      if (document.getElementById('mds-hard-reload')) return
+      if (!document.body) return
+      var b = document.createElement('button')
+      b.id = 'mds-hard-reload'
+      b.type = 'button'
+      b.textContent = '⟳ Empty Cache & Hard Reload'
+      b.title = 'Clear caches + service workers and reload fresh'
+      b.addEventListener('click', hardReload)
+      b.style.cssText =
+        'position:fixed;left:10px;bottom:10px;width:210px;z-index:2147483646;' +
+        'padding:7px 10px;border:0;border-radius:6px;cursor:pointer;' +
+        'background:#099dd9;color:#fff;font:600 11px Poppins,system-ui,sans-serif;' +
+        'box-shadow:0 2px 8px rgba(0,0,0,.25);opacity:.92'
+      b.addEventListener('mouseenter', function () { b.style.opacity = '1' })
+      b.addEventListener('mouseleave', function () { b.style.opacity = '.92' })
+      document.body.appendChild(b)
+    }
+
+    if (document.body) ensureButton()
+    else document.addEventListener('DOMContentLoaded', ensureButton)
+    window.addEventListener('load', ensureButton)
+    // Re-add if the manager re-renders and drops it.
+    setInterval(ensureButton, 2000)
+  })()</script><style>#root[hidden],
+      #docs-root[hidden] {
+        display: none !important;
+      }</style></head><body><div id="root"></div><div id="docs-root"></div><script>window['CONFIG_TYPE'] = "PRODUCTION";
+          
+      
+          
+            window['LOGLEVEL'] = "info";
+          
+      
+          
+            window['FEATURES'] = {"postcss":true,"emotionAlias":false,"warnOnLegacyHierarchySeparator":true,"buildStoriesJson":false,"storyStoreV7":false,"modernInlineRender":false,"breakingChangesV7":false,"interactionsDebugger":false,"babelModeV7":false,"argTypeTargetsV7":false,"previewMdx2":false};
+          
+      
+          
+      
+          
+      
+          
+            window['DOCS_MODE'] = false;</script><script src="runtime~main.57765b7b4a3f783fe18e.manager.bundle.js"></script><script src="91.245c5c3811dc504d96fc.manager.bundle.js"></script><script src="main.828339f949eb65cc4a85.manager.bundle.js"></script></body></html>

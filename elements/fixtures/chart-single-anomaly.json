@@ -1,0 +1,554 @@
+{
+  "$fixture": "chart-single-anomaly",
+  "$provenance": "built from a real backend response excerpt (structure verbatim, series extended to the full 5 m interval pattern with a seeded generator); sanitised — counter/monitor names generic, session/query metadata dropped",
+  "$note": "isAnomaly mirrors `lower` in the raw payload and is ignored by the renderer — anomalous points are detected arithmetically (value < lower || value > upper), exactly like the product's chart worker.",
+  "variant": {
+    "category": "Anomaly"
+  },
+  "granularity": {
+    "value": 5,
+    "unit": "m"
+  },
+  "result": {
+    "Chart": {
+      "series": [
+        {
+          "counter": "metric.series.v1",
+          "aggr": "avg",
+          "name": "metric.series.v1.avg",
+          "unit": "percent",
+          "data": [
+            [
+              1787789400000,
+              16
+            ],
+            [
+              1787789700000,
+              null
+            ],
+            [
+              1787790000000,
+              11
+            ],
+            [
+              1787790300000,
+              44
+            ],
+            [
+              1787790600000,
+              34
+            ],
+            [
+              1787790900000,
+              44
+            ],
+            [
+              1787791200000,
+              34
+            ],
+            [
+              1787791500000,
+              24
+            ],
+            [
+              1787791800000,
+              27
+            ],
+            [
+              1787792100000,
+              20
+            ],
+            [
+              1787792400000,
+              18
+            ],
+            [
+              1787792700000,
+              9
+            ],
+            [
+              1787793000000,
+              57
+            ],
+            [
+              1787793300000,
+              21
+            ],
+            [
+              1787793600000,
+              28
+            ],
+            [
+              1787793900000,
+              30
+            ],
+            [
+              1787794200000,
+              31
+            ],
+            [
+              1787794500000,
+              22
+            ],
+            [
+              1787794800000,
+              16
+            ],
+            [
+              1787795100000,
+              27
+            ],
+            [
+              1787795400000,
+              63
+            ],
+            [
+              1787795700000,
+              51
+            ],
+            [
+              1787796000000,
+              54
+            ],
+            [
+              1787796300000,
+              49
+            ],
+            [
+              1787796600000,
+              36
+            ],
+            [
+              1787796900000,
+              3
+            ],
+            [
+              1787797200000,
+              47
+            ],
+            [
+              1787797500000,
+              37
+            ],
+            [
+              1787797800000,
+              47
+            ],
+            [
+              1787798100000,
+              35
+            ],
+            [
+              1787798400000,
+              40
+            ],
+            [
+              1787798700000,
+              46
+            ],
+            [
+              1787799000000,
+              51
+            ],
+            [
+              1787799300000,
+              41
+            ],
+            [
+              1787799600000,
+              49
+            ],
+            [
+              1787799900000,
+              61
+            ],
+            [
+              1787800200000,
+              50
+            ],
+            [
+              1787800500000,
+              54
+            ],
+            [
+              1787800800000,
+              54
+            ]
+          ],
+          "formattedValues": [
+            "16%",
+            null,
+            "11%",
+            "44%",
+            "34%",
+            "44%",
+            "34%",
+            "24%",
+            "27%",
+            "20%",
+            "18%",
+            "9%",
+            "57%",
+            "21%",
+            "28%",
+            "30%",
+            "31%",
+            "22%",
+            "16%",
+            "27%",
+            "63%",
+            "51%",
+            "54%",
+            "49%",
+            "36%",
+            "3%",
+            "47%",
+            "37%",
+            "47%",
+            "35%",
+            "40%",
+            "46%",
+            "51%",
+            "41%",
+            "49%",
+            "61%",
+            "50%",
+            "54%",
+            "54%"
+          ]
+        },
+        {
+          "counter": "metric.series.v1",
+          "aggr": "anomaly",
+          "seriesType": "anomaly",
+          "name": "metric.series.v1.avg",
+          "unit": "percent",
+          "data": [
+            {
+              "interval": 1787789400000,
+              "formattedValue": "16%",
+              "upper": 22.44,
+              "lower": 9.56,
+              "value": 16,
+              "isAnomaly": 9.56
+            },
+            {
+              "interval": 1787789700000,
+              "formattedValue": null,
+              "upper": null,
+              "lower": null,
+              "value": null,
+              "isAnomaly": null
+            },
+            {
+              "interval": 1787790000000,
+              "formattedValue": "11%",
+              "upper": 14.84,
+              "lower": 7.16,
+              "value": 11,
+              "isAnomaly": 7.16
+            },
+            {
+              "interval": 1787790300000,
+              "formattedValue": "44%",
+              "upper": 58.36,
+              "lower": 29.64,
+              "value": 44,
+              "isAnomaly": 29.64
+            },
+            {
+              "interval": 1787790600000,
+              "formattedValue": "34%",
+              "upper": 46,
+              "lower": 22,
+              "value": 34,
+              "isAnomaly": 22
+            },
+            {
+              "interval": 1787790900000,
+              "formattedValue": "44%",
+              "upper": 59.03,
+              "lower": 28.97,
+              "value": 44,
+              "isAnomaly": 28.97
+            },
+            {
+              "interval": 1787791200000,
+              "formattedValue": "34%",
+              "upper": 45.98,
+              "lower": 22.02,
+              "value": 34,
+              "isAnomaly": 22.02
+            },
+            {
+              "interval": 1787791500000,
+              "formattedValue": "24%",
+              "upper": 32.95,
+              "lower": 15.05,
+              "value": 24,
+              "isAnomaly": 15.05
+            },
+            {
+              "interval": 1787791800000,
+              "formattedValue": "27%",
+              "upper": 36.98,
+              "lower": 17.02,
+              "value": 27,
+              "isAnomaly": 17.02
+            },
+            {
+              "interval": 1787792100000,
+              "formattedValue": "20%",
+              "upper": 28.27,
+              "lower": 11.73,
+              "value": 20,
+              "isAnomaly": 11.73
+            },
+            {
+              "interval": 1787792400000,
+              "formattedValue": "18%",
+              "upper": 25.76,
+              "lower": 10.24,
+              "value": 18,
+              "isAnomaly": 10.24
+            },
+            {
+              "interval": 1787792700000,
+              "formattedValue": "9%",
+              "upper": 12.32,
+              "lower": 5.68,
+              "value": 9,
+              "isAnomaly": 5.68
+            },
+            {
+              "interval": 1787793000000,
+              "formattedValue": "57%",
+              "upper": 27.13,
+              "lower": 10.87,
+              "value": 57,
+              "isAnomaly": 10.87
+            },
+            {
+              "interval": 1787793300000,
+              "formattedValue": "21%",
+              "upper": 29.98,
+              "lower": 12.02,
+              "value": 21,
+              "isAnomaly": 12.02
+            },
+            {
+              "interval": 1787793600000,
+              "formattedValue": "28%",
+              "upper": 37.8,
+              "lower": 18.2,
+              "value": 28,
+              "isAnomaly": 18.2
+            },
+            {
+              "interval": 1787793900000,
+              "formattedValue": "30%",
+              "upper": 42.35,
+              "lower": 17.65,
+              "value": 30,
+              "isAnomaly": 17.65
+            },
+            {
+              "interval": 1787794200000,
+              "formattedValue": "31%",
+              "upper": 44.33,
+              "lower": 17.67,
+              "value": 31,
+              "isAnomaly": 17.67
+            },
+            {
+              "interval": 1787794500000,
+              "formattedValue": "22%",
+              "upper": 29.59,
+              "lower": 14.41,
+              "value": 22,
+              "isAnomaly": 14.41
+            },
+            {
+              "interval": 1787794800000,
+              "formattedValue": "16%",
+              "upper": 22.09,
+              "lower": 9.91,
+              "value": 16,
+              "isAnomaly": 9.91
+            },
+            {
+              "interval": 1787795100000,
+              "formattedValue": "27%",
+              "upper": 38.06,
+              "lower": 15.94,
+              "value": 27,
+              "isAnomaly": 15.94
+            },
+            {
+              "interval": 1787795400000,
+              "formattedValue": "63%",
+              "upper": 89.22,
+              "lower": 36.78,
+              "value": 63,
+              "isAnomaly": 36.78
+            },
+            {
+              "interval": 1787795700000,
+              "formattedValue": "51%",
+              "upper": 72.76,
+              "lower": 29.24,
+              "value": 51,
+              "isAnomaly": 29.24
+            },
+            {
+              "interval": 1787796000000,
+              "formattedValue": "54%",
+              "upper": 75.45,
+              "lower": 32.55,
+              "value": 54,
+              "isAnomaly": 32.55
+            },
+            {
+              "interval": 1787796300000,
+              "formattedValue": "49%",
+              "upper": 65.2,
+              "lower": 32.8,
+              "value": 49,
+              "isAnomaly": 32.8
+            },
+            {
+              "interval": 1787796600000,
+              "formattedValue": "36%",
+              "upper": 51.43,
+              "lower": 20.57,
+              "value": 36,
+              "isAnomaly": 20.57
+            },
+            {
+              "interval": 1787796900000,
+              "formattedValue": "3%",
+              "upper": 49.79,
+              "lower": 20.21,
+              "value": 3,
+              "isAnomaly": 20.21
+            },
+            {
+              "interval": 1787797200000,
+              "formattedValue": "47%",
+              "upper": 65.96,
+              "lower": 28.04,
+              "value": 47,
+              "isAnomaly": 28.04
+            },
+            {
+              "interval": 1787797500000,
+              "formattedValue": "37%",
+              "upper": 52.59,
+              "lower": 21.41,
+              "value": 37,
+              "isAnomaly": 21.41
+            },
+            {
+              "interval": 1787797800000,
+              "formattedValue": "47%",
+              "upper": 64.81,
+              "lower": 29.19,
+              "value": 47,
+              "isAnomaly": 29.19
+            },
+            {
+              "interval": 1787798100000,
+              "formattedValue": "35%",
+              "upper": 48.26,
+              "lower": 21.74,
+              "value": 35,
+              "isAnomaly": 21.74
+            },
+            {
+              "interval": 1787798400000,
+              "formattedValue": "40%",
+              "upper": 53.51,
+              "lower": 26.49,
+              "value": 40,
+              "isAnomaly": 26.49
+            },
+            {
+              "interval": 1787798700000,
+              "formattedValue": "46%",
+              "upper": 66.09,
+              "lower": 25.91,
+              "value": 46,
+              "isAnomaly": 25.91
+            },
+            {
+              "interval": 1787799000000,
+              "formattedValue": "51%",
+              "upper": 68.27,
+              "lower": 33.73,
+              "value": 51,
+              "isAnomaly": 33.73
+            },
+            {
+              "interval": 1787799300000,
+              "formattedValue": "41%",
+              "upper": 56.72,
+              "lower": 25.28,
+              "value": 41,
+              "isAnomaly": 25.28
+            },
+            {
+              "interval": 1787799600000,
+              "formattedValue": "49%",
+              "upper": 69.94,
+              "lower": 28.06,
+              "value": 49,
+              "isAnomaly": 28.06
+            },
+            {
+              "interval": 1787799900000,
+              "formattedValue": "61%",
+              "upper": 84.31,
+              "lower": 37.69,
+              "value": 61,
+              "isAnomaly": 37.69
+            },
+            {
+              "interval": 1787800200000,
+              "formattedValue": "50%",
+              "upper": 68.93,
+              "lower": 31.07,
+              "value": 50,
+              "isAnomaly": 31.07
+            },
+            {
+              "interval": 1787800500000,
+              "formattedValue": "54%",
+              "upper": 75.21,
+              "lower": 32.79,
+              "value": 54,
+              "isAnomaly": 32.79
+            },
+            {
+              "interval": 1787800800000,
+              "formattedValue": "54%",
+              "upper": 71.93,
+              "lower": 36.07,
+              "value": 54,
+              "isAnomaly": 36.07
+            }
+          ]
+        }
+      ],
+      "groupByColumns": [
+        "timestamp"
+      ],
+      "columns": [
+        "Timestamp",
+        "metric.series.v1.avg",
+        "metric.series.v1.avg.upperbound",
+        "metric.series.v1.avg.lowerbound",
+        "metric.series.v1.avg.anomaly"
+      ]
+    }
+  }
+}
