@@ -1,0 +1,26 @@
+{
+  "$fixture": "topn-views",
+  "$provenance": "built from a real backend Top N response excerpt (shape and sorted-desc structure preserved; values trimmed to the 10 monitored hosts; names rewritten to generic hosts like the sanitiser does) — no host, metric or entity identifiers survive.",
+  "$note": "the Top N chart result the product feeds to its non-chart Style views: series[0].data holds one aggregated value per monitor, categories the monitor names, formattedValues the preformatted display strings. All three views on this page (solid gauge grid, packed bubble, tree view) consume exactly this payload, like the product.",
+  "variant": { "category": "TopN", "widgetType": "TopN Solid Gauge View" },
+  "result": {
+    "Chart": {
+      "series": [
+        {
+          "counter": "metric.series.v1.avg",
+          "aggr": "avg",
+          "name": "metric.series.v1.avg",
+          "unit": "percent",
+          "data": [100, 100, 99, 99, 98, 97, 96, 96, 95, 95],
+          "formattedValues": ["100%", "100%", "99%", "99%", "98%", "97%", "96%", "96%", "95%", "95%"]
+        }
+      ],
+      "categories": [
+        "web-01", "web-02", "db-01", "db-02", "cache-01",
+        "queue-01", "edge-01", "edge-02", "worker-01", "worker-02"
+      ],
+      "groupByColumns": ["entity.name"],
+      "columns": ["Timestamp", "metric.series.v1.avg"]
+    }
+  }
+}
