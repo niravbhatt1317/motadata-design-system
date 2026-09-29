@@ -78,6 +78,30 @@ Read `PRODUCT-PAGE-INVENTORY.md` first, then edit `components/page-contracts.jso
 
 Edit `tokens/` (DTCG JSON). Every token needs a light **and** dark value. Never hardcode a colour elsewhere.
 
+### E. Match / adjust a component to a reference (screenshot-driven)
+
+The product code is **not** on this repo, so you match against a **reference image** (a screenshot a maintainer
+gives you, or the deployed product) — not the live product render. This is the practical loop for polishing an
+existing component here; a brand-new pixel-exact port is a maintainer task in the monorepo (the diff-gated
+`match-component` skill needs the product source + Storybook).
+
+The loop:
+
+1. **Get the reference** — a product screenshot at a known width. Note the concrete facts you can see (row
+   height, font size, spacing, which element is emphasised, the active/hover treatment).
+2. **Match to DS tokens, never hardcode** — read the component's existing CSS + `tokens/` and reuse the right
+   token (`--border-color`, `--left-menu-hover-bg`, …). A raw value is allowed only as a `var(--token, fallback)`.
+3. **Edit → build → regenerate:** `Obs<Name>.ce.vue` → `cd components-lib && npm run build && node site/generate.mjs`.
+4. **Verify with Playwright, don't eyeball:** screenshot your `obs-*` render at the reference width **and** read
+   real numbers with `getComputedStyle` / `getBoundingClientRect` (sizes, padding, colours, alignment). Compare
+   side-by-side to the reference and iterate until the numbers line up. Check **light and dark**.
+5. Append a `changelog` entry describing what you matched and how you verified it (attach the comparison shots in
+   the PR). If you can only approximate because a value isn't derivable from the image, say so — don't invent it.
+
+> Why this discipline: measuring beats eyeballing. In practice an eyeballed pass over-sized a menu 2×; reading the
+> product's real values (in the monorepo) or a maintainer's exact numbers is what fixed it. On this repo, measure
+> your render against the reference and match to tokens.
+
 ## The checks — all green before you open a PR
 
 ```bash
