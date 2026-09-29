@@ -95,6 +95,22 @@ Publish from the **public** `niravbhatt1317/motadata-design-system` repo (built-
 private product source never goes there). The canonical spec lives in the private product repo under
 `UI/design-system/`; the build copies the publishable subset out.
 
+## Keeping the GitHub `main` SOURCE in sync
+
+`deploy` only refreshes the **compiled** site on `gh-pages`; the editable **source** on `main` (what
+contributors clone) is a manual mirror and drifts until re-pushed. After a batch of DS work — a good
+habit is **right after you deploy** — run:
+
+```bash
+bash scripts/sync-to-github.sh            # push current source → main (commits only if changed)
+bash scripts/sync-to-github.sh --dry-run  # preview first, push nothing
+```
+
+It rsyncs the current `design-system/` source into `main`, excluding build junk + internal-only docs,
+protects the repo's `.git`, rebuilds `package/` from the registries if they drifted (so the CI
+`validate` check passes), and pushes only when something actually changed. There is no auto-sync — this
+script is the one command that closes the gap.
+
 ## Canonical URLs
 
 - npm: <https://www.npmjs.com/package/@mtdt/observeops-ds-spec>
