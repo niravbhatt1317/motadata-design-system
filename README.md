@@ -5,8 +5,9 @@ Motadata ObserveOps product. Anyone — a designer, an engineer, or a new Claude
 session on any account — should be able to open this folder and understand
 **what we are building, why, where we are, and what to do next.**
 
-> If you are a new session / new person: read [`00-CONTEXT.md`](./00-CONTEXT.md)
-> first, then [`PROGRESS.md`](./PROGRESS.md) to see current status.
+> **New contributor?** Start at [`CONTRIBUTING.md`](./CONTRIBUTING.md) (the onboarding door) — it, with
+> [`CLAUDE.md`](./CLAUDE.md), orients you and your AI in ~15 minutes.
+> For the project's history and charter: [`00-CONTEXT.md`](./00-CONTEXT.md), then [`PROGRESS.md`](./PROGRESS.md).
 
 ## The 4 goals
 
@@ -46,7 +47,10 @@ session on any account — should be able to open this folder and understand
 
 ## Status
 
-**Phase: 0 — Discovery & alignment.** As-is audit complete; aligning on approach.
-See [`PROGRESS.md`](./PROGRESS.md).
+**Shipping.** The DS is live and published: **55 components across 24 families**, real `obs-*` web components,
+design tokens, a machine-readable spec, an MCP server, and a deployed showcase — all on public npm
+(`@mtdt/observeops-ds-elements` · `-spec` · `-css` · `-mcp`). Work now is deepening component coverage
+(organisms), page contracts, and AI-readiness. See [`PROGRESS.md`](./PROGRESS.md) for the running log and
+[`CONTRIBUTING.md`](./CONTRIBUTING.md) to start contributing.
 </content>
 </invoke>
