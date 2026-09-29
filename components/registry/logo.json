@@ -170,7 +170,9 @@
       "issue": "COVERAGE is complete via the OPT-IN bundle: the main elements bundle carries only a small BUILT-IN common set (~29 colour/line) to stay lean; loading `observeops-logos.js` (in @mtdt/observeops-ds-elements/dist) makes ALL 250 colour + 195 line available (it sets globalThis.__OBS_LOGOS__; obs-logo prefers it and re-renders when it loads). Without that bundle, a non-built-in name shows the `no-icon` fallback. The full 445-NAME manifest is in this registry `names` (colour/line/aliases) for AI discoverability — names only, no SVG data."
     }
   ],
-  "tokensUsed": [],
+  "tokensUsed": [
+    "currentColor (the `line` variant inherits --page-text-color / the surrounding text colour via color:inherit; the default `color` variant renders each brand mark's own fixed brand colours — no DS colour token)"
+  ],
   "related": [
     "icon",
     "side-menu",
@@ -178,6 +180,7 @@
     "tag"
   ],
   "changelog": [
+    "2026-09-25 — (owner) DARK-THEME auto-swap: obs-logo now renders a <name>_dark brand variant when the app is in dark theme (data-theme=\"dark-theme\"), watched via MutationObserver. Fixes the motadata mark/wordmark rendering BLACK (invisible) on the dark app-header + sidebar — motadata_dark / motadata_full_dark are now bundled (build-logos no longer skips the logo dir's *_dark files) and swap in automatically. Reusable for any brand logo that ships a _dark variant.",
     "2026-08-11 — Crisp + aspect-correct logos (owner): the build now prefers the SVG source over a same-named PNG (motadata_full had both — the raster was pixelating when scaled up; the vector is crisp at any size). obs-logo now sizes by HEIGHT and derives WIDTH from the logo aspect (viewBox), so wide wordmarks (motadata_full) render wide instead of squished, while square marks stay square.",
     {
       "date": "2026-07-20",
@@ -367,7 +370,9 @@
       "microsoft-teams",
       "mongodb",
       "motadata",
+      "motadata_dark",
       "motadata_full",
+      "motadata_full_dark",
       "msmq",
       "mssql",
       "mysql",
@@ -740,7 +745,9 @@
       "mac-os",
       "mongodb",
       "motadata",
+      "motadata_dark",
       "motadata_full",
+      "motadata_full_dark",
       "mssql",
       "mysql",
       "nginx",
@@ -757,9 +764,9 @@
     ]
   },
   "counts": {
-    "colour": 265,
+    "colour": 267,
     "line": 215,
-    "builtIn": 31,
-    "total": 480
+    "builtIn": 33,
+    "total": 482
   }
 }

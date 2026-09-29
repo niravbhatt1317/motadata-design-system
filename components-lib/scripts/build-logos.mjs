@@ -34,6 +34,7 @@ const BUILTIN = new Set([
   'apache-http', 'nginx', 'apache-tomcat', 'java', 'python', 'nodejs', 'dotnet', 'active-directory', 'no-icon',
   'motadata', // the ObserveOps brand mark — bundled so obs-sidebar's default logo resolves out of the box (no opt-in logos bundle needed)
   'motadata_full', // the FULL ObserveOps logo (mark + wordmark) — obs-app-header's default brand; bundled so it resolves out of the box
+  'motadata_dark', 'motadata_full_dark', // DARK-theme variants — obs-logo auto-swaps to <name>_dark when the app is in dark theme (white wordmark/mark)
 ])
 
 // short/display-name aliases → canonical file name
@@ -86,7 +87,7 @@ const addImages = (dir, skipDark) => {
     else colour[name] = 'data:image/png;base64,' + fs.readFileSync(fp).toString('base64')
   }
 }
-addImages(path.join(IMG, 'logo'), true)
+addImages(path.join(IMG, 'logo'), false) // include *_dark brand variants (motadata_dark / motadata_full_dark) for the dark-theme auto-swap
 addImages(path.join(IMG, 'software-logos'), false)
 // ── line icons (FULL) ──
 const line = {}

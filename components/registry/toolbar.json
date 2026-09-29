@@ -128,6 +128,8 @@
     "--tooltip-box-shadow"
   ],
   "changelog": [
+    "2026-09-10 — Corrected the grid-toolbar action-icon fill token: variant=\"neutral-lightest\" (--code-tag-background-color #ecf1f9), pixel-verified against the product; neutral-lighter (#e3e8f2) was one shade too dark.",
+    "2026-09-10 — Grid-toolbar secondary action icons corrected to the PRODUCT style: SOFT-FILLED squares (obs-button variant=\"neutral-lighter\"), not white-bordered (variant=\"default\"); and the demo now uses the real export-pdf / export-csv document glyphs (+ tag) for the export cluster. Owner-flagged against the product Monitors screen.",
     "2026-07-26 — Docs accuracy pass (owner): added the missing usage card for the `bulk-single` variant (count=1 → singular “1 item selected”) and synced tokensUsed to what the element resolves (added --neutral-light / --tooltip-box-shadow, dropped stale --neutral-shadow-light / --secondary-red). Verified props/variants/a11y/do-dont current — no content drift. No API change.",
     {
       "date": "2026-07-16",

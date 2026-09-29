@@ -4,11 +4,16 @@
 // product (_base-bulk-action-bar.vue). The grid toolbar's column (eye) button IS the working obs-select column
 // chooser — it is not a separate toolbar variant, just the grid strip's column control.
 const J = (v) => JSON.stringify(v)
-const iconBtn = (ic, lbl) => `<obs-button variant="default" squared aria-label="${lbl}"><obs-icon name="${ic}" size="14"></obs-icon></obs-button>`
+// grid-toolbar secondary action icons = SOFT-FILLED squares (variant="neutral-lightest" = --code-tag-background-color
+// #ecf1f9), matching the product's light lavender fill (pixel-verified). NOT neutral-lighter (#e3e8f2 — too dark)
+// and NOT default (white/bordered).
+const iconBtn = (ic, lbl) => `<obs-button variant="neutral-lightest" squared aria-label="${lbl}"><obs-icon name="${ic}" size="14"></obs-icon></obs-button>`
 // the column (eye) button: an obs-select in column mode (COLUMNS header + draggable checkbox rows + reset) —
 // the grid toolbar embeds the WORKING chooser, not a dead icon button.
 const COLPICK = `<obs-select columns='${J([{key:'name',label:'Name',checked:true,locked:true},{key:'status',label:'Status',checked:true},{key:'ip',label:'IP Address',checked:true},{key:'poll',label:'Last Poll',checked:false},{key:'vendor',label:'Vendor',checked:false}])}' heading="COLUMNS" reset-label="Reset Column Preference"></obs-select>`
-const GRID = `<obs-input slot="start" type="search" placeholder="Search"></obs-input>${iconBtn('filter', 'Filter')}${COLPICK}<obs-button variant="primary"><obs-icon name="plus" size="12"></obs-icon> Add Monitor</obs-button>`
+// the product list toolbar's right cluster: column chooser (eye) + tag + export PDF + export CSV + filter — all
+// soft-filled squares — then the primary Add. Uses the REAL export-pdf / export-csv document glyphs.
+const GRID = `<obs-input slot="start" type="search" placeholder="Search"></obs-input>${COLPICK}${iconBtn('tag', 'Tags')}${iconBtn('export-pdf', 'Export PDF')}${iconBtn('export-csv', 'Export CSV')}${iconBtn('filter', 'Filter')}<obs-button variant="primary"><obs-icon name="plus" size="12"></obs-icon> Add Monitor</obs-button>`
 // bulk: BORDERED action buttons (obs-button default) + a red-bordered danger, then a DIVIDER + a bordered ⋮ More
 // (obs-menu bordered) — the divider sits between the actions and More (matching the product), not after the count.
 // the separator between the bulk actions and the ⋮ More menu — a real obs-divider (vertical), sized taller (24px)

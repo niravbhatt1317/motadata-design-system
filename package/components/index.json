@@ -27,15 +27,15 @@
     "$note": "The structural layer — the 12-col grid (MRow/MCol) + app shell, layout shells, screen regions & panel behaviours (layout/layouts.json; Storybook: Foundations/Layout/*). foundation/*.md = a page-by-page PRODUCT coverage sweep per element (which pages/flows use each variant + findings + best practices)."
   },
   "counts": {
-    "components": 49,
-    "families": 23,
+    "components": 55,
+    "families": 24,
     "coverage": {
-      "props": 37,
-      "apis": 21,
-      "states": 43,
-      "sizes": 20,
-      "variants": 41,
-      "a11y": 45
+      "props": 44,
+      "apis": 22,
+      "states": 49,
+      "sizes": 25,
+      "variants": 47,
+      "a11y": 51
     }
   },
   "families": {
@@ -70,7 +70,8 @@
       "sidebar",
       "breadcrumbs",
       "side-menu",
-      "steps"
+      "steps",
+      "pagination"
     ],
     "Overlay": [
       "drawer",
@@ -109,11 +110,14 @@
     ],
     "Data Visualization": [
       "data-viz",
-      "metric-picker"
+      "metric-picker",
+      "gauge",
+      "severity-heatmap"
     ],
     "Data Display": [
       "metric-list",
-      "key-value"
+      "key-value",
+      "severity-legend"
     ],
     "Logo": [
       "logo"
@@ -133,6 +137,10 @@
     ],
     "Foundation": [
       "icon"
+    ],
+    "Dashboard": [
+      "widget-card",
+      "widget-grid"
     ]
   },
   "components": [
@@ -319,17 +327,16 @@
       "family": "Date & Time Pickers",
       "category": null,
       "status": "stable",
-      "summary": "The product's date/time selection family. The hero is TimeRangePicker (42×) — the observability time-range control (relative presets + absolute custom range). MDatePicker (10×, wraps a-date-picker) is the form date-time field, in practice ALWAYS used with show-time. MTimePicker wraps a-time-picker (12-hour) but is rarely used standalone. DateTimePopover is a lighter custom-range-only popover.",
-      "selectHint": "Selecting a TIME WINDOW for charts/dashboards/logs (relative or absolute)? -> TimeRangePicker (the 42× hero).",
+      "summary": "The product's date/time selection family. The hero is TimeRangePicker (42×) — the observability time-range control (relative presets + absolute custom range). MDatePicker (10×, wraps a-date-picker) is the form date-time field, in practice ALWAYS used with show-time. MTimePicker wraps a-time-picker (12-hour) but is rarely used standalone. DateTimePopover is a lighter custom-range-only popover. TimeRangeSlider is a FUNCTIONAL, LINKABLE timeline scrubber — drive its window/band from a range picker via range-start/range-end.",
+      "selectHint": "Pick a chart/dashboard/log TIME WINDOW → range (or range-presets); a date/time VALUE in a form → field-datetime/field-date/field-time; a draggable timeline SCRUBBER (optionally linked to a range picker) → slider.",
       "variants": [
         "TimeRangePicker",
+        "presets-only",
+        "excluded-options",
         "MDatePicker",
         "MTimePicker",
-        "TimePicker (custom)",
         "TimeRangeSlider",
-        "DateTimePopover",
-        "presets-only",
-        "excluded-options"
+        "DateTimePopover"
       ],
       "registry": "components/registry/date-time-pickers.json",
       "spec": "components/specs/date-time-pickers.md",
@@ -339,18 +346,17 @@
         "form-item",
         "popover"
       ],
-      "knownIssueCount": 2,
-      "tokenCount": 13,
+      "tokenCount": 17,
       "has": {
-        "props": false,
+        "props": true,
         "states": true,
-        "sizes": false,
+        "sizes": true,
         "variants": true,
         "decisionFlow": true,
         "do": true,
         "dont": true,
         "tokensUsed": true,
-        "apis": true,
+        "apis": false,
         "a11y": true
       },
       "referenceOnly": true
@@ -1057,6 +1063,41 @@
       }
     },
     {
+      "id": "severity-legend",
+      "display": "Severity Legend",
+      "tier": "molecule",
+      "family": "Data Display",
+      "category": null,
+      "status": "stable",
+      "summary": "A responsive severity LEGEND — the row of coloured dots + labels (Down / Critical / Major / Warning / Clear / Unreachable …) under a table, map or chart. Composes obs-severity for every entry. When the container is too narrow, trailing entries COLLAPSE into a '+N' pill with their dots piled up (avatar-style) and a hover popover reveals them; with room, every entry shows in full.",
+      "variants": [
+        "full",
+        "collapsed"
+      ],
+      "registry": "components/registry/severity-legend.json",
+      "spec": "components/specs/severity-legend.md",
+      "storybook": "Molecules/SeverityLegend",
+      "related": [
+        "severity (composed for every entry)",
+        "table (the legend goes in its footer slot)",
+        "pagination (hosts the legend in its centered slot)"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 9,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
       "id": "switch",
       "display": "Switch",
       "tier": "atom",
@@ -1125,6 +1166,41 @@
       ],
       "knownIssueCount": 2,
       "tokenCount": 7,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": false,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "pagination",
+      "display": "Pagination",
+      "tier": "organism",
+      "family": "Navigation",
+      "category": null,
+      "status": "stable",
+      "summary": "The DS pagination footer as a standalone element — reusable under ANY paged view (table, card grid, list). Seek controls (first/prev · numbered SQUARES · next/last, Material-Symbols skip glyphs) + a page-size select + a 'start - end of N items' range, with a CENTERED slot for extra footer content (e.g. a severity legend).",
+      "variants": [
+        "split",
+        "centered"
+      ],
+      "registry": "components/registry/pagination.json",
+      "spec": "components/specs/pagination.md",
+      "storybook": "Organisms/Pagination",
+      "related": [
+        "table (composes obs-pagination in its footer)",
+        "select (the page-size control is a native styled select)",
+        "icon (seek glyphs skip-previous/next + chevron)"
+      ],
+      "knownIssueCount": 1,
+      "tokenCount": 6,
       "has": {
         "props": true,
         "states": true,
@@ -1481,16 +1557,19 @@
       "family": "Toolbars",
       "category": null,
       "status": "stable",
-      "summary": "The list/detail PAGE HEADER at the top of a page: an optional back button + the title (--primary-alt, weight 500) + an optional count pill on the left, and right-side actions (search / export / primary Add) via the default slot, over a --border-color bottom rule. Split from the product's Toolbars family. NOT the strip above a list/table (that is obs-toolbar) and NOT between-page navigation (obs-sidebar / obs-breadcrumbs). Supports an optional subtitle, a detail-header metadata strip (meta=[{label,value,icon?,status?}] with an accent stripe — the RUM/APM span-detail header), (detail/drawer header pattern) and a breadcrumb slot (drop obs-breadcrumbs). The global app top-bar (logo/search/notifications/user) is a SEPARATE archetype, not a page-header variant.",
+      "summary": "The list/detail PAGE HEADER at the top of a page: an optional back button OR a section menu-toggle + the title (--primary-alt, weight 500, 18px) + an optional count pill on the left, and right-side actions (search / export / primary Add) via the default slot, over a --border-color bottom rule. Split from the product’s Toolbars family. Feature-complete variants: default · with-count · back · menu-toggle (module SECTION header, shows/hides obs-side-menu) · with-subtitle · with-breadcrumb · detail-meta (RUM/APM span-detail strip) · monitor-detail · title-only · no-divider. NOT the strip above a list/table (that is obs-toolbar), NOT between-page navigation (obs-sidebar / obs-breadcrumbs), and NOT the global app top-bar (obs-app-header).",
       "selectHint": "Title + primary actions at the TOP of a page (list or detail)? -> obs-page-header.",
       "variants": [
         "default",
-        "back",
         "with-count",
-        "no-divider",
+        "back",
+        "menu-toggle",
         "with-subtitle",
         "with-breadcrumb",
-        "detail-meta"
+        "detail-meta",
+        "monitor-detail",
+        "title-only",
+        "no-divider"
       ],
       "registry": "components/registry/page-header.json",
       "spec": null,
@@ -1503,8 +1582,8 @@
         "button",
         "input"
       ],
-      "knownIssueCount": 2,
-      "tokenCount": 9,
+      "knownIssueCount": 3,
+      "tokenCount": 12,
       "has": {
         "props": true,
         "states": true,
@@ -1805,9 +1884,10 @@
       "family": "Navigation",
       "category": null,
       "status": "stable",
-      "summary": "The in-module SECTION navigation panel — a searchable, collapsible left menu. ONE element with a `mode` axis folding the product's four side-menu forms: sections (settings sub-nav, 20×), categories (dashboard picker, count tags), tree (Log/Topology N-level hierarchy with type icon + count badge), and list (report/saved-views flat list, optional ★ favourite). Data-driven via a recursive `items` model; optional top segmented `tabs` + a search box. The active leaf highlights --primary on --code-tag-background-color (sections adds a --primary left rule). NOT the module rail (obs-sidebar), NOT sibling views (obs-tabs), NOT the faceted checkbox filter (a vertical Filter).",
-      "selectHint": "Navigate SECTIONS within a module (Settings sub-nav; expand to sub-items)? -> obs-side-menu mode=\"sections\".",
+      "summary": "The in-module SECTION navigation panel — a searchable, collapsible left menu. ONE element with a `mode` axis folding the product's five side-menu forms: settings (THE Settings menu — left-menu.vue: a MULTI-OPEN collapse with the expand chevron on the RIGHT, full-width dividers between sections, and children as an indented ROUNDED-highlight menu), sections (a leaner accordion form — LEFT chevron + an inset --primary left-rule active), categories (dashboard picker, count tags), tree (Log/Topology N-level hierarchy with type icon + count badge), and list (report/saved-views flat list, optional ★ favourite). Data-driven via a recursive `items` model; optional top segmented `tabs` + a search box. NOT the module rail (obs-sidebar), NOT sibling views (obs-tabs), NOT the faceted checkbox filter (a vertical Filter). SIZING: the element is width:100% (fills its container) — set the container WIDTH per mode (settings|sections ~15% / categories ~30vw / tree|list ~20%); see `sizing` + usageRules[mode].width. The element OWNS its own chrome — a flush white panel with a RIGHT border/divider, its own internal padding, and an automatic TOP/BOTTOM scroll FADE (content dissolves into the panel at whichever edge can still scroll) — so the host column adds NEITHER a border NOR padding (they would double up).",
+      "selectHint": "The in-module SECTION / category navigation panel — a left menu / left nav for a module (settings menu, category list, saved-views list, sections/tree). NOT the module rail (obs-sidebar) and NOT sibling views (obs-tabs).",
       "variants": [
+        "settings",
         "sections",
         "categories",
         "tree",
@@ -2103,6 +2183,161 @@
       ],
       "knownIssueCount": 1,
       "tokenCount": 5,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "gauge",
+      "display": "Gauge",
+      "tier": "molecule",
+      "family": "Data Visualization",
+      "category": null,
+      "status": "core",
+      "summary": "A single ring gauge — the product's Monitor-Availability / Alert-Count dial. A track ring with a severity-coloured arc swept to value/total, a large mono number in the centre, and an optional label beneath. The DS chart library flags \"gauge\" as a CUSTOM-ENGINE type (data-only, no serializable config); this element IS that renderer, as a drop-in web component.",
+      "selectHint": "Use for a single count-against-a-total dial coloured by a severity/status level (Up, Down, Critical, Warning…). One gauge = one slice of a group; lay several in a row to show a whole group (Monitor Availability, Alert Count). Not for a trend over time (use a line/area chart) and not for a share-of-total breakdown as one figure (use a donut/pie).",
+      "variants": [
+        "availability-dial",
+        "alert-count-dial",
+        "unsevered",
+        "empty",
+        "full"
+      ],
+      "registry": "components/registry/gauge.json",
+      "spec": "components/specs/gauge.md",
+      "storybook": "Data Visualization/Gauge",
+      "related": [
+        "charts",
+        "severity",
+        "metric-list",
+        "severity-heatmap",
+        "widget-card"
+      ],
+      "knownIssueCount": 3,
+      "tokenCount": 15,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "severity-heatmap",
+      "display": "Severity Heatmap",
+      "tier": "molecule",
+      "family": "Data Visualization",
+      "category": null,
+      "status": "core",
+      "summary": "The product's Infrastructure-Heatmap honeycomb (PlainHeatMap) — one hexagon per monitor, each filled with its severity colour, packed into a honeycomb grid. Hovering a hex raises the product tooltip (monitor name/IP + location + a severity pill). The DS chart library flags \"heat-map\" as a CUSTOM-ENGINE type (data-only, no serializable renderer); this element IS that renderer, ported 1:1 from the product's heatmap-single-group.vue — a border-coloured hex box with a 1px-inset severity cell (the thin outline), size x 1.1547 height and a size x 0.2885 honeycomb pull-up.",
+      "selectHint": "Use to show the health of MANY monitors at a glance as a dense honeycomb coloured by severity — the Infrastructure Heatmap on a dashboard. One hex = one monitor. Not for a small set with per-row detail (use a table), not for a single value against a total (use a gauge), and not for a trend over time (use a line/area chart).",
+      "variants": [
+        "infra-honeycomb",
+        "compact",
+        "truncated",
+        "bare-cells"
+      ],
+      "registry": "components/registry/severity-heatmap.json",
+      "spec": "components/specs/severity-heatmap.md",
+      "storybook": "Data Visualization/Severity Heatmap",
+      "related": [
+        "charts",
+        "gauge",
+        "severity"
+      ],
+      "knownIssueCount": 4,
+      "tokenCount": 14,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": false,
+        "a11y": true
+      }
+    },
+    {
+      "id": "widget-card",
+      "display": "Widget Card",
+      "tier": "organism",
+      "family": "Dashboard",
+      "category": null,
+      "status": "core",
+      "summary": "The dashboard widget CHROME: a framed card with a grey header (title + a hover-revealed time badge + a hover-revealed kebab menu of Full Screen / Share / Edit / Clone / Remove), a body slot for any widget content (chart, gauge, heatmap, table…), the header as a drag handle, and a bottom-right resize grip. The card does not own its position — it emits card-dragstart / card-resizestart (composed, bubbling) so an obs-widget-grid parent can drive the layout, plus an action event for the kebab items.",
+      "selectHint": "Use to wrap ONE widget on a dashboard grid — it is the frame around a chart/gauge/heatmap, not the chart itself. Inside a grid it becomes draggable (by its header) and resizable (bottom-right grip). Need a plain content card that is NOT a dashboard widget (a settings panel, a summary tile, a form card)? -> use a generic card, not obs-widget-card. Put the visualization in the default slot; don't reach for the chart element directly on the board.",
+      "variants": [
+        "default",
+        "with-time",
+        "static"
+      ],
+      "registry": "components/registry/widget-card.json",
+      "spec": "components/specs/widget-card.md",
+      "storybook": "Dashboard/Widget Card",
+      "related": [
+        "widget-grid",
+        "gauge",
+        "severity-heatmap",
+        "charts"
+      ],
+      "knownIssueCount": 5,
+      "tokenCount": 13,
+      "has": {
+        "props": true,
+        "states": true,
+        "sizes": true,
+        "variants": true,
+        "decisionFlow": true,
+        "do": true,
+        "dont": true,
+        "tokensUsed": true,
+        "apis": true,
+        "a11y": true
+      }
+    },
+    {
+      "id": "widget-grid",
+      "display": "Widget Grid",
+      "tier": "organism",
+      "family": "Dashboard",
+      "category": null,
+      "status": "core",
+      "summary": "A live draggable / droppable / resizable dashboard grid — the framework-agnostic answer to vue-grid-layout. Slot in obs-widget-card children carrying data-x/data-y/data-w/data-h; the grid snaps each to a 12-column layout, pushes colliding cards down, compacts everything up under gravity, and auto-scrolls the page while you drag or resize a card past the fold. Emits layout-change with the settled positions.",
+      "selectHint": "Reach for this when a user must arrange their OWN dashboard — drag cards around, resize them, and have the layout persist. If the layout is fixed and authored by you (never rearranged at runtime), use a plain CSS grid instead — this element carries drag/resize/collision machinery you don't need.",
+      "variants": [
+        "12-column (default)",
+        "custom columns",
+        "custom cell height / gap"
+      ],
+      "registry": "components/registry/widget-grid.json",
+      "spec": "components/specs/widget-grid.md",
+      "storybook": "Dashboard/Widget Grid",
+      "related": [
+        "widget-card",
+        "gauge",
+        "severity-heatmap",
+        "charts"
+      ],
+      "knownIssueCount": 7,
+      "tokenCount": 2,
       "has": {
         "props": true,
         "states": true,

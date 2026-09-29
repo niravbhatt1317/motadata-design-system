@@ -53,8 +53,18 @@ function positionMenu() {
     if (!r) return
     const endAligned = props.placement !== 'bottom-start'
     const width = 200
-    const left = endAligned ? Math.round(r.right - width) : Math.round(r.left)
-    menuPos.value = { position: 'fixed', inset: 'auto', margin: '0', left: `${Math.max(8, left)}px`, top: `${Math.round(r.bottom + 4)}px`, minWidth: `${width}px` }
+    const left = Math.max(8, endAligned ? Math.round(r.right - width) : Math.round(r.left))
+    const vh = (typeof window !== 'undefined' && window.innerHeight) || 800
+    const spaceBelow = vh - r.bottom
+    // FLIP UP when there isn't room below and there's more above (e.g. a bulk-action bar pinned near the bottom, or a
+    // trigger low in the viewport). Anchor the menu's BOTTOM to the trigger's top → height-independent + flash-free.
+    const flipUp = spaceBelow < 220 && r.top > spaceBelow
+    const GAP = 8 // clearance between the trigger (bulk bar / row) and the menu panel
+    const base = { position: 'fixed', inset: 'auto', margin: '0', left: `${left}px`, minWidth: `${width}px`,
+      maxHeight: `${Math.max(160, Math.round((flipUp ? r.top : spaceBelow) - GAP - 8))}px`, overflowY: 'auto' }
+    menuPos.value = flipUp
+      ? { ...base, bottom: `${Math.round(vh - r.top + GAP)}px`, top: 'auto' }
+      : { ...base, top: `${Math.round(r.bottom + GAP)}px`, bottom: 'auto' }
     const m = menuRef.value
     if (m && m.showPopover) { try { m.showPopover() } catch (e) { /* already open */ } }
   })

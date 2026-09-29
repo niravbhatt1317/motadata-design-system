@@ -1,0 +1,74 @@
+{
+  "name": "severity-legend",
+  "display": "Severity Legend",
+  "tier": "molecule",
+  "family": "Data Display",
+  "element": "obs-severity-legend",
+  "source": "Composed from obs-severity (severity.less dots). The product shows this legend row under the Inventory > Monitors list and on NOC/status views.",
+  "status": "stable",
+  "summary": "A responsive severity LEGEND — the row of coloured dots + labels (Down / Critical / Major / Warning / Clear / Unreachable …) under a table, map or chart. Composes obs-severity for every entry. When the container is too narrow, trailing entries COLLAPSE into a '+N' pill with their dots piled up (avatar-style) and a hover popover reveals them; with room, every entry shows in full.",
+  "variants": [
+    { "name": "full", "what": "all entries shown as dot + label (wide container).", "usage": "" },
+    { "name": "collapsed", "what": "narrow container — trailing entries fold into a '+N' pile of overlapping dots; hover reveals them in a popover. Automatic via ResizeObserver.", "usage": "" }
+  ],
+  "sizes": [],
+  "states": [
+    { "name": "full", "what": "everything fits — no pile" },
+    { "name": "collapsed", "what": "overflow folded into the +N pile" },
+    { "name": "hover", "what": "pointer over the pile → popover lists the hidden entries" }
+  ],
+  "props": {
+    "levels": { "type": "string | array", "default": "down,critical,major,warning,clear,unreachable", "note": "the severity levels in order (CSV string or array)." },
+    "labels": { "type": "string | object", "default": "", "note": "optional { level: 'Custom Label' } overrides (JSON string or object); default = capitalized level name." },
+    "min-visible": { "type": "number", "default": "1", "enum": [1, 2, 3, 4], "note": "never collapse below this many full entries." },
+    "gap": { "type": "number", "default": "18", "enum": [8, 12, 18, 24], "note": "px gap between entries." }
+  },
+  "slots": {},
+  "decisionFlow": [
+    "Showing what the severity colours MEAN under a table / map / chart? -> obs-severity-legend (it collapses responsively).",
+    "Showing ONE object's severity (a status dot/chip in a row or header)? -> obs-severity, not the legend.",
+    "The legend goes in a table footer? -> put it in obs-table's `footer` slot (it forwards into obs-pagination's centered slot)."
+  ],
+  "usageRules": {
+    "full": { "useWhen": "the container is wide enough for every entry (the common case).", "dontUse": "n/a — automatic.", "example": "the Monitors list footer on a wide screen." },
+    "collapsed": { "useWhen": "the container is narrow — handled automatically; trailing entries fold into +N with hover-reveal.", "dontUse": "n/a — automatic.", "example": "the Monitors list footer on a laptop/narrow window." }
+  },
+  "do": [
+    "Use it for any severity legend (table footer, map, chart) instead of hand-rolling coloured dots.",
+    "Let it collapse — give it a flexible container (it fills width and folds trailing entries into +N when tight).",
+    "Override labels via `labels` only when the visible text must differ from the capitalized level name."
+  ],
+  "dont": [
+    "Don't hand-roll the dots — every entry must be an obs-severity so the DS severity ring/colour stays consistent.",
+    "Don't use it for a single object's status — that's obs-severity."
+  ],
+  "tokensUsed": [
+    "--severity-down",
+    "--severity-critical",
+    "--severity-major",
+    "--severity-warning",
+    "--severity-clear",
+    "--severity-unreachable",
+    "--neutral-regular",
+    "--border-color",
+    "--page-background-color"
+  ],
+  "a11y": {
+    "summary": "Each entry is an obs-severity (dot + label). The collapsed pile carries a `title` listing the hidden entries, and the hover popover repeats them as dot + label. Colour is never the only signal — every entry (visible or revealed) pairs the dot with a text label.",
+    "issues": [
+      "The pile reveal is hover-only (no keyboard focus/Escape yet) — follow-up: make the pile focusable with a popover on focus."
+    ]
+  },
+  "knownIssues": [
+    "Collapse is measured after webfonts settle (a 250ms re-measure); on very slow font loads the first frame may show all entries before folding."
+  ],
+  "related": [
+    "severity (composed for every entry)",
+    "table (the legend goes in its footer slot)",
+    "pagination (hosts the legend in its centered slot)"
+  ],
+  "storybook": "Molecules/SeverityLegend",
+  "changelog": [
+    "2026-09-16 — New <obs-severity-legend>: a responsive severity legend that composes obs-severity dots and collapses trailing entries into a '+N' pile (overlapping dots, avatar-style) with a hover popover when the container is narrow. Replaces hand-rolled legend dots; used in the obs-table footer (Monitors list). ResizeObserver-driven; min 64px clearance is provided by the pagination center zone."
+  ]
+}

@@ -1,0 +1,299 @@
+{
+  "$note": "PAGE CONTRACTS — the composition-level rules a whole page must follow so it matches the product BY CONSTRUCTION, not by trial-and-error. get_recipe gives a page's STRUCTURE (region order); a page contract adds the FIDELITY + BEHAVIOUR the recipe doesn't carry: canvas token, scroll ownership, header treatment (full-width + bottom border + sticky + shadow-on-scroll), gutters/gap scale, which components are mandatory, and the route-aways. These were learned by rebuilding the Alert-Summary dashboard against the real product; they exist so nobody re-learns them one padding value at a time.",
+  "$howToUse": "0) REFERENCE FIRST: if the user gives a reference screenshot / mockup / design / URL, EXTRACT that page's structure and MATCH it — the reference overrides the default contract structure. Use the page-type contract as the DEFAULT when there is NO reference, AND to fill any gap the reference leaves unspecified (canvas token, gutters, scroll ownership, which DS components to compose). 1) Call get_page_contract(pageType) BEFORE composing the page — apply its tokens/spacing/structure/behaviour as the DEFAULTS. 2) If a widget/region needs a component the DS doesn't have, STOP and flag it (don't hand-roll a div). 3) After building, call validate_page(html, pageType) — the composition gate; fix every finding. Behaviour that can't be checked statically (scroll ownership, sticky) is returned as reminders.",
+  "$default": "When a page request doesn't clearly match dashboard / form / settings, DEFAULT to the 'list' contract — the most common product archetype (~75 screens) and the documented base page structure. A reference screenshot always overrides it.",
+  "$canvasDefault": "EVERY product page canvas is WHITE — `--page-background-color` — by default (owner-confirmed 2026-09-09). `--common-main-bg` is the app GREY and is NOT a page background; do not use it as a page/content canvas on any page type. Cards/panels sit on `--common-widget-bg` (also white). If a specific screen genuinely shows grey, that is the exception and must be screenshot-confirmed.",
+  "$bindingRule": "Passing data to an obs-* element: FIRST check the element's prop TYPE (elements-api.json / get_component). MANY obs-* props that hold an array/object are declared as a STRING that the element JSON-parses (e.g. obs-app-header `actions`, obs-tabs `tabs`, obs-filters `quickFilters`, obs-date-time-picker `range-start/range-end`). For a STRING/JSON prop, pass a JSON string: `:actions=\"JSON.stringify(arr)\"` (or a plain comma/JSON attribute) — NOT `:actions.prop=\"arr\"`. Only use `:x.prop=\"arr\"` when the prop is a real Array/Object type (e.g. obs-table `columns`/`rows`, obs-sidebar `items` — bound as `:columns.prop`). And NEVER write a hyphenated `.prop` (`:quick-filters.prop`) — Vue sets the literal `quick-filters` property, not the camelCase `quickFilters` the element reads; use a plain attribute or the camelCase `.prop`. This footgun (silent no-op — the element sees its empty default) recurred 3× (widget-grid range-start, quick-filters, app-header actions); verify the prop type, don't guess the binding.",
+  "$version": "1.0.0",
+  "pageTypes": {
+    "dashboard": {
+      "pageType": "dashboard",
+      "display": "Dashboard",
+      "whenToUse": "A canvas of data widgets the user reads at a glance (and may rearrange) — Alert Summary, NOC, infra overview. Charts/gauges/heatmaps/metrics tiled in a grid.",
+      "referenceImplementation": "The Alert-Summary dashboard: obs-page-header (full-width, bottom border) → time-range picker + timeline (sticky) → obs-widget-grid of obs-widget-card widgets (gauges, severity heatmap, DS charts).",
+      "structure": [
+        "app shell (obs-sidebar rail + obs-app-header) — the page renders INSIDE the shell, never as a bare content area (get_recipe('module-screen'))",
+        "obs-page-header — title + the time-range picker/actions on the right",
+        "timeline scrubber (obs-date-time-picker kind='slider') + a full-width obs-divider under it",
+        "obs-widget-grid — the arrangeable canvas; each widget is an obs-widget-card"
+      ],
+      "canvas": {
+        "background": "--page-background-color",
+        "note": "The dashboard canvas is the WHITE product canvas (--page-background-color). Do NOT use --common-main-bg (the app-content GREY) as the page background — that is the single most common mistake.",
+        "minHeight": "100%"
+      },
+      "scroll": {
+        "owner": "the content area scrolls (overflow:auto on the shell content region)",
+        "body": "never — the document body/html do not scroll",
+        "flush": true,
+        "note": "flush = the dashboard fills the content area edge-to-edge (no 20px page padding like a normal screen)."
+      },
+      "header": {
+        "component": "obs-page-header",
+        "fullWidth": true,
+        "bottomBorder": true,
+        "titleWeight": 500,
+        "inset": "--page-header-padding",
+        "sticky": true,
+        "shadowOnScroll": true,
+        "dateRange": "The resolved date-range readout is a SEPARATE sibling element beside the picker — it is NOT part of obs-date-time-picker. Link the picker to the timeline via range-start/range-end.",
+        "note": "The header spans the full width WITH its bottom divider (no left/right wrapper padding); only its inner content is inset by --page-header-padding. Title font-weight 500 (not 600). The whole header block (title + picker + timeline) is position:sticky; a light grey shadow appears ONLY once content has scrolled beneath it."
+      },
+      "body": {
+        "padding": "0 10px 10px",
+        "note": "Side + bottom gutter, NO top padding — the sticky header + divider provide the top edge; the first row of cards sits ~10px under the divider (same as the inter-card gap, so spacing reads uniform)."
+      },
+      "spacing": {
+        "widgetGap": 10,
+        "dividerToContent": 10,
+        "note": "Keep one gap scale (10px) between cards AND between the divider and the first card, so nothing looks inconsistent."
+      },
+      "grid": {
+        "component": "obs-widget-grid",
+        "columns": 12,
+        "gap": 10,
+        "cellHeight": 78,
+        "widget": "obs-widget-card",
+        "note": "Every widget is an obs-widget-card placed with data-x/data-y/data-w/data-h in the 12-col grid. The grid handles drag/resize/collision/compaction/auto-scroll and emits layout-change. For a STATIC (non-arrangeable) board use a plain CSS grid instead."
+      },
+      "widgets": {
+        "chart": "Render DS charts via the chart library (no obs-chart element) — the captured fixtures + dsChart() helper. Give each chart div height:100% and reflow it on card resize. Chart tooltip = the DS chart tooltip (swatch + name + bold value, mono font).",
+        "gauge": "obs-gauge (ring dial: value/total, severity colour, mono 28px/600 centre number).",
+        "heatmap": "obs-severity-heatmap (severity honeycomb + hover tooltip).",
+        "metric": "obs-metric-list / obs-key-value for metric tiles.",
+        "note": "A widget's BODY goes in the obs-widget-card default slot. Do NOT wrap a chart in a plain .card div — use obs-widget-card so it gets the product header/kebab/drag/resize chrome."
+      },
+      "tokens": {
+        "canvasBg": "--page-background-color",
+        "widgetBg": "--common-widget-bg",
+        "text": "--page-text-color",
+        "mutedText": "--neutral-light",
+        "border": "--border-color",
+        "cardHeaderBg": "--code-tag-background-color",
+        "chartFont": "--chart-font-family",
+        "shadow": "--neutral-shadow-light",
+        "note": "Never hardcode a hex/rgb/hsl. --common-main-bg is the APP content grey — not the dashboard canvas."
+      },
+      "must": [
+        "Render the page inside the app shell (rail + app-header), not as a bare content area.",
+        "Use obs-page-header (full-width, bottom border) — not a hand-built title bar.",
+        "Wrap every widget in obs-widget-card; place them in obs-widget-grid (arrangeable) or a CSS grid (static).",
+        "Canvas background = --page-background-color (white), never the app grey.",
+        "The header block is sticky with a shadow-on-scroll; the content area owns scrolling, not the body.",
+        "Every colour is a DS token. If a widget needs a component the DS lacks, STOP and flag it."
+      ],
+      "dont": [
+        "Don't use --common-main-bg / a grey as the dashboard page background.",
+        "Don't put a border around a widget the product doesn't border.",
+        "Don't wrap a chart/gauge/heatmap in a generic .card div — use obs-widget-card.",
+        "Don't let the body scroll; don't add top padding above the first widget row.",
+        "Don't bake the date-range readout inside the picker — it's a separate sibling."
+      ],
+      "routeAway": "Static, non-rearrangeable board? -> a plain CSS grid of obs-widget-card, NOT obs-widget-grid (the live engine is only for user-arrangeable dashboards).",
+      "behaviourNotStaticallyCheckable": [
+        "The content region (not body) must own overflow:auto.",
+        "The header block must be position:sticky; top:0 within the scroll container.",
+        "A grey shadow appears under the header ONLY when scrollTop > 0.",
+        "Charts must reflow on widget-card resize (Highcharts reflows on width, not height)."
+      ]
+    },
+    "list": {
+      "pageType": "list",
+      "display": "List / Table screen",
+      "default": true,
+      "isDefaultStructure": "This is the DEFAULT structure for ANY records / table / list / inventory / grid page when no reference design is given. If the user provides a reference screenshot, match THAT instead (the reference wins); use this base structure otherwise and to fill unspecified gaps.",
+      "whenToUse": "A screen whose primary content is a table/grid of records with filters and row actions. The single most common product archetype (~75 screens).",
+      "referenceImplementation": "The product Inventory/Monitors screen (verified against a real screenshot): a WHITE full-bleed canvas -> a category TAB row (obs-tabs: Inventory · Network · SDN · …) -> a grid toolbar (search + view/tag/export-pdf/export-csv/filter icon buttons) -> a quick-filter bar (obs-filters: Groups/Types/Severity/+Filter) -> obs-table (MONITOR severity-dot+name · IP · TYPE logo · GROUP chips · COLLECTOR IP · HOST) with a severity legend centered in the pagination footer.",
+      "baseStructure": [
+        "app shell (rail + obs-app-header) — provided by the layout, not the page",
+        "PAGE SHELL: a flex COLUMN with height:100% + min-height:0, WHITE canvas, own 10px L/R gutter (the shell wrapper is flush). The bounded height is what lets the table scroll internally.",
+        "HEADER: category TABS (obs-tabs, full-bleed: margin 0 -10px) when the list has sibling categories (Inventory) — OR obs-page-header with a title + primary Create action for a simple list (Users, Roles).",
+        "TOOLBAR: obs-toolbar variant='grid' — search in slot='start' + secondary icon buttons (columns/tags/export-pdf/export-csv/filter) + a primary action right. COMPOSE it, never a hand-rolled flex <div>.",
+        "FILTERS: obs-filters kind='bar' — the Groups/Types/Severity/+Filter quick-filter pill row.",
+        "TABLE: obs-table, selectable — flex:1 + min-height:0 so it fills the remaining height and scrolls its rows INTERNALLY. It OWNS pagination, sticky chrome, selection state and the bulk bar; the page only feeds columns/rows + two slots.",
+        "  ↳ slot='footer'  -> content CENTERED in the pagination footer (the centered variant) — e.g. an obs-severity-legend. Empty = split variant.",
+        "  ↳ slot='bulk-actions' -> the FLOATING bulk action bar's buttons (bordered actions + a red danger + a divider + an ⋮ obs-menu). Appears centered above the pager when rows are selected. Put slot= on each REAL element, never a <template>.",
+        "DESTRUCTIVE CONFIRM: the danger bulk action opens obs-modal variant='confirm' — never a one-click bulk delete."
+      ],
+      "invariants": {
+        "R1_boundedHeight": "Shell is height:100% + min-height:0 and the table is flex:1. Without this the table can't scroll internally and the sticky header/footer + auto horizontal scroll do nothing.",
+        "R2_tableOwnsChrome": "Pagination, the 'N selected' state, sticky scroll and the bulk bar all live INSIDE obs-table. Never add a separate pager or a selection pill — feed the slots.",
+        "R3_slotsOnRealElements": "Footer legend + bulk actions go in via slot='…' on REAL elements. A <template slot='…'> renders NOTHING on a custom element.",
+        "R4_destructiveConfirm": "Danger buttons (variant='danger') route through obs-modal variant='confirm'; the delete runs only on @confirm and filters by id (string-safe)."
+      },
+      "canvas": {
+        "background": "--page-background-color",
+        "note": "The product content canvas is WHITE (--page-background-color) — the SAME as the dashboard. Do NOT use --common-main-bg (the app grey) as the list canvas. Table rows sit on the white canvas.",
+        "minHeight": "100%"
+      },
+      "scroll": {
+        "owner": "the TABLE scrolls internally (bounded-height shell); the page itself does not scroll",
+        "body": "the table body scrolls between a sticky header and a pinned pagination footer; horizontal scroll auto-appears when columns exceed the viewport — all automatic in obs-table",
+        "flush": true,
+        "note": "Page is flush (WHITE, full-bleed); content is inset 10px by the page's own gutter, not a grey shell gutter. The category tab strip runs edge-to-edge."
+      },
+      "header": {
+        "variant": "tabs-or-title",
+        "note": "Inventory-style lists lead with a category TAB row (obs-tabs), NOT a page-header title strip. Simple lists (Users/Roles) use obs-page-header (full-width, bottom border) with the primary Create action in its actions slot. Per-selection bulk actions live in the table's floating bulk bar, never in the page header."
+      },
+      "body": {
+        "padding": "0 10px",
+        "note": "10px L/R content gutter — matches the dashboard widget body (.dash-body). The tab strip runs edge-to-edge (full-bleed: margin 0 -10px)."
+      },
+      "composes": [
+        "obs-tabs (categories) or obs-page-header (title+create)",
+        "obs-toolbar variant='grid' (search+actions)",
+        "obs-filters kind='bar' (quick pills)",
+        "obs-table selectable — which itself composes obs-pagination (footer), the floating obs-toolbar variant='bulk' (bulk bar), obs-checkbox, obs-tag, obs-menu, obs-icon",
+        "obs-severity-legend (footer slot) · obs-logo (vendor TYPE column) · obs-modal variant='confirm' (destructive guard)"
+      ],
+      "must": [
+        "Canvas is WHITE (--page-background-color), full-bleed — NOT the app grey.",
+        "Use obs-table (never a hand-built table); it owns pagination + sticky scroll + selection + the bulk bar.",
+        "R1: bounded height (shell height:100% + min-height:0, table flex:1) so the table scrolls internally.",
+        "R3: footer/bulk content via slot= on REAL elements, not <template slot>.",
+        "R4: destructive bulk actions route through obs-modal variant='confirm'.",
+        "Filters/search go in obs-toolbar+obs-filters; inventory-style lists lead with obs-tabs categories.",
+        "Every colour is a token; row/status uses severity tokens."
+      ],
+      "dont": [
+        "Don't use --common-main-bg / grey as the list canvas (it is white, like the dashboard).",
+        "Don't build a custom table, pager, or 'N selected' pill — obs-table owns all of it.",
+        "Don't put bulk actions in the page header (they float in the table's bulk bar).",
+        "Don't feed slots with a <template slot='…'> (renders nothing on a custom element).",
+        "Don't hard-delete on click — confirm first."
+      ],
+      "usedIn": [
+        "Monitors / Inventory (the reference)",
+        "Alert stream",
+        "Correlated alerts",
+        "Notifications",
+        "Trap viewer",
+        "Task manager",
+        "Audit log",
+        "SLO list",
+        "RUM apps",
+        "NetRoute",
+        "Flow Analytics",
+        "NCM compliance",
+        "and every policy / profile / mapping / discovery CRUD list (~75 screens total)"
+      ],
+      "routeAway": "A dashboard of tiles/widgets, not a records table? -> the 'dashboard' contract. A single record's create/edit form? -> the 'form' contract. A settings sub-screen with a left menu? -> the 'settings' contract."
+    },
+    "settings": {
+      "pageType": "settings",
+      "display": "Settings screen — a SHELL that hosts an inner archetype",
+      "isShell": true,
+      "whenToUse": "The Settings area (or ANY left-sub-nav section: policy/integration/system config, ~110 pages). It is NOT one layout — it's a constant SHELL (settings left-menu + section bar) wrapping a CONTENT PANE that is one of 4 inner patterns. Pick the inner pattern per sub-page.",
+      "shell": [
+        "obs-app-header — the global chrome (unchanged across every settings page).",
+        "SECTION BAR: obs-page-header heading='Settings' menu-toggle :menu-open, with a leading gear icon in the `before` slot — the constant title strip under the app-header. The circular menu-toggle shows/hides the module side-menu (fires `menutoggle`); it is NOT a back button.",
+        "LEFT MENU: obs-side-menu mode='settings' + search — the product's multi-open Settings collapse (right chevron, section dividers, rounded active child) over the 18-section tree (My Account · User Settings · System Settings · Policy/Discovery/Monitor/…). Emits `select` → route to the chosen sub-page. obs-side-menu ALREADY supplies its own RIGHT border/divider + internal padding + a top/bottom scroll fade — the column host adds NEITHER a border NOR padding (see layout). This + the section bar are the SHELL; only the content pane changes.",
+        "CONTENT PANE: the routed sub-page — exactly ONE of the inner patterns below."
+      ],
+      "innerPatterns": {
+        "config-form": {
+          "what": "The DOMINANT settings page: (optional brand logo / avatar) + title + description + doc-link → a sectioned label:field form (obs-input material/underline · obs-switch toggles · segmented button-groups · obs-select · copy-fields · file-upload) → a bottom-right action bar (Reset / Test / Save). Same family as the `form` contract.",
+          "usedBy": "My Account › My Profile, UI Preference · User Settings › Password Settings, LDAP, Single Sign-On, RADIUS · System Settings › Two-Factor, Mail/Proxy/SMS Server, Rebranding, Data Retention, SSH Security · Integration › ServiceOps, ServiceNow, Jira, Teams",
+          "build": "compose obs-input + obs-switch + obs-button; NO obs-form-item element yet → compose the label:field row (form-item registry documents the pattern)."
+        },
+        "records-table": {
+          "what": "The `list` contract, NESTED inside the settings shell: toolbar (search + quick-filters + view/export icons + a primary Create) → obs-table (status toggles, ⋮ row actions) → pagination footer.",
+          "usedBy": "User Settings › User, User Profile, Personal Access Token, Role · ALL Policy Settings › Metric/Log/Flow/Trap/NetRoute/APM/RUM Policy · System Settings › MAC Address List, Backup/Storage/DNS Profile, Rule-Based Tags · Integration › Integration Profile",
+          "build": "reuse the `list` contract inside the content pane."
+        },
+        "card-grid-tree": {
+          "what": "A grouped/hierarchical BROWSER: toolbar (search + quick-filter + Create + filter) → a multi-column grid of expandable group cards + leaf cards with counts (obs-side-menu mode='tree'/'categories' or a card grid). A distinct pattern (not a table).",
+          "usedBy": "User Settings › Group (monitor groups tree) — the same tree also appears in the Monitors filter, so it is reusable beyond settings.",
+          "build": "NEW pattern — obs-side-menu mode='tree'/'categories' for the hierarchy + a card grid; flag if a dedicated element is missing."
+        },
+        "wizard": {
+          "what": "A numbered multi-step config: header (logo + title + description) → steps 1…N, each a titled block with its own fields + per-step actions (Generate / Upload / Select).",
+          "usedBy": "Integration › Slack (and OAuth-style integrations); also product Setup / Create Discovery Profile elsewhere.",
+          "build": "the `wizard` archetype (compose obs-steps) — a known gap; build when needed."
+        }
+      },
+      "canvas": {
+        "background": "--page-background-color",
+        "note": "WHITE canvas (all product pages default to white — see $canvasDefault). Never --common-main-bg.",
+        "minHeight": "100%"
+      },
+      "scroll": {
+        "owner": "the CONTENT PANE scrolls independently; the settings left-menu is its own scroll region (long sub-nav). The shell (app-header + section bar + menu frame) stays put.",
+        "body": "content-pane internal",
+        "flush": true
+      },
+      "header": {
+        "variant": "section-bar",
+        "note": "The 'Settings' section bar (obs-page-header heading='Settings' menu-toggle + leading gear) is CONSTANT — it is the shell's header, NOT the per-page title. Its circular menu-toggle shows/hides the side-menu. The per-page title (e.g. 'Mail Server Settings') lives INSIDE the content pane."
+      },
+      "body": {
+        "padding": "0 10px",
+        "note": "content-pane gutter (matches the list/dashboard 10px)."
+      },
+      "must": [
+        "Render the SHELL (obs-app-header + Settings section bar + obs-side-menu) once; swap only the content pane on nav.",
+        "Compose obs-side-menu mode='settings' + search for the left menu — never a hand-rolled accordion. Pair it with the section bar's obs-page-header menu-toggle (wire @menutoggle to show/hide it, keep :menu-open in sync).",
+        "Size the menu column only; DON'T add a border-right or padding to the obs-side-menu host — it already provides the right divider + its own padding (adding them double-divides / double-pads; see layout).",
+        "Pick the inner pattern per sub-page (config-form | records-table | card-grid-tree | wizard) and follow that pattern's contract.",
+        "Config forms end with a bottom-right Reset / (Test) / Save bar; destructive actions confirm.",
+        "Every colour is a token."
+      ],
+      "dont": [
+        "Don't treat 'settings' as a single fixed layout — it's a shell + an inner archetype.",
+        "Don't add a divider (border-right) OR padding between the side-menu and the content — obs-side-menu already has its own right border + internal padding; a second one doubles the rule and the gutter.",
+        "Don't hand-roll the left menu or the section bar.",
+        "Don't put the per-page save bar or title in the shell — they belong to the content pane."
+      ],
+      "usedIn": [
+        "Settings (19 sub-modules, ~110 pages)",
+        "and the same shell pattern fits any left-sub-nav section (a module's own settings)"
+      ],
+      "routeAway": "A single create/edit editor NOT under a settings sub-nav? -> the 'form' contract. A records table that is the whole page (not inside settings)? -> the 'list' contract.",
+      "layout": {
+        "menuColumn": "Size the side-menu column ONLY (a fixed width, e.g. flex: 0 0 264px; min-height: 0). Do NOT add border-right/padding to the obs-side-menu host — the component already draws the RIGHT divider and its own internal padding, so a host border/padding double them up (a 2px divider + a doubled gutter). This was a real bug: the starter added `border-right` + `padding: 10px 8px` on the menu host and got a double divider.",
+        "contentPane": "The content pane takes the remaining width (flex: 1 1 auto; min-height: 0; overflow: auto) with its own gutter (body.padding). It does NOT add a left border either — the single divider between menu and content is the side-menu's own right border."
+      }
+    },
+    "form": {
+      "pageType": "form",
+      "display": "Form / Detail screen",
+      "whenToUse": "A create/edit form or a record detail view.",
+      "structure": [
+        "app shell (rail + app-header)",
+        "obs-page-header — the record title + save/cancel actions",
+        "content — FlotoForm sections separated by headings (plain headings by default; labelled dividers are opt-in)"
+      ],
+      "canvas": {
+        "background": "--page-background-color",
+        "note": "WHITE canvas (all product pages default to white — see $canvasDefault). Never --common-main-bg.",
+        "minHeight": "100%"
+      },
+      "scroll": {
+        "owner": "the content pane scrolls",
+        "body": "never",
+        "flush": false
+      },
+      "header": {
+        "component": "obs-page-header",
+        "fullWidth": true,
+        "bottomBorder": true,
+        "note": "Save/Cancel in the actions slot."
+      },
+      "body": {
+        "padding": "20px"
+      },
+      "must": [
+        "Canvas is WHITE (--page-background-color), never the app grey.",
+        "Sections via FlotoForm; layout via MRow/MCol (sizes 3/6/12).",
+        "Section headers are PLAIN headings by default (a labelled obs-divider is opt-in, not automatic).",
+        "Every colour is a token."
+      ],
+      "dont": [
+        "Don't auto-apply labelled dividers for section headers.",
+        "Don't build raw inputs — use FlotoFormItem."
+      ],
+      "routeAway": "Needs a left settings sub-nav? -> the 'settings' contract."
+    }
+  }
+}

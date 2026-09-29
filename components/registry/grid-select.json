@@ -138,5 +138,11 @@
       "value": "min 720px (grows to the trigger width)",
       "note": "the open dropdown table floors at 720px so the header — search + selected-count + View Selected | Clear Selected — fits on ONE line with room to spare, and more of the columns (MONITOR/IP/TYPE/GROUPS/TAGS) are visible; it still grows to match a wider trigger."
     }
+  ],
+  "related": [
+    "dropdown-picker (the non-table picker)",
+    "table (the grid chrome it reuses)",
+    "checkbox (row selection)",
+    "tag (status cells)"
   ]
 }

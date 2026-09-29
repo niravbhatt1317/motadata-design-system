@@ -30,6 +30,8 @@ const MAP = {
   'obs-toolbar': 'ObsToolbar', 'obs-divider': 'ObsDivider', 'obs-banner': 'ObsBanner', 'obs-sidebar': 'ObsSidebar',
   'obs-breadcrumbs': 'ObsBreadcrumbs', 'obs-side-menu': 'ObsSideMenu', 'obs-logo': 'ObsLogo',
   'obs-metric-picker': 'ObsMetricPicker', 'obs-noc-player': 'ObsNocPlayer', 'obs-timeline-scrollbar': 'ObsTimelineScrollbar',
+  'obs-widget-card': 'ObsWidgetCard', 'obs-widget-grid': 'ObsWidgetGrid',
+  'obs-gauge': 'ObsGauge', 'obs-severity-heatmap': 'ObsSeverityHeatmap',
 }
 const REFERENCE_ONLY = new Set(['obs-date-time-picker', 'obs-layout-appshell', 'obs-layout-grid',
   'obs-layout-regions', 'obs-layout-shells', 'obs-layout-page-templates', 'obs-layout-panels'])

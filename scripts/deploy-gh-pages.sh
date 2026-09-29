@@ -71,10 +71,17 @@ fi
 echo "==> Building the Web Components bundle (obs-*)…"
 ( cd "$UI_DIR/design-system/components-lib" && npm run build )
 
-echo "==> Building Storybook…"
-npm run build-storybook
-
 OUT="$UI_DIR/storybook-static"
+echo "==> Building Storybook…"
+if npm run | grep -qE '^\s*build-storybook'; then
+  npm run build-storybook
+elif [ -d "$OUT" ]; then
+  echo "    !! 'build-storybook' script is unavailable in this checkout — REUSING the existing storybook-static/"
+  echo "    !! (root Storybook is NOT rebuilt this deploy; the Elements showcase + Component Catalog below ARE"
+  echo "    !!  freshly rebuilt from the current registries/bundle). Only safe when no .stories.js changed."
+else
+  echo "build output not found at $OUT and no 'build-storybook' script to build it"; exit 1
+fi
 [ -d "$OUT" ] || { echo "build output not found at $OUT"; exit 1; }
 
 # Bundle the token gallery into the site so GitHub Pages serves it as text/html (it RENDERS;

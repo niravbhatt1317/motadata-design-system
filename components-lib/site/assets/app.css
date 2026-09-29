@@ -140,6 +140,10 @@ code, pre, .props td:first-child { font-family: var(--mono); }
 .stage:has(obs-app-header), .stage:has(obs-toolbar), .stage:has(obs-divider) { align-items: flex-start; padding-top: 40px; }
 .stage:has(obs-table) { align-items: flex-start; overflow: visible; padding-top: 36px; }
 .stage-inner:has(obs-date-time-picker[kind="slider"]) { width: 100%; }
+/* the widget grid is a full-width dashboard surface (not content-sized) — fill the stage + top-align so it
+   doesn't float centered/clipped; a card of height h needs vertical room, so don't clip and give min-height */
+.stage-inner:has(obs-widget-grid) { width: 100%; }
+.stage:has(obs-widget-grid) { align-items: flex-start; overflow: visible; padding-top: 36px; min-height: 460px; }
 /* the date/time picker opens tall panels (presets / dual-month calendar) below the trigger — top-align,
    give vertical room, and don't clip them in the playground stage */
 .stage:has(obs-date-time-picker) { align-items: flex-start; overflow: visible; min-height: 520px; padding-top: 36px; }

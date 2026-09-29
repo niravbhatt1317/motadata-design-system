@@ -10,7 +10,11 @@ export function setBrandHtml(h) { BRAND_HTML = h || '' }
 
 // inline data-URI favicon (teal donut) — every page otherwise triggers a /favicon.ico 404,
 // which shows up as a console error in the render checks.
-const FAVICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%2314b8a6'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%230b1220'/%3E%3C/svg%3E" />`
+const FAVICON = `<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%2314b8a6'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%230b1220'/%3E%3C/svg%3E" />` +
+  // load the product fonts so DS tokens resolve to the REAL faces: Poppins (--font-family) + JetBrains Mono
+  // (--chart-font-family, used by charts + obs-gauge numbers). Without these the browser substitutes a system font.
+  `<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />` +
+  `<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />`
 
 /** Left rail nav: collapsible groups (section → optional family sub-group → items). */
 export function navHtml(components, currentId, version) {

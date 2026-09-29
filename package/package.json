@@ -1,6 +1,6 @@
 {
   "name": "@mtdt/observeops-ds-spec",
-  "version": "0.1.211",
+  "version": "0.1.259",
   "description": "Machine-readable spec and AI operating contract for the Motadata ObserveOps design system — components, tokens, page recipes, layout structure, and the rules an AI tool follows to build ObserveOps UI faithfully.",
   "license": "UNLICENSED",
   "main": "index.js",
@@ -15,6 +15,7 @@
     "tokens/",
     "layout/",
     "foundation/",
+    "charts/",
     "conformance/",
     "README.md"
   ],

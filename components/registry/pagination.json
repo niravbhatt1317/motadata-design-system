@@ -1,0 +1,90 @@
+{
+  "name": "pagination",
+  "display": "Pagination",
+  "tier": "organism",
+  "family": "Navigation",
+  "element": "obs-pagination",
+  "source": "Extracted from obs-table's footer (the Kendo .k-grid-pager). The product reuses the same pager outside the grid (e.g. _base-server-card.vue card view), which is why it is now a standalone DS element.",
+  "status": "stable",
+  "summary": "The DS pagination footer as a standalone element — reusable under ANY paged view (table, card grid, list). Seek controls (first/prev · numbered SQUARES · next/last, Material-Symbols skip glyphs) + a page-size select + a 'start - end of N items' range, with a CENTERED slot for extra footer content (e.g. a severity legend).",
+  "variants": [
+    {
+      "name": "split",
+      "what": "DEFAULT — controls (pager + page-size) on the LEFT, item total on the RIGHT. Used when the center slot is empty.",
+      "usage": ""
+    },
+    {
+      "name": "centered",
+      "what": "controls LEFT, slotted center content (e.g. a severity legend) CENTERED, item total RIGHT. Auto-selected by filling the default slot.",
+      "usage": ""
+    }
+  ],
+  "sizes": [],
+  "states": [
+    { "name": "first-page", "what": "First/Previous disabled (dimmed, not clickable)" },
+    { "name": "last-page", "what": "Next/Last disabled" },
+    { "name": "single-page", "what": "one page — all seek controls disabled, still shows the range + size select" }
+  ],
+  "props": {
+    "total": { "type": "number", "default": "0", "note": "total item count across all pages (drives totalPages + the range text)." },
+    "page": { "type": "number", "default": "1", "note": "current 1-based page (controlled; reflects to el.page)." },
+    "page-size": { "type": "number", "default": "50", "enum": [10, 20, 50, 100], "note": "items per page (the select's current value)." },
+    "page-sizes": { "type": "string | array", "default": "10,20,50,100", "note": "the size options (CSV string or array); the current size is merged in + sorted." },
+    "sizes-label": { "type": "string", "default": "items per page", "note": "the label after the select." },
+    "hide-size": { "type": "boolean", "default": "false", "note": "hide the page-size select + label." },
+    "hide-range": { "type": "boolean", "default": "false", "note": "hide the 'start - end of N items' text." }
+  },
+  "events": {
+    "pagechange": "detail = the new 1-based page number (emitted on any seek/number click and when the page-size changes → page resets to 1).",
+    "sizechange": "detail = the new page size (emitted when the select changes)."
+  },
+  "slots": {
+    "default": "content CENTERED between the controls (left) and the range (right) — e.g. a severity legend. Filling it selects the CENTERED variant; empty = SPLIT."
+  },
+  "decisionFlow": [
+    "Paginating a table (obs-table)? -> it already composes obs-pagination in its footer; you don't add one yourself.",
+    "Paginating a NON-table paged view (card grid, tile list, custom list)? -> use <obs-pagination> directly: bind total/page/page-size and reslice your data on @pagechange / @sizechange.",
+    "Need a legend / summary in the middle of the footer? -> put it in the default slot (CENTERED variant); otherwise leave it empty (SPLIT variant).",
+    "Infinite/endless scroll instead of pages? -> don't use pagination; load-on-scroll is a different pattern."
+  ],
+  "usageRules": {
+    "split": { "useWhen": "the footer only needs the pager and the item total (the common case).", "dontUse": "when you have a legend/summary to show mid-footer.", "example": "a plain data table or card list footer." },
+    "centered": { "useWhen": "a legend or summary belongs in the footer center (product Monitors list — the severity legend).", "dontUse": "when there's no center content (leave the slot empty for SPLIT).", "example": "the Inventory > Monitors list page severity legend." }
+  },
+  "do": [
+    "Reuse <obs-pagination> for any paged view outside the table (card/tile/list) instead of re-building a pager.",
+    "Drive it: bind total + page + page-size and reslice your data on @pagechange / @sizechange.",
+    "Put a footer legend/summary in the default slot to get the centered variant."
+  ],
+  "dont": [
+    "Don't add an <obs-pagination> inside an <obs-table> — the table already composes one (use its `footer` slot for the center content).",
+    "Don't hand-roll seek arrows / numbered boxes — reuse this element so the Material-Symbols glyphs + square cells stay consistent."
+  ],
+  "tokensUsed": [
+    "--pagination-active-bg",
+    "--pagination-active-text",
+    "--border-color",
+    "--neutral-light",
+    "--page-text-color",
+    "--page-background-color"
+  ],
+  "a11y": {
+    "summary": "Seek controls carry title tooltips (First/Previous/Next/Last); disabled controls are dimmed and non-interactive. The page-size <select> is a native select (keyboard + screen-reader accessible); the visual caret is decorative (pointer-events:none).",
+    "issues": [
+      "Numbered page cells are clickable spans — a keyboard user can't Tab to them yet (mouse/pointer only). Follow-up: role=button + tabindex + Enter/Space."
+    ]
+  },
+  "knownIssues": [
+    "Page-number cells are not yet keyboard-focusable (pointer-only); the native size select IS keyboard-accessible."
+  ],
+  "related": [
+    "table (composes obs-pagination in its footer)",
+    "select (the page-size control is a native styled select)",
+    "icon (seek glyphs skip-previous/next + chevron)"
+  ],
+  "storybook": "Organisms/Pagination",
+  "changelog": [
+    "2026-09-16 — The centered slot zone now keeps min 64px clearance on each side (padding:0 64px) so slotted content (e.g. a severity legend) never crowds the pager (left) or the range (right); min-width:0 lets that content SHRINK/collapse rather than push the pager/range off-screen.",
+    "2026-09-15 — Extracted <obs-pagination> as a standalone DS element from obs-table's footer, so any paged view (card grid, list) can reuse it (the product reuses its Kendo pager the same way). Carries the Material-Symbols seek glyphs, 28px square cells, the appearance:none page-size select with an obs-icon caret, the range text, and a centered default slot for a legend (SPLIT vs CENTERED variants). obs-table now composes it (total/page/page-size in, pagechange/sizechange out; its `footer` slot forwards into the center slot). No obs-table API change."
+  ]
+}

@@ -13,6 +13,9 @@ import {
   readSpecFile,
   searchComponents,
   matchRecipe,
+  getPageContract,
+  validatePage,
+  PAGE_TYPES,
   getLayout,
   listGaps,
   resolvePurpose,
@@ -208,6 +211,38 @@ export function buildServer(): McpServer {
   )
 
   server.registerTool(
+    'get_page_contract',
+    {
+      title: 'Get a page contract',
+      description:
+        `Composition-level rules for a WHOLE page BEFORE you build it: canvas token, scroll ownership, header ` +
+        `treatment (full-width/bottom-border/sticky/shadow-on-scroll), gutters/gap scale, mandatory components ` +
+        `and route-aways — the fidelity + behaviour get_recipe doesn't carry. Page types: ${PAGE_TYPES.join(' | ')}.`,
+      inputSchema: { pageType: z.enum(PAGE_TYPES as [string, ...string[]]).describe('one of: ' + PAGE_TYPES.join(', ')) },
+    },
+    async ({ pageType }) => {
+      const c = getPageContract(pageType)
+      return c ? json(c) : text(`Unknown pageType "${pageType}". Valid: ${PAGE_TYPES.join(', ')}.`)
+    }
+  )
+
+  server.registerTool(
+    'validate_page',
+    {
+      title: 'Validate a page against its contract',
+      description:
+        'The COMPOSITION gate. Lint a page\'s HTML against its page contract → { errors, warnings, reminders }. ' +
+        'Catches the exact drift the dashboard rebuild hit (grey canvas, widgets not in obs-widget-card, hardcoded ' +
+        'colours, missing page-header). Behaviour that can\'t be checked statically (scroll/sticky) is returned as reminders.',
+      inputSchema: {
+        html: z.string().describe('the page HTML/markup to lint'),
+        pageType: z.enum(PAGE_TYPES as [string, ...string[]]).describe('one of: ' + PAGE_TYPES.join(', ')),
+      },
+    },
+    async ({ html, pageType }) => json(validatePage(html, pageType))
+  )
+
+  server.registerTool(
     'get_layout',
     {
       title: 'Get layout structure',
@@ -280,7 +315,12 @@ export function buildServer(): McpServer {
           'config in light+dark). Dark theme: set data-theme="dark-theme" on <html> (obs-user-menu can do this for ' +
           'you). A full page STARTS FROM THE APP SHELL, not a bare content area — call get_recipe("module-screen") ' +
           'for the rail → app-header → module-title → tabs → side-menu → content composition; a bare content page is a ' +
-          'harness, not a screen. Events deliver the value in event.detail as an array — unwrap: ' +
+          'harness, not a screen. THEN call get_page_contract(pageType) — dashboard | list | settings | form — for the ' +
+          'canvas token, scroll ownership, header treatment (full-width/bottom-border/sticky/shadow-on-scroll), gutters/gap ' +
+          'scale and mandatory components the recipe does NOT carry; apply them as defaults so the page matches the product ' +
+          'by construction. When the page is built, run validate_page(html, pageType) — the composition gate — and fix every ' +
+          'finding (grey canvas, widgets not in obs-widget-card, hardcoded colours, missing page-header). Events deliver the ' +
+          'value in event.detail as an array — unwrap: ' +
           'Array.isArray(e.detail) ? e.detail[0] : e.detail. NOTE: a few events carry an OBJECT payload (e.g. ' +
           'obs-filters change = {conditions, match} since 0.1.150) — check get_component before assuming an array. ' +
           'UPDATING: after npm update, clear the bundler cache (rm -rf node_modules/.vite; restart with --force) — a ' +

@@ -67,5 +67,13 @@
     "2026-07-13: width fix (owner) — the playground was shrink-wrapping the widget to ~208px (labels wrapped); changed :host to display:block, widened the max-width, and gave the element full stage width so labels/values sit on one line.",
     "2026-07-13: shipped <obs-metric-list> — the DS metric/KPI list (vertical-value-grid). Split out of the Storybook Table variant set (it's a metric LAYOUT, not a table)."
   ],
-  "storybook": "Organisms/Table (vertical-value variant)"
+  "storybook": "Organisms/Table (vertical-value variant)",
+  "related": [
+    "key-value",
+    "table",
+    "chart",
+    "widget-card"
+  ],
+  "sizes": [],
+  "states": []
 }

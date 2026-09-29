@@ -41,7 +41,7 @@ function onKey(e) {
 .cb.disabled { opacity: 0.5; cursor: not-allowed; }
 /* tick/square are absolutely positioned so the box has no in-flow content — its baseline (and the
    component's vertical position) stays identical whether checked or not, preventing a layout jump. */
-.box { position: relative; width: 19px; height: 19px; border: 1.5px solid var(--neutral-lighter, #e3e8f2); border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-sizing: border-box; background: var(--checkbox-bg, #fff); }
+.box { position: relative; width: 19px; height: 19px; border: 1px solid var(--neutral-lighter, #e3e8f2); border-radius: var(--checkbox-radius, 4px); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-sizing: border-box; background: var(--checkbox-bg, #fff); }
 /* hover + keyboard focus both darken the border to the checked blue-grey (checkbox.less) */
 .cb:hover .box, .cb:focus-visible .box { border-color: var(--checkbox-checked-border-color, #6a7fa0); }
 .box.on { background: var(--checkbox-bg, #fff); border-color: var(--checkbox-checked-border-color, #6a7fa0); }

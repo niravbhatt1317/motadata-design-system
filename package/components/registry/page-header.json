@@ -6,41 +6,56 @@
   "group": "Structure & Navigation",
   "source": "FlotoPageHeader (src/components/_base-page-header.vue), 54×",
   "status": "stable",
-  "summary": "The list/detail PAGE HEADER at the top of a page: an optional back button + the title (--primary-alt, weight 500) + an optional count pill on the left, and right-side actions (search / export / primary Add) via the default slot, over a --border-color bottom rule. Split from the product's Toolbars family. NOT the strip above a list/table (that is obs-toolbar) and NOT between-page navigation (obs-sidebar / obs-breadcrumbs). Supports an optional subtitle, a detail-header metadata strip (meta=[{label,value,icon?,status?}] with an accent stripe — the RUM/APM span-detail header), (detail/drawer header pattern) and a breadcrumb slot (drop obs-breadcrumbs). The global app top-bar (logo/search/notifications/user) is a SEPARATE archetype, not a page-header variant.",
+  "summary": "The list/detail PAGE HEADER at the top of a page: an optional back button OR a section menu-toggle + the title (--primary-alt, weight 500, 18px) + an optional count pill on the left, and right-side actions (search / export / primary Add) via the default slot, over a --border-color bottom rule. Split from the product’s Toolbars family. Feature-complete variants: default · with-count · back · menu-toggle (module SECTION header, shows/hides obs-side-menu) · with-subtitle · with-breadcrumb · detail-meta (RUM/APM span-detail strip) · monitor-detail · title-only · no-divider. NOT the strip above a list/table (that is obs-toolbar), NOT between-page navigation (obs-sidebar / obs-breadcrumbs), and NOT the global app top-bar (obs-app-header).",
   "variants": [
     {
       "name": "default",
-      "what": "title + right-side actions over a bottom rule",
+      "what": "title + right-side actions over a bottom rule (the list-page top bar)",
       "usage": "54×"
     },
     {
-      "name": "back",
-      "what": "leading back chevron (emits `back`)",
-      "usage": ""
-    },
-    {
       "name": "with-count",
-      "what": "a count pill next to the title",
+      "what": "a count pill next to the title (collection size)",
       "usage": ""
     },
     {
-      "name": "no-divider",
-      "what": "drops the bottom rule (header on a surface that already has edges)",
+      "name": "back",
+      "what": "a leading back chevron in a full-height left gutter, centred on the title line (emits `back`)",
+      "usage": ""
+    },
+    {
+      "name": "menu-toggle",
+      "what": "the SECTION header — a circular side-menu toggle (26px) + a vertical separator + a centred leading icon; fires `menutoggle` {open} and flips its chevron ‹/› via `menu-open` (Settings & any module sub-nav). NOT a back button.",
       "usage": ""
     },
     {
       "name": "with-subtitle",
-      "what": "title + a secondary muted line (detail/drawer headers)",
+      "what": "title + a secondary muted line under it (detail / drill-down / drawer headers)",
       "usage": ""
     },
     {
       "name": "with-breadcrumb",
-      "what": "a trail above the header row",
+      "what": "a location trail slot ABOVE the header row (drop obs-breadcrumbs)",
       "usage": ""
     },
     {
       "name": "detail-meta",
-      "what": "accent stripe + title + metadata strip (RUM/APM span-detail header)",
+      "what": "accent stripe + title + a wrapping \" | \"-separated metadata strip (RUM/APM Session/Action/Resource span-detail header); meta fields can carry a status dot",
+      "usage": ""
+    },
+    {
+      "name": "monitor-detail",
+      "what": "the inventory monitor-detail composition — breadcrumb + title + a status badge (obs-tag) + a type/meta strip + right-side icon actions (refresh / topology / full-screen)",
+      "usage": ""
+    },
+    {
+      "name": "title-only",
+      "what": "the minimal header — title + a single primary action, no count/divider extras",
+      "usage": ""
+    },
+    {
+      "name": "no-divider",
+      "what": "a MODIFIER that drops the bottom rule (header on a surface that already has an edge — a card/panel)",
       "usage": ""
     }
   ],
@@ -51,7 +66,7 @@
   "props": {
     "heading": {
       "type": "string",
-      "note": "the page title (uses `heading`, not `title`, so it doesn't set a native tooltip). --primary-alt, weight 500, 16px, ellipsised."
+      "note": "the page title (uses `heading`, not `title`, so it doesn’t set a native tooltip). --primary-alt, weight 500, 18px, line-height 1.5, ellipsised."
     },
     "count": {
       "type": "string|number",
@@ -89,10 +104,21 @@
         "down",
         "maintenance"
       ]
+    },
+    "menu-toggle": {
+      "type": "boolean",
+      "default": false,
+      "note": "render the SECTION-header cluster — a CIRCULAR toggle button (26px) + a vertical separator before the title. Shows/hides the current module’s obs-side-menu; fires `menutoggle` {open}. Pair with a `before`-slot module glyph. Not a back button."
+    },
+    "menu-open": {
+      "type": "boolean",
+      "default": true,
+      "note": "the side-menu’s open state — flips the toggle chevron (open → ‹ collapse · closed → › expand) and drives aria-expanded / the aria-label. Bind it to your own menu state."
     }
   },
   "events": {
-    "back": "() — the back button was clicked (wire it to your router.back() / navigation)."
+    "back": "() — the back button was clicked (wire it to your router.back() / navigation).",
+    "menutoggle": "detail = { open } — the NEW side-menu state after the circular toggle is clicked. Wire it to show/hide the module's obs-side-menu."
   },
   "slots": {
     "default": "the right-side actions — compose obs-input (search), obs-button (primary Add), icon buttons, etc.",
@@ -103,9 +129,14 @@
   },
   "decisionFlow": [
     "Title + primary actions at the TOP of a page (list or detail)? -> obs-page-header.",
-    "Detail / drawer header that needs a secondary line under the title? -> add subtitle=\"…\". A location trail above it? -> the breadcrumb slot (obs-breadcrumbs).",
+    "A MODULE section bar that shows/hides a left sub-nav (Settings, and any module with an obs-side-menu)? -> set menu-toggle + wire @menutoggle to show/hide the side-menu; put the module glyph in the `before` slot. This is NOT a back button.",
+    "A detail/nested page drilled into from a list that needs a way back? -> set back (emits `back`; wire to router.back()). Use back OR menu-toggle, not both.",
+    "A secondary line under the title (type / id / last-run)? -> add subtitle=\"…\". A location trail above it? -> the breadcrumb slot (obs-breadcrumbs).",
     "An entity/span DETAIL header with a row of attribute fields (Session/Action/Resource, monitor detail)? -> add accent=\"<severity>\" + meta=[{label,value,icon?,status?}] (the metadata strip).",
+    "A collection whose size matters? -> add count=\"N\" (the count pill).",
+    "Header sitting on a card/panel that already has an edge? -> add no-divider.",
     "A search / filter / bulk-action strip sitting ABOVE a list or table? -> obs-toolbar (not page-header).",
+    "The GLOBAL app top bar (logo / search / notifications / user)? -> obs-app-header (a separate archetype).",
     "Navigating BETWEEN pages/routes? -> obs-sidebar (primary nav) or obs-breadcrumbs (the trail).",
     "Switching sibling views of the SAME page? -> obs-tabs.",
     "A widget's own title + time-range + kebab? -> the widget-header toolbar variant (obs-toolbar)."
@@ -116,20 +147,21 @@
       "dontUse": "for a control strip that belongs ABOVE a table -> obs-toolbar.",
       "example": "Monitors list: title + count + Search + Export + Add Monitor."
     },
-    "back": {
-      "useWhen": "a detail/nested page the user drills into from a list — give them a way back.",
-      "dontUse": "on a top-level list page reachable from the nav (no back target).",
-      "example": "Monitor detail -> back to the Monitors list."
-    },
     "with-count": {
       "useWhen": "the title names a collection whose size matters (N monitors / alerts).",
       "dontUse": "on a singular detail page.",
-      "example": "Monitors (128)."
+      "example": "Monitors (128) — count=\"128\"."
     },
-    "no-divider": {
-      "useWhen": "the header sits on a card/panel that already provides a bottom edge.",
-      "dontUse": "as the default page top bar (keep the divider).",
-      "example": "a header inside a bordered settings card."
+    "back": {
+      "useWhen": "a detail/nested page the user drills into from a list — give them a way back (emits `back`; wire to router.back()).",
+      "dontUse": "on a top-level list page reachable from the nav (no back target); and never together with menu-toggle.",
+      "example": "Monitor detail -> back to the Monitors list."
+    },
+    "menu-toggle": {
+      "useWhen": "a MODULE section header whose page hosts a left sub-nav (obs-side-menu) — the circular toggle shows/hides that menu; put the module glyph (e.g. cog) in the `before` slot. Bind :menu-open to your menu state so the chevron reads ‹ (collapse) when open / › (expand) when closed.",
+      "dontUse": "as a back button (it does NOT navigate) or on a page with no side-menu to toggle; not together with back.",
+      "example": "Settings: <obs-page-header heading=\"Settings\" menu-toggle :menu-open=\"open\" @menutoggle=\"open = $event.detail.open\"><obs-icon slot=\"before\" name=\"cog\" size=\"20\"></obs-icon></obs-page-header>.",
+      "must": "Wire @menutoggle to actually show/hide the obs-side-menu; keep :menu-open in sync so the chevron direction matches reality."
     },
     "with-subtitle": {
       "useWhen": "a detail / drill-down / drawer header where a secondary line adds context (type, id, last-run).",
@@ -142,9 +174,25 @@
       "example": "Inventory / Monitors / web-server-01 (drop obs-breadcrumbs in the breadcrumb slot)."
     },
     "detail-meta": {
-      "useWhen": "an entity/span detail header (RUM Session/Action/Resource, APM trace, monitor detail) that needs a row of attribute key:value fields under the title.",
+      "useWhen": "an entity/span detail header (RUM Session/Action/Resource, APM trace) that needs a row of attribute key:value fields under the title, optionally with an accent stripe and status dots.",
       "dontUse": "a simple list/detail page (use subtitle or nothing).",
-      "example": "accent=\"up\" title=\"Session\" meta=[{icon:\"globe\",value:\"172.20.22.2\"},{label:\"Environment\",value:\"prod\"},…] — a \" | \"-separated strip."
+      "example": "accent=\"up\" heading=\"Session\" meta=[{icon:\"globe\",value:\"172.20.22.2\"},{label:\"Environment\",value:\"prod\"},…] — a \" | \"-separated strip."
+    },
+    "monitor-detail": {
+      "useWhen": "the inventory monitor-detail top header — a breadcrumb + title + a live status badge (obs-tag) + a type/meta strip, with icon actions (refresh / topology / full-screen) in the actions slot.",
+      "dontUse": "a generic detail page (compose only the pieces you need — subtitle or meta).",
+      "example": "ubuntu-linux2 (motadata-freetier): breadcrumb + Up badge + Type/Environment/Group meta + refresh/topology/full-screen icon buttons.",
+      "must": "The metric rings/gauges some monitor headers show are SEPARATE chart/gauge components composed into the actions slot — not part of page-header."
+    },
+    "title-only": {
+      "useWhen": "a minimal header — a title plus one primary action, nothing else.",
+      "dontUse": "when the page needs a count, search, or multiple actions (use default).",
+      "example": "Alert Policies + a single \"Create Policy\" primary button."
+    },
+    "no-divider": {
+      "useWhen": "the header sits on a card/panel that already provides a bottom edge.",
+      "dontUse": "as the default page top bar (keep the divider).",
+      "example": "a header inside a bordered settings card — no-divider."
     },
     "padding": {
       "useWhen": "--page-header-padding controls the CONTENT inset only (default 8px all sides). The bottom divider always spans EDGE TO EDGE (full width) regardless of the padding.",
@@ -153,15 +201,23 @@
     }
   },
   "a11y": {
-    "summary": "The title is an <h4> heading — one page-header per view. The back control is a real <button aria-label=\"Back\"> that fires `back` on click/Enter/Space (keyboard-operable). Actions in the default slot are the consumer’s own focusable controls (obs-button/obs-input) in DOM order after the title. The accent stripe and meta field ICONS are decorative (aria-hidden); meta LABELS are real text (\"Label: value\") so screen readers read the attribute names. A status badge (obs-tag) carries its own accessible label.",
+    "summary": "The title is an <h4> heading — one page-header per view. The back control is a real <button aria-label=\"Back\"> that fires `back` on click/Enter/Space. The menu-toggle is a real <button> with aria-expanded reflecting :menu-open and an aria-label that flips between \"Hide menu\" (open) and \"Show menu\" (closed); its chevron is decorative (aria-hidden). Actions in the default slot are the consumer’s own focusable controls (obs-button/obs-input) in DOM order after the title. The accent stripe, the leading `before` icon, and the meta field ICONS are decorative (aria-hidden); meta LABELS are real text (\"Label: value\") so screen readers read the attribute names. A status badge (obs-tag) carries its own accessible label. The circular toggle has a visible :focus-visible ring (--primary-alt).",
     "issues": [
       {
         "severity": "low",
         "issue": "The count pill (\"128\") is presented as plain text next to the title; if the count must be announced as a labelled figure, put it in the meta strip (label:\"Monitors\", value:\"128\") instead."
+      },
+      {
+        "severity": "low",
+        "issue": "menu-toggle communicates state via aria-expanded + an aria-label swap, but the association to the side-menu it controls is implicit — add aria-controls=\"<side-menu id>\" on the toggle when the module side-menu has a stable id."
       }
     ]
   },
   "knownIssues": [
+    {
+      "severity": "info",
+      "issue": "menu-toggle is STATELESS about the side-menu — it only fires `menutoggle` {open} and reflects `menu-open`. The consumer owns the actual show/hide of the obs-side-menu and must keep :menu-open in sync (the DS starter Settings page is the reference wiring)."
+    },
     {
       "severity": "info",
       "issue": "The detail-header variants (subtitle · meta strip · accent · monitor-detail) are SOURCE-DERIVED — the product headers are store/data-bound with no Storybook story, so they are built from the source (rum-drill-down-header.vue / compliance-breadcrumb.vue) and verified against product screenshots, not the diff gate. The default list-header IS diff-gated (organisms-toolbars-examples--page-header, ✅ MATCH)."
@@ -174,6 +230,9 @@
   "tokensUsed": [
     "--border-color",
     "--primary-alt",
+    "--page-background-color",
+    "--neutral-lighter",
+    "--neutral-lightest",
     "--timerange-background-color",
     "--timerange-text-color",
     "--neutral-light",
@@ -183,6 +242,9 @@
     "--severity-critical"
   ],
   "changelog": [
+    "2026-09-25 — (owner) FULL completeness pass now that every variant + the menu-toggle functionality is in. Section-header polish finalised: 18px chevron in a 26px circle, state-specific optical nudge (open ‹ → translateX(-1px), closed › → +1px), cog glyph 20px. Docs brought to decision-grade: variants[] now lists all 10 (added monitor-detail, title-only); a usageRules card for every variant (menu-toggle/monitor-detail/title-only added); decisionFlow routes the SECTION-header case (menu-toggle vs back vs sidebar) + title-only/count/no-divider; menu-toggle/menu-open props retyped to real booleans; a11y covers the toggle (aria-expanded + label swap + focus ring); tokensUsed adds the toggle surface/hover tokens; knownIssues notes the toggle is stateless (consumer wires the side-menu). Playground now reaches every variant (title-only + no-divider presets added).",
+    "2026-09-25 — (owner) SECTION-header polish (product match): heading is now 18px (was 16px); the menu-toggle CIRCLE shrank to 28×28 (was 32) with a 13px chevron (was 15) + a 1px optical-centre nudge (the chevron point juts left); the toggle · | · title cluster tightened (8px gap, 22px separator, no side margins). The variant is now surfaced in the DS showcase (playground preset + gallery: menu-open ‹ / menu-collapsed › + toggle/menu-open controls).",
+    "2026-09-25 — (owner) New MENU-TOGGLE variant + two fixes. (1) `menu-toggle` renders the product's CIRCULAR bordered chevron button + a vertical separator before the title, and fires `menutoggle` {open} to SHOW/HIDE the module's side-menu (the chevron flips ‹/› via `menu-open`); it is NOT a back button. (2) The leading `before`-slot icon (e.g. the Settings gear) now CENTERS on the title line (was top-aligned) — a simple header center-aligns its leading controls; a detail header (subtitle/meta) still top-aligns them.",
     "2026-08-11 — Padding tightened to 8px on all four sides (owner). --page-header-padding default is now 8px; divider stays full-width.",
     "2026-08-11 — Divider + padding (owner, ref #152/#153): the bottom divider now spans EDGE TO EDGE (moved to the full-width .wrap; it was inset by the content padding). Reduced the default content inset to a compact 10px 16px (was 16px 20px 0). --page-header-padding now controls the CONTENT inset only; the divider is always full-width.",
     "2026-08-06 — Padding fix (owner): the header now carries its own left/right/top inset (var(--page-header-padding, 16px 20px 0)) instead of padding: 8px 0. The product page-header leans on the page content area (@padding-lg) for that inset, so dropped straight into a card it rendered flush to the edge. Override --page-header-padding: 0 when the surrounding page already pads.",
@@ -230,17 +292,20 @@
   "storybook": "Organisms/Toolbars/Examples (PageHeader)",
   "usedIn": [
     "The top bar of every list page — Monitors / Alerts / Alert Policies / Reports (title + count + search + primary Add). FlotoPageHeader, 54× across ~40 files.",
+    "Module SECTION headers — Settings and any module page with a left sub-nav: the circular menu-toggle + separator + module glyph + heading (obs-side-menu shown/hidden below).",
     "Detail / nested pages — a back button + title (+ subtitle) + record actions (Edit / Export / Re-run).",
     "Entity / span DETAIL headers — the RUM/APM Session · Action · Resource drill-downs and the inventory Monitor detail: accent stripe + title + a status badge + a \" | \"-separated metadata strip.",
     "Inside a drawer/panel (with subtitle or a meta strip) — the drawer supplies its own close; page-header supplies the title + meta."
   ],
   "do": [
     "Use as the top bar of a list/detail page — title + count + the page’s primary actions (Add / export / search).",
-    "Add a back button (a left gutter, centred on the title) for a nested/detail page drilled into from a list.",
+    "Add back (a left gutter, centred on the title) for a nested/detail page drilled into from a list.",
+    "Use menu-toggle for a module SECTION header that shows/hides a left sub-nav (Settings); wire @menutoggle to the obs-side-menu and keep :menu-open in sync; put the module glyph in the `before` slot.",
     "Use a subtitle, or an accent + meta strip, for entity/detail headers (RUM/APM span detail, monitor detail); a breadcrumb slot for a trail.",
     "Compose the actions from DS elements — obs-input (search), obs-button (Add / bordered secondary / [squared] icon)."
   ],
   "dont": [
+    "Don’t treat menu-toggle as a back button — it toggles a side-menu, it does not navigate; and don’t combine it with back.",
     "Don’t use for a search/filter/bulk-action strip above a list or table — that is obs-toolbar.",
     "Don’t use for the global app top bar (logo / notifications / user) — that is obs-app-header.",
     "Don’t use for between-page navigation — obs-sidebar (primary) / obs-breadcrumbs (trail).",

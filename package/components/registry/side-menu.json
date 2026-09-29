@@ -8,12 +8,17 @@
   "source": "src/modules/settings/.../left-menu.vue",
   "status": "core",
   "maturity": "stable",
-  "summary": "The in-module SECTION navigation panel — a searchable, collapsible left menu. ONE element with a `mode` axis folding the product's four side-menu forms: sections (settings sub-nav, 20×), categories (dashboard picker, count tags), tree (Log/Topology N-level hierarchy with type icon + count badge), and list (report/saved-views flat list, optional ★ favourite). Data-driven via a recursive `items` model; optional top segmented `tabs` + a search box. The active leaf highlights --primary on --code-tag-background-color (sections adds a --primary left rule). NOT the module rail (obs-sidebar), NOT sibling views (obs-tabs), NOT the faceted checkbox filter (a vertical Filter). SIZING: the element is width:100% (fills its container) — set the container WIDTH per mode (sections ~15% / categories ~30vw / tree|list ~20%); see `sizing` + usageRules[mode].width.",
+  "summary": "The in-module SECTION navigation panel — a searchable, collapsible left menu. ONE element with a `mode` axis folding the product's five side-menu forms: settings (THE Settings menu — left-menu.vue: a MULTI-OPEN collapse with the expand chevron on the RIGHT, full-width dividers between sections, and children as an indented ROUNDED-highlight menu), sections (a leaner accordion form — LEFT chevron + an inset --primary left-rule active), categories (dashboard picker, count tags), tree (Log/Topology N-level hierarchy with type icon + count badge), and list (report/saved-views flat list, optional ★ favourite). Data-driven via a recursive `items` model; optional top segmented `tabs` + a search box. NOT the module rail (obs-sidebar), NOT sibling views (obs-tabs), NOT the faceted checkbox filter (a vertical Filter). SIZING: the element is width:100% (fills its container) — set the container WIDTH per mode (settings|sections ~15% / categories ~30vw / tree|list ~20%); see `sizing` + usageRules[mode].width. The element OWNS its own chrome — a flush white panel with a RIGHT border/divider, its own internal padding, and an automatic TOP/BOTTOM scroll FADE (content dissolves into the panel at whichever edge can still scroll) — so the host column adds NEITHER a border NOR padding (they would double up).",
   "variants": [
     {
+      "name": "settings",
+      "what": "THE product Settings menu (left-menu.vue): a MULTI-OPEN icon+name collapse, expand chevron on the RIGHT, full-width dividers between sections, children as an indented ROUNDED-highlight menu (Ant MMenu selected — no left rule)",
+      "usage": "the Settings module (18 sections)"
+    },
+    {
       "name": "sections",
-      "what": "icon + name accordion → sub-items (settings left-menu); active leaf gets a --primary left rule",
-      "usage": "20×"
+      "what": "a leaner accordion form — LEFT chevron; active leaf gets an inset --primary left rule (use `settings` for the real Settings menu)",
+      "usage": "compact section nav"
     },
     {
       "name": "categories",
@@ -46,6 +51,11 @@
       "name": "fill",
       "value": "100%",
       "note": "the element fills its container — set the width via your layout column. In the product these are RESIZABLE splitter panes sized by percentage, not fixed px."
+    },
+    {
+      "name": "settings",
+      "value": "~15% viewport",
+      "note": "the Settings left-menu rail — a <Pane :size=\"15\" min-size=\"15\"> (~215–290px on a 1440–1920 screen), same as sections."
     },
     {
       "name": "sections",
@@ -87,12 +97,13 @@
       "type": "string",
       "default": "sections",
       "enum": [
+        "settings",
         "sections",
         "categories",
         "tree",
         "list"
       ],
-      "note": "sections (icon accordion) · categories (count-tag groups) · tree (N-level hierarchy) · list (flat)."
+      "note": "settings (THE Settings menu — multi-open, RIGHT chevron, section dividers, rounded active child) · sections (leaner accordion, LEFT chevron, inset-rule active) · categories (count-tag groups) · tree (N-level hierarchy) · list (flat)."
     },
     "items": {
       "type": "string",
@@ -146,7 +157,8 @@
     "default": "the default (footer) slot at the bottom, below the list — e.g. a \"+ New Category\" action. Adds no height when unused."
   },
   "decisionFlow": [
-    "Navigate SECTIONS within a module (Settings sub-nav; expand to sub-items)? -> obs-side-menu mode=\"sections\".",
+    "THE Settings menu (a module section nav with icons, RIGHT chevrons, dividers between sections, expanding to a rounded-highlight sub-menu)? -> obs-side-menu mode=\"settings\".",
+    "A leaner/compact section accordion (left chevron, an inset left-rule active, no per-section dividers)? -> mode=\"sections\".",
     "A category picker with COUNTS (Dashboard categories → dashboards)? -> mode=\"categories\".",
     "An N-level HIERARCHY with type icons + counts (Log types, Topology tree)? -> mode=\"tree\".",
     "A flat LIST of saved views / reports (optional favourites)? -> mode=\"list\".",
@@ -155,11 +167,18 @@
     "A faceted CHECKBOX filter panel? -> a vertical Filter (Filters family), not a side-menu."
   ],
   "usageRules": {
+    "settings": {
+      "useWhen": "the Settings module (or any module whose left nav is a searchable, multi-open list of icon+name sections that expand to a sub-page menu). Pair with obs-page-header menu-toggle to show/hide it.",
+      "dontUse": "top-level module switching (obs-sidebar), sibling views (obs-tabs), or a compact accordion where you want a left chevron + inset-rule active (use sections).",
+      "example": "Settings: My Account (expanded → My Profile active) · User Settings · System Settings · … (18 sections, each with its product icon + a right chevron; full-width dividers between sections).",
+      "asSeenIn": "settings/left-menu.vue — the product Settings menu (18 sections, 100 sub-pages).",
+      "width": "WIDTH: wrap it in ~15% of the viewport (~215–290px; ~260px if fixed) — the narrow Settings rail."
+    },
     "sections": {
-      "useWhen": "an in-module section nav that expands to sub-items (Settings-style)",
-      "dontUse": "top-level module switching (obs-sidebar) or sibling views (obs-tabs)",
+      "useWhen": "a compact in-module section accordion (left chevron, inset-rule active) — when you specifically do NOT want the Settings menu chrome (right chevrons / dividers / rounded child)",
+      "dontUse": "the real Settings menu (use settings) · top-level module switching (obs-sidebar) · sibling views (obs-tabs)",
       "example": "Settings: General / Monitoring / Users & Roles → sub-items, Monitoring expanded",
-      "asSeenIn": "settings/left-menu.vue (20×)",
+      "asSeenIn": "a leaner variant of the settings left-menu pattern",
       "width": "WIDTH: wrap it in ~15% of the viewport (~215–290px; use ~260px if fixed) — the narrow Settings rail."
     },
     "categories": {
@@ -196,27 +215,28 @@
     "surface": {
       "useWhen": "always — the in-module side menu is a FLUSH WHITE panel (var(--common-widget-bg)); it fills its column edge-to-edge.",
       "dontUse": "a gray/tinted surface or a rounded bordered card. Do NOT wrap it in a gray container, and do NOT set its background to --page-background-color / --common-main-bg (those are the PAGE, which is grey in a real app — the menu would go gray).",
-      "must": "keep it white and flush with a RIGHT divider only (border-right) — no card border/radius. Matches the product settings menu (full-height column separated from content by a right border).",
+      "must": "keep it white and flush with a RIGHT divider only (its OWN border-right) — no card border/radius, AND the host column adds no border/padding of its own (the component already provides both). Matches the product settings menu (full-height column divided from content by a single right border).",
       "example": "<obs-side-menu mode=\"sections\" items=\"...\"></obs-side-menu> in a full-height left column — white, borderless."
     }
   },
   "do": [
-    "Render it as a flush WHITE panel (it uses --common-widget-bg) filling its column — don’t put it on a gray surface or in a rounded card.",
-    "Pick the `mode` for the shape of your data (sections/categories/tree/list).",
-    "Feed a recursive `items` model; set `active` to the current leaf; child items may carry an `icon`.",
+    "Render it as a flush WHITE panel filling its column — don't put it on a gray surface or in a rounded card.",
+    "Pick the `mode` for the shape of your data — `settings` (the product Settings menu) / sections / categories / tree / list.",
+    "Feed a recursive `items` model; set `active` to the current leaf; child items may carry an `icon`/`logo`/`count`.",
+    "SIZE THE COLUMN ONLY (a fixed width + min-height:0). The component owns its RIGHT border, internal padding, and the top/bottom scroll fade — add none of them on the host.",
     "Reuse the header slots for mode chrome — `tabs-action` (＋), `search-action` (toggle); the search is a real obs-input.",
-    "Wire `select` to filter the grid/route; `tab`/`search` as needed.",
-    "Set the panel WIDTH via your layout column — the element is width:100%. In the product these are resizable panes (Settings ~15%, Dashboard ~30vw, explorers ~20%); don't hardcode a fixed px unless your layout is fixed."
+    "Wire `select` to filter the grid/route; `tab`/`search` as needed. For the Settings page pair `settings` mode with the obs-page-header `menu-toggle` (show/hide)."
   ],
   "dont": [
-    "Don’t give the side menu a gray background or a rounded/bordered card — it’s a flush white panel (product = background:none, radius:0).",
+    "Don't add a `border-right` OR `padding` to the side-menu host/column — it already draws its own right divider + internal padding + scroll fade; a second one doubles the rule and the gutter (the starter hit this exact bug).",
+    "Don't give it a gray background or a rounded/bordered card — it's a flush white panel (product = background:none, radius:0).",
     "Don't use it for top-level modules (obs-sidebar) or sibling views (obs-tabs).",
     "Don't use it as a faceted checkbox filter — that's a vertical Filter.",
     "Don't hand-roll the accordion/tree — reuse obs-side-menu.",
-    "Don't hardcode colours — active is --primary on --code-tag-background-color."
+    "Don't hardcode colours — active is --left-menu-text-hover-color on --left-menu-hover-bg (settings) / --primary on --code-tag-background-color."
   ],
   "a11y": {
-    "summary": "A role=tree of role=treeitem rows; groups expose aria-expanded; the active leaf is highlighted. Tabs are role=tab/tablist with aria-selected. The search is a real <input type=search>. Keyboard: rows/tabs are clickable; (full arrow-key tree nav is a consumer enhancement).",
+    "summary": "A role=tree of role=treeitem rows; group section headers expose aria-expanded (in `settings` mode the expand chevron sits on the RIGHT; in `sections`/tree it is on the left). The active leaf is highlighted (settings: a rounded --code-tag-background-color fill; sections: + an inset --primary left rule). Tabs are role=tab/tablist with aria-selected. The search is a real <input type=search>. Keyboard: rows/tabs are clickable; full arrow-key tree nav is a consumer enhancement. The top/bottom scroll-fade gradients are purely decorative (pointer-events:none, not focusable, no ARIA).",
     "issues": [
       {
         "severity": "low",
@@ -258,6 +278,15 @@
     "logo"
   ],
   "changelog": [
+    "2026-09-28 — (owner) FULL completeness pass now that `settings` mode + all functionality is in: added a `behavior` field (search filter/auto-expand · multi-open expand/collapse · select · tabs · the new top/bottom scroll FADE · self-owned chrome); documented in the summary + do/dont that the component OWNS its right border + internal padding + scroll fade so the host adds NEITHER (the double-divider/double-padding bug); a11y notes the fade is decorative; playground gains a direct `mode` + `tab-style` control (every mode already reachable via presets). usageRules cover all 7 variants incl. `settings`.",
+    "2026-09-28 — (owner) settings-mode: the section dividers now span the SAME width as the search box (right inset 12→8px so the right edge lands at the search box right; left already at 8px/icon edge). The rule is symmetric and matches the search field width.",
+    "2026-09-28 — (owner) added a top/bottom overflow FADE on the scroll body (all modes), mirroring obs-tabs: a panel-colour→transparent gradient dissolves the content into the panel at whichever edge can still scroll (fades in only when there is more above/below), replacing the hard content cut. Automatic — rAF-coalesced on scroll + ResizeObserver + recompute on expand/collapse/filter.",
+    "2026-09-28 — (owner) settings-mode: fixed the inset section divider so its LEFT edge starts exactly at the icon (16px). The ::before/::after left was measured from the row (itself inset 8px), so left:16 landed at 24px — now left:8 → 16px abs, flush with the section icon.",
+    "2026-09-28 — (owner) settings-mode: the section content now shares ONE left gutter with the search box — the group icon left-aligns with the search box left edge (was 4px inset past it), the section dividers align to that same gutter, and the sub-item fill stays aligned with the heading text.",
+    "2026-09-28 — (owner) settings-mode: the inset section dividers now extend LEFT to the ICON edge (12px, was 16px) so they reach under the section icons; right inset stays 12px.",
+    "2026-09-28 — (owner) settings-mode polish: (1) sub-item fill left-edge now aligns with the section HEADING TEXT (~36px, was over-indented); (2) tighter icon↔text gap (5px, product margin-right); (3) section headers no longer take a hover fill — the RIGHT chevron alone highlights on hover (grey → --left-menu-text-hover-color); (4) added breathing room after the last child of an expanded section, before its closing rule; (5) the section dividers are now INSET (16px/12px), not end-to-end, matching the product collapse-item border.",
+    "2026-09-28 — (owner) settings-mode metrics TRANSCRIBED from the product source (src/design/left-list.less + settings/left-menu.vue), not eyeballed: section header .list-title = 10px vertical padding, 13px (@text-sm 0.8rem), NORMAL weight (only a selected header is 500), i.list-icon --page-text-color @0.7 opacity; sub-item = a 30px row (@nav-menu-height), 13px, indented (content-box padding-left 25px), the SELECTED item font-weight 500 on a --left-menu-hover-bg fill with a 4px radius. Colours now use the product tokens (--left-menu-text-color / --left-menu-text-hover-color / --left-menu-hover-bg / --left-menu-arrow-color) with DS fallbacks. Reverts a prior over-sized pass (15px/52px rows).",
+    "2026-09-25 — (owner) Added mode=\"settings\" — THE product Settings menu (settings/left-menu.vue), distinct from the leaner `sections`: a MULTI-OPEN collapse with the expand chevron on the RIGHT, full-width dividers between sections (a top-rule per section so an expanded section keeps its children above the next rule), a leading product list-icon per section, and children rendered as an indented ROUNDED-highlight menu (filled --code-tag-background-color, no inset left rule — matching Ant MMenu selected). Ships with the FULL canonical 18-section / 100-sub-page tree extracted from settings/helpers/menu-items.js (real product icons via the DS icon library). Pairs with obs-page-header menu-toggle. Verified in the DS starter Settings page against the product screenshot.",
     {
       "date": "2026-08-12",
       "change": "Dark theme: panel background now #07101f via new token --side-menu-bg (light stays white #fff). Added a theme-aware scrollbar (--utility-scrollbar-thumb) so the scroll region no longer shows the browsers bright default bar on the dark surface."
@@ -346,5 +375,13 @@
     "secondary navigation",
     "facet list",
     "tree menu"
-  ]
+  ],
+  "behavior": {
+    "search": "the search box (obs-input) filters the tree by label and AUTO-EXPANDS matching groups; clearing restores the tree. Toggle off with search=false.",
+    "expandCollapse": "groups toggle open/closed on click. `settings` mode is MULTI-OPEN (several sections open at once, expand chevron on the RIGHT); the other modes use a left chevron.",
+    "select": "clicking a leaf moves the active highlight (internal state, seeded from `active`) and emits `select` {label}.",
+    "tabs": "an optional top strip (obs-tabs underline / obs-radio segmented) emits `tab` {value}; drop actions in the `tabs-action` / `search-action` slots.",
+    "scrollFade": "AUTOMATIC top/bottom overflow fade on the scroll body (all modes): a panel-colour→transparent gradient hints there's more content above/below; each edge fades in only when the body can scroll that way (rAF-coalesced on scroll + ResizeObserver + recompute on expand/collapse/filter). Purely decorative (pointer-events:none).",
+    "ownedChrome": "the component draws its OWN right border/divider + internal padding + scroll fade; the host column must add none of these (see usageRules.surface / do / dont)."
+  }
 }

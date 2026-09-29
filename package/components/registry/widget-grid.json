@@ -1,0 +1,195 @@
+{
+  "name": "widget-grid",
+  "component": "ObsWidgetGrid",
+  "display": "Widget Grid",
+  "tier": "organism",
+  "family": "Dashboard",
+  "section": "Components",
+  "source": "new",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "A live draggable / droppable / resizable dashboard grid — the framework-agnostic answer to vue-grid-layout. Slot in obs-widget-card children carrying data-x/data-y/data-w/data-h; the grid snaps each to a 12-column layout, pushes colliding cards down, compacts everything up under gravity, and auto-scrolls the page while you drag or resize a card past the fold. Emits layout-change with the settled positions.",
+  "selectHint": "Reach for this when a user must arrange their OWN dashboard — drag cards around, resize them, and have the layout persist. If the layout is fixed and authored by you (never rearranged at runtime), use a plain CSS grid instead — this element carries drag/resize/collision machinery you don't need.",
+  "whenToUse": "A user-arrangeable board of widgets — a monitoring dashboard, a report canvas, any surface where the end user drags and resizes cards and you save where they land.",
+  "insteadOf": [
+    "vue-grid-layout / react-grid-layout (framework-locked)",
+    "a hand-rolled absolute-position + pointer-math drag layer",
+    "a static CSS grid when you actually need runtime rearrange/resize"
+  ],
+  "variants": [
+    {
+      "name": "12-column (default)",
+      "what": "columns=\"12\" — the product's standard dashboard grid; cards placed on a 12-wide unit lattice.",
+      "usage": "default"
+    },
+    {
+      "name": "custom columns",
+      "what": "Any column count (e.g. columns=\"6\" for a denser, coarser board or a narrow panel).",
+      "usage": "as needed"
+    },
+    {
+      "name": "custom cell height / gap",
+      "what": "cell-height and gap tune row height and the space between cards without touching card markup.",
+      "usage": "as needed"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "cell-height",
+      "value": "80 (default)",
+      "note": "Row unit height in px; a card's rendered height = h × cell-height + (h−1) × gap."
+    },
+    {
+      "name": "gap",
+      "value": "10 (default)",
+      "note": "Gutter in px between cells, applied on both axes."
+    },
+    {
+      "name": "width",
+      "value": "container-driven",
+      "note": "Column width is computed from the host's measured width via a ResizeObserver — the grid is fluid; give it a block container to fill."
+    }
+  ],
+  "states": [
+    {
+      "name": "idle",
+      "what": "Cards sit at their compacted grid positions; each transitions smoothly (transform/width/height .15s) when the layout shifts."
+    },
+    {
+      "name": "dragging a card",
+      "what": "On a card's card-dragstart the grid follows the pointer in 'move' mode: the live card lifts (z-index 50, no transition), a dashed placeholder shows the target cell, colliding cards push down, and everything compacts up under the moved card."
+    },
+    {
+      "name": "resizing a card",
+      "what": "On card-resizestart the grid runs 'resize' mode: the card grows from its bottom-right corner, snapping w to remaining columns and h up to a safety cap (MAX_H = 40 rows); the placeholder previews the new footprint and neighbours reflow."
+    },
+    {
+      "name": "auto-scrolling",
+      "what": "When the pointer sits in the top/bottom 48px edge band during a drag/resize, the nearest scrollable ancestor scrolls (20px/frame) and the drag math is compensated by how far it has scrolled — so a card can be dragged or grown past the current viewport fold."
+    }
+  ],
+  "props": {
+    "columns": {
+      "type": "number | string",
+      "default": 12,
+      "note": "Number of grid columns. Cards' data-x/data-w are in these column units. Coerced to a number; falls back to 12 if invalid."
+    },
+    "cellHeight": {
+      "type": "number | string",
+      "default": 80,
+      "note": "Attribute: cell-height. Row unit height in px. A card of height h renders h × cell-height + (h−1) × gap px tall. Falls back to 80 if invalid."
+    },
+    "gap": {
+      "type": "number | string",
+      "default": 10,
+      "note": "Gutter in px between cells on both axes. Column width = (containerWidth − (columns−1) × gap) / columns. Falls back to 10 if invalid."
+    }
+  },
+  "events": [
+    {
+      "name": "layout-change",
+      "detail": "Array of { x, y, w, h } — one entry per obs-widget-card in DOM order, the settled grid positions after a drag or resize completes (pointerup).",
+      "note": "Fired once per gesture, on drop. The grid also writes the new values back onto each card's data-x/data-y/data-w/data-h attributes, so you can persist either the event payload or read the attributes. Use it to save the board and to reflow chart widgets that only auto-size on width."
+    }
+  ],
+  "slots": {
+    "default": "obs-widget-card children, each with data-x / data-y / data-w / data-h attributes (column/row origin + width/height in grid units; defaults 0/0/4/3 if omitted). The grid assigns every card an internal `slot=\"cN\"` and positions it via a wrapper in its own shadow DOM — never position or transform a card yourself. A MutationObserver re-syncs when cards are added or removed."
+  },
+  "decisionFlow": [
+    "Does the END USER rearrange the layout at runtime (drag cards, resize them, and expect it to stick)? -> obs-widget-grid.",
+    "Is the layout authored by YOU and never rearranged by the user? -> a static CSS grid (display:grid) — don't pull in drag/resize machinery you won't use.",
+    "Do you just need ONE resizable/movable panel (not a board of them)? -> a split/panel primitive, not a grid.",
+    "Building the children: each widget is an obs-widget-card (it emits card-dragstart from its header and card-resizestart from its bottom-right handle — that's what the grid listens for). Give the grid a block container with a real width so column math resolves.",
+    "Need cards draggable past the fold? -> the grid already auto-scrolls the nearest scrollable ancestor; just make sure that ancestor is the scroll container (overflow:auto/scroll)."
+  ],
+  "usageRules": {
+    "12-column (default)": {
+      "useWhen": "you want the product's standard board — leave columns at 12 so every widget's data-x/data-w reads on the same lattice the rest of the product uses, and cards line up across dashboards",
+      "dontUse": "the surface is a narrow panel or a wide wall where 12 units are too fine or too coarse (drop to a custom column count instead)",
+      "example": "<obs-widget-grid> (no columns attr) wrapping the Alert-Summary gauges, heatmap and pie cards on the default 12-wide grid",
+      "asSeenIn": "the Alert-Summary dashboard board (the default obs-widget-grid, 12 columns)"
+    },
+    "custom columns": {
+      "useWhen": "the board's width or density needs a different lattice — columns=\"6\" for a narrow side panel, a higher count for a wide wall board — so card footprints snap sensibly to the available width",
+      "dontUse": "the placement expresses cleanly on 12 columns (keep it 12 for cross-dashboard consistency)",
+      "example": "<obs-widget-grid columns=\"6\"> for a compact side panel of stat cards",
+      "asSeenIn": "a compact side panel of stat cards on a 6-column grid"
+    },
+    "custom cell height / gap": {
+      "useWhen": "the widget density on this board needs taller/shorter rows or tighter/looser gutters grid-wide — set cell-height and gap once instead of resizing every card",
+      "dontUse": "only one card needs to be taller (change that card's data-h — cell-height/gap are grid-wide, not per-card)",
+      "example": "<obs-widget-grid cell-height=\"78\" gap=\"10\"> to match the Alert-Summary row rhythm",
+      "asSeenIn": "the Alert-Summary board tuned with cell-height=\"78\" gap=\"10\""
+    },
+    "user-arrangeable-dashboard": {
+      "useWhen": "the user builds/edits their own board — drag widgets, resize them, and you save the layout",
+      "dontUse": "the layout is fixed and code-authored (use a CSS grid) — the drag/resize/collision logic is dead weight there",
+      "example": "the Alert-Summary board: gauges, an infrastructure heatmap and pie widgets the user hand-arranges",
+      "asSeenIn": "the Alert-Summary dashboard (the whole board is one obs-widget-grid of obs-widget-card children)"
+    },
+    "custom-columns": {
+      "useWhen": "a denser or coarser lattice suits the surface — columns=\"6\" for a narrow panel, more columns for a wide wall board",
+      "dontUse": "you can express the placement on the standard 12-column grid (keep it 12 for product consistency)",
+      "example": "a compact side panel of stat cards on a 6-column grid"
+    },
+    "cell-height-gap": {
+      "useWhen": "you need taller rows or tighter/looser gutters for the widget density on this board",
+      "dontUse": "resizing an individual card would do (that's the card's h, not a grid-wide change)",
+      "example": "cell-height=\"78\" gap=\"10\" on the Alert-Summary board"
+    }
+  },
+  "usage": {
+    "note": "approximate"
+  },
+  "do": [
+    "Make every child an obs-widget-card with data-x / data-y / data-w / data-h (column/row origin + size in grid units).",
+    "Give the grid a block container with a real width — column width is measured from it via ResizeObserver.",
+    "Ensure the intended scroll container (the ancestor with overflow:auto/scroll) is the one that scrolls, so edge auto-scroll can drag cards past the fold.",
+    "Listen to layout-change to persist the board and to reflow chart widgets (e.g. Highcharts only auto-sizes on width, so reflow taller cards on the size change).",
+    "Let the grid own positioning — read the settled positions from the event detail or the cards' data-* attributes after a gesture."
+  ],
+  "dont": [
+    "Don't nest a widget grid inside another widget grid.",
+    "Don't position or transform the cards yourself (set left/top/transform) — the grid places each one via its own shadow-DOM wrapper; positioning a slotted element directly is buggy across browsers.",
+    "Don't put non-obs-widget-card elements as direct children expecting placement — only obs-widget-card children are synced into items.",
+    "Don't fight the compaction — cards gravity-compact upward; encode intent in data-x/data-y, not in CSS."
+  ],
+  "a11y": {
+    "summary": "A pointer-driven drag/resize surface — flag the keyboard gap honestly. The grid moves and sizes cards from pointermove/pointerup, driven by card-dragstart / card-resizestart (pointer gestures on the card); it does not currently expose a keyboard path for rearranging or resizing, nor announce gesture state to assistive tech. Positioning is presentational, so a board stays READABLE by content even though it is not REARRANGEABLE by keyboard.",
+    "issues": [
+      "No keyboard alternative for drag/move or resize — rearranging is pointer-only (card-dragstart / card-resizestart come from pointer interactions).",
+      "Drag/resize state is not announced to assistive technology — no aria-live feedback on move, resize, or drop.",
+      "The dashed placeholder is a purely visual affordance (aria-hidden by nature) — an AT user gets no equivalent preview of where a card will land.",
+      "Edge auto-scroll moves content under the pointer only; there is no keyboard-triggered scroll-into-view for an off-screen card during a (would-be) keyboard rearrange."
+    ],
+    "doc": "Dashboard/Widget Grid/Accessibility",
+    "notes": "Positioning is presentational — assistive tech reads each card's own content, not the visual grid coordinates. Mitigations today: (1) give every obs-widget-card a real title so the board is navigable by content; (2) ship a sensible DEFAULT layout so a keyboard/AT user is never forced to rearrange to reach content; (3) treat rearrangement as an enhancement over an already-usable static reading order. A keyboard rearrange affordance (arrow-key move, Shift+arrow resize, each step re-compacting + firing layout-change, announced via an aria-live region) is a known gap for a future revision."
+  },
+  "knownIssues": [
+    "Keyboard-only users cannot rearrange or resize cards — the gesture is pointer-driven (card-dragstart / card-resizestart come from pointer interactions on the card).",
+    "Resize height is capped at MAX_H = 40 rows — a safety cap so a held auto-scroll during resize can't grow a card without bound; a card cannot be resized taller than 40 row-units regardless of drag distance.",
+    "Edge auto-scroll targets the NEAREST scrollable ancestor (first ancestor with overflow-y auto/scroll AND real overflow); if the real scroll container isn't a scrollable ancestor of the grid, dragging past the fold falls back to the document scroller and may not move the intended region.",
+    "Only direct obs-widget-card children are managed; other elements slotted in are ignored by the layout engine (not positioned, not compacted) — put charts/gauges/heatmaps INSIDE a card's default slot, not as grid children.",
+    "Column width is measured from the host via ResizeObserver, so the grid must have a real, non-zero rendered width before cards can be placed sensibly (an unsized/display:none container collapses cellW to its 1px floor).",
+    "Chart widgets that only auto-size on width (e.g. Highcharts) leave empty space below a card that was resized TALLER — reflow them from the layout-change event (and/or a per-card ResizeObserver), the grid does not reflow card bodies for you.",
+    "Nesting a widget grid inside another widget grid is unsupported — the inner grid's cards would be double-managed."
+  ],
+  "tokensUsed": [
+    "--nav-hover-bg",
+    "--primary"
+  ],
+  "related": [
+    "widget-card",
+    "gauge",
+    "severity-heatmap",
+    "charts"
+  ],
+  "changelog": [
+    "2026-09-07 — Added obs-widget-grid: live drag/drop/resize dashboard grid — grid snap, collision push-down, gravity-up compaction, edge auto-scroll with scroll-compensated drag math, layout-change events. Positions obs-widget-card children (data-x/y/w/h) via shadow-DOM wrappers + named slots. Powers the Alert-Summary board."
+  ],
+  "storybook": "Dashboard/Widget Grid",
+  "figma": {
+    "status": "not-started",
+    "component": "Widget Grid"
+  }
+}

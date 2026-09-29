@@ -54,6 +54,16 @@
       "usage": ""
     },
     {
+      "name": "footer-split",
+      "what": "pagination footer DEFAULT — pager (first/prev/pages/next/last + page-size) on the LEFT, item total ('1 - 50 of 222 items') on the RIGHT. Used when the `footer` slot is empty.",
+      "usage": ""
+    },
+    {
+      "name": "footer-centered",
+      "what": "pagination footer with a CENTERED band — pager LEFT, slotted `footer` content (e.g. a severity legend) CENTERED, item total RIGHT. Auto-selected by filling the `footer` slot (the product Monitors list page).",
+      "usage": ""
+    },
+    {
       "name": "style-variants",
       "what": "[element] variant: bordered (internal grid, no outer frame) | borderless-rows (no row dividers, airy) · header-style: default | tinted · hide-header (compact widget grids)",
       "usage": ""
@@ -67,7 +77,11 @@
     },
     {
       "name": "hover",
-      "what": "row highlight"
+      "what": "row highlight; the primary (first / primary:true) record-name cell gets a DOTTED UNDERLINE (its clickable-name affordance)"
+    },
+    {
+      "name": "header-rules",
+      "what": "[element] the header row carries a rule ABOVE and BELOW it (border-top + border-bottom via --border-color), matching the product"
     },
     {
       "name": "selected",
@@ -105,7 +119,7 @@
     "columns": {
       "type": "Array",
       "required": true,
-      "note": "column defs. obs-table: [{key,title,width?,align?,sortable?,type?,editable?,colorKey?}] — type: text (default) | severity (composes <obs-severity> dot + the row's name; level from the row's sev/severity field) | dot (composes <obs-severity> dot + its level label) | status (obs-tag) | type (server/cog icons) | tags (obs-tag chips) | sparkline (inline trend line) | heat (cell filled with the --severity token named by the row's colorKey field) | bar (inline relative-percent bar). editable:true marks the column editable when the table has `editable`. product MGrid: {field,title,width,cell,sortable}"
+      "note": "column defs. obs-table: [{key,title,width?,align?,sortable?,type?,editable?,colorKey?,primary?}] — a column with primary:true is the PRIMARY (record-name) column: heavier weight (500) + a dotted underline on ROW hover; if NO column sets it, the FIRST data column is primary automatically (works for a text OR a severity first column). — type: text (default) | severity (composes <obs-severity> dot + the row's name; level from the row's sev/severity field) | dot (composes <obs-severity> dot + its level label) | status (obs-tag) | type (server/cog icons) | tags (obs-tag chips) | sparkline (inline trend line) | heat (cell filled with the --severity token named by the row's colorKey field) | bar (inline relative-percent bar) | logo (COLOURED brand/vendor mark(s) via obs-logo — cell value = a logo name string, an object {name,variant?,size?,title?}, or an ARRAY of those rendered side by side; variant defaults to 'color', use variant:'line' for a monochrome secondary mark) | icon (a single clickable obs-icon that emits `cellaction`, OR an ARRAY value → each name rendered as a glyph side by side). editable:true marks the column editable when the table has `editable`. product MGrid: {field,title,width,cell,sortable}"
     },
     "rows": {
       "type": "string|array",
@@ -180,7 +194,12 @@
     "selectable": {
       "type": "Boolean",
       "default": false,
-      "note": "checkbox column + selection"
+      "note": "checkbox column + selection. [element] obs-table: a FIRST-CLASS optional toggle — when set, a select-all header checkbox + a per-row checkbox column appear (indeterminate on partial selection, reflects el.selected); when unset, there is NO checkbox column and the leading data cell keeps the same tight left inset. Checkboxes are optional by design; no extra prop needed."
+    },
+    "full-width": {
+      "type": "Boolean",
+      "default": false,
+      "note": "[element] obs-table: width behaviour (two modes). false (default) = a slight left/right INSET (the leading cell keeps its left pad, the trailing cell its right pad). true = FLUSH edge-to-edge — those side pads are removed so cell content, the header rule, the per-row dividers and the hover background all run to the table's left/right edges with no side gutter. Attribute: full-width."
     },
     "paging": {
       "type": "Boolean",
@@ -256,7 +275,9 @@
   },
   "slots": {
     "perColumn": "a slot per column field renders that cell (status, name, tags, severity, value, duration, action, monitorType, timestamp, count, …)",
-    "detailRow": "expanded row content (when expandable)"
+    "detailRow": "expanded row content (when expandable)",
+    "footer": "content CENTERED in the pagination footer between the pager (left) and the item total (right) — e.g. a severity legend. Filling it switches the footer from the SPLIT variant to the CENTERED variant; leave empty for split.",
+    "bulk-actions": "the action buttons for the floating BULK ACTION BAR (obs-toolbar variant=bulk). When rows are selected, obs-table shows a centered, floating bar just above the pager with the selection count + a clear, and projects these buttons into it (e.g. Acknowledge / Assign / Delete). Put slot=\"bulk-actions\" on each REAL element (not a <template>)."
   },
   "events": {
     "selection-change": "selection set changed",
@@ -372,6 +393,12 @@
       "must": "handle `cellaction` to react. For a two-control cell (the product NAME column: a ★ that favourites + text that opens), use type=\"link\" with a leading icon and read `part` in the payload — `part:\"icon\"` (the icon was clicked) vs `part:\"text\"` (the label was clicked).",
       "example": "columns:[{key:\"name\",type:\"link\"}] with row.name={text:\"Report 1\",icon:\"star\"} → @cellaction gives {type:\"link\",part:\"icon\"|\"text\",id,key,value}"
     },
+    "logo-cell": {
+      "useWhen": "a column shows a technology/vendor/monitor-TYPE and the product reference renders a COLOURED brand logo (not a monochrome UI glyph). The inventory Monitors table's TYPE column is the canonical case — Azure Cloud, Windows, Linux, MySQL, VMware ESXi… each a full-colour vendor mark. Set type=\"logo\"; the cell value is a logo name string, an object {name,variant?,size?,title?}, or an ARRAY of those (rendered side by side, e.g. a base OS + a role mark). Default size ~18px, variant \"color\".",
+      "dontUse": "Don't use type=\"icon\" (monochrome glyph) for a real vendor/technology brand mark — the DS rule is icons default monochrome, but use COLOURED brand logos when the product reference shows them. Don't hand-draw an SVG; every mark comes from obs-logo. The full logo set requires the consumer to `import '@mtdt/observeops-ds-elements/logos'` — without it, only the built-in common set resolves and unknown names render the no-icon placeholder (obs-logo warns). Use variant:'line' only for a deliberately monochrome secondary mark.",
+      "must": "for the inventory TYPE column, drive the cell with the monitor-type/vendor logo name (azure-cloud, windows, linux, mysql, vmware-esxi, …). A row that carries two marks (base + role) uses an array value.",
+      "example": "columns:[{key:\"type\",title:\"Type\",type:\"logo\"}] with row.type=\"azure-cloud\" (one coloured mark) or row.type=[{name:\"linux\"},{name:\"docker\"}] (two marks side by side)"
+    },
     "sticky-header": {
       "useWhen": "the header should stay visible while the body scrolls — set sticky-header AND max-height=\"<px>\" for a self-contained scroll box.",
       "dontUse": "sticky-header without a bounded height (nothing scrolls) unless an ancestor is the scroll container.",
@@ -410,6 +437,22 @@
     }
   },
   "changelog": [
+    "2026-09-16 — (owner) Selection UX overhaul: DROPPED the old top-left \"N items selected\" pill (obs-tag). Instead, when rows are selected obs-table now shows the DS BULK ACTION BAR (obs-toolbar variant=bulk) FLOATING, centered, sticky just ABOVE the pager (the SaaS pattern) — it carries the selection count + a clear, and the consumer's action buttons come from the new `bulk-actions` slot (slot=\"bulk-actions\" on each real element). obs-table composes obs-toolbar internally; the bar animates in. The `hide-selection-info` prop is now a no-op (deprecated — the old pill it hid is gone).",
+    "2026-09-16 — (owner-caught) FIX: after the obs-pagination extraction, changing page / page-size updated the footer's RANGE but did NOT re-slice the rows (the pager moved, the table didn't). Cause: defineCustomElement wraps emit() payloads as an ARRAY on the CustomEvent (e.detail = [value]), so obs-table's `onPagerPage`/`onPagerSize` handlers — which read e.detail expecting a plain number — hit their `typeof === 'number'` guard as false and no-op'd. Now they unwrap (`Array.isArray(e.detail) ? e.detail[0] : e.detail`). Verified: size 10 → page 1 renders 10 rows, page 2 renders the remaining 2.",
+    "2026-09-16 — (owner) The pagination footer now HIDES entirely when there are fewer rows than the smallest page size (min 10) — below that there's nothing to paginate, so the pager + legend disappear and reappear only at ≥10 rows (showPager = paged && rows >= min(size,10)). Also: the Monitors-style severity legend in the footer slot should be the DS `obs-severity-legend` (composes obs-severity, collapses to a '+N' pile with a hover popover when narrow) — see the severity-legend registry — not hand-rolled dots.",
+    "2026-09-15 — (owner) The pagination footer is now the standalone `obs-pagination` DS element (extracted so card/list views can reuse it — the product reuses its Kendo pager the same way). obs-table COMPOSES it: passes total/page/page-size, applies its pagechange/sizechange to the row-slice state, and forwards its own `footer` slot into obs-pagination's center slot. Pixel-identical footer; NO obs-table API change (same `pagechange` event, same `footer` slot, same SPLIT/CENTERED variants). See the `pagination` registry.",
+    "2026-09-15 — (owner) TWO pagination-footer variants via a new `footer` SLOT. The footer is now a 3-zone flex row: pager (left) · centered `footer` slot · item total (right). Leave the slot empty → SPLIT variant (pager left, total right — the existing default, unchanged). Fill it (e.g. a severity legend) → CENTERED variant (pager left, legend centered, total right — the product Monitors list page). One layout, both variants; the center zone is flex:1 so it collapses to a spacer when empty. Note: pagination still lives INSIDE obs-table (not a standalone obs-pagination) — extraction is a possible future step since the product reuses the Kendo pager in its card view.",
+    "2026-09-15 — (owner) Page-size select dropdown arrow fixed. The native <select> arrow sat flush against the right edge with a wide default text→arrow gap. Removed it (appearance:none) and overlaid an obs-icon chevronDown positioned by us (absolute, right:8px) — real whitespace before the right edge and a tight text→arrow gap. Select wrapped in a .psize-wrap; padding 0 24px 0 8px leaves room for the caret.",
+    "2026-09-15 — (owner) The page-size select (.psize) now matches the page-number squares: 28px height + 4px border-radius (was padding-driven height + 2px radius), so the whole pager row lines up at one consistent height.",
+    "2026-09-15 — (owner) Pager cells are now uniform SQUARES matching the product (equal boxes for page numbers AND nav icons). Was `min-width:22px` + `padding:2px 6px` (rectangles + uneven wide gaps); now every .ppage is a 28x28 centered flex box (min-width so a 3-digit page can still grow), border-radius 4px. Fixes both the rectangular shape and the too-large spacing between the left/right icon pairs.",
+    "2026-09-15 — (owner) Pager arrows are now Google MATERIAL SYMBOLS skip glyphs (owner supplied the shadcn.io/Iconify skip-previous + skip-next icons). Added 4 DS-local obs-icons (build-icons.mjs EXTRA): `skipPrevious` (|◀) + `skipNext` (▶|) with the stopper bar for first/last, and `skipPreviousNoLine` (◀) + `skipNextNoLine` (▶) — the same glyph with the bar subpath removed — for prev/next. Wired the pager to them (first=skipPrevious, prev=skipPreviousNoLine, next=skipNextNoLine, last=skipNext). Supersedes the earlier chevrons → outline play+CSS-bar → FA-solid caret/step iterations. All real obs-icons (passes the icon-reuse gate). Active page keeps --pagination-active-bg; numbered links + size select unchanged. Icon set now 643.",
+    "2026-09-15 — (owner) Two tweaks: (1) default header row is a touch taller — hs-default th padding 4px → 6px vertical, so the header is 31px (was 27px); data rows stay 41px. (2) A SELECTED row no longer gets a background FILL — removed `tr.row-selected td { background: --neutral-lightest }`. Selection now reads from the checked box + the thin --primary LEFT ACCENT bar only (`tr.row-selected td:first-child` inset box-shadow), which is retained; the hover tint is unchanged. Lighter, less heavy-handed selected state.",
+    "2026-09-15 — Fix (owner-caught): the sticky header's TOP + BOTTOM rules are now INSET box-shadows on `thead th` (`inset 0 1px 0` top, `inset 0 -1px 0` bottom), replacing the per-th `border-bottom`. Why: a `border-bottom` on a `position:sticky` <th> is clipped/scrolled away as rows slide under the pinned header (divider vanished on scroll); an OUTSET bottom shadow fixed the scrolled case but was occluded by the first data row AT REST (divider vanished at rest). INSET shadows paint inside the cell's own border-box — always rendered, never clipped by overflow or occluded by a sibling row — so the header divider is a single crisp line in BOTH states. Removed the redundant `border-bottom` from hs-default and hs-tinted.",
+    "2026-09-15 — DEFAULT sticky header + pinned pager + auto horizontal scroll (owner). The table is now a flex COLUMN that fills its container's height: the header (<thead th> position:sticky, top:0, opaque --page-background-color background) always stays pinned at the top and the pager lives OUTSIDE the scroll region (.box) so it is always pinned at the bottom — the rows scroll between them. This auto-engages ONLY when the rows overflow the available height (a short container / lots of rows) and auto-disengages when they fit; no prop needed (the older `sticky-header`/`max-height` props still force it for a standalone table). Horizontal scroll is likewise automatic: the grid gets a computed min-width (Σ each column's minWidth|fixed-px width, else 132px, + 44px per checkbox/expander + 48px for a row-actions column), so when there are more columns than fit the viewport the .box scrolls horizontally, and it re-evaluates on viewport resize (columns hiding off-screen → scrollbar appears). Both behaviours are DEFAULT in the component. Requires the host to give the table a bounded height (flex:1; min-height:0 in a column layout) for the vertical case. Verified via Playwright: 520px-tall viewport → header stays on scroll + pager pinned below the scroll box; 760px-wide viewport → horizontal scroll engages. 0 console errors.",
+    "2026-09-15 — Sort on EVERY column + header hover affordance + one-line cell truncation + 1px checkbox border (owner). (1) All columns are now sortable by default — clicking any header sorts by it (opt out per-column with `sortable:false`); the sort arrow shows on the active column. (2) Header cells get a hover background (--grid-header-hover-bg → --neutral-lightest #ecf1f9) and a pointer cursor to signal they are clickable. (3) Data cells truncate to ONE line on the column width — severity-name and text cells are `.cell-clip` (display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap) and the grid is `table-layout:fixed` so columns respect their widths and overflow ellipsises (was wrapping to 2 lines). (4) obs-checkbox border thinned 1.5px → 1px to match the product. No new tokens; no hardcoded colours.",
+    "2026-09-15 — Row dividers softened to --neutral-lightest (lighter than the header rules which stay --border-color), matching the product. Checkbox size reverted to the leaf default (no scale) — obs-checkbox now uses a softer 4px corner radius (var --checkbox-radius). full-width corrected to a full-BLEED (negative-margin via --table-bleed, default 20px) that keeps cell padding — it no longer strips the first/last cell padding.",
+    "2026-09-15 — Product-match polish (owner): (1) header labels now TRUNCATE with an ellipsis on overflow — each <th> label is overflow:hidden / text-overflow:ellipsis / nowrap with a `title` tooltip carrying the full label (narrow/many-column tables show \"CURRENT VE…\" like the product instead of wrapping/overflowing); (2) the selection checkbox (select-all + per-row) is slightly LARGER with softer corners (scaled ~1.2 from the checkbox cell → ~22.8px / ~3.6px radius) and stays centered; (3) tighter LEFT inset before the checkbox (~10px) and before the leading DATA cell when NOT selectable (~12px) — a compact left gutter matching the product in both selectable and non-selectable cases; (4) visible per-row DIVIDERS plus a header TOP rule (a line ABOVE and BELOW the header); (5) new `full-width` boolean — FLUSH edge-to-edge (leading cell's left pad + trailing cell's right pad removed; rules/dividers/hover span the whole width) vs the default slight inset; (6) a PRIMARY column — the first data column (or any column with `primary:true`) renders the record NAME bolder (500 vs the row's 400) and gets a DOTTED UNDERLINE on row hover, working for BOTH a `text` and a `severity` first column (CSS-only, tr:hover .primary-cell .primary-text); (7) `selectable` documented as a first-class optional toggle (checkboxes present when set, absent otherwise; correct tight left inset in both cases). All via the DS --border-color token; no new tokens, no hardcoded colours.",
+    "2026-09-15 — New `logo` cell type + multi-glyph cells: a column type=\"logo\" renders COLOURED brand/vendor marks via obs-logo (the product inventory Monitors TYPE column — Azure Cloud, Windows, Linux, MySQL, VMware ESXi…). The cell value is a logo name string, an object {name,variant?,size?,title?}, or an ARRAY of those rendered side by side (default variant=\"color\", size ~18px; variant:\"line\" for a monochrome secondary mark). Also added multi-glyph support to the existing `icon` cell type: an ARRAY cell value renders each name as an obs-icon side by side (single string/object behaviour — the clickable glyph that emits `cellaction` — is unchanged). The full logo set needs the consumer to `import '@mtdt/observeops-ds-elements/logos'`. Reinforces the DS rule: icons default monochrome, use coloured brand logos when the product reference shows them.",
     "2026-08-09 — Cell content follow-up (gap G15): a `link` cell can now carry TWO independent controls — the leading icon vs the text. `cellaction` includes `part`:\"icon\"|\"text\" so a consumer distinguishes \"favourite this\" (icon) from \"open this\" (text), exactly like the product NAME column. The icon click no longer navigates the link. Removes the shadow-root workaround.",
     "2026-08-07 — Tier 3 (gaps G1 + G13a): added interactive CELL CONTENT — column type=\"switch\"|\"icon\"|\"link\"|\"button\" render real DS elements (obs-switch/obs-icon/obs-link-style anchor/obs-button) and emit a `cellaction` {id,key,type,value} event (previously cell values were escaped as text, blocking 4 columns of the product Report grid). Added a STICKY HEADER: `sticky-header` + `max-height` pin the header while the body scrolls (no more injecting position:sticky into the shadow root).",
     "2026-08-07 — Docs (gap G13b): stated that list/report screens use header-style=\"default\" (the element default); \"tinted\" is only for the dense item-list variant. A wrong guess here is invisible to conformance (both are valid styles).",

@@ -10,6 +10,7 @@ import ObsLink from './elements/ObsLink.ce.vue'
 import ObsLogo from './elements/ObsLogo.ce.vue'
 import ObsSelect from './elements/ObsSelect.ce.vue'
 import ObsSeverity from './elements/ObsSeverity.ce.vue'
+import ObsSeverityLegend from './elements/ObsSeverityLegend.ce.vue'
 import ObsTags from './elements/ObsTags.ce.vue'
 import ObsLayoutAppShell from './elements/ObsLayoutAppShell.ce.vue'
 import ObsLayoutGrid from './elements/ObsLayoutGrid.ce.vue'
@@ -27,6 +28,7 @@ import ObsGridSelect from './elements/ObsGridSelect.ce.vue'
 import ObsMenu from './elements/ObsMenu.ce.vue'
 import ObsColorPicker from './elements/ObsColorPicker.ce.vue'
 import ObsTable from './elements/ObsTable.ce.vue'
+import ObsPagination from './elements/ObsPagination.ce.vue'
 import ObsModal from './elements/ObsModal.ce.vue'
 import ObsMetricList from './elements/ObsMetricList.ce.vue'
 import ObsKeyValue from './elements/ObsKeyValue.ce.vue'
@@ -46,6 +48,10 @@ import ObsToolbar from './elements/ObsToolbar.ce.vue'
 import ObsMetricPicker from './elements/ObsMetricPicker.ce.vue'
 import ObsNocPlayer from './elements/ObsNocPlayer.ce.vue'
 import ObsTimelineScrollbar from './elements/ObsTimelineScrollbar.ce.vue'
+import ObsWidgetCard from './elements/ObsWidgetCard.ce.vue'
+import ObsWidgetGrid from './elements/ObsWidgetGrid.ce.vue'
+import ObsGauge from './elements/ObsGauge.ce.vue'
+import ObsSeverityHeatmap from './elements/ObsSeverityHeatmap.ce.vue'
 
 const elements = {
   'obs-button': ObsButton,
@@ -58,6 +64,7 @@ const elements = {
   'obs-link': ObsLink,
   'obs-select': ObsSelect,
   'obs-severity': ObsSeverity,
+  'obs-severity-legend': ObsSeverityLegend,
   'obs-tags': ObsTags,
   'obs-layout-appshell': ObsLayoutAppShell,
   'obs-layout-grid': ObsLayoutGrid,
@@ -76,6 +83,7 @@ const elements = {
   'obs-menu': ObsMenu,
   'obs-color-picker': ObsColorPicker,
   'obs-table': ObsTable,
+  'obs-pagination': ObsPagination,
   'obs-modal': ObsModal,
   'obs-metric-list': ObsMetricList,
   'obs-key-value': ObsKeyValue,
@@ -95,6 +103,10 @@ const elements = {
   'obs-metric-picker': ObsMetricPicker,
   'obs-noc-player': ObsNocPlayer,
   'obs-timeline-scrollbar': ObsTimelineScrollbar,
+  'obs-widget-card': ObsWidgetCard,
+  'obs-widget-grid': ObsWidgetGrid,
+  'obs-gauge': ObsGauge,
+  'obs-severity-heatmap': ObsSeverityHeatmap,
 }
 
 /** Register every ObserveOps custom element (idempotent). Runs automatically on import. */

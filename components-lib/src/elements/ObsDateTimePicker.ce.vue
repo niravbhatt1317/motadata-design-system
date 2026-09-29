@@ -18,6 +18,12 @@ const props = defineProps({
   allowClear: { type: Boolean, default: false },   // attr allow-clear → times-circle × on the range pill
   empty: { type: Boolean, default: false },        // start with no selection (shows the 'Select Time' placeholder)
   placeholder: { type: String, default: '' },
+  size: { type: String, default: '' },             // '' (default) | 'lg' → taller trigger (35px, matches toolbar buttons)
+  showRange: { type: Boolean, default: false },    // attr show-range → print the resolved absolute range beside the pill (product TimeRangePicker)
+  // kind="slider" only: drive the scrubber's window/band from OUTSIDE (ms). Set both to link the slider to a
+  // range picker's selection — the band snaps to [rangeStart, rangeEnd] and the axis window fits around it.
+  rangeStart: { type: [Number, String], default: 0 },
+  rangeEnd: { type: [Number, String], default: 0 },
 })
 // FUNCTIONAL: reflects the selection to `el.value` (JSON) and emits `change` on every pick. Value shape varies by
 // kind — relative/absolute range · a date(+time) ms + display · a time string · slider start/end percent+time.
@@ -57,6 +63,34 @@ const sel = computed(() => {
     return { s: days + 'd', t: 'Custom' }
   }
   return PRESETS.find((p) => p.k === selectedKey.value) || null
+})
+
+// the resolved absolute window for the current selection (product prints this beside the pill when show-range).
+const WDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const DUR = { '5m': 3e5, '15m': 9e5, '30m': 18e5, '1h': 36e5, '6h': 216e5, '12h': 432e5, '24h': 864e5, '48h': 1728e5, '1d': 864e5, '1w': 6048e5, '1mo': 2592e6 }
+function fmtDT(ts) {
+  const d = new Date(ts); const p = (n) => String(n).padStart(2, '0')
+  let h = d.getHours(); const ap = h < 12 ? 'AM' : 'PM'; h = h % 12 || 12
+  return `${WDAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${p(d.getDate())}, ${d.getFullYear()} ${p(h)}:${p(d.getMinutes())}:${p(d.getSeconds())} ${ap}`
+}
+function periodStart(kind) {
+  const d = new Date(now); d.setHours(0, 0, 0, 0)
+  if (kind === 'this.week') d.setDate(d.getDate() - d.getDay())
+  else if (kind === 'this.month') d.setDate(1)
+  return d.getTime()
+}
+const rangeText = computed(() => {
+  if (!isRange.value || !sel.value) return null
+  const to = now.getTime()
+  if (selectedKey.value === 'custom') {
+    if (!range.start || !range.end) return null
+    return { from: fmtDT(range.start), to: fmtDT(range.end) }
+  }
+  const p = PRESETS.find((x) => x.k === selectedKey.value)
+  if (!p) return null
+  if (p.k === 'today' || p.k === 'this.week' || p.k === 'this.month') return { from: fmtDT(periodStart(p.k)), to: fmtDT(to) }
+  const ms = DUR[p.s]
+  return ms ? { from: fmtDT(to - ms), to: fmtDT(to) } : null
 })
 
 function build(y, m) {
@@ -123,14 +157,34 @@ function onRootClick() { open.value = false }
 // ── slider state ──
 const ticks = Array.from({ length: 100 }, (_, i) => i)
 const leftPct = ref(26); const rightPct = ref(50); const drag = ref(null); const rail = ref(null)
+// The slider window. By default it spans 10 days (today ± 5). When an external range is supplied (range-start/
+// range-end, e.g. linked to a range picker), the window fits AROUND that range with padding so the band sits
+// comfortably inside and grows/shrinks with the selection.
+const hasExtRange = computed(() => +props.rangeStart > 0 && +props.rangeEnd > +props.rangeStart)
+const win = computed(() => {
+  if (hasExtRange.value) {
+    const a0 = +props.rangeStart, b0 = +props.rangeEnd
+    const pad = Math.max((b0 - a0) * 0.5, 6 * 36e5)
+    return { a: a0 - pad, b: b0 + pad }
+  }
+  const a = today - 5 * 864e5
+  return { a, b: a + 10 * 864e5 }
+})
+const sliderTsAt = (pct) => win.value.a + (pct / 100) * (win.value.b - win.value.a)
+const pctAt = (ts) => Math.min(100, Math.max(0, ((ts - win.value.a) / (win.value.b - win.value.a)) * 100))
+// axis labels: DD/MM for multi-day windows, HH:MM when the window is short (≤ 3 days) so they don't all repeat.
 const labels = computed(() => {
-  const out = []; const base = 12 * 60 + 49; const stepMin = 529
+  const out = []; const short = win.value.b - win.value.a <= 3 * 864e5; const pp = (n) => String(n).padStart(2, '0')
   for (let i = 0; i <= 100; i += 10) {
-    const m = (base + (i / 10) * stepMin) % 1440
-    out.push({ pct: i, t: String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0') })
+    const d = new Date(sliderTsAt(i))
+    out.push({ pct: i, t: short ? `${pp(d.getHours())}:${pp(d.getMinutes())}` : `${pp(d.getDate())}/${pp(d.getMonth() + 1)}` })
   }
   return out
 })
+// keep the band in sync with an external range (a linked picker changing its preset)
+watch([() => props.rangeStart, () => props.rangeEnd], () => {
+  if (props.kind === 'slider' && hasExtRange.value) { leftPct.value = pctAt(+props.rangeStart); rightPct.value = pctAt(+props.rangeEnd) }
+}, { immediate: true })
 function sStart(which, e) { drag.value = which; e.preventDefault() }
 function sMove(e) {
   if (!drag.value || !rail.value) return
@@ -195,17 +249,31 @@ function setH(h) { fieldH.value = h } ; function setMin(m) { fieldMin.value = m 
 function clearField(e) { e.stopPropagation(); fieldTs.value = null; fieldH.value = fieldMin.value = fieldAP.value = null }
 
 // ── functional value: reflect el.value (JSON) + emit `change` on any selection (per-kind value shape) ──
-const sliderTimeAt = (pct) => { const m = (12 * 60 + 49 + (pct / 10) * 529) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(Math.round(m % 60)).padStart(2, '0') }
+// full datetime at a handle position (hover tooltip + value) — uses the day-based sliderTsAt defined above.
+const sliderDateAt = (pct) => fmtDT(sliderTsAt(pct))
+// resolved absolute window (ms) for the current range selection — lets a consumer link a slider/charts to it.
+const rangeMs = () => {
+  if (!isRange.value || selectedKey.value == null) return null
+  const to = now.getTime()
+  if (selectedKey.value === 'custom') return range.start && range.end ? { fromMs: range.start, toMs: range.end } : null
+  const p = PRESETS.find((x) => x.k === selectedKey.value)
+  if (!p) return null
+  if (p.k === 'today' || p.k === 'this.week' || p.k === 'this.month') return { fromMs: periodStart(p.k), toMs: to }
+  const ms = DUR[p.s]
+  return ms ? { fromMs: to - ms, toMs: to } : null
+}
 const currentValue = computed(() => {
   if (isRange.value) {
     if (selectedKey.value == null) return null
-    if (selectedKey.value === 'custom') return { type: 'absolute', start: range.start, end: range.end, fromTime: fromTime.value, toTime: toTime.value }
+    const r = rangeMs()
+    const resolved = r ? { fromMs: r.fromMs, toMs: r.toMs, from: fmtDT(r.fromMs), to: fmtDT(r.toMs) } : {}
+    if (selectedKey.value === 'custom') return { type: 'absolute', start: range.start, end: range.end, fromTime: fromTime.value, toTime: toTime.value, ...resolved }
     const p = PRESETS.find((x) => x.k === selectedKey.value)
-    return { type: 'relative', key: selectedKey.value, label: p ? p.t : selectedKey.value, span: p ? p.s : null }
+    return { type: 'relative', key: selectedKey.value, label: p ? p.t : selectedKey.value, span: p ? p.s : null, ...resolved }
   }
   if (isTimeField.value) return hasTime.value ? { time: timeStr.value } : null
   if (isDateField.value) return fieldTs.value ? { date: fieldTs.value, display: fieldLabel.value } : null
-  if (props.kind === 'slider') return { startPct: Math.round(leftPct.value), endPct: Math.round(rightPct.value), start: sliderTimeAt(leftPct.value), end: sliderTimeAt(rightPct.value) }
+  if (props.kind === 'slider') return { startPct: Math.round(leftPct.value), endPct: Math.round(rightPct.value), start: sliderDateAt(leftPct.value), end: sliderDateAt(rightPct.value) }
   return null
 })
 function reflectValue() { if (!host) return; try { const s = currentValue.value == null ? '' : JSON.stringify(currentValue.value); if (host.value !== s) host.value = s } catch (e) { /* readonly */ } }
@@ -291,9 +359,10 @@ watch(() => props.kind, () => { open.value = false; timeMenu.value = null; field
     <div ref="rail" class="rail">
       <div v-for="t in ticks" :key="t" class="tick" :style="{ left: (t / 99 * 100) + '%' }"></div>
       <div class="band" :style="{ left: leftPct + '%', width: (rightPct - leftPct) + '%' }"></div>
-      <div class="handle" :style="{ left: leftPct + '%', marginLeft: '4px' }" @mousedown="sStart('left', $event)"></div>
-      <div class="handle" :style="{ left: rightPct + '%', marginLeft: '-12px' }" @mousedown="sStart('right', $event)"></div>
-      <div v-for="l in labels" :key="'l' + l.pct" class="tlabel" :style="{ left: l.pct + '%' }">{{ l.t }}</div>
+      <div class="handle" :class="{ dragging: drag === 'left' }" :style="{ left: leftPct + '%', marginLeft: '4px' }" @mousedown="sStart('left', $event)"><span class="htip">{{ sliderDateAt(leftPct) }}</span></div>
+      <div class="handle" :class="{ dragging: drag === 'right' }" :style="{ left: rightPct + '%', marginLeft: '-12px' }" @mousedown="sStart('right', $event)"><span class="htip">{{ sliderDateAt(rightPct) }}</span></div>
+      <div v-for="l in labels" :key="'l' + l.pct" class="tlabel"
+        :style="{ left: l.pct + '%', transform: l.pct === 0 ? 'translateX(0)' : l.pct === 100 ? 'translateX(-100%)' : 'translateX(-50%)' }">{{ l.t }}</div>
     </div>
   </div>
 
@@ -301,13 +370,17 @@ watch(() => props.kind, () => { open.value = false; timeMenu.value = null; field
   <div v-else class="range-root" @click="onRootClick">
     <div class="anchor" @click.stop>
       <!-- trigger -->
-      <div class="trigger" :class="{ bordered, disabled }" @click="toggle">
+      <div class="trigger" :class="{ bordered, disabled, lg: size === 'lg' }" @click="toggle">
         <template v-if="sel">
           <span class="pill">{{ sel.s }}</span>
           <span class="sep"></span>
           <span class="lbl">{{ sel.t }}</span>
           <obs-icon v-if="allowClear" name="timesCircle" size="12" class="clr" @click.stop="clear"></obs-icon>
-          <obs-icon v-else name="chevronDown" size="12" class="chev"></obs-icon>
+          <template v-if="showRange && rangeText">
+            <span class="sep"></span>
+            <span class="range-text"><span>{{ rangeText.from }}</span><span>{{ rangeText.to }}</span></span>
+          </template>
+          <obs-icon v-else-if="!allowClear" name="chevronDown" size="12" class="chev"></obs-icon>
         </template>
         <template v-else>
           <obs-icon name="calendar" size="14" class="cal"></obs-icon>
@@ -446,7 +519,10 @@ button, input, select, textarea { font-family: inherit; }
 .anchor { position: relative; width: max-content; }
 .trigger { display: inline-flex; align-items: center; box-sizing: border-box; padding: 4px 8px; border-radius: 4px;
   background: var(--neutral-lightest, #ecf1f9); cursor: pointer; width: max-content; }
+.trigger.lg { min-height: 35px; padding: 0 8px; }   /* matches the 35px toolbar/action buttons */
 .trigger.bordered { border: 1px solid var(--border-color, #e3e8f2); }
+/* the resolved absolute window printed beside the pill (product TimeRangePicker) */
+.range-text { display: inline-flex; flex-direction: column; line-height: 1.35; color: var(--neutral-regular, #7186a8); font-size: 0.8rem; white-space: nowrap; }
 .trigger.disabled { opacity: 0.6; cursor: not-allowed; }
 .pill { display: inline-flex; align-items: center; height: 18px; padding: 0 4px; border-radius: 4px; font-size: 0.7rem;
   background: var(--timerange-background-color, #e3e8f2); color: var(--timerange-text-color, #7186a8); }
@@ -502,12 +578,26 @@ button, input, select, textarea { font-family: inherit; }
 .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
 
 /* ── slider ── */
-.slider-wrap { color: var(--page-text-color, #1d2a3e); padding: 22px 8px 36px; background: var(--page-background-color, #fff); }
+/* horizontal inset matches the page-header content (--page-header-padding) so the timeline aligns with it */
+.slider-wrap { color: var(--page-text-color, #1d2a3e); padding: 12px var(--page-header-padding, 8px) 28px; background: var(--page-background-color, #fff); }
 .rail { position: relative; height: 18px; width: 100%; min-width: 320px; user-select: none; }
 .tick { position: absolute; top: 4px; width: 1px; height: 10px; background: var(--border-color, #e3e8f2); }
-.band { position: absolute; top: 0; height: 18px; background: var(--slider-tracker, #485975); border-radius: 6px; z-index: 1; }
-.handle { position: absolute; top: 5px; width: 8px; height: 8px; background: var(--page-background-color, #fff);
-  border: 1px solid var(--neutral-light, #6a7fa0); border-radius: 50%; z-index: 2; cursor: ew-resize; }
+/* band = 14px, vertically centered in the 18px rail (center at 9px) */
+.band { position: absolute; top: 2px; height: 14px; background: var(--slider-tracker, #485975); border-radius: 4px; z-index: 1; }
+/* dots: 20% smaller than the original 10px box → 8px visible (6px content + 1px border each side),
+   vertically centered on the 14px band (band center 9px; 8px box → top 5px) */
+.handle { position: absolute; top: 5px; width: 6px; height: 6px; box-sizing: content-box; background: var(--page-background-color, #fff);
+  border: 1px solid var(--neutral-light, #6a7fa0); border-radius: 50%; z-index: 2; cursor: ew-resize;
+  transition: border-color .12s, box-shadow .12s; }
+/* hover ring inverts with theme (dark-gray in light, light-gray in dark) via --page-text-color.
+   The .dragging state keeps the ring + tooltip active while the handle is being dragged (cursor may leave it). */
+.handle:hover, .handle.dragging { border-color: var(--page-text-color, #1d2a3e); box-shadow: 0 0 0 3px var(--page-text-color, #1d2a3e); z-index: 4; }
+/* hover tooltip: the resolved datetime above the handle */
+.htip { position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%); white-space: nowrap;
+  background: var(--tooltip-background-color, #2b394f); color: var(--active-text-color, #fff);
+  font-family: 'Poppins', sans-serif; font-size: 0.7rem; padding: 4px 9px; border-radius: 4px;
+  box-shadow: var(--tooltip-box-shadow, 0 2px 8px rgba(0,0,0,.15)); opacity: 0; pointer-events: none; transition: opacity .12s; z-index: 5; }
+.handle:hover .htip, .handle.dragging .htip { opacity: 1; }
 .tlabel { position: absolute; top: 24px; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
   color: var(--page-text-color, #1d2a3e); white-space: nowrap; }
 </style>

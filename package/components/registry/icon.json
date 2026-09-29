@@ -70,7 +70,7 @@
     }
   },
   "names": {
-    "total": 635,
+    "total": 643,
     "list": [
       "access-key",
       "accesses",
@@ -151,6 +151,8 @@
       "calendar-alt",
       "call",
       "capacity-reservations",
+      "caret-left",
+      "caret-right",
       "certificate-in-use",
       "certificate-status",
       "chart",
@@ -595,6 +597,10 @@
       "sign-out-alt",
       "sitemap",
       "sites",
+      "skip-next",
+      "skip-next-no-line",
+      "skip-previous",
+      "skip-previous-no-line",
       "slo",
       "slo-sidebar",
       "snapshots",
@@ -608,6 +614,8 @@
       "sqs",
       "standby-capacity",
       "star",
+      "step-backward",
+      "step-forward",
       "stop",
       "stop-circle",
       "stopped-instances",

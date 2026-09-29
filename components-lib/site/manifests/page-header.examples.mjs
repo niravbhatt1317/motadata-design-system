@@ -37,10 +37,16 @@ export default {
       { label: 'Detail header (meta strip)', attrs: { heading: 'Session', accent: 'up', count: '', subtitle: '', meta: J(META_SESSION), back: '' }, html: '' },
       { label: 'Detail (status dots)', attrs: { heading: 'POST /api/db-operation', accent: 'critical', count: '', subtitle: '', meta: J(META_STATUS), back: '' }, html: '' },
       { label: 'Monitor detail', attrs: { heading: 'ubuntu-linux2 (motadata-freetier)', accent: '', count: '', subtitle: '', meta: J(META_MONITOR), back: '' }, html: `${MON_CRUMB}${MON_BADGE}${MON_ACTIONS}` },
+      { label: 'Section header (menu-toggle, open)', attrs: { heading: 'Settings', 'menu-toggle': 'true', 'menu-open': 'true', count: '', subtitle: '', accent: '', meta: '', back: '' }, html: '<obs-icon slot="before" name="cog" size="20"></obs-icon>' },
+      { label: 'Section header (menu-toggle, collapsed)', attrs: { heading: 'Settings', 'menu-toggle': 'true', 'menu-open': 'false', count: '', subtitle: '', accent: '', meta: '', back: '' }, html: '<obs-icon slot="before" name="cog" size="20"></obs-icon>' },
+      { label: 'Title only', attrs: { heading: 'Alert Policies', count: '', subtitle: '', accent: '', meta: '', back: '' }, html: '<obs-button variant="primary">Create Policy</obs-button>' },
+      { label: 'No divider', attrs: { heading: 'Overview', count: '', subtitle: '', accent: '', meta: '', back: '', 'no-divider': 'true' }, html: EXPORT },
     ] },
     { prop: 'heading', type: 'text' },
     { prop: 'subtitle', type: 'text' },
     { prop: 'back', type: 'toggle' },
+    { prop: 'menu-toggle', type: 'toggle', attr: 'menu-toggle', label: 'Menu toggle (section)' },
+    { prop: 'menu-open', type: 'toggle', attr: 'menu-open', label: 'Menu open', defaultOn: true },
     { prop: 'count', type: 'text' },
     { prop: 'accent', type: 'select', label: 'Accent (severity)', options: ['', 'up', 'clear', 'warning', 'major', 'critical', 'down', 'maintenance'] },
     { prop: 'no-divider', type: 'toggle', attr: 'no-divider', label: 'No divider' },
@@ -56,6 +62,10 @@ export default {
     ] },
     { group: 'With a back button — a leading chevron (left gutter, centred on the title line; emits `back`) for a detail/nested page', items: [
       block('back + title + export + primary', `<obs-page-header heading="web-server-01" back>${EXPORT}<obs-button variant="primary">Edit</obs-button></obs-page-header>`),
+    ] },
+    { group: 'SECTION header (menu-toggle) — a CIRCULAR button + separator + a leading icon, for a module\'s section bar (Settings & any left-sub-nav). The circle shows/hides the module\'s obs-side-menu (fires `menutoggle` {open}); the chevron flips ‹/› via `menu-open`. NOT a back button.', items: [
+      block('menu open (‹ collapse)', `<obs-page-header heading="Settings" menu-toggle menu-open><obs-icon slot="before" name="cog" size="20"></obs-icon></obs-page-header>`),
+      block('menu collapsed (› expand)', `<obs-page-header heading="Settings" menu-toggle menu-open="false"><obs-icon slot="before" name="cog" size="20"></obs-icon></obs-page-header>`),
     ] },
     { group: 'With a subtitle — a secondary muted line under the title (detail / drill-down / drawer headers, e.g. the compliance drill-down)', items: [
       block('back + title + subtitle + actions', `<obs-page-header heading="AlmaLinux 9 (CIS)" subtitle="Compliance benchmark · 214 rules · last run 2h ago" back><obs-button variant="default">Re-run</obs-button><obs-button variant="primary">Export</obs-button></obs-page-header>`),

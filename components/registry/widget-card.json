@@ -1,0 +1,191 @@
+{
+  "name": "widget-card",
+  "component": "ObsWidgetCard",
+  "display": "Widget Card",
+  "tier": "organism",
+  "family": "Dashboard",
+  "section": "Components",
+  "source": "new",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The dashboard widget CHROME: a framed card with a grey header (title + a hover-revealed time badge + a hover-revealed kebab menu of Full Screen / Share / Edit / Clone / Remove), a body slot for any widget content (chart, gauge, heatmap, table…), the header as a drag handle, and a bottom-right resize grip. The card does not own its position — it emits card-dragstart / card-resizestart (composed, bubbling) so an obs-widget-grid parent can drive the layout, plus an action event for the kebab items.",
+  "selectHint": "Use to wrap ONE widget on a dashboard grid — it is the frame around a chart/gauge/heatmap, not the chart itself. Inside a grid it becomes draggable (by its header) and resizable (bottom-right grip). Need a plain content card that is NOT a dashboard widget (a settings panel, a summary tile, a form card)? -> use a generic card, not obs-widget-card. Put the visualization in the default slot; don't reach for the chart element directly on the board.",
+  "whenToUse": "A single widget on a dashboard/monitoring board that must be titled, draggable and resizable within an obs-widget-grid — the repeated chrome every dashboard tile shares.",
+  "insteadOf": [
+    "a hand-rolled div with a grey title bar + absolute-positioned kebab",
+    "wiring drag/resize handlers onto a bare chart element",
+    "a generic card forced to look like a dashboard widget"
+  ],
+  "variants": [
+    {
+      "name": "default",
+      "what": "Interactive widget chrome — header is a drag handle, a resize grip sits bottom-right; emits card-dragstart / card-resizestart for an obs-widget-grid parent.",
+      "usage": "every dashboard widget"
+    },
+    {
+      "name": "with-time",
+      "what": "Header carries a small time-range badge (time prop, e.g. '1h 12m') revealed on hover beside the kebab — the window the widget's data covers.",
+      "usage": "common"
+    },
+    {
+      "name": "static",
+      "what": "Chrome only (static prop): no drag handle, no resize grip, no drag/resize events — a plain framed card used outside a grid or in a locked/view dashboard.",
+      "usage": "locked / standalone boards"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "grid-driven",
+      "value": "100% × 100%",
+      "note": "The card fills its host box (:host { display:block; height:100% }); an obs-widget-grid cell (data-x/y/w/h) sets the footprint. Standalone, give the host an explicit width + height."
+    }
+  ],
+  "states": [
+    {
+      "name": "rest",
+      "what": "Framed card with the grey header + title; the time badge, kebab and resize grip are hidden (opacity 0)."
+    },
+    {
+      "name": "header-hover",
+      "what": "Hovering (or focus-within) the card reveals the time badge + the kebab button in the header, and fades the resize grip in (opacity .6) at the bottom-right."
+    },
+    {
+      "name": "kebab-open",
+      "what": "Clicking the kebab opens the options menu (Full Screen · Share · Edit · Clone · Remove); an outside click (across the shadow boundary) closes it. Choosing a row emits action and closes the menu."
+    },
+    {
+      "name": "dragging",
+      "what": "Pointer-down on the header (non-static, left button) dispatches card-dragstart; the header shows a grab/grabbing cursor. The grid parent moves the card — the card itself does not reposition."
+    },
+    {
+      "name": "resizing",
+      "what": "Pointer-down on the bottom-right grip (non-static, left button) dispatches card-resizestart (stops propagation so it is not read as a drag). The grid parent resizes the cell."
+    }
+  ],
+  "props": {
+    "title": {
+      "type": "string",
+      "default": "",
+      "note": "the widget title shown in the grey header (single line, ellipsised on overflow)."
+    },
+    "time": {
+      "type": "string",
+      "default": "",
+      "note": "the hover-revealed time-range badge, e.g. '1h 12m' — the window the widget's data covers. Empty → no badge is rendered."
+    },
+    "static": {
+      "type": "boolean",
+      "default": false,
+      "note": "opt out of drag/resize (chrome only): hides the resize grip, drops the grab cursor, and suppresses card-dragstart / card-resizestart. Use outside a grid or on a locked board."
+    }
+  },
+  "events": [
+    {
+      "name": "card-dragstart",
+      "detail": "{ clientX: number, clientY: number }",
+      "note": "pointer-down on the header (left button, non-static). Bubbles + composed so an obs-widget-grid ancestor can begin a drag. Not emitted when static."
+    },
+    {
+      "name": "card-resizestart",
+      "detail": "{ clientX: number, clientY: number }",
+      "note": "pointer-down on the bottom-right resize grip (left button, non-static). Stops propagation (so it is not read as a drag), bubbles + composed for the grid to begin a resize. Not emitted when static."
+    },
+    {
+      "name": "action",
+      "detail": "string — one of 'fullscreen' | 'share' | 'edit' | 'clone' | 'remove'",
+      "note": "a kebab-menu item was chosen. Emitted as a Vue emit AND dispatched as a composed, bubbling CustomEvent(detail = key). The menu closes on selection."
+    }
+  ],
+  "slots": {
+    "default": "the widget BODY — the actual content the card frames (an obs-severity-heatmap, obs-gauge row, a chart div, a table…). The body area clips overflow and fills the remaining height under the header."
+  },
+  "decisionFlow": [
+    "Wrapping ONE widget on a dashboard/monitoring board that must be titled + draggable + resizable? -> obs-widget-card, with the visualization in the default slot.",
+    "Placing many widgets on a board and want drag-to-move / drag-to-resize? -> put each obs-widget-card inside an obs-widget-grid (it consumes card-dragstart / card-resizestart). The card alone does not move itself.",
+    "A framed card that is NOT a dashboard widget (settings panel, summary/KPI tile, a form section card)? -> use a generic card, NOT obs-widget-card.",
+    "On a locked / read-only / standalone board where widgets must not move or resize? -> obs-widget-card with static (chrome only, no drag/resize).",
+    "Need the chart/gauge/heatmap itself? -> that is a separate element (obs-gauge, obs-severity-heatmap, a chart) placed INSIDE the card's body slot — obs-widget-card never renders data, only the chrome."
+  ],
+  "usageRules": {
+    "default": {
+      "useWhen": "a widget sits on an obs-widget-grid dashboard and needs the shared chrome — title header, hover kebab, drag handle, resize grip",
+      "dontUse": "for a non-dashboard card, or when you need the actual chart (that goes in the slot)",
+      "example": "the Monitor Availability gauge widget on the Alert-Summary dashboard",
+      "asSeenIn": "the Alert-Summary dashboard board (Infrastructure Heatmap, Monitor Availability, Alert Count, Top Network/Server Monitors, chart gallery)"
+    },
+    "with-time": {
+      "useWhen": "the widget's data covers a specific window worth surfacing on hover",
+      "dontUse": "the window is global to the whole board and already shown in the page header/timeline",
+      "example": "title=\"Infrastructure Heatmap\" time=\"1h 12m\"",
+      "asSeenIn": "every widget on the Alert-Summary board carries time=\"1h 12m\""
+    },
+    "static": {
+      "useWhen": "the card is standalone (no grid) or the board is locked / view-only — you want the frame but not drag/resize",
+      "dontUse": "on a live editable dashboard where users arrange widgets",
+      "example": "<obs-widget-card static title=\"Availability\"> … </obs-widget-card>",
+      "asSeenIn": "standalone documentation / preview cards outside a grid"
+    }
+  },
+  "usage": {
+    "note": "approximate"
+  },
+  "do": [
+    "Put the visualization (chart/gauge/heatmap/table) in the default slot; the card is chrome, not content.",
+    "Give the card a size — inside a grid via the cell (data-x/y/w/h); standalone via an explicit host width + height — or the body has nothing to fill.",
+    "Use obs-widget-card inside an obs-widget-grid so card-dragstart / card-resizestart actually drive the layout.",
+    "Set time to the window the widget's data covers (e.g. '1h 12m') so the hover badge is meaningful.",
+    "Use static on locked / view-only boards or standalone cards to hide the drag/resize affordances.",
+    "Let the header, badge, kebab and grip inherit theme tokens — don't hardcode the grey header or menu colours."
+  ],
+  "dont": [
+    "Don't use obs-widget-card as a generic content card — reach for a plain card for non-dashboard surfaces.",
+    "Don't wire your own drag/resize handlers onto the card — emit consumers (obs-widget-grid) own that; the card only signals start.",
+    "Don't render the card with no explicit size and expect the body to show — it needs a footprint.",
+    "Don't stuff multiple unrelated widgets into one card — one visualization per card.",
+    "Don't rely on the kebab/time being visible at rest — they are hover-revealed by design; don't put load-bearing controls only there."
+  ],
+  "a11y": {
+    "summary": "The kebab button has aria-label=\"Widget options\"; the resize grip is aria-hidden decoration. Header and badge are text. The menu closes on any outside click across the shadow boundary.",
+    "issues": [
+      "The time badge and kebab are revealed only on hover / focus-within — keyboard users reach them via focus, but a purely hover reveal is weak discoverability; don't place a widget's ONLY action in the kebab.",
+      "The kebab menu rows are <a> elements with no href, driven by click — so they are not keyboard-focusable and lack role=\"menu\"/menuitem semantics or a roving tabindex, meaning the menu cannot be operated by keyboard and screen-reader menu navigation is limited.",
+      "Drag (header) and resize (grip) are pointer-only (pointerdown, left button) — there is no keyboard affordance to move or resize a widget; arrangement must not be the only path to a task."
+    ],
+    "notes": "The card is chrome; the slotted widget owns its own data-accessibility (labels, table semantics, chart alt text). Provide a meaningful title so the widget is identifiable. Prefer surfacing critical actions outside the hover-only kebab when they must be reachable."
+  },
+  "knownIssues": [
+    "Drag and resize are pointer-only (pointerdown, left button) with no keyboard equivalent — a keyboard user cannot rearrange the board.",
+    "The kebab menu is a plain list of <a> rows (no href) without role=\"menu\"/menuitem, roving tabindex or arrow-key navigation — mouse-operable only.",
+    "Position/size are NOT owned by the card — with no obs-widget-grid ancestor listening, card-dragstart / card-resizestart go nowhere and the card stays put (by design; use static to hide the affordances).",
+    "The kebab menu is absolutely positioned inside the card (top:32px right:6px, z-index 40) — on a very short card or near the grid edge it can be clipped by an overflow:hidden ancestor rather than escaping to a layer/portal.",
+    "The time badge + kebab are hover / focus-within revealed (opacity 0 at rest) — weak discoverability; don't route a widget's only action through the kebab."
+  ],
+  "tokensUsed": [
+    "--page-background-color",
+    "--widget-border-color",
+    "--code-tag-background-color",
+    "--page-text-color",
+    "--neutral-lighter",
+    "--neutral-regular",
+    "--neutral-light",
+    "--dropdown-background",
+    "--border-color",
+    "--neutral-shadow-light",
+    "--dropdown-hover-background",
+    "--severity-critical"
+  ],
+  "related": [
+    "widget-grid",
+    "gauge",
+    "severity-heatmap",
+    "charts"
+  ],
+  "changelog": [
+    "2026-09-07 — Added obs-widget-card: dashboard widget chrome — grey header with title + time badge + hover kebab (Full Screen/Share/Edit/Clone/Remove), body slot, drag handle + resize grip; emits card-dragstart/card-resizestart for obs-widget-grid. Header padding 5px. Used across the Alert-Summary dashboard."
+  ],
+  "storybook": "Dashboard/Widget Card",
+  "figma": {
+    "status": "not-started",
+    "component": "Widget Card"
+  }
+}

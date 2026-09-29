@@ -4,7 +4,8 @@
   "tier": "molecule",
   "family": "Date & Time Pickers",
   "status": "stable",
-  "summary": "The product's date/time selection family. The hero is TimeRangePicker (42×) — the observability time-range control (relative presets + absolute custom range). MDatePicker (10×, wraps a-date-picker) is the form date-time field, in practice ALWAYS used with show-time. MTimePicker wraps a-time-picker (12-hour) but is rarely used standalone. DateTimePopover is a lighter custom-range-only popover.",
+  "summary": "The product's date/time selection family. The hero is TimeRangePicker (42×) — the observability time-range control (relative presets + absolute custom range). MDatePicker (10×, wraps a-date-picker) is the form date-time field, in practice ALWAYS used with show-time. MTimePicker wraps a-time-picker (12-hour) but is rarely used standalone. DateTimePopover is a lighter custom-range-only popover. TimeRangeSlider is a FUNCTIONAL, LINKABLE timeline scrubber — drive its window/band from a range picker via range-start/range-end.",
+  "selectHint": "Pick a chart/dashboard/log TIME WINDOW → range (or range-presets); a date/time VALUE in a form → field-datetime/field-date/field-time; a draggable timeline SCRUBBER (optionally linked to a range picker) → slider.",
   "props": {
     "kind": {
       "type": "string",
@@ -35,6 +36,31 @@
       "type": "string",
       "default": "",
       "description": "field placeholder text (defaults per kind)"
+    },
+    "size": {
+      "type": "string",
+      "default": "",
+      "enum": ["", "lg"],
+      "description": "'' (default 28px) | 'lg' → a 35px-tall range trigger that lines up with the 35px toolbar/action buttons"
+    },
+    "showRange": {
+      "type": "boolean",
+      "default": false,
+      "description": "attr show-range — print the RESOLVED absolute window beside the preset pill (two lines: from → to, e.g. 'Wed, Sep 02 06:04 PM' / 'Thu, Sep 03 06:04 PM'), like the product TimeRangePicker on a dashboard header"
+    },
+    "rangeStart": {
+      "type": ["number", "string"],
+      "default": 0,
+      "attr": "range-start",
+      "appliesTo": "kind=\"slider\"",
+      "description": "slider-only — drive the scrubber's window/band from OUTSIDE (epoch ms). Set together with range-end to LINK the slider to a range picker's selection: the band snaps to [range-start, range-end] and the axis window auto-fits AROUND that range (padding = max(50% of the span, 6h)). 0 (default) = unlinked (the slider uses its own today ± 5 days window)."
+    },
+    "rangeEnd": {
+      "type": ["number", "string"],
+      "default": 0,
+      "attr": "range-end",
+      "appliesTo": "kind=\"slider\"",
+      "description": "slider-only — the end of the linked window (epoch ms). Must be > range-start for the link to engage; then the band's right handle snaps here and the axis format adapts (DD/MM for a multi-day window, HH:MM for ≤3 days). 0 (default) = unlinked."
     }
   },
   "variants": [
@@ -65,7 +91,7 @@
     },
     {
       "name": "TimeRangeSlider",
-      "what": "draggable scrubber",
+      "what": "FUNCTIONAL draggable scrubber — band + two handles, DATE axis, LINKABLE to a range picker via range-start/range-end",
       "usage": "2×"
     },
     {
@@ -74,7 +100,18 @@
       "usage": "1×"
     }
   ],
-  "sizes": [],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "28px",
+      "note": "compact range trigger (size unset) — the default"
+    },
+    {
+      "name": "lg",
+      "value": "35px",
+      "note": "attr size=\"lg\" — taller range trigger that lines up with the 35px toolbar/action buttons and gives the show-range readout room"
+    }
+  ],
   "states": [
     {
       "name": "default",
@@ -177,9 +214,11 @@
     "TimeRangeSlider": {
       "source": "src/components/widgets/time-range-picker/time-range-slider.vue (name TimeRangeSlider)",
       "usage": "2× — dashboard view + alert correlation drawer",
-      "renders": "REFERENCE REPRODUCTION (Ant range Slider styled as a timeline; needs moment/helper/datetime filter)",
-      "anatomy": "hidden rail; tick dots (2x14px) with time-mark labels every 10th (HH:mm / DD/MM / MMM by span); two 10x10 square handles; a --primary track for the selected window. min/max auto-expand to ~4x the current duration so dragging widens the window.",
-      "emit": "change -> { selectedKey:'custom', startDate, endDate, startTime, endTime } (same shape as TimeRangePicker)"
+      "renders": "FUNCTIONAL reproduction in the Elements element — a draggable band + two round handles on a tick rail with a DATE axis; the product original is an Ant range Slider (needs moment/helper/datetime filter).",
+      "anatomy": "a tick rail (100 dots) inset by --page-header-padding so the timeline aligns with the page header; a draggable BAND (--slider-tracker, 14px tall, 4px border-radius) between two round handles (--page-background-color fill, --neutral-light border). Handles show a hover RING (--page-text-color) and a datetime TOOLTIP (--tooltip-background-color / --active-text-color) above them; the tooltip PERSISTS while dragging (a .dragging class), showing the resolved datetime as the handle moves. DATE axis labels every 10th tick with ADAPTIVE format — DD/MM for a multi-day window, HH:MM for a short (≤3-day) window — and the first/last labels are anchored (translateX 0 / -100%) so they don't overflow the ends.",
+      "window": "By default the axis window spans today ± 5 days (10 days). When range-start/range-end are supplied (link mode), the window fits AROUND that range with padding = max(50% of the span, 6h) and the band snaps to [range-start, range-end] — so the slider GROWS/SHRINKS with a linked range picker's selection.",
+      "linkable": "Set the range-start/range-end props (epoch ms) to link the slider to a range picker: when that picker's `change` emits fromMs/toMs, feed them into the slider's range-start/range-end and the band + window follow.",
+      "emit": "change -> { startPct, endPct, start, end } — startPct/endPct are the handle positions (0–100), start/end the RESOLVED datetimes at those positions (e.g. 'Wed, Sep 02, 2026 06:04:00 PM'). The product original emits { selectedKey:'custom', startDate, endDate, startTime, endTime }."
     },
     "DateTimePopover": {
       "source": "src/components/common/date-time-popover.vue",
@@ -194,7 +233,9 @@
     "A single date or date+time value in a FORM field? -> MDatePicker with :show-time (the product default).",
     "Just a time of day (e.g. a schedule)? -> MTimePicker (12-hour).",
     "A custom absolute from/to with NO presets, as a form field? -> DateTimePopover.",
-    "Constrain how far back/forward? -> :max-selectable-range-days (TimeRangePicker) or :min-date / :disabled-date (MDatePicker)."
+    "A draggable timeline SCRUBBER over the current window? -> slider (TimeRangeSlider). LINK it to a range picker by feeding that picker's change fromMs/toMs into the slider's range-start/range-end.",
+    "Constrain how far back/forward? -> :max-selectable-range-days (TimeRangePicker) or :min-date / :disabled-date (MDatePicker).",
+    "Need the trigger to line up with 35px toolbar buttons, or to print the resolved absolute window? -> size='lg' and/or show-range on the range trigger."
   ],
   "usageRules": {
     "timeWindow": {
@@ -243,14 +284,28 @@
       "example": "A daily run-time / schedule time-of-day field (12-hour hh:mm A) — reference pattern; in real product code time-of-day arrives via MDatePicker show-time or the range custom view instead."
     },
     "TimeRangeSlider": {
-      "useWhen": "You need a draggable TIMELINE SCRUBBER over an existing time window — a horizontal rail with tick dots, time-mark labels, and two square handles that widen/narrow the selected window by dragging (min/max auto-expand ~4x the current duration). Emits the same shape as TimeRangePicker with selectedKey:'custom'.",
-      "dontUse": "Don't use as the primary way to pick a window when users expect presets — pair it with or defer to TimeRangePicker. Don't use in forms or for discrete date/time values. Only 2x — a specialized scrubber, not the default.",
-      "example": "The dashboard timeline scrubber and the alert-correlation drawer — drag the two handles to reshape the visible time window."
+      "useWhen": "You need a draggable TIMELINE SCRUBBER over an existing time window — a tick rail with a DATE axis and two round handles that drag a band to reshape the selected window. It is FUNCTIONAL (kind=\"slider\"): dragging emits change { startPct, endPct, start, end } and the handle tooltip shows the resolved datetime live while dragging. It is LINKABLE — pass range-start/range-end (epoch ms) to fit its window around, and snap its band to, a range picker's current selection (feed that picker's change fromMs/toMs in). The axis format adapts DD/MM ↔ HH:MM to the window length.",
+      "dontUse": "Don't use as the primary way to pick a window when users expect presets — pair it with (or LINK it to) TimeRangePicker rather than replacing it. Don't use in forms or for discrete date/time values. Only 2x — a specialized scrubber, not the default. Don't set only one of range-start/range-end (the link needs both, with end > start) or it stays in the default today ± 5-day window.",
+      "example": "The dashboard timeline scrubber and the alert-correlation drawer — drag the two handles to reshape the visible window; or link it below a TimeRangePicker so the band tracks the picker's selection."
     },
     "DateTimePopover": {
       "useWhen": "A custom absolute from/to range as a FORM field with NO presets — a lighter custom-range-only popover (built on MPopover + FlotoFormItem). Emits { startDate, endDate, startTime, endTime }.",
       "dontUse": "Don't use when relative presets are wanted (use TimeRangePicker or presets-only) or for a single date-time value (MDatePicker). Rare (1x) — only when you specifically need an absolute from/to inside a form without the preset machinery.",
       "example": "The SLO correction-profile form — a custom-range-only from/to popover with no relative presets."
+    }
+  },
+  "events": {
+    "change": {
+      "when": "fires on every pick / drag AND on initial mount (the selection is also reflected to el.value as JSON).",
+      "detailNote": "Per Vue custom-element convention the payload is array-wrapped — read CustomEvent.detail[0].",
+      "payloadByKind": {
+        "range / range-presets (relative)": "{ type:'relative', key:'-24h'|'today'|…, label:'Last 24 Hours', span:'24h', fromMs:<ms>, toMs:<ms>, from:'Wed, Sep 02, 2026 06:04:00 PM', to:'Thu, Sep 03, 2026 06:04:00 PM' } — fromMs/toMs/from/to are the RESOLVED absolute window (relative presets resolved against now; period presets like Today/This Week/This Month resolved from the period start).",
+        "range / range-presets (custom absolute)": "{ type:'absolute', start:<ms>, end:<ms>, fromTime:'10:05', toTime:'…', fromMs:<ms>, toMs:<ms>, from:'…', to:'…' }.",
+        "field-date / field-datetime": "{ date:<ms>, display:'02/09/2026 06:04 PM' } (date-only omits the time).",
+        "field-time": "{ time:'06:04 PM' }.",
+        "slider": "{ startPct:<0-100>, endPct:<0-100>, start:'Wed, Sep 02, 2026 06:04:00 PM', end:'Thu, Sep 03, 2026 06:04:00 PM' } — start/end are the resolved datetimes at the two handle positions."
+      },
+      "link": "For a range/preset kind, take change.fromMs/toMs and set them as range-start/range-end on a kind='slider' element to keep the slider's window + band in sync with the picker."
     }
   },
   "tokensUsed": [
@@ -261,9 +316,13 @@
     "--left-menu-text-color-hover",
     "--border-color",
     "--primary",
+    "--primary-alt",
     "--calendar-selected-day-background-color",
-    "--tag-bg",
-    "--secondary-red",
+    "--slider-tracker",
+    "--tooltip-background-color",
+    "--active-text-color",
+    "--page-background-color",
+    "--neutral-regular",
     "--neutral-light",
     "--neutral-lightest",
     "--page-text-color"
@@ -272,13 +331,18 @@
     "Use TimeRangePicker for chart/dashboard/log time windows.",
     "Use :hide-custom-time-range when only relative windows are valid.",
     "Use MDatePicker WITH :show-time for date-time form fields (the product norm).",
-    "Constrain selection with :max-selectable-range-days / :min-date where it matters."
+    "Constrain selection with :max-selectable-range-days / :min-date where it matters.",
+    "Use size='lg' to line the range trigger up with 35px toolbar/action buttons, and show-range to print the resolved absolute window beside the pill.",
+    "LINK the slider to a range picker: read the picker's change fromMs/toMs and set them as range-start/range-end on the kind='slider' element so its window + band track the selection.",
+    "Read the change payload's resolved fromMs/toMs/from/to (range/preset kinds) or start/end (slider) instead of re-deriving the window yourself."
   ],
   "dont": [
     "Don't hand-roll a relative-range dropdown — use TimeRangePicker.",
     "Don't use a bare date picker for chart windows — that's TimeRangePicker's job.",
     "Don't pass an empty string '' to MTimePicker/MDatePicker value (parses to an Invalid date) — pass null/undefined or a moment.",
-    "Don't assume card/inline calendar variants — the product uses the popup pickers only."
+    "Don't assume card/inline calendar variants — the product uses the popup pickers only.",
+    "Don't set only one of range-start/range-end on the slider — the link needs BOTH (with end > start) or it stays in the default today ± 5-day window.",
+    "Don't read CustomEvent.detail directly — it's array-wrapped; read detail[0]."
   ],
   "knownIssues": {
     "F1": {
@@ -290,7 +354,11 @@
       "a11y": true,
       "issue": "Catalog-wide focus-ring removal (SF-001) may affect the picker inputs/preset rows; verify keyboard focus visibility."
     },
-    "element": "[element] The obs-date-time-picker WEB COMPONENT is reference-only: renders every variant but has NO `value` prop and emits NO events — can't set a date or read the selection. Visual reference only; use the product component in-repo or STOP-and-ASK."
+    "F3": {
+      "severity": "Low",
+      "issue": "The slider's horizontal inset uses --page-header-padding (8px fallback) so it aligns with a page header; if the host app doesn't define that var the slider falls back to 8px insets — set --page-header-padding on the container to match your header."
+    },
+    "element": "[element] The obs-date-time-picker element is FUNCTIONAL (not reference-only): it reflects the current selection to el.value as JSON and emits a `change` event on every pick/drag (payload varies by kind — see events). It has no value SETTER prop, so you can't programmatically pre-set a date; for the slider, drive its window/band via range-start/range-end. For full product parity (store/moment-backed resolution) use the product component in-repo or STOP-and-ASK."
   },
   "accessibility": {
     "providedByAnt": "a-date-picker / a-time-picker expose a text input + a keyboard-navigable calendar/time panel; Escape closes; the input is focusable and typeable.",
@@ -352,16 +420,18 @@
     }
   },
   "a11y": {
-    "summary": "Focusable text input + keyboard-navigable calendar; disabled via the disabled input. The trigger pill should expose its current selection to AT.",
+    "summary": "Focusable text input + keyboard-navigable calendar; disabled via the disabled input. The trigger pill should expose its current selection to AT. The slider handles are mouse-drag only in this element — provide a keyboard-operable range control (or the range picker) for keyboard/AT users.",
     "issues": [
       "Preset rows are <a>/<div> — verify keyboard-reachable.",
       "SF-001 focus ring.",
-      "Range error is shown as text."
+      "Range error is shown as text.",
+      "Slider handles are drag-only (mousedown/mousemove) — no keyboard (arrow-key) operation or ARIA slider role; pair with the range picker for accessible selection."
     ],
     "doc": "Molecules/Date & Time Pickers/Accessibility",
     "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
   },
   "changelog": [
+    "2026-09-07 — Made the TimeRangeSlider functional and LINKABLE: new range-start/range-end props drive its window/band (link it to a range picker); dynamic window fits the selection with adaptive DD/MM↔HH:MM axis; band radius 4px; handle tooltip persists while dragging; horizontal inset matches the page header (--page-header-padding) with anchored end labels; range/preset change events now carry resolved fromMs/toMs/from/to. Also added size='lg' and show-range.",
     "2026-07-14: fixed the left double-chevron « (owner) — the calendar header/month/year/decade nav used chevronDoubleRight + inline transform:scaleX(-1), which does NOT reliably flip on the <obs-icon> host (Vue custom-element upgrade interferes), so it rendered » on the LEFT. Added a real `chevronDoubleLeft` icon (mirrored path) and used it directly across all popovers — no transform.",
     "2026-07-14: completeness pass (owner) — added the element 'kinds & when to use' table (range · range-presets · field-datetime · field-date · field-time · slider) + the shared props (disabled/bordered/allow-clear/empty/placeholder) + the decision routing to the prose spec. Playground already switches all 6 kinds; registry already complete.",
     "2026-06-30: added to the Elements site — obs-date-time-picker, the date/time family as one element via a `kind` prop: range (the 42× TimeRangePicker hero — interactive pill → presets → Custom dual-month calendar with From/To time menus), range-presets (hide-custom 24×), field-datetime/field-date/field-time (MDatePicker/MTimePicker fields + disabled), slider (draggable TimeRangeSlider). Reference reproductions with real tokens (--timerange-*, --calendar-selected-day-background-color, --slider-tracker, --dropdown-*); gated by cross-render token check (light+dark) + driven open/custom/disabled states.",
@@ -369,8 +439,9 @@
     "2026-06-30: reworked the MDatePicker/MTimePicker field popovers to match the real Ant render (owner compared to Storybook) — a connected card with the value input on top, the calendar (today navy-filled), a footer (Now · select time/select date · Ok), and a proper 3-COLUMN time spinner (HH · MM · AM/PM, selected row banded + scrolled to top) instead of a flat time dropdown. field-date = Now·Ok, field-time = the spinner alone.",
     "2026-06-30: matched the per-variant footer pattern (owner) — date-only shows a single centered \"Today\" link (not Now·Ok); time-only keeps Now·Ok; date-time keeps Now·select-time/date·Ok with the time spinner opening in the same popover.",
     "2026-06-30: fixed field-calendar day states (owner) — selected (filled navy) and today (navy RING) were rendering identically; now distinct, plus a hover background on days. Applies to field-date and field-datetime (refactored day cells from inline styles to CSS classes so :hover works).",
-    "2026-07-14: FUNCTIONAL now (owner) — obs-date-time-picker reflects the selection to `el.value` (JSON) and emits a `change` event on every pick, so it's no longer reference-only. Value shape varies by kind: range/range-presets → {type:'relative',key,label,span} or {type:'absolute',start,end,fromTime,toTime}; field-date/field-datetime → {date:<ms>,display}; field-time → {time}; slider → {startPct,endPct,start,end}. Verified initial reflection + change on preset/day/time/slider selection."
+    "2026-07-14: FUNCTIONAL now (owner) — obs-date-time-picker reflects the selection to `el.value` (JSON) and emits a `change` event on every pick, so it's no longer reference-only. Value shape varies by kind: range/range-presets → {type:'relative',key,label,span} or {type:'absolute',start,end,fromTime,toTime}; field-date/field-datetime → {date:<ms>,display}; field-time → {time}; slider → {startPct,endPct,start,end}. Verified initial reflection + change on preset/day/time/slider selection.",
+    "2026-09-03: dashboard-header + slider fidelity pass (owner, from the ObserveOps DS starter's Alert Summary rebuild), shipped in elements 0.1.168. RANGE trigger: new `size='lg'` (35px trigger to line up with the 35px toolbar/action buttons — the compact default is 28px) + new `show-range` attr that prints the RESOLVED absolute window beside the pill (two lines from → to, computed from the selected preset/custom against now), matching the product TimeRangePicker. SLIDER: band height 18px → 14px, dots 20% smaller (8→6.4px) and vertically centered on the band, a hover state (ring) + a dark datetime tooltip above each handle (--tooltip-background-color / --active-text-color), and .slider-wrap bottom padding 36px → 18px (was leaving a big gap under the timeline labels). Verified render in the starter (light); registry props (size, showRange) updated."
   ],
   "referenceOnly": false,
-  "elementValue": "reflects el.value (JSON) + emits `change`. Per-kind: range → relative {key,label,span} | absolute {start,end,fromTime,toTime}; field-date/datetime → {date:<ms>,display}; field-time → {time}; slider → {startPct,endPct,start,end}."
+  "elementValue": "reflects el.value (JSON) + emits `change` (array-wrapped detail — read detail[0]). Per-kind: range/range-presets → relative {type,key,label,span,fromMs,toMs,from,to} | absolute {type,start,end,fromTime,toTime,fromMs,toMs,from,to}; field-date/datetime → {date:<ms>,display}; field-time → {time}; slider → {startPct,endPct,start,end}. The slider's window/band are driven from OUTSIDE via range-start/range-end (epoch ms) to link it to a range picker."
 }

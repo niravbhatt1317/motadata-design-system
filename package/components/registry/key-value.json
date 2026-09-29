@@ -114,5 +114,13 @@
     "2026-07-13: width fix (owner) — the playground was shrink-wrapping the widget to ~208px (labels wrapped); changed :host to display:block, widened the max-width, and gave the element full stage width so labels/values sit on one line.",
     "2026-07-13: shipped <obs-key-value> — the DS key-value / description list (column-grid-view / overview-layout). Split out of the Storybook Table variant set (it's a detail LAYOUT, not a table)."
   ],
-  "storybook": "Organisms/Table (key-value variant)"
+  "storybook": "Organisms/Table (key-value variant)",
+  "related": [
+    "metric-list",
+    "table",
+    "card",
+    "tag"
+  ],
+  "sizes": [],
+  "states": []
 }

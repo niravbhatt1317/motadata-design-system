@@ -196,6 +196,10 @@
   },
   "changelog": [
     {
+      "date": "2026-09-16",
+      "change": "(owner) The menu now FLIPS UP when there isn't room below the trigger (e.g. a ⋯ More in a bulk-action bar pinned near the bottom, where it used to open downward into no space and clip). It anchors the panel's BOTTOM to the trigger's top (height-independent, flash-free) with an 8px gap, adds a max-height + overflow-y:auto so a tall menu scrolls instead of overflowing, and keeps opening downward when there IS room. Applies to every obs-menu."
+    },
+    {
       "date": "2026-07-15",
       "change": "Added a `bordered` option to the ⋯ dots trigger (a bordered kebab button) — used by the obs-toolbar bulk-action-bar More. Default (borderless) unchanged."
     },

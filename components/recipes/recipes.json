@@ -167,7 +167,13 @@
       "a11y": [
         "Grid roles/aria-sort/aria-selected survive custom cells",
         "bulk bar role=toolbar + aria-label"
-      ]
+      ],
+      "contract": "list — also call get_page_contract('list') for canvas/scroll/gutter/header rules, and validate_page when done.",
+      "baseStructure": "This recipe gives the region ORDER; the authoritative BASE STRUCTURE + behaviour (bounded height, sticky scroll, the footer + bulk-actions slots, 10px gutter, destructive confirm, the R1–R4 invariants) is the list PAGE CONTRACT → get_page_contract(\"list\"). It is the DEFAULT for a records/table page unless the user gives a reference screenshot.",
+      "tableSlots": {
+        "footer": "centered footer content (obs-severity-legend) — the pagination footer centered variant",
+        "bulk-actions": "the floating bulk action bar buttons (appear above the pager when rows are selected)"
+      }
     },
     {
       "id": "form-view",
@@ -295,7 +301,8 @@
         "required via aria + asterisk",
         "error text linked to field",
         "SF-001 focus ring is removed system-wide"
-      ]
+      ],
+      "contract": "form — also call get_page_contract('form') for canvas/scroll/gutter/header rules, and validate_page when done."
     },
     {
       "id": "detail-view",
@@ -374,85 +381,120 @@
       "a11y": [
         "tablist/tab/tabpanel roles",
         "aria-current on active tab"
-      ]
+      ],
+      "contract": "form — also call get_page_contract('form') for canvas/scroll/gutter/header rules, and validate_page when done."
     },
     {
       "id": "dashboard-view",
       "name": "Dashboard view",
-      "whenToUse": "A grid of widgets/charts for a monitoring overview, with a dashboard picker and a global time range.",
+      "whenToUse": "A canvas of data widgets for a monitoring overview — Alert Summary, NOC, infra health. Charts/gauges/heatmaps/metrics tiled in a grid, with a global time range and (optionally) a draggable timeline.",
+      "contract": "dashboard — ALSO call get_page_contract('dashboard') for the canvas token, scroll ownership, sticky header + shadow-on-scroll, gutter/gap scale and mandatory components this recipe doesn't carry; run validate_page(html,'dashboard') when done.",
       "examples": [
-        "dashboard module",
-        "NOC view"
+        "Alert Summary dashboard",
+        "NOC wallboard",
+        "infrastructure overview"
       ],
       "regions": [
         {
-          "region": "dashboard picker (left)",
+          "region": "app shell",
           "use": [
             {
-              "id": "navigation",
-              "variant": "side-menu-categories",
-              "note": "Dashboard/NOC tabs + categories + counts (dashboard-dropdown)"
+              "id": "sidebar"
+            },
+            {
+              "id": "app-header"
             }
-          ]
+          ],
+          "note": "The dashboard renders INSIDE the app shell (module rail + app-header), not as a bare content area — see the module-screen recipe."
         },
         {
-          "region": "global time range",
+          "region": "dashboard header (title + time range) — STICKY",
+          "use": [
+            {
+              "id": "page-header",
+              "note": "the dashboard title; full-width WITH a bottom border, title weight 500, end-to-end (no side padding, inset only via --page-header-padding)."
+            },
+            {
+              "id": "date-time-pickers",
+              "variant": "range-presets",
+              "note": "the global time-range picker (size='lg'). The resolved date-range readout is a SEPARATE sibling beside it — NOT inside the picker."
+            }
+          ],
+          "note": "This whole header block is position:sticky with a grey shadow that appears only once content scrolls beneath it (get_page_contract dashboard)."
+        },
+        {
+          "region": "timeline scrubber (optional)",
           "use": [
             {
               "id": "date-time-pickers",
-              "variant": "TimeRangePicker"
+              "variant": "TimeRangeSlider",
+              "note": "kind='slider' — a draggable timeline over the window. LINK it to the range picker via range-start/range-end (feed the picker's change fromMs/toMs in). Follow it with a full-width obs-divider."
             }
           ]
         },
         {
-          "region": "widgets",
-          "$gap": "The widget CHART/tile itself is NOT catalogued (only its tooltips are) — STOP and ASK before implementing the chart. The widget chrome (toolbars/widget-header) + tooltips ARE in the DS. See $knownGaps.charts. -> See registry/data-viz.json (pick the type + palette; render with the product Chart/Graph/Widgets component in-repo).",
+          "region": "widget grid",
           "use": [
             {
-              "id": "toolbars",
-              "variant": "widget-header",
-              "note": "title + time pill + ⋯ kebab per widget"
+              "id": "widget-grid",
+              "note": "obs-widget-grid — the arrangeable 12-col canvas (drag/drop/resize + collision push-down + gravity compaction + edge auto-scroll; emits layout-change). For a STATIC board use a plain CSS grid instead (route-away)."
             },
             {
-              "id": "data-viz-tooltips",
-              "note": "the chart tooltips (the chart body itself is the $gap)"
-            }
-          ],
-          "note": "a GridLayout of widget cards (--common-widget-bg)"
-        },
-        {
-          "region": "widget actions",
-          "use": [
-            {
-              "id": "menu",
-              "variant": "context-menu",
-              "note": "Edit/Clone/Full Screen/Share/Export via FlotoGridActions"
+              "id": "widget-card",
+              "note": "obs-widget-card — the widget chrome (grey header: title + time badge + hover kebab Full Screen/Share/Edit/Clone/Remove; drag handle + resize grip). Every widget IS one of these; place each with data-x/data-y/data-w/data-h; its BODY goes in the default slot."
             }
           ]
+        },
+        {
+          "region": "widget bodies",
+          "use": [
+            {
+              "id": "data-viz",
+              "note": "DS charts — there is NO obs-chart element; render the captured chart-library fixtures via the dsChart() helper (line/area/column/bar/stacked/multi-line/pie/donut…). Chart tooltip = the DS chart tooltip (colour swatch + name + bold value, mono font). Reflow each chart on card resize (Highcharts reflows on WIDTH only)."
+            },
+            {
+              "id": "gauge",
+              "note": "obs-gauge — a ring dial (arc=value/total, severity colour, mono 28px/600 centre number) for Monitor-Availability / Alert-Count."
+            },
+            {
+              "id": "severity-heatmap",
+              "note": "obs-severity-heatmap — the severity honeycomb with a hover tooltip (IP + location + severity pill)."
+            },
+            {
+              "id": "metric-list",
+              "note": "obs-metric-list / obs-key-value for metric tiles."
+            }
+          ],
+          "note": "The custom-engine anomaly / forecast / geo-map types are still DATA-ONLY gaps — call list_gaps and STOP and ASK for those."
         },
         {
           "region": "wallboard mode (optional)",
           "use": [
             {
-              "id": "navigation",
-              "variant": "noc-player"
+              "id": "noc-player",
+              "note": "obs-noc-player — auto-rotate dashboards on a wallboard; pausable + respects reduced-motion."
             }
           ]
         }
       ],
       "layout": {
-        "shell": "left dashboard picker (size 3) + main widget grid (size 9); time range top-right",
+        "shell": "sticky header (title + time range + optional timeline) over a full-width obs-widget-grid; FLUSH (edge-to-edge, no page padding); body gutter 0 10px 10px.",
         "tokens": {
+          "canvasBg": "--page-background-color",
           "widgetBg": "--common-widget-bg",
-          "canvasBg": "--dashboard-background"
+          "cardHeaderBg": "--code-tag-background-color"
         }
       },
       "gotchas": [
-        "Widget chrome = toolbars/widget-header; its kebab = Menu/context-menu.",
-        "Chart tooltips are owned by the chart layer (data-viz-tooltips), not MTooltip."
+        "Canvas is --page-background-color (WHITE) — NOT --common-main-bg (the app grey). This is the #1 dashboard mistake.",
+        "Widgets are obs-widget-card — NOT a generic .card div and NOT obs-toolbar’s widget-header.",
+        "Arrangeable board = obs-widget-grid; static board = a plain CSS grid.",
+        "The date-range readout is a separate sibling, not part of the picker; link the picker ↔ timeline via range-start/range-end.",
+        "Charts reflow on WIDTH only — reflow them when a card resizes, or a taller card leaves empty space."
       ],
       "a11y": [
-        "NOC rotator must be pausable + respect reduced-motion"
+        "NOC/wallboard rotation must be pausable + respect reduced-motion.",
+        "Drag/resize is pointer-only today — provide a non-drag way to arrange for keyboard users if needed."
       ]
     },
     {
@@ -1322,7 +1364,8 @@
         "The side-menu is optional — only modules with sub-sections/categories have one.",
         "obs-layout-appshell renders but has no data contract (reference-only) — assemble these regions from the elements above rather than expecting one shell component."
       ],
-      "a11y": "One <main> for the content; the rail is <nav aria-label=\"Primary\">, the side-menu another <nav>; the module tab row is a tablist. Do not nest multiple <main>."
+      "a11y": "One <main> for the content; the rail is <nav aria-label=\"Primary\">, the side-menu another <nav>; the module tab row is a tablist. Do not nest multiple <main>.",
+      "contract": "After picking the inner content recipe, call get_page_contract(pageType) — dashboard | list | settings | form — for the canvas token, scroll ownership, sticky/gutter rules the structure doesn't carry; validate_page(html, pageType) when done."
     }
   ]
 }

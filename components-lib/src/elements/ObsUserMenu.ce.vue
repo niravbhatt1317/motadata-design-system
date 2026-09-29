@@ -153,10 +153,11 @@ button, a { font-family: inherit; }
 :host { font-family: var(--font-family, 'Poppins', sans-serif); display: inline-block; }
 .um { display: inline-block; }
 /* avatar trigger — matches the app-header 32px avatar */
-.avatar { width: 32px; height: 32px; border: 0; border-radius: 50%; padding: 0; cursor: pointer; overflow: hidden;
+.avatar { width: 32px; height: 32px; border-radius: 50%; padding: 0; cursor: pointer; overflow: hidden;
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--primary, #111c2c); color: var(--white-regular, #fff); font-size: 12px; font-weight: 600;
-  transition: box-shadow .15s; }
+  /* --neutral-darker = stable dark navy in BOTH themes (--primary is an INK token that flips light in dark mode). */
+  background: var(--neutral-darker, #172336); color: var(--white-regular, #fff); font-size: 12px; font-weight: 600;
+  border: 1px solid var(--avatar-ring-color, rgba(255, 255, 255, 0.14)); transition: box-shadow .15s; }
 .avatar.act { box-shadow: 0 0 0 3px var(--neutral-lighter, #dfe5ef); }
 .ava-img { width: 100%; height: 100%; object-fit: cover; }
 .ava-txt { line-height: 1; }
@@ -171,7 +172,8 @@ button, a { font-family: inherit; }
 .uhead { display: flex; align-items: center; gap: 10px; padding: 6px 8px; }
 .uh-ava { width: 32px; height: 32px; border-radius: 50%; flex: 0 0 auto; overflow: hidden;
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--primary, #111c2c); color: var(--white-regular, #fff); font-size: 13px; font-weight: 600; }
+  background: var(--neutral-darker, #172336); color: var(--white-regular, #fff); font-size: 13px; font-weight: 600;
+  border: 1px solid var(--avatar-ring-color, rgba(255, 255, 255, 0.14)); }
 .uh-ava img { width: 100%; height: 100%; object-fit: cover; }
 .uh-txt { display: flex; flex-direction: column; min-width: 0; }
 .uh-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

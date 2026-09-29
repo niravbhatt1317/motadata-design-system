@@ -1,0 +1,190 @@
+{
+  "name": "severity-heatmap",
+  "component": "ObsSeverityHeatmap",
+  "display": "Severity Heatmap",
+  "tier": "molecule",
+  "family": "Data Visualization",
+  "section": "Components",
+  "source": "custom-engine",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "The product's Infrastructure-Heatmap honeycomb (PlainHeatMap) — one hexagon per monitor, each filled with its severity colour, packed into a honeycomb grid. Hovering a hex raises the product tooltip (monitor name/IP + location + a severity pill). The DS chart library flags \"heat-map\" as a CUSTOM-ENGINE type (data-only, no serializable renderer); this element IS that renderer, ported 1:1 from the product's heatmap-single-group.vue — a border-coloured hex box with a 1px-inset severity cell (the thin outline), size x 1.1547 height and a size x 0.2885 honeycomb pull-up.",
+  "selectHint": "Use to show the health of MANY monitors at a glance as a dense honeycomb coloured by severity — the Infrastructure Heatmap on a dashboard. One hex = one monitor. Not for a small set with per-row detail (use a table), not for a single value against a total (use a gauge), and not for a trend over time (use a line/area chart).",
+  "whenToUse": "A large fleet of monitors where the shape/spread of severity across the whole population matters more than any single row — worst severities banding at the top, healthy (up) filling the body. The colour encodes each monitor's severity; the hover tooltip carries its identity (IP + location) for spot-checking.",
+  "insteadOf": [
+    "a hand-drawn SVG/CSS honeycomb wired to raw status numbers",
+    "a giant table when you only need the at-a-glance severity spread of hundreds of monitors",
+    "the licensed chart-library heat-map (it ships data-only with no renderer — this element is the renderer)"
+  ],
+  "variants": [
+    {
+      "name": "infra-honeycomb",
+      "what": "The full Infrastructure Heatmap: hundreds of hexes, worst severities (down / critical) banding across the top and healthy up filling the body. Each cell carries a monitor name + location so the hover tooltip has identity.",
+      "usage": "dashboard: Infrastructure Heatmap widget card"
+    },
+    {
+      "name": "compact",
+      "what": "A small honeycomb (a handful of monitors) at a smaller `size` — fits a tight widget or an inline health strip.",
+      "usage": "dense widget / summary"
+    },
+    {
+      "name": "truncated",
+      "what": "`max=\"N\"` caps the grid to the first N hexes and appends a pill-shaped \"+N more\" chip — for a bounded preview of a big fleet.",
+      "usage": "capped preview"
+    },
+    {
+      "name": "bare-cells",
+      "what": "cells passed as plain severity strings (['down','critical','up', ...]) — colour-only hexes with no hover tooltip (no name/location to show).",
+      "usage": "colour-only fixture"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "size",
+      "value": "hex width in px (default 22)",
+      "note": "`size` is the hexagon WIDTH in px; the height is derived as size x 1.1547 (a regular flat-to-point hexagon). Margin = floor(size/17); the honeycomb pull-up (negative bottom margin) = size x 0.2885 so successive rows interlock. Scale the whole honeycomb by changing size — 22 is the dashboard default; 14-18 for dense/compact, 26+ for a roomier grid."
+    }
+  ],
+  "states": [
+    {
+      "name": "rest",
+      "what": "Static honeycomb — every hex filled with var(--severity-<level>) behind a 1px var(--border-color) inset outline. Non-interactive at rest."
+    },
+    {
+      "name": "hover",
+      "what": "Hovering a hex scales it 1.4x (z-index raised) and, if the cell has a name, raises the product tooltip anchored to the hex's right edge — a white name/location card with a severity pill grafted on the right (coloured var(--severity-<level>)). Leaving the hex dismisses the tooltip."
+    },
+    {
+      "name": "truncated",
+      "what": "With max>0 and more cells than max, the extra cells collapse into a pill-shaped \"+N more\" chip (--primary-alt outline + text) rendered after the last shown hex."
+    }
+  ],
+  "props": {
+    "cells": {
+      "type": "array | string",
+      "default": "[]",
+      "note": "The monitors to plot — one hex per entry. Accepts an array of plain severity STRINGS (['down','critical','up', ...]) OR an array of OBJECTS { severity | sev, name | label | ip, location | sublabel | sub }. Each object is normalised to { sev (lowercased), name, sub }: severity/sev -> the hex fill var(--severity-<sev>); name/label/ip -> the tooltip title; location/sublabel/sub -> the tooltip subtitle. A string cell has no name, so it renders colour-only with no hover tooltip. Also accepts a JSON STRING of that array (it is JSON.parsed) — this is how the static showcase passes it as an attribute. Mirrors the DS heat-map fixture's result.data shape."
+    },
+    "size": {
+      "type": "number | string",
+      "default": 22,
+      "note": "Hexagon WIDTH in px. Height is derived = size x 1.1547; margin = floor(size/17); honeycomb pull-up (negative bottom margin) = size x 0.2885. Strings are coerced (+size); a falsy/invalid value falls back to 22. Scale the whole grid by changing this one number."
+    },
+    "max": {
+      "type": "number | string",
+      "default": 0,
+      "note": "Truncation cap. 0 (default) shows ALL cells. When > 0, only the first N hexes render and a \"+N more\" pill is appended for the remainder (remaining = total - max, clamped to >= 0). Strings are coerced (+max)."
+    }
+  },
+  "events": [],
+  "slots": {},
+  "decisionFlow": [
+    "Showing the severity spread across MANY monitors at a glance (the shape of the fleet's health)? -> obs-severity-heatmap honeycomb.",
+    "Only a handful of items, and you need per-row columns/detail (IP, type, actions)? -> a table, not a honeycomb.",
+    "A single value against a group total, coloured by status? -> an obs-gauge dial (or a row of them), not a honeycomb.",
+    "A trend over time or multiple series? -> a line/area chart from the data-viz family.",
+    "Too many monitors to render comfortably? -> cap with max=\"N\" so it shows the first N + a \"+N more\" pill (or pre-slice the data).",
+    "Need each hex to identify its monitor on hover? -> pass OBJECT cells with name/ip + location; bare severity strings render colour-only (no tooltip)."
+  ],
+  "usageRules": {
+    "infra-honeycomb": {
+      "useWhen": "a dashboard needs the at-a-glance severity spread of a large monitor fleet — worst severities banded at the top, healthy up filling the body",
+      "dontUse": "for a short list where the reader needs columns/detail per monitor (use a table), or a single aggregate figure (use a gauge)",
+      "example": "<obs-severity-heatmap cells='[{\"severity\":\"down\",\"name\":\"172.16.8.113\",\"location\":\"MB_Location_5\"}, ...]' size=\"22\"></obs-severity-heatmap>",
+      "asSeenIn": "Alert-Summary dashboard -> \"Infrastructure Heatmap\" widget card"
+    },
+    "hover-identity": {
+      "useWhen": "the reader will want to spot-check individual monitors — give each cell a name/ip and a location so the hover tooltip shows \"172.16.8.113 / MB_Location_5 / Warning\"",
+      "dontUse": "when you only have the severity per cell (bare strings render colour-only, which is fine for a pure density view)",
+      "example": "cells: [{ severity: 'warning', name: '172.16.8.113', location: 'MB_Location_5' }] -> hover shows the name + location + a warning pill",
+      "asSeenIn": "the product PlainHeatMap tooltip (monitor IP + location + severity pill)"
+    },
+    "truncated": {
+      "useWhen": "the fleet is larger than the widget can comfortably show — cap it with max so a bounded preview + a \"+N more\" pill renders instead of an overflowing grid",
+      "dontUse": "when the whole population must be visible (the banding pattern is the point) — then render all cells and size the container instead",
+      "example": "<obs-severity-heatmap max=\"48\" cells='[ ... 200 cells ... ]' size=\"18\"></obs-severity-heatmap> -> 48 hexes + a \"+152 more\" pill",
+      "asSeenIn": "a compact summary tile previewing a large group"
+    },
+    "compact": {
+      "useWhen": "a small honeycomb of a handful of monitors must fit a tight widget or an inline health strip — shrink the whole grid with a smaller size (14-18) so the hexes interlock in a dense summary rather than the full-size dashboard grid",
+      "dontUse": "for hundreds of monitors where the banding shape is the point (use the full infra-honeycomb at size 22+), and don't hand-tune per-hex margins to force it small — change only size (the height size x 1.1547 and pull-up size x 0.2885 are derived from it)",
+      "example": "<obs-severity-heatmap size=\"14\" cells='[{\"severity\":\"up\",\"name\":\"172.16.8.101\",\"location\":\"MB_Location_1\"}, {\"severity\":\"warning\",\"name\":\"172.16.8.102\",\"location\":\"MB_Location_2\"}]'></obs-severity-heatmap>",
+      "asSeenIn": "a dense summary widget / inline health strip (size=\"14\" vs the dashboard's size=\"22\")"
+    },
+    "bare-cells": {
+      "useWhen": "you only have the severity per monitor and want a pure colour-only density view — pass plain severity STRINGS (['down','critical','up', ...]) so each hex fills with var(--severity-<level>) and the honeycomb reads as a spread of colour with no hover tooltip",
+      "dontUse": "when the reader needs to spot-check individual monitors on hover — a bare string has no name/location so no tooltip renders; pass OBJECT cells { severity, name, location } instead (the hover-identity card)",
+      "example": "<obs-severity-heatmap cells='[\"down\",\"critical\",\"warning\",\"up\",\"up\",\"up\"]' size=\"18\"></obs-severity-heatmap> -> colour-only hexes, no tooltip",
+      "asSeenIn": "the heat-map fixture's colour-only density view (severity strings, no identity)"
+    },
+    "size-scaling": {
+      "useWhen": "the honeycomb must fit its container — pick size (hex width px) to trade density for legibility (14-18 dense, 22 default, 26+ roomy)",
+      "dontUse": "sizing per-cell or hacking margins; the geometry (height size x 1.1547, pull-up size x 0.2885) is derived from this one number",
+      "example": "size=\"22\" (dashboard) vs size=\"14\" (dense strip)",
+      "asSeenIn": "dashboard uses size=\"22\""
+    }
+  },
+  "usage": {
+    "note": "approximate"
+  },
+  "do": [
+    "Use it for the severity spread of MANY monitors — one hex per monitor, colour = severity.",
+    "Pass object cells with a name/ip + location so the hover tooltip can identify each monitor.",
+    "Let the fill read from var(--severity-<level>) so the honeycomb follows light + dark theme.",
+    "Cap very large fleets with max=\"N\" (a \"+N more\" pill) instead of overflowing the widget.",
+    "Scale the whole grid with size (hex width); keep the derived geometry — don't hand-tune per-hex margins.",
+    "Order/band the data meaningfully (worst severities first) so the coloured shape tells a story, like the product."
+  ],
+  "dont": [
+    "Don't use a honeycomb for a small list that needs per-row detail — that's a table.",
+    "Don't use it for a single value-against-total figure — that's a gauge.",
+    "Don't rely on colour alone to convey a specific monitor's status — the identity lives in the hover tooltip, which is mouse-only (see a11y).",
+    "Don't hardcode hex fills — pass a real severity so the colour is information, not decoration.",
+    "Don't dump thousands of hexes unbounded into a small widget — cap with max or pre-slice."
+  ],
+  "a11y": {
+    "summary": "A presentational density map — each hex is a coloured, non-focusable div; severity is conveyed by colour (var(--severity-<level>)) and monitor identity only by a mouse-hover tooltip. Non-interactive to the keyboard.",
+    "issues": [
+      "Colour-only encoding: a cell's severity is communicated purely by its fill; there is no per-hex text or aria-label, so the meaning is lost to screen readers and to colour-blind users. The hover tooltip is the ONLY text alternative (it names the severity, e.g. \"Warning\") — but it is mouse-only, so the text alternative is unreachable by keyboard/AT and absent for bare-string cells.",
+      "The hover tooltip is mouse-only (mouseenter/mouseleave) and pointer-events:none — it can't be reached by keyboard or focus, so its name/location/severity content is unavailable to assistive tech.",
+      "The hexes are plain <div>s with no role/tabindex — the honeycomb is not keyboard-navigable and exposes no accessible name or summary of the population.",
+      "The 1px inset outline is the only separator between adjacent same-severity hexes; at small sizes low-contrast severities can be hard to distinguish."
+    ],
+    "notes": "Treat the honeycomb as a visual summary and pair it with an accessible equivalent (a table or a severity-count list) for the same data. A future improvement: role=\"img\" + an aria-label summarising the population (e.g. \"128 monitors: 6 down, 12 critical, 20 warning, 90 up\"), and a keyboard-reachable per-hex label."
+  },
+  "knownIssues": [
+    "Colour + hover only — no per-hex aria-label and the tooltip is mouse-only, so severity + identity are visual-only (see a11y).",
+    "The tooltip is anchored by pixel offsets within the honeycomb container and renders to the hex's right; near the right edge of a narrow widget it can clip (no flip/collision handling).",
+    "severity is not enum-validated — an unknown level yields var(--severity-<unknown>) which resolves to nothing, so that hex fills with no colour (transparent over the border box). Pass a known severity.",
+    "No virtualisation — every cell is a real DOM node; a very large unbounded fleet is heavy to render (use max or pre-slice)."
+  ],
+  "tokensUsed": [
+    "--severity-down",
+    "--severity-critical",
+    "--severity-major",
+    "--severity-warning",
+    "--severity-up",
+    "--severity-maintenance",
+    "--severity-unreachable",
+    "--border-color",
+    "--common-widget-bg",
+    "--page-text-color",
+    "--neutral-light",
+    "--active-text-color",
+    "--neutral-shadow-light",
+    "--primary-alt"
+  ],
+  "related": [
+    "charts",
+    "gauge",
+    "severity"
+  ],
+  "changelog": [
+    "2026-09-07 — Added obs-severity-heatmap: severity honeycomb (custom-engine reproduction of the product PlainHeatMap; the chart library ships heat-map as data-only). 1px-inset hex outline, size×1.1547 height, pull-up size×0.2885, +N-more truncation, and a hover tooltip (IP + location + severity pill). Used in the Alert-Summary dashboard Infrastructure Heatmap."
+  ],
+  "storybook": "Data Visualization/Severity Heatmap",
+  "figma": {
+    "status": "not-started",
+    "component": "Severity Heatmap"
+  }
+}

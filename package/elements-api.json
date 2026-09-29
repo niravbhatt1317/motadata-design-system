@@ -903,6 +903,32 @@
           "attribute": "placeholder",
           "type": "String",
           "default": "''"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "String",
+          "default": "''",
+          "note": "'' (default) | 'lg' → taller trigger (35px, matches toolbar buttons)"
+        },
+        {
+          "prop": "showRange",
+          "attribute": "show-range",
+          "type": "Boolean",
+          "default": "false",
+          "note": "attr show-range → print the resolved absolute range beside the pill (product TimeRangePicker)"
+        },
+        {
+          "prop": "rangeStart",
+          "attribute": "range-start",
+          "type": "[Number,String]",
+          "default": "0"
+        },
+        {
+          "prop": "rangeEnd",
+          "attribute": "range-end",
+          "type": "[Number,String]",
+          "default": "0"
         }
       ],
       "events": [
@@ -939,6 +965,12 @@
           "type": "String",
           "default": "'all'",
           "note": "the Match toggle mode: 'all' (AND) | 'any' (OR). Emitted in `change` as {conditions, match}."
+        },
+        {
+          "prop": "quickFilters",
+          "attribute": "quick-filters",
+          "type": "[String,Array]",
+          "default": "''"
         }
       ],
       "events": [
@@ -1402,6 +1434,13 @@
           "attribute": "empty-text",
           "type": "String",
           "default": "'No records found'"
+        },
+        {
+          "prop": "fullWidth",
+          "attribute": "full-width",
+          "type": "Boolean",
+          "default": "false",
+          "note": "FLUSH edge-to-edge: first cell's left pad + last cell's right pad removed; rules/dividers/hover span the whole width (default = the slight inset)"
         }
       ],
       "events": [
@@ -1415,7 +1454,10 @@
         "canceledit",
         "cellaction"
       ],
-      "slots": []
+      "slots": [
+        "bulk-actions",
+        "footer"
+      ]
     },
     "obs-modal": {
       "element": "ObsModal",
@@ -1738,6 +1780,13 @@
           "type": "[Boolean,String]",
           "default": "false",
           "note": "a \"+\" at the far right of the bar → emits `add`"
+        },
+        {
+          "prop": "scrollable",
+          "attribute": "scrollable",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "overflow FADE gradient auto-appears when the strip is wider than its box; set false to force-disable"
         }
       ],
       "events": [
@@ -1888,6 +1937,20 @@
           "type": "[Boolean,String]",
           "default": "false",
           "note": "show the back chevron button (fires `back` on click)"
+        },
+        {
+          "prop": "menuToggle",
+          "attribute": "menu-toggle",
+          "type": "[Boolean,String]",
+          "default": "false",
+          "note": "a CIRCULAR toggle button + separator that shows/hides the module's side-menu (fires `menutoggle` {open}). The section-header variant (Settings, module sub-nav)."
+        },
+        {
+          "prop": "menuOpen",
+          "attribute": "menu-open",
+          "type": "[Boolean,String]",
+          "default": "true",
+          "note": "the side-menu's open state — flips the chevron (open → ‹ collapse, closed → › expand)"
         },
         {
           "prop": "noDivider",
@@ -2431,12 +2494,13 @@
           "type": "String",
           "default": "'sections'",
           "enum": [
+            "settings",
             "sections",
             "categories",
             "tree",
             "list"
           ],
-          "note": "sections | categories | tree | list"
+          "note": "settings | sections | categories | tree | list"
         },
         {
           "prop": "items",
@@ -2704,6 +2768,129 @@
       "events": [
         "shift"
       ],
+      "slots": []
+    },
+    "obs-widget-card": {
+      "element": "ObsWidgetCard",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "title",
+          "attribute": "title",
+          "type": "String",
+          "default": "''"
+        },
+        {
+          "prop": "time",
+          "attribute": "time",
+          "type": "String",
+          "default": "''",
+          "note": "the hover time-range badge, e.g. '1h 12m'"
+        },
+        {
+          "prop": "static",
+          "attribute": "static",
+          "type": "Boolean",
+          "default": "false",
+          "note": "opt out of drag/resize (chrome only)"
+        }
+      ],
+      "events": [
+        "action"
+      ],
+      "slots": [
+        "default"
+      ]
+    },
+    "obs-widget-grid": {
+      "element": "ObsWidgetGrid",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "columns",
+          "attribute": "columns",
+          "type": "[Number,String]",
+          "default": "12"
+        },
+        {
+          "prop": "cellHeight",
+          "attribute": "cell-height",
+          "type": "[Number,String]",
+          "default": "80"
+        },
+        {
+          "prop": "gap",
+          "attribute": "gap",
+          "type": "[Number,String]",
+          "default": "10"
+        }
+      ],
+      "events": [
+        "layout-change"
+      ],
+      "slots": [],
+      "dynamicSlots": "also exposes a dynamic named slot whose name is provided at runtime"
+    },
+    "obs-gauge": {
+      "element": "ObsGauge",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "value",
+          "attribute": "value",
+          "type": "[Number,String]",
+          "default": "0"
+        },
+        {
+          "prop": "total",
+          "attribute": "total",
+          "type": "[Number,String]",
+          "default": "0",
+          "note": "the group total → arc fraction (0 total renders just the centre dot)"
+        },
+        {
+          "prop": "severity",
+          "attribute": "severity",
+          "type": "String",
+          "default": "''",
+          "note": "severity level → --severity-<level>; '' falls back to --primary"
+        },
+        {
+          "prop": "label",
+          "attribute": "label",
+          "type": "String",
+          "default": "''"
+        }
+      ],
+      "events": [],
+      "slots": []
+    },
+    "obs-severity-heatmap": {
+      "element": "ObsSeverityHeatmap",
+      "referenceOnly": false,
+      "attributes": [
+        {
+          "prop": "cells",
+          "attribute": "cells",
+          "type": "[Array,String]",
+          "default": "() => []"
+        },
+        {
+          "prop": "size",
+          "attribute": "size",
+          "type": "[Number,String]",
+          "default": "22",
+          "note": "hex width in px (height = size × 1.1547)"
+        },
+        {
+          "prop": "max",
+          "attribute": "max",
+          "type": "[Number,String]",
+          "default": "0",
+          "note": "0 = show all; else truncate to N + a \"+N more\" pill"
+        }
+      ],
+      "events": [],
       "slots": []
     }
   }

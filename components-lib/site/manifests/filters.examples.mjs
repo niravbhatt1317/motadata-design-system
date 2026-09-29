@@ -5,6 +5,10 @@ const el = (attrs) => `<obs-filters ${attrs}></obs-filters>`
 const WIRED_FIELDS = '[{"key":"status","label":"Status","type":"enum","values":["Open","In Progress","Closed"]},{"key":"priority","label":"Priority","type":"enum","values":["P1","P2","P3"]},{"key":"assignee","label":"Assignee","type":"string","values":["Alex","Sam","Jordan"]}]'
 const WIRED_VALUE = '[{"field":"status","operator":"is","value":["Open","In Progress"]},{"field":"priority","operator":"is","value":["P1"]}]'
 const wired = `<obs-filters kind="bar" fields='${WIRED_FIELDS}' value='${WIRED_VALUE}'></obs-filters>`
+// quick-filter pills: standing Groups / Types / Severity category pills + "+ Filter" (the product Monitors/Inventory row)
+const QF_FIELDS = '[{"key":"group","label":"Groups","type":"enum","selectAll":true,"values":["Cloud > Azure Cloud","Other","Server","GvV > GvvRegion > GvV DC"]},{"key":"type","label":"Types","type":"enum","values":["Linux","Windows","Database","Router","Network Switch","Firewall"]},{"key":"severity","label":"Severity","type":"enum","values":[{"v":"Down","col":"--severity-down"},{"v":"Critical","col":"--severity-critical"},{"v":"Major","col":"--severity-major"},{"v":"Warning","col":"--severity-warning"},{"v":"Clear","col":"--severity-clear"},{"v":"Unreachable","col":"--severity-unreachable"}]}]'
+const QF_QUICK = '["group","type","severity"]'
+const quickPills = `<obs-filters kind="bar" fields='${QF_FIELDS}' value='[]' quick-filters='${QF_QUICK}'></obs-filters>`
 const block = (label, inner, minH = '80px') => ({ html: `<div style="width:100%">${lbl(label)}<div style="min-height:${minH}">${inner}</div></div>` })
 export default {
   el: 'obs-filters',
@@ -22,6 +26,7 @@ export default {
     { group: 'Filter bar (~50×) — inline chip bar: field · operator · value chips + Match All/Any + Clear All', items: [
       block('bar — click a chip segment to edit; + Filter adds; × removes', el('kind="bar"'), '300px'),
       block('bar WIRED to your data — pass fields + value (here: Status/Priority/Assignee, not the demo); it emits a `change` event with the conditions and reflects el.value on every edit', wired, '300px'),
+      block('bar + quick filters (Groups / Types / Severity / + Filter) — pass quick-filters=field keys; each renders a STANDING category pill before "+ Filter". Click an empty pill to pick values (it becomes a Label = value(+N) × chip); pills persist even when empty', quickPills, '340px'),
     ] },
     { group: 'Expression builder (32×) — nested AND/OR query builder in a popover (Pre/Post tabs)', items: [
       block('expression — click the trigger to open the builder, then Apply', el('kind="expression"'), '520px'),

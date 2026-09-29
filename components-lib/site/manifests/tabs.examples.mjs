@@ -30,6 +30,10 @@ const DYNAMIC = [
   { key: 'sorting', label: 'Sorting' }, { key: 'column', label: 'Column Setting' },
 ]
 const DYNAMIC_BODY = Object.fromEntries(DYNAMIC.map((t) => [t.key, `Editing <strong>${t.label}</strong>.`]))
+// the product inventory categories — far more tabs than fit a narrow container, so the overflow fade shows
+const OVERFLOW = ['Inventory', 'Network', 'SDN', 'Server & Apps', 'Storage', 'Virtualization', 'HCI', 'Database', 'Container Orchestration', 'Cloud', 'Interface', 'WAN Link', 'Process', 'Container', 'Service', 'Service Check', 'Other']
+  .map((label) => ({ key: label.toLowerCase().replace(/[^a-z]+/g, '-'), label }))
+const OVERFLOW_BODY = Object.fromEntries(OVERFLOW.map((t) => [t.key, `<strong>${t.label}</strong> inventory.`]))
 
 const block = (label, inner) => ({ html:
   `<div><div style="font-size:11px;color:var(--neutral-light,#6a7fa0);font-family:'JetBrains Mono',monospace;margin-bottom:8px">${label}</div>${inner}</div>` })
@@ -82,6 +86,14 @@ export default {
     ] },
     { group: 'Persisted — set persist-key and the active tab is remembered in localStorage (`<key>-tab`); it survives reload / navigation. Switch tabs below, then reload the page — the last tab is restored', items: [
       block('persist-key="ds-demo"', tabsEl(SECTIONS.slice(0, 3), SEC_BODY, 'persist-key="ds-demo"')),
+    ] },
+    { group: 'Overflow (scrollable) — many tabs in a narrow container: when the strip is wider than its box it scrolls horizontally (native wheel/trackpad/drag; scrollbar hidden) and a white→transparent FADE gradient appears on each edge that can scroll further (left hides at the start, right at the end). No chevron buttons — the fade is the sole hint. The active tab is auto-scrolled into view. Automatic — no prop needed. The 1px bottom rule spans the full width (fixed container), never scrolling away', items: [
+      block('~17 tabs in a 600px box → edge fade appears', `<div style="width:600px;max-width:100%">${tabsEl(OVERFLOW, OVERFLOW_BODY, `value="${OVERFLOW[0].key}"`)}</div>`),
+    ] },
+    { group: 'Inset (--tabs-inset) — pads the tab GROUP while the 1px bottom rule ALWAYS spans full width. Default is 8px. Set --tabs-inset:0 for a flush edge-to-edge strip, or a larger value (e.g. 20px) to align the tabs with a page content gutter. The two rows below share the same tabs — only the inset differs (note the rule stays full-width in both)', items: [
+      block('default (--tabs-inset: 8px) — the tab group sits 8px in; rule full-width', tabsEl(SECTIONS.slice(0, 5), SEC_BODY, `value="overview"`)),
+      block('--tabs-inset: 0 — flush edge-to-edge (first tab hard against the left)', `<div style="--tabs-inset:0">${tabsEl(SECTIONS.slice(0, 5), SEC_BODY, `value="overview"`)}</div>`),
+      block('--tabs-inset: 20px — aligned to a 20px page gutter', `<div style="--tabs-inset:20px">${tabsEl(SECTIONS.slice(0, 5), SEC_BODY, `value="overview"`)}</div>`),
     ] },
     { group: 'Closable + addable (editable tab strip) — `closable` shows a × on each tab (ONLY when there is more than one) and `addable` shows a + at the far right; they emit `close` {key} / `add` for the parent to add / remove tabs. This is the pattern the metric-explorer MONITOR tabs use — see the Metric Picker for a live add / remove', items: [
       block('closable addable', tabsEl(SECTIONS.slice(0, 3), SEC_BODY, 'closable addable')),

@@ -17,6 +17,11 @@
       "usage": "50×"
     },
     {
+      "name": "bar-quick-filters",
+      "what": "filter bar with standing category pills (Groups/Types/Severity) + '+ Filter'",
+      "usage": "Monitors/Inventory list"
+    },
+    {
       "name": "quick-filters",
       "what": "preset one-click menu",
       "usage": ""
@@ -65,6 +70,11 @@
         "any"
       ],
       "note": "the Match toggle mode: all (AND) | any (OR). Driven + emitted (was internal-only)."
+    },
+    "quickFilters": {
+      "type": "[String, Array]",
+      "default": "",
+      "note": "kind=\"bar\" only. Field KEYS (array or comma list, e.g. [\"group\",\"type\",\"severity\"]) that render as STANDING quick-filter pills BEFORE the '+ Filter' chip. An empty pill shows just the field's LABEL (grey category pill) and opens that field's value picker on click; when set it becomes the normal field·operator·value chip (with a +N count on multiple values and an × to clear). Pills PERSIST even when empty (unlike plain kind=\"bar\", which shows only active chips). Non-quick fields are still added via '+ Filter'. Reuses the exact bar chip machinery."
     }
   },
   "renders": "REFERENCE REPRODUCTIONS — the live filters are store-bound (FilterCondition is 500+ lines). The Filter bar reproduction is fully interactive.",
@@ -163,12 +173,14 @@
     "summary": "Field/operator/value selects (FlotoDropdownPicker) + real buttons (+Filter, Add, Reset/Apply); convey the nested Group→Condition structure to AT.",
     "issues": [
       "SF-001 focus ring on chips/selects/buttons.",
-      "Icon-only triggers (thumbs-up, chip ×, row ×) need accessible names."
+      "Icon-only triggers (thumbs-up, chip ×, row ×) need accessible names.",
+      "Each quick-filter pill is a real <button> whose text IS its accessible name (the field label, e.g. 'Groups'); a set pill's × has its own accessible name to clear that filter."
     ],
     "doc": "Molecules/Filters/Accessibility",
     "$note": "Catalogue-wide gap SF-001 = no visible :focus-visible ring; tracked in findings/."
   },
   "changelog": [
+    "2026-09-09 — Quick-filter pills on the filter bar (element): new `quickFilters` prop (kind=\"bar\") — pass field KEYS (array or comma list, e.g. ['group','type','severity']) to render STANDING category pills BEFORE '+ Filter', matching the product Monitors/Inventory screen. An empty pill shows just the field label (grey category pill) and opens that field's value picker on click; a set pill is the normal field·operator·value chip with a +N count and an × to clear; pills persist even when empty. Reuses the existing bar chip machinery (chips ref, barAdd/barRemove, embedded value <obs-select>, emitChange) — plain kind=\"bar\" without quickFilters is unchanged (active chips + '+ Filter' only). Added the 'bar + quick filters' variant, usageRules card (asSeenIn = Monitors/Inventory), and a pill-a11y note.",
     "2026-08-09 — Filter-bar fixes (consumer G16/G17/G18): (G16) the vanishing chip — the write-back now compares LIKE WITH LIKE (JSON-normalised, so an array seed no longer looks different from its string form) and NEVER rebuilds internal state from its own reflect, so a half-built chip survives and a filter can be added in ONE pass. (G18) the Match toggle is now a real driven `match` prop (all|any) and the mode is EMITTED — the `change` payload is now {conditions, match} (was a bare conditions array — update your handler). (G17) Match only shows at >=2 conditions (meaningless at one). Verified end-to-end.",
     "2026-07-14: completeness pass (owner) — reviewed the full surface (already comprehensive: the `kind` control switches all 5 archetypes; gallery covers each + a wired bar; the per-archetype contracts live in the apis block; the spec has the archetypes table + decision). Added a 'Bar data' playground preset (built-in demo vs wired fields+value) so the functional kind=\"bar\" contract is demonstrable.",
     "2026-07-01: added to the Elements site — obs-filters, the filtering family as one element via a `kind` prop: bar (FlotoFilterBar ~50× — interactive field·operator·value chips + Match All/Any + Clear All), expression (FiltersContainer 32× — nested AND/OR query builder popover with Pre/Post tabs, groups, conditions, Reset/Clear/Apply), quick (preset menu), row (multi-selects + Reset/Apply), vertical (faceted sidebar — search + collapsible checkbox+count groups). Reference reproductions with real tokens; gated by cross-render token check (light+dark) + driven chip/expression/vertical interaction.",
@@ -186,6 +198,12 @@
       "useWhen": "You want a compact inline chip filter sitting directly over a grid. The Filter bar (FlotoFilterBar, ~50×) renders field·operator·value chips (default-chips declared by the module via defaultChips have no ×), a '+ Filter' button, a Match All/Any toggle, and Clear All; chips scroll horizontally while the segment picker floats position:fixed so it never clips.",
       "dontUse": "Don't use when you need nested groups or AND/OR logic beyond a flat Match All/Any (→ Expression builder). Don't use for one-click presets (→ Quick filters) or a slide-in facet panel (→ Filter row). Not for plain text search (→ Input 'search' type).",
       "example": "The inline chip bar over a data grid where the module seeds leading default-chips (e.g. Groups/Types/Severity via defaultChips) and users add field·operator·value chips with Match All/Any — the ~50× FlotoFilterBar usage."
+    },
+    "bar-quick-filters": {
+      "useWhen": "kind=\"bar\" over a list where a few fields are the primary, always-visible facets (e.g. Groups / Types / Severity on the Monitors/Inventory grid). Pass those field keys as `quickFilters` and they render as STANDING pills before the '+ Filter' chip: an empty pill shows just the category label and opens that field's value picker on click; a set pill shows the value(s) with a +N count and an × to clear. The pills persist even when empty, so the primary facets are always one click away while other fields are still added via '+ Filter'.",
+      "dontUse": "Don't use quickFilters when the bar should show only whatever the user has actively added (→ plain kind=\"bar\", which shows active chips + '+ Filter' only). Don't use for nested AND/OR groups (→ Expression builder), one-click saved presets (→ Quick filters), or a slide-in facet panel (→ Filter row). Don't preset a quick key that isn't in `fields` — it is silently dropped.",
+      "example": "<obs-filters kind=\"bar\" :fields.prop=\"fields\" :quick-filters.prop=\"['group','type','severity']\"></obs-filters> → a Groups / Types / Severity / + Filter row; click Groups to pick group values, the pill then reads 'Groups = MySQL (+2)' with an ×.",
+      "asSeenIn": "The Monitors / Inventory list screen — the filter row under the grid toolbar shows the standing Groups / Types / Severity pills + '+ Filter'."
     },
     "quick-filters": {
       "useWhen": "You want to expose common, one-click preset filters. Quick filters (filter-quick-menu) is a thumbs-up button that opens a panel of PRESET filters as { key, label, condition }; picking one immediately applies that condition.",

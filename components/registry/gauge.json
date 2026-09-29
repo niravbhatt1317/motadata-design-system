@@ -1,0 +1,226 @@
+{
+  "name": "gauge",
+  "component": "ObsGauge",
+  "display": "Gauge",
+  "tier": "molecule",
+  "family": "Data Visualization",
+  "section": "Components",
+  "source": "custom-engine",
+  "status": "core",
+  "maturity": "stable",
+  "summary": "A single ring gauge — the product's Monitor-Availability / Alert-Count dial. A track ring with a severity-coloured arc swept to value/total, a large mono number in the centre, and an optional label beneath. The DS chart library flags \"gauge\" as a CUSTOM-ENGINE type (data-only, no serializable config); this element IS that renderer, as a drop-in web component.",
+  "selectHint": "Use for a single count-against-a-total dial coloured by a severity/status level (Up, Down, Critical, Warning…). One gauge = one slice of a group; lay several in a row to show a whole group (Monitor Availability, Alert Count). Not for a trend over time (use a line/area chart) and not for a share-of-total breakdown as one figure (use a donut/pie).",
+  "whenToUse": "A KPI dial where a value reads against a group total and the fill is meaningfully coloured by a status — the availability/alert dials on the Alert-Summary dashboard. The arc length encodes value/total; the colour encodes severity.",
+  "insteadOf": [
+    "a hand-drawn SVG donut wired to raw numbers",
+    "a bare number tile that loses the value/total ratio and the severity colour",
+    "the licensed chart-library gauge (it ships data-only with no config — this element is the renderer)"
+  ],
+  "variants": [
+    {
+      "name": "availability-dial",
+      "what": "Monitor-Availability member: value = monitors in that state, total = the group total (e.g. 172). Severity is a monitor status: up / down / unreachable / maintenance.",
+      "usage": "dashboard: 4-up row (Up/Down/Unreachable/Maintenance)"
+    },
+    {
+      "name": "alert-count-dial",
+      "what": "Alert-Count member: value = alerts at that severity, total = the alert-group total (e.g. 37). Severity is an alert level: down / critical / major / warning.",
+      "usage": "dashboard: 4-up row (Down/Critical/Major/Warning)"
+    },
+    {
+      "name": "unsevered",
+      "what": "severity=\"\" (omitted) — arc and number fall back to --primary. A neutral dial when no status colour applies.",
+      "usage": "fallback"
+    },
+    {
+      "name": "empty",
+      "what": "total=0 (or value=0) — the arc is empty, only the track ring + a centre 0 render. The dashboard's Unreachable/Maintenance dials sit here at rest.",
+      "usage": "zero-state (common at rest)"
+    },
+    {
+      "name": "full",
+      "what": "value>=total — the arc sweeps the full ring (fraction clamped to 1). A saturated/at-capacity dial.",
+      "usage": "edge"
+    }
+  ],
+  "sizes": [
+    {
+      "name": "default",
+      "value": "82px ring",
+      "note": "Fixed 82×82 SVG ring, 6-unit stroke; centre number 28px/600 mono, label 12px. Not size-configurable — scale via the container/zoom."
+    }
+  ],
+  "states": [
+    {
+      "name": "default",
+      "what": "Static readout — the arc is coloured by severity and swept to value/total."
+    },
+    {
+      "name": "empty",
+      "what": "total=0 or value=0 — only the track ring + centre 0 show (no arc)."
+    },
+    {
+      "name": "full",
+      "what": "value>=total — the arc is clamped to a full ring."
+    },
+    {
+      "name": "updating",
+      "what": "value/total change — the arc animates via a 0.4s stroke-dasharray transition (no interactive/hover/focus states; the gauge is non-interactive)."
+    }
+  ],
+  "props": {
+    "value": {
+      "type": "number | string",
+      "default": 0,
+      "note": "The measured count for this dial. Drawn as the centre number AND as the arc numerator (arc = value/total, clamped to 0..1). Strings are coerced (+value)."
+    },
+    "total": {
+      "type": "number | string",
+      "default": 0,
+      "note": "The group total → the arc denominator. total=0 renders no arc (just the track ring + centre number). Strings are coerced (+total)."
+    },
+    "severity": {
+      "type": "string",
+      "default": "",
+      "enum": [
+        "",
+        "up",
+        "down",
+        "critical",
+        "major",
+        "warning",
+        "unreachable",
+        "maintenance",
+        "clear",
+        "disable",
+        "unknown",
+        "suspended"
+      ],
+      "note": "Severity/status level → the arc + number colour var(--severity-<level>). Empty string falls back to var(--primary). Availability dials use up/down/unreachable/maintenance; alert dials use down/critical/major/warning."
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "note": "Optional caption under the ring (e.g. \"Up\", \"Critical\"). Omit it to render just the dial. 12px, --neutral-light."
+    }
+  },
+  "events": [],
+  "slots": {},
+  "decisionFlow": [
+    "Showing a value against a group total with a status colour (monitors up/down, alerts by severity)? -> obs-gauge.",
+    "Showing a whole group at once? -> lay ONE obs-gauge per member in a flex row, each with the SAME total (the group total) and its own value + severity.",
+    "No meaningful status colour for the figure? -> omit severity (falls back to --primary) — or reconsider whether a plain number/stat tile reads better.",
+    "A trend over time, or many series? -> NOT a gauge; use a line/area chart from the data-viz family.",
+    "A part-to-whole breakdown as a single figure (share of total across categories)? -> a donut/pie, not a ring of separate gauges.",
+    "value can exceed total? -> fine, the arc clamps to a full ring; the centre number still shows the raw value."
+  ],
+  "usageRules": {
+    "availability-dial": {
+      "useWhen": "showing monitor availability broken out by status — Up / Down / Unreachable / Maintenance, each against the monitor group total",
+      "dontUse": "for a single aggregate availability % with no per-status split (a stat tile reads better), or for a time trend",
+      "example": "<obs-gauge value=\"160\" total=\"172\" severity=\"up\" label=\"Up\"></obs-gauge> in a 4-up row (Up 160 / Down 12 / Unreachable 0 / Maintenance 0), all total=172",
+      "asSeenIn": "Alert-Summary dashboard — \"Monitor Availability\" widget card"
+    },
+    "alert-count-dial": {
+      "useWhen": "showing alert counts broken out by severity — Down / Critical / Major / Warning, each against the alert group total",
+      "dontUse": "for a running alert timeline (use a chart) or a single total-alerts number (use a stat tile)",
+      "example": "<obs-gauge value=\"13\" total=\"37\" severity=\"down\" label=\"Down\"></obs-gauge> in a 4-up row (Down 13 / Critical 3 / Major 1 / Warning 20), all total=37",
+      "asSeenIn": "Alert-Summary dashboard — \"Alert Count\" widget card"
+    },
+    "severity-colour": {
+      "useWhen": "the figure has a status meaning — pass the matching severity so the arc + number read via var(--severity-<level>) (down = red, critical/major = orange scale, warning = yellow, up = green, maintenance/unreachable = muted/purple)",
+      "dontUse": "hardcoding a colour or picking a severity that doesn't match the data's real status; if there's no status, leave severity empty (falls back to --primary)",
+      "example": "severity=\"warning\" paints the arc var(--severity-warning); severity=\"\" paints it var(--primary)",
+      "asSeenIn": "both dashboard dial rows are severity-driven per member"
+    },
+    "empty-dial": {
+      "useWhen": "a member has zero count — pass value=\"0\" (and the group total) and it renders just the track ring + a centre 0, keeping the row aligned",
+      "dontUse": "hiding the zero member — the row is meant to show every status, including the empty ones",
+      "example": "<obs-gauge value=\"0\" total=\"172\" severity=\"unreachable\" label=\"Unreachable\"></obs-gauge>",
+      "asSeenIn": "Monitor Availability — Unreachable + Maintenance sit at 0 at rest"
+    },
+    "unsevered": {
+      "useWhen": "the figure carries no status meaning — omit severity (or pass severity=\"\") so the arc + centre number fall back to var(--primary); a neutral count-against-total dial when there is no Up/Down/Critical/Warning to encode",
+      "dontUse": "for any dial that DOES have a real status — Monitor Availability and Alert Count members always have a severity, so don't strip it there; and don't invent a severity just to get a colour",
+      "example": "<obs-gauge value=\"48\" total=\"120\" label=\"In progress\"></obs-gauge> — no severity attribute, arc paints var(--primary)",
+      "asSeenIn": "a generic count-of-total tile outside the severity-driven Alert-Summary rows (e.g. a neutral progress/coverage dial)"
+    },
+    "empty": {
+      "useWhen": "value=\"0\" or total=\"0\" — the arc is suppressed and only the track ring + a centre 0 render; use it to keep a zero member visible and the group row aligned rather than dropping the dial",
+      "dontUse": "collapsing or hiding the dial when its count is 0 — the whole point of the row is to show every status including the empty ones; also don't fake a tiny arc for a 0 value",
+      "example": "<obs-gauge value=\"0\" total=\"172\" severity=\"maintenance\" label=\"Maintenance\"></obs-gauge> — centre 0, track-only ring",
+      "asSeenIn": "Alert-Summary dashboard — Monitor Availability's Unreachable + Maintenance dials sit empty (0) at rest"
+    },
+    "full": {
+      "useWhen": "value >= total — the fraction clamps to 1 and the arc sweeps the entire ring while the centre still shows the raw value; use it for an at-capacity / all-in-one-state member (every monitor up, or every alert at one severity)",
+      "dontUse": "reading the full ring as \">100%\" — the arc caps at the ring, so pair it with the centre number when value exceeds total; and don't hand-cap the value before passing it in, the element clamps for you",
+      "example": "<obs-gauge value=\"172\" total=\"172\" severity=\"up\" label=\"Up\"></obs-gauge> — full green ring, centre 172",
+      "asSeenIn": "Monitor Availability — when the whole fleet is Up the Up dial is a full ring"
+    }
+  },
+  "usage": {
+    "note": "approximate"
+  },
+  "do": [
+    "Lay one gauge per group member in a flex row and give them all the SAME total (the group total) so the arcs are comparable.",
+    "Pass a severity that matches the data's real status — the colour is information, not decoration.",
+    "Always pass total when you want an arc; total=0 draws only the track ring + centre number.",
+    "Add a label under each dial so the count has a name (Up, Critical, …).",
+    "Let the colours read from --severity-* / --primary tokens so the dial follows light + dark theme.",
+    "Show zero members too (value=0) to keep the group row complete and aligned."
+  ],
+  "dont": [
+    "Don't use a gauge for a time trend or many series — that's a line/area chart.",
+    "Don't mix different totals across dials in the same group row — the arcs stop being comparable.",
+    "Don't hardcode a fill colour or pick a severity that misrepresents the status.",
+    "Don't rely on colour alone — pair the dial with its label (and the centre number carries the value).",
+    "Don't stretch or size-hack the 82px ring for a big-number KPI; use a stat tile if you only need the number."
+  ],
+  "a11y": {
+    "summary": "A presentational readout — the value renders as real SVG <text> (screen-reader legible) and the label as real text beneath. Non-interactive: no focus, no hover, no keyboard affordance.",
+    "issues": [
+      "The arc encodes value/total by length + colour only; the ratio is not announced. The centre number gives the raw value but not the \"of total\" context to assistive tech.",
+      "Severity meaning is conveyed by colour (var(--severity-<level>)) — the label text must carry the status name so it isn't colour-only.",
+      "The SVG has no role/aria-label or title; a screen reader reads the bare number, not \"160 of 172 Up\"."
+    ],
+    "notes": "The SVG carries NO text alternative — a screen reader reaches only the bare centre <text> number, never the arc's value/total ratio or the severity meaning. Two things follow: (1) ALWAYS pass a text `label` (the status name — Up, Critical, …) so status is never colour-only; (2) until the element grows a built-in alt, the CONSUMER should give the ring an accessible name — wrap it so the card reads \"Up: 160 of 172\", or (recommended) add `role=\"img\"` + `aria-label=\"Up: 160 of 172\"` on the host. For an accessible group, ensure the surrounding widget card announces the group total and each member's name + value, so the ratio each arc encodes is available in text."
+  },
+  "knownIssues": [
+    "No aria-label/title on the SVG — the value/total ratio and severity meaning are visual-only (see a11y). The centre number is legible but lacks the \"of total\" context.",
+    "Fixed 82px ring — not size-configurable via a prop; scale only via the container/zoom.",
+    "severity is not enum-validated in the element — an unknown level yields var(--severity-<unknown>) which resolves to nothing, so the arc falls back to no colour. Pass a known severity (or empty for --primary)."
+  ],
+  "tokensUsed": [
+    "--severity-up",
+    "--severity-down",
+    "--severity-critical",
+    "--severity-major",
+    "--severity-warning",
+    "--severity-unreachable",
+    "--severity-maintenance",
+    "--severity-clear",
+    "--severity-disable",
+    "--severity-unknown",
+    "--severity-suspended",
+    "--gauge-base-color",
+    "--chart-font-family",
+    "--primary",
+    "--neutral-light"
+  ],
+  "related": [
+    "charts",
+    "severity",
+    "metric-list",
+    "severity-heatmap",
+    "widget-card"
+  ],
+  "changelog": [
+    "2026-09-07 — Added obs-gauge to the DS: ring dial, arc = value/total, severity-coloured, mono centre number (28px/600). Custom-engine reproduction of the product gauge/dial (the chart library ships gauge as data-only). Used in the Alert-Summary dashboard for Monitor Availability + Alert Count.",
+    "2026-09-07 — Authored the prose spec (specs/gauge.md, 15 sections). Widened the showcase severity control to the full documented enum (incl. \"\" → --primary) and added dedicated gallery groups for the full + unsevered variants plus every severity colour (clear/disable/unknown/suspended). Sharpened the a11y guidance (SVG has no text alternative → require a label and a consumer-supplied role=img/aria-label) and completed tokensUsed."
+  ],
+  "storybook": "Data Visualization/Gauge",
+  "figma": {
+    "status": "not-started",
+    "component": "Gauge"
+  }
+}

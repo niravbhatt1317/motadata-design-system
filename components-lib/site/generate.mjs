@@ -96,9 +96,10 @@ function loadFixtures() {
 }
 
 // The shipped custom elements (only those with a built element get a page).
-const COMPONENTS = ['button', 'icon', 'tag', 'checkbox', 'switch', 'selected-pills', 'radio', 'input', 'link', 'dropdown', 'severity', 'loose-tags',
+const COMPONENTS = ['button', 'icon', 'tag', 'checkbox', 'switch', 'selected-pills', 'radio', 'input', 'link', 'dropdown', 'severity', 'severity-legend', 'loose-tags',
   'layout-app-shell', 'layout-grid', 'layout-screen-regions', 'layout-shells', 'layout-page-templates', 'layout-panels',
-  'tooltip', 'data-viz-tooltips', 'date-time-pickers', 'filters', 'drawer', 'grid-select', 'menu', 'color-picker', 'table', 'modal', 'metric-list', 'key-value', 'tabs', 'steps', 'page-header', 'app-header', 'user-menu', 'notification-menu', 'command-palette', 'toolbar', 'divider', 'banner', 'sidebar', 'breadcrumbs', 'side-menu', 'logo', 'metric-picker', 'noc-player', 'timeline-scrollbar']
+  'tooltip', 'data-viz-tooltips', 'date-time-pickers', 'filters', 'drawer', 'grid-select', 'menu', 'color-picker', 'table', 'pagination', 'modal', 'metric-list', 'key-value', 'tabs', 'steps', 'page-header', 'app-header', 'user-menu', 'notification-menu', 'command-palette', 'toolbar', 'divider', 'banner', 'sidebar', 'breadcrumbs', 'side-menu', 'logo', 'metric-picker', 'noc-player', 'timeline-scrollbar',
+  'gauge', 'severity-heatmap', 'widget-card', 'widget-grid']
 
 const read = (p) => fs.readFileSync(p, 'utf8')
 const exists = (p) => fs.existsSync(p)
@@ -121,7 +122,7 @@ function validate(id, registry, manifest) {
   const known = new Set(Object.keys(props).map((k) => k))
   const knownAttrs = new Set(Object.keys(props).map((k) => k.includes('-') ? k : k.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()))
   for (const c of manifest.controls || []) {
-    if (!c.slot && !c.slotPresets && !known.has(c.prop)) console.warn(`  ⚠ ${id}: control prop "${c.prop}" not in registry.props`)
+    if (!c.slot && !c.slotPresets && !c.slotToggle && !known.has(c.prop)) console.warn(`  ⚠ ${id}: control prop "${c.prop}" not in registry.props`)
   }
   for (const g of manifest.gallery || []) {
     for (const it of g.items) {

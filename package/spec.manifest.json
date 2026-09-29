@@ -1,17 +1,17 @@
 {
   "name": "@mtdt/observeops-ds-spec",
-  "version": "0.1.211",
-  "generated": "2026-09-02T11:35:41.337Z",
+  "version": "0.1.259",
+  "generated": "2026-09-28T17:22:58.944Z",
   "entry": "llms.txt",
   "contract": "AGENTS.md",
   "playbook": "authoring-playbook.md",
   "index": "components/index.json",
   "counts": {
-    "components": 49,
-    "registries": 55,
+    "components": 55,
+    "registries": 61,
     "recipes": 17,
-    "specs": 32,
-    "files": 153
+    "specs": 38,
+    "files": 166
   },
   "files": [
     {
@@ -201,8 +201,13 @@
     },
     {
       "path": "components/index.json",
-      "bytes": 70380,
-      "sha256": "24bdbd242612b3a11c2efa90257acb2a05490f6a235d2dffa1139d59ddfd1f90"
+      "bytes": 81102,
+      "sha256": "0aaace2a9060c85bac5b692b07942b65fa40aff58dbb4a844f989313dd9bc2a5"
+    },
+    {
+      "path": "components/page-contracts.json",
+      "bytes": 25685,
+      "sha256": "68b45d809f109a2faf991d1461aa554e5cee2c0922a31deeb6e47ae7efc47fe0"
     },
     {
       "path": "components/recipes/README.md",
@@ -211,8 +216,8 @@
     },
     {
       "path": "components/recipes/recipes.json",
-      "bytes": 47137,
-      "sha256": "03dd6f3004f3c77afd83b2fbfeb27a1bb391343493d10109f72d1c80fa295a24"
+      "bytes": 51488,
+      "sha256": "cc11037d404a316c2238bd0175a8b465ff3556e108e80cf92d070b9465e0ac08"
     },
     {
       "path": "components/registry/README.md",
@@ -226,8 +231,8 @@
     },
     {
       "path": "components/registry/app-header.json",
-      "bytes": 15611,
-      "sha256": "a5fd0439f6127c2f12ab7882d78920391a588016e41bce7174866fb6573f0fa8"
+      "bytes": 15954,
+      "sha256": "91c016e37db1ebbba3bdc5c48d7702d8639b709bb25e279108972d285d445dc1"
     },
     {
       "path": "components/registry/banner.json",
@@ -246,13 +251,13 @@
     },
     {
       "path": "components/registry/checkbox.json",
-      "bytes": 6134,
-      "sha256": "3c2c0d792cbbf5cdbea508f1f1b25830c7a9de8bf845ea936bad835fa48d9094"
+      "bytes": 6245,
+      "sha256": "f1ddb8625985471273a20168e27d4c3a1366ddc155b9c510fc64eb36a0b9ef56"
     },
     {
       "path": "components/registry/color-picker.json",
-      "bytes": 4289,
-      "sha256": "afe802ea1791988a47ad69562f770d852a5a3edee2dcb096f7720107471369ca"
+      "bytes": 4391,
+      "sha256": "22d11613730c5344deebe5b673feaa0869f8d2813f98d2a0d63eae7adc384c28"
     },
     {
       "path": "components/registry/command-palette.json",
@@ -271,8 +276,8 @@
     },
     {
       "path": "components/registry/date-time-pickers.json",
-      "bytes": 23563,
-      "sha256": "2b6fcec698a92b04d1e4000da18819e5721f19f6f54d19ed3779548a73aa0e99"
+      "bytes": 32727,
+      "sha256": "007beba65e3ea8045d1ca2490653cfc61ad494e28cb2a2bb0d8f6776c2e80a58"
     },
     {
       "path": "components/registry/divider.json",
@@ -291,8 +296,8 @@
     },
     {
       "path": "components/registry/filters.json",
-      "bytes": 15455,
-      "sha256": "c30791f9f41e78402c7876867a328637a0b79fff320ee257ea36a88d382eb61c"
+      "bytes": 18752,
+      "sha256": "edef9c19f1c33a1f9b6d029fe352e36a38281f8106c3c5b35998b1f1c26fa1fb"
     },
     {
       "path": "components/registry/form-item.json",
@@ -300,14 +305,19 @@
       "sha256": "4603d37395ca1da3793f429732b1d4c1e8d60952059e1c509d6b8ace98521163"
     },
     {
+      "path": "components/registry/gauge.json",
+      "bytes": 14558,
+      "sha256": "9425ce085f5dc974693b3cbfbdb0a1a7b0064b1d8b572b808609c18f13b73a71"
+    },
+    {
       "path": "components/registry/grid-select.json",
-      "bytes": 8453,
-      "sha256": "77b813a864484aa0ec7f0044453475b68c5f8d9ca07e6d527d77b6f6070af6b5"
+      "bytes": 8617,
+      "sha256": "8474f3c152bd5bdaaf2222e76a69bc7abef3a8ea2e142d770b5025750ff3d86d"
     },
     {
       "path": "components/registry/icon.json",
-      "bytes": 21143,
-      "sha256": "eb1e74dc7bc38215cf79bad241d704d75087aa120ff0be346aa16b4da2cb00bd"
+      "bytes": 21329,
+      "sha256": "9a82db24cf1dbe84788f168983559d864b3312e59b7a48a4dd026bad564fe941"
     },
     {
       "path": "components/registry/input.json",
@@ -316,8 +326,8 @@
     },
     {
       "path": "components/registry/key-value.json",
-      "bytes": 7172,
-      "sha256": "ecdab44097149e5e98b6a8f4da951b6943dcaafd95561f2151602f09458254ac"
+      "bytes": 7277,
+      "sha256": "b1d659d2769e1b25848c889e02393802fdacb9ea52904f80eb4d76dd95fc43b2"
     },
     {
       "path": "components/registry/layout-app-shell.json",
@@ -356,8 +366,8 @@
     },
     {
       "path": "components/registry/logo.json",
-      "bytes": 22818,
-      "sha256": "f70aae0897dc9ae62dac4630368fc463219e50578664886a6344a88ac6e7185b"
+      "bytes": 23620,
+      "sha256": "8bc50861f370b6e80d60245386c6ec1f4dad0fc190d6fd8ae3383338235c811c"
     },
     {
       "path": "components/registry/loose-tags.json",
@@ -366,13 +376,13 @@
     },
     {
       "path": "components/registry/menu.json",
-      "bytes": 10785,
-      "sha256": "7f5011344101154b6f39b55148de51bf2b3dba09f27dc5b9b661480b86840f10"
+      "bytes": 11290,
+      "sha256": "a396b2689f6a6f542c4f98c7acf344491f81bbff7c97587586a98f92805f6392"
     },
     {
       "path": "components/registry/metric-list.json",
-      "bytes": 4460,
-      "sha256": "937bcc06e96c542ecb2666f4d900fc67d0a941727622ff1854846e21a01d74a9"
+      "bytes": 4572,
+      "sha256": "7026a8d978b575ee8a960341910d909a8952580b323eaa179e45e3eab2e4e095"
     },
     {
       "path": "components/registry/metric-picker.json",
@@ -401,8 +411,13 @@
     },
     {
       "path": "components/registry/page-header.json",
-      "bytes": 15592,
-      "sha256": "465e834f8a525243fd426f7ce8e3a499b11bae907d3248b847d18451b80c666f"
+      "bytes": 23316,
+      "sha256": "6cec79f312308ad13441d050517bfc3b09f9fba57ddf3afa9108d4cba535fca2"
+    },
+    {
+      "path": "components/registry/pagination.json",
+      "bytes": 6387,
+      "sha256": "796a36862c9970d593a893e997f6a435d538c259dfbeb72e3f3b9581b4ca47a8"
     },
     {
       "path": "components/registry/popover.json",
@@ -430,14 +445,24 @@
       "sha256": "5d81cb7a6027821db4b12c1584e6d454566c78137d3c7152d68574996728f905"
     },
     {
+      "path": "components/registry/severity-heatmap.json",
+      "bytes": 14730,
+      "sha256": "7e930ac152f859de08d6d36d85f10c511d1b8599b74917e36dd8729f0a518ee1"
+    },
+    {
+      "path": "components/registry/severity-legend.json",
+      "bytes": 4843,
+      "sha256": "b66d7bf2a34fe6de8456874f223d778f7f7342342624d21695ffb29ef08cae58"
+    },
+    {
       "path": "components/registry/severity.json",
       "bytes": 14087,
       "sha256": "1f3f00b6aa6a19657aaa90886bf90cce359b6ec2505b203b646506c8e4c07457"
     },
     {
       "path": "components/registry/side-menu.json",
-      "bytes": 20846,
-      "sha256": "47eab0eaf4c239a495b61388164bceb1ff0f1d6146b7d7ba545a3956efbf1f1a"
+      "bytes": 29362,
+      "sha256": "7a247228ec7da197d9864d3387f40cddec90bb97923b0495d4d6d823cf155328"
     },
     {
       "path": "components/registry/sidebar.json",
@@ -456,13 +481,13 @@
     },
     {
       "path": "components/registry/table.json",
-      "bytes": 33537,
-      "sha256": "e84fec613c8d96a02a4d53ed29c864ba7d9b1c7cf39a6f7b6624c062bbfc2cd7"
+      "bytes": 49050,
+      "sha256": "db9b8854727d7dbc861410b1b0290c753caa2654e56e68da0a88c49d582e4de4"
     },
     {
       "path": "components/registry/tabs.json",
-      "bytes": 17480,
-      "sha256": "87b3d1d67777aca84ce696ccc42381c1c7667056934dc072ff1d25a3c0baf5f1"
+      "bytes": 20662,
+      "sha256": "6a4a980ae8fcb8cc28c707e0bb732ec66ff3e65e2fcc297830a3ccfa7df09bb5"
     },
     {
       "path": "components/registry/tag.json",
@@ -481,8 +506,8 @@
     },
     {
       "path": "components/registry/toolbar.json",
-      "bytes": 9575,
-      "sha256": "ef08cb2c35182150354cce4b48a1090c3b74772e8dcdfc2181a5888c41e72908"
+      "bytes": 10150,
+      "sha256": "85d4b1603b4e8e6a013b99883697dabc3332e04ba2379d53bf2ecb3b95dcd38c"
     },
     {
       "path": "components/registry/toolbars.json",
@@ -496,8 +521,18 @@
     },
     {
       "path": "components/registry/user-menu.json",
-      "bytes": 12973,
-      "sha256": "a678b0e1b94df0066dbc1eee4e4f16e385391a91b6342d8191935228b5bbfe7d"
+      "bytes": 13316,
+      "sha256": "a7aa43b82116a966c032f71e5ad7fd99bdcb96c808026051ed10415cca7008cc"
+    },
+    {
+      "path": "components/registry/widget-card.json",
+      "bytes": 12227,
+      "sha256": "99762e7a3b49198fc6ca9afa2aaec47382a262119d0ad2af9c0531f902067958"
+    },
+    {
+      "path": "components/registry/widget-grid.json",
+      "bytes": 14275,
+      "sha256": "6771f935ac16348e5ca80ddce9744dbba928ef4a9554555046a7ef5a1a150eb5"
     },
     {
       "path": "components/specs/README.md",
@@ -531,8 +566,8 @@
     },
     {
       "path": "components/specs/date-time-pickers.md",
-      "bytes": 11263,
-      "sha256": "1fe30c6dbd4d6a7e9c56517422c48cb3d09945c33aae6d4c83978199f3737c2f"
+      "bytes": 17835,
+      "sha256": "487fb57a8ce244b3b3c091c843677e1afa53b64ca850885a685eb43d08a9e10e"
     },
     {
       "path": "components/specs/divider.md",
@@ -558,6 +593,11 @@
       "path": "components/specs/form-item.md",
       "bytes": 7210,
       "sha256": "4cf62a2255c3d84911ffa9e8c88442eaf2d26df38a130cdd6fef6802e9614f8e"
+    },
+    {
+      "path": "components/specs/gauge.md",
+      "bytes": 12561,
+      "sha256": "c6abec02ae3df507a431b225bd63ee8df035add530a53f2e3eb467ee1fdb32fe"
     },
     {
       "path": "components/specs/grid-select.md",
@@ -605,6 +645,11 @@
       "sha256": "c29dba31ba6bd1967a2271bef737cd9eee2ff3225b9af7d5126057fc7e8073f0"
     },
     {
+      "path": "components/specs/pagination.md",
+      "bytes": 4187,
+      "sha256": "db4309c9e4a46764aca2cd0a46aaf856f302ef55f0de9a2b3f090e4adf4bf207"
+    },
+    {
       "path": "components/specs/popover.md",
       "bytes": 5994,
       "sha256": "09e162ff0cd518f0627123a12e4fd93d7337640e6ff58e4843d1b1401648cd36"
@@ -623,6 +668,16 @@
       "path": "components/specs/select.md",
       "bytes": 6498,
       "sha256": "9c260251d31ea3f876780e01b975284871955aae0a55511bedfe5c3709f395f8"
+    },
+    {
+      "path": "components/specs/severity-heatmap.md",
+      "bytes": 14832,
+      "sha256": "bdfdc0f2e62e015ff25c8029b0eb9dcc7a4cb3321928ddd667ad38e0cdcdc5db"
+    },
+    {
+      "path": "components/specs/severity-legend.md",
+      "bytes": 3180,
+      "sha256": "f4dc254c8093beec9341d3ead5548c96e35364cdd4022d19ca982ade7ef79dd4"
     },
     {
       "path": "components/specs/switch.md",
@@ -660,6 +715,16 @@
       "sha256": "6fc27b526ee89a67f57ee62c7313faf1f37da35baf78f224eb397ceb22c71b92"
     },
     {
+      "path": "components/specs/widget-card.md",
+      "bytes": 14463,
+      "sha256": "55f48b6aaf583282dcf69baa4ad852112193fc8125519f5f3a9f845843b95d23"
+    },
+    {
+      "path": "components/specs/widget-grid.md",
+      "bytes": 16370,
+      "sha256": "de886fcf415270db6207fdc259984da983aa004dc3da325b669dfd0e163289e1"
+    },
+    {
       "path": "conformance/README.md",
       "bytes": 3154,
       "sha256": "7e1c1cbf6b42f40cad05e7d071dfb1d58444b308e7466d091115b513bee26f5f"
@@ -676,8 +741,8 @@
     },
     {
       "path": "elements-api.json",
-      "bytes": 72056,
-      "sha256": "729fc5811c30f9176bfbb39d9978531ab6f163175515f01c4ade94b304e31e71"
+      "bytes": 77385,
+      "sha256": "93adca49ea5648102ebdd7ef3bb93a20187fa37dc824e97cc5752c6cec020b1c"
     },
     {
       "path": "foundation/README.md",
@@ -706,8 +771,8 @@
     },
     {
       "path": "index.js",
-      "bytes": 2752,
-      "sha256": "9b2e2be394451d731cf5c10e255e3918f510d53c556f15abc91a2a79e86d35bf"
+      "bytes": 3005,
+      "sha256": "f69aee0d4b09b5bf0946d9323c93692e8af5d1c886780b76116dcc685085bd02"
     },
     {
       "path": "layout/grid.json",
@@ -726,8 +791,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1125,
-      "sha256": "0b940bf9c5e786eebe4297f082e15f49bf052d696f47983fe0bb42fc57b9f8c2"
+      "bytes": 1140,
+      "sha256": "e6889463b1ea8a095938e23dae9c640bc23c1f1f422117996be75eb513e71993"
     },
     {
       "path": "tokens/README.md",

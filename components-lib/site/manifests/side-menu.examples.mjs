@@ -2,6 +2,22 @@
 // transcribed from its product source. Reuses obs-input (search) · obs-button (＋ / toggle) · obs-icon (glyphs)
 // · obs-logo (tree type LOGOS: Router/Linux/Windows) · obs-tag (counts).
 const J = (v) => JSON.stringify(v)
+// settings (THE product Settings menu, left-menu.vue): the real 18-section tree with the product's own icons
+// (resolved from the DS icon library). Multi-open, RIGHT chevron, section dividers, rounded active child.
+const SETTINGS = [
+  { label: 'My Account', icon: 'myAccount', children: [{ label: 'My Profile' }, { label: 'UI Preference' }, { label: 'License' }] },
+  { label: 'User Settings', icon: 'userSettings', children: [{ label: 'User' }, { label: 'Role' }, { label: 'Group' }, { label: 'Password Settings' }, { label: 'LDAP Server Settings' }, { label: 'Single Sign-On' }] },
+  { label: 'System Settings', icon: 'systemSettings', children: [{ label: 'Two Factor Authentication' }, { label: 'Mail Server Settings' }, { label: 'Proxy Server Settings' }, { label: 'Rebranding' }, { label: 'Data Retention' }] },
+  { label: 'Policy Settings', icon: 'policySettings', children: [{ label: 'Metric Policy' }, { label: 'Log Policy' }, { label: 'Flow Policy' }, { label: 'Trap Policy' }] },
+  { label: 'Discovery Settings', icon: 'networkDiscovery', children: [{ label: 'Credential Profile' }, { label: 'Discovery Profile' }] },
+  { label: 'Monitor Settings', icon: 'inventory', children: [{ label: 'Device Monitor Settings' }, { label: 'Monitor Templates' }, { label: 'Rediscover Settings' }] },
+  { label: 'Network Config Settings', icon: 'ncm', children: [{ label: 'Device Inventory' }, { label: 'Device Template' }, { label: 'Firmware Update Profile' }] },
+  { label: 'Compliance Settings', icon: 'metricExplorer', children: [{ label: 'Compliance Policy' }, { label: 'Benchmark' }, { label: 'Rules' }] },
+  { label: 'SNMP Trap', icon: 'trapViewer', children: [{ label: 'SNMP Trap Profile' }, { label: 'SNMP Trap Forwarder' }, { label: 'SNMP Trap Listener' }] },
+  { label: 'Log Settings', icon: 'log', children: [{ label: 'Log Inventory' }, { label: 'Log Parser Library' }] },
+  { label: 'Flow Settings', icon: 'flow', children: [{ label: 'Flow Inventory' }, { label: 'Flow Aggregator' }] },
+  { label: 'Plugin Library', icon: 'pluginLibrary', children: [{ label: 'Metric Plugins' }, { label: 'Log Plugins' }] },
+]
 // sections (settings): icon + name groups → plain sub-items
 const SECTIONS = [
   { label: 'General', icon: 'cog', children: [{ label: 'Branding' }, { label: 'Date & Time' }, { label: 'Localization' }] },
@@ -42,14 +58,17 @@ export default {
   registry: 'side-menu',
   controls: [
     { label: 'Preset', slotPresets: [
-      { label: 'Sections (settings)', attrs: { style: 'width:260px', mode: 'sections', items: J(SECTIONS), active: 'Metric Collection', tabs: '', 'tab-style': 'underline' }, html: '' },
+      { label: 'Settings (THE Settings menu)', attrs: { style: 'width:280px', mode: 'settings', items: J(SETTINGS), active: 'My Profile', tabs: '', 'tab-style': 'underline' }, html: '' },
+      { label: 'Sections (compact accordion)', attrs: { style: 'width:260px', mode: 'sections', items: J(SECTIONS), active: 'Metric Collection', tabs: '', 'tab-style': 'underline' }, html: '' },
       { label: 'Categories (dashboards)', attrs: { style: 'width:340px', mode: 'categories', items: J(CATEGORIES), active: 'Linux Servers', tabs: J(['Dashboard', 'NOC View']), 'tab-style': 'segmented' }, html: PLUS + TOGGLE },
       { label: 'Tree (log hierarchy)', attrs: { style: 'width:300px', mode: 'tree', items: J(TREE), active: 'Linux Syslog', tabs: J(['Type', 'Group', 'Saved Query']), 'tab-style': 'underline' }, html: '' },
       { label: 'List (saved views)', attrs: { style: 'width:300px', mode: 'list', items: J(LIST), active: 'All Reports', tabs: J(['Metric', 'Log', 'Flow', 'Audit']), 'tab-style': 'underline' }, html: '' },
     ] },
+    { prop: 'mode', type: 'select', options: ['settings', 'sections', 'categories', 'tree', 'list'] },
     { prop: 'active', type: 'text' },
     { prop: 'search', type: 'toggle' },
     { prop: 'placeholder', type: 'text' },
+    { prop: 'tab-style', type: 'select', attr: 'tab-style', label: 'Tab style', options: ['underline', 'segmented'] },
   ],
   playground: {
     attrs: { mode: 'sections' },
@@ -57,7 +76,10 @@ export default {
     live: `<obs-side-menu style="width:260px" mode="sections" active="Metric Collection" items='${J(SECTIONS)}'></obs-side-menu>`,
   },
   gallery: [
-    { group: 'Sections (default, 20×) — a searchable accordion of icon + name sections (settings sub-nav); the active leaf gets a --primary left rule. Crisp 9px/6px rows', items: [
+    { group: 'Settings (THE product Settings menu, left-menu.vue) — a searchable MULTI-OPEN collapse: each section is a product icon + name with the expand chevron on the RIGHT, full-width dividers BETWEEN sections, and children as an indented ROUNDED-highlight menu (filled --code-tag-background-color, no left rule). The real 18-section tree; pair with the obs-page-header menu-toggle. Use this for the Settings module', items: [
+      box('mode="settings" (My Account expanded, My Profile active)', `<obs-side-menu mode="settings" active="My Profile" items='${J(SETTINGS)}'></obs-side-menu>`, 280),
+    ] },
+    { group: 'Sections (compact accordion) — a leaner section nav: LEFT chevron, no per-section dividers, and the active leaf gets an inset --primary left rule (use `settings` above for the real Settings menu). Crisp 9px/6px rows', items: [
       box('mode="sections"', `<obs-side-menu mode="sections" active="Metric Collection" items='${J(SECTIONS)}'></obs-side-menu>`, 260),
     ] },
     { group: 'Categories (dashboard picker) — a SEGMENTED Dashboard/NOC switcher + a round ＋ (tabs-action slot) · search + a layout toggle (search-action slot) · category groups with count tags → child dashboards (each with an icon)', items: [

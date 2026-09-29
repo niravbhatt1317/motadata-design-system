@@ -27,6 +27,14 @@ const ALIASES = { calendar: 'calendarAlt', undo: 'unlockAlt', rotateLeft: 'unloc
 // even-odd: solid body with a punched keyhole + an open shackle whose right leg is lifted.
 const EXTRA = {
   lockOpen: { w: 48, h: 48, p: 'M10,20 h28 a4,4 0 0 1 4,4 v14 a4,4 0 0 1 -4,4 h-28 a4,4 0 0 1 -4,-4 v-14 a4,4 0 0 1 4,-4 z M24,26.4 a2.3,2.3 0 1 0 0.01,0 z M22.8,29 h2.4 l-0.6,5.4 h-1.2 z M14,20 v-4 a8,8 0 0 1 15.5,-2.6 l-2.8,0.9 a5,5 0 0 0 -9.7,1.7 v4 z' },
+  // pager seek glyphs — Google MATERIAL SYMBOLS skip-previous / skip-next (via shadcn.io / Iconify), matching the
+  // product's Kendo grid pager. skipPrevious |◀ / skipNext ▶| carry the stopper BAR (first/last); the *NoLine
+  // variants are the SAME glyph with the bar subpath removed (bare triangle ◀ / ▶) for prev/next. DS-local so the
+  // pager reads them via obs-icon.
+  skipPrevious: { w: 24, h: 24, p: 'M5.5 18V6h2v12zm13 0l-9-6l9-6z' },
+  skipNext: { w: 24, h: 24, p: 'M16.5 18V6h2v12zm-11 0V6l9 6z' },
+  skipPreviousNoLine: { w: 24, h: 24, p: 'M20.5 18l-9-6l9-6z' },
+  skipNextNoLine: { w: 24, h: 24, p: 'M7.5 18V6l9 6z' },
 }
 
 const toCamel = (s) => s.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())

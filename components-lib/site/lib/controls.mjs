@@ -28,6 +28,12 @@ export function controlWidget(control, regProp = {}) {
     return field(label, `<select class="ctl-select" data-slot-html="1">${options}</select>`)
   }
 
+  // slot-TOGGLE: a checkbox that injects `slotToggle` HTML into the default slot when ON, clears it when OFF
+  // (off by default). Use for an optional slotted extra like a legend in the pagination footer.
+  if (control.slotToggle) {
+    return field(label, `<label class="ctl-toggle"><input type="checkbox" data-slot-toggle="${esc(control.slotToggle)}" /><span class="ctl-track"></span></label>`)
+  }
+
   if (control.type === 'toggle') {
     // a prop that DEFAULTS TO TRUE can't be turned off by adding/removing the attr (absent → default true), so mark it:
     // app.js then sets attr="false" when switched off, and shows it checked when it's not explicitly false.

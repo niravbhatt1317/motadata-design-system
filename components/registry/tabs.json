@@ -70,6 +70,10 @@
     {
       "name": "hover",
       "what": "over inactive tab"
+    },
+    {
+      "name": "overflow-scroll",
+      "what": "When the strip is wider than its box, it scrolls horizontally (native wheel/trackpad/drag); a white→transparent FADE gradient appears on each edge that can scroll further (no chevron buttons). The active tab is auto-scrolled into view."
     }
   ],
   "usage": {
@@ -132,6 +136,11 @@
       "type": "boolean",
       "default": false,
       "note": "show a \"+\" button at the far RIGHT of the bar → emits `add`. Pair with `closable` for an add/remove tab strip."
+    },
+    "scrollable": {
+      "type": "boolean",
+      "default": true,
+      "note": "overflow handling: when the tab strip is wider than its box, prev/next chevrons auto-appear and scroll it (native scrollbar hidden; chevrons hide at each end). AUTOMATIC — no need to set it. Pass scrollable=\"false\" to force-disable the chevrons."
     }
   },
   "slots": {
@@ -259,7 +268,7 @@
     "add": "none — the + was clicked (addable)."
   },
   "a11y": {
-    "summary": "role=tablist/tab/tabpanel; active=aria-selected, disabled=aria-disabled; Left/Right arrows move, Enter/Space activate; Ant links tab↔panel via aria-controls. Closable: each × is a role=button with aria-label \"Close tab\" (emits close; does not switch tabs). Addable: the + is an obs-button with aria-label \"Add\" (emits add). Both are keyboard-reachable.",
+    "summary": "role=tablist/tab/tabpanel; active=aria-selected, disabled=aria-disabled; Left/Right arrows move, Enter/Space activate; Ant links tab↔panel via aria-controls. Closable: each × is a role=button with aria-label \"Close tab\" (emits close; does not switch tabs). Addable: the + is an obs-button with aria-label \"Add\" (emits add). Overflow scroll: the prev/next chevrons are real <button>s with aria-label \"Scroll tabs left\" / \"Scroll tabs right\", keyboard-reachable, and only rendered (visible) when the strip can scroll that way; the active tab is scrolled into view on change so keyboard tabbing never leaves it hidden. All are keyboard-reachable.",
     "issues": [
       "SF-001 focus ring.",
       "Icon-only tabs need an accessible name.",
@@ -347,6 +356,11 @@
     }
   },
   "changelog": [
+    "2026-09-15 — Thinned the active-tab underline from 4px to 3px (owner request).",
+    "2026-09-15 — Fixed: the RIGHT --tabs-inset vanished when the strip was scrolled fully right (a horizontally-scrolling flex container clips its padding-right from the scroll extent). Replaced padding-right with a trailing flex SPACER (::after) so the end inset survives overflow. Left inset stays as padding-left.",
+    "2026-09-15 — --tabs-inset now DEFAULTS to 8px (was 0): the tab group is padded 8px while the bottom rule stays full-width. Set --tabs-inset:0 for a flush strip or 20px to align to a page gutter. Showcase demonstrates all three.",
+    "2026-09-15 — Overflow affordance changed from chevron BUTTONS to an edge FADE gradient (white→transparent, appears only when the strip can scroll that way); chevrons removed. FIXED: the 1px bottom rule now lives on the FIXED full-width container (.bar-wrap), not the scrolling strip, so it always spans edge-to-edge (previously it scrolled away / vanished under the last tab when scrolled right). Added --tabs-inset (default 0) to pad the tab GROUP without moving the full-width bottom rule — set it for a container-inset strip, leave 0 for edge-to-edge (the recommended default; do NOT bake page padding into the component).",
+    "2026-09-15 — Added HORIZONTAL-SCROLL / overflow handling: when the tab strip is wider than its container it becomes a horizontally-scrollable row (native scrollbar hidden) flanked by prev (‹) / next (›) chevron buttons. Each chevron appears ONLY when the strip can scroll that way (left hides at scrollLeft 0, right hides at the far end); recomputed on mount, tabs change, window resize (ResizeObserver on the strip) and scroll (rAF-coalesced). A chevron scrolls by ~0.7× the visible width (smooth); changing the active tab scrolls it into view. Automatic — no new required prop (opt out with scrollable=\"false\"); when the tabs fit, no chevrons and layout is unchanged. Chevrons use DS tokens only (--page-background-color bg, --border-color border, --neutral-regular icon, --neutral-lightest hover) and are aria-labelled buttons. Sticky variant now pins the whole bar-wrap so vertical sticky keeps working alongside the horizontal scroller.",
     "2026-07-23 — Full doc pass for the closable/addable variant: playground gained Closable + Addable toggles; decisionFlow now routes the editable-tab-set case; a11y covers the × (close) / + (add) controls; do/dont + a knownIssue clarify that obs-tabs emits close/add while the parent owns the tab array.",
     "2026-07-23 — Polish (owner): the addable + button is now obs-button size=small (~29×25, was the 35×35 squared) so it sits proportionate to the tab labels; keeps the 4px radius.",
     "2026-07-23 — Reuse (owner): the addable \"+\" now REUSES obs-button (variant neutral-lightest, squared) instead of a hand-built button; the × / + glyphs already reuse obs-icon.",

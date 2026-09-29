@@ -248,6 +248,7 @@
     "divider"
   ],
   "changelog": [
+    "2026-09-25 — (owner) Dark-theme avatar fix: the initials avatar used --primary as its BACKGROUND, but --primary is an INK token that flips light in dark mode → the avatar went pale. Switched to --neutral-darker (stable dark navy in both themes) + white text + a faint light ring, matching the product (dark circle, white initials).",
     "2026-08-06 — Theme switcher is now BUILT-IN + functional (owner): selecting Dark/Light/Auto flips <html data-theme=\"dark-theme\"> itself (matches the DS CSS + showcase), persists the choice to localStorage, and Auto follows prefers-color-scheme — no consumer wiring needed. Added the manage-theme prop (default true; false = emit-only) + usageRule. Anything built with the DS gets a working theme switch out of the box.",
     "2026-07-26 — Docs accuracy pass (owner): synced tokensUsed to the tokens the element actually resolves (dropped stale/typography vars, added the overlay/theme tokens it uses). a11y / props / variants / usage verified current against the shipped component — no content drift. No API change.",
     "2026-07-22 — Docs completeness pass: promoted `theme-switcher` (Dark/Light/Auto segmented control) and `placement-start` to first-class variants with usage cards; the playground now exposes theme + placement controls and account links carry the full profile/setup/docs set (+ dividers/danger). No API change.",

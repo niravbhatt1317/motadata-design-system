@@ -13,6 +13,7 @@ const ds: any = require('@mtdt/observeops-ds-spec')
 export const specVersion: string = ds.version
 export const index = ds.index
 export const recipesDoc = ds.recipes
+export const pageContractsDoc = ds.pageContracts || { pageTypes: {} } // composition-level page rules (dashboard/list/…)
 export const layoutDoc = ds.layout // { grid, layouts }
 export const tokens = ds.tokens // { variables, structural, kitAccents, purposeMap }
 export const elementsApi = ds.elementsApi || { elements: {} } // ACTUAL shipped obs-* API (attrs/events/slots/enums)
@@ -167,6 +168,66 @@ export function matchRecipe(idOrDesc: string): any[] {
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
     .map((x) => x.r)
+}
+
+// ── page contracts: the composition-level rules per page type ──
+export const PAGE_TYPES: string[] = Object.keys(pageContractsDoc.pageTypes || {})
+
+/** The full contract for a page type (tokens/spacing/structure/behaviour/must/dont), or null. */
+export function getPageContract(pageType: string): any {
+  const pt = (pageType || '').trim().toLowerCase()
+  return (pageContractsDoc.pageTypes || {})[pt] || null
+}
+
+/**
+ * validate_page — the COMPOSITION gate. Statically lints a page's HTML against its contract and returns
+ * { pageType, ok, errors, warnings, reminders }. It can't verify runtime behaviour (scroll/sticky), so those
+ * come back as `reminders`. Heuristic-but-high-signal: catches the exact mistakes the dashboard rebuild hit.
+ */
+export function validatePage(html: string, pageType: string): any {
+  const c = getPageContract(pageType)
+  if (!c) return { ok: false, errors: [`Unknown pageType "${pageType}". Valid: ${PAGE_TYPES.join(', ')}.`] }
+  const errors: string[] = []
+  const warnings: string[] = []
+  const src = String(html || '')
+  // strip var(--token, #fallback) so a token's hex fallback isn't mistaken for a hardcoded colour
+  const scrubbed = src.replace(/var\([^)]*\)/g, 'var()')
+  const has = (re: RegExp) => re.test(src)
+
+  // 1) hardcoded colours (every colour must be a token) — applies to every page type
+  const colorHits = (scrubbed.match(/:\s*(#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\))/g) || [])
+  if (colorHits.length) errors.push(`Hardcoded colour(s) — use DS tokens, not literals: ${[...new Set(colorHits.map((s) => s.replace(/^:\s*/, '')))].slice(0, 5).join(', ')}${colorHits.length > 5 ? ' …' : ''}`)
+
+  // 2) CANVAS token drift — contract-driven, applies to EVERY page type. If the contract's canvas is
+  // --page-background-color (white) but the page paints --common-main-bg (the app grey), flag it. This is the
+  // #1 recurring mistake (a white product screen rendered on grey); the check is generic so it can't slip per-type.
+  const canvasTok = c.canvas && c.canvas.background
+  if (canvasTok === '--page-background-color' && has(/--common-main-bg/)) {
+    warnings.push(`Uses --common-main-bg (the app GREY) but the ${pageType} canvas must be --page-background-color (WHITE). This is the recurring grey-vs-white mistake — set the page background to the contract's canvas token.`)
+  }
+  if (c.canvas && c.canvas.$unverified) {
+    warnings.push(`Canvas colour for "${pageType}" is UNVERIFIED in the contract — confirm it against a real product screenshot before trusting (do not assume grey or white).`)
+  }
+
+  // 3) app shell + page header. Inventory-style lists lead with obs-tabs INSTEAD of a page-header title, so only
+  // warn when NEITHER is present.
+  if (!has(/obs-page-header/) && !(pageType === 'list' && has(/obs-tabs/))) warnings.push('No <obs-page-header> — a real screen starts from the app shell + page header (or, for an inventory list, an obs-tabs category row), not a bare content area.')
+
+  // 4) dashboard-specific rules
+  if (pageType === 'dashboard') {
+    const hasWidgetBodies = has(/obs-gauge|obs-severity-heatmap|highcharts|dsChart|<canvas|<svg[^>]*class="[^"]*chart/i)
+    if (hasWidgetBodies && !has(/obs-widget-card/)) warnings.push('Chart/gauge/heatmap widgets are present but no <obs-widget-card> — wrap each widget in obs-widget-card so it gets the product header/kebab/drag/resize chrome.')
+    if (has(/obs-widget-card/) && !has(/obs-widget-grid/)) warnings.push('Widgets exist without <obs-widget-grid> — an arrangeable dashboard uses obs-widget-grid; a STATIC board should use a plain CSS grid (route-away).')
+    if (has(/class="[^"]*\bcard\b[^"]*"[^>]*>[\s\S]{0,400}?(highcharts|obs-gauge|obs-severity-heatmap)/i)) warnings.push('A generic .card div appears to wrap a chart/gauge — use obs-widget-card, not a hand-built card.')
+  }
+  // 4) list/settings/form: nudge toward the mandatory components
+  if (pageType === 'list' && !has(/obs-table/)) warnings.push('A list screen should use <obs-table> for the records grid — not a hand-built table.')
+  if (pageType === 'settings' && !has(/obs-side-menu/)) warnings.push('A settings screen uses <obs-side-menu> for the sub-nav (NOT the obs-sidebar app rail).')
+
+  const reminders: string[] = (c.behaviourNotStaticallyCheckable || []).concat(
+    pageType === 'dashboard' ? [] : ['Content region owns overflow:auto; the body never scrolls.']
+  )
+  return { pageType, ok: errors.length === 0, errors, warnings, reminders, contract: `call get_page_contract("${pageType}") for the full ruleset` }
 }
 
 export const LAYOUT_KINDS = [

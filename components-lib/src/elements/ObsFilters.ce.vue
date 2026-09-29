@@ -13,6 +13,10 @@ const props = defineProps({
   fields: { type: [String, Array] }, // [{ key, label, type:'enum'|'string', values:[…], selectAll? }] — array or JSON string
   value: { type: [String, Array] },  // active conditions [{ field, operator, value }] — array or JSON string
   match: { type: String, default: 'all' }, // the Match toggle mode: 'all' (AND) | 'any' (OR). Emitted in `change` as {conditions, match}.
+  // QUICK-FILTER PILLS (kind="bar"): field KEYS (array or comma list, e.g. ["group","type","severity"]) that get a
+  // STANDING pill BEFORE "+ Filter". Empty → a grey category pill (just the label) that opens that field's value picker;
+  // set → the normal field·op·value chip (with count + ×). Pills persist even when empty. Non-quick fields → "+ Filter".
+  quickFilters: { type: [String, Array], default: '' },
 })
 const emit = defineEmits(['change'])
 const host = useHost()
@@ -136,7 +140,7 @@ const menuPos = ref(null)  // { left, top } — the picker floats position:fixed
 const barChipsEl = ref(null)
 function positionMenu(i) {
   nextTick(() => {
-    const wrap = barChipsEl.value && barChipsEl.value.querySelectorAll('.chip-wrap')[i]
+    const wrap = barChipsEl.value && barChipsEl.value.querySelector('.chip-wrap[data-ci="' + i + '"]')
     if (!wrap) { menuPos.value = null; return }
     const r = wrap.getBoundingClientRect()
     menuPos.value = { left: Math.round(r.left), top: Math.round(r.bottom + 6) }
@@ -193,7 +197,7 @@ function pick(o) {
 function openValueSelect(i) {
   nextTick(() => {
     const tryOpen = () => {
-      const wrap = barChipsEl.value && barChipsEl.value.querySelectorAll('.chip-wrap')[i]
+      const wrap = barChipsEl.value && barChipsEl.value.querySelector('.chip-wrap[data-ci="' + i + '"]')
       const sel = wrap && wrap.querySelector('.valsel obs-select')
       const trig = sel && sel.shadowRoot && sel.shadowRoot.querySelector('.t-text')
       if (trig) { trig.click(); return true }
@@ -223,6 +227,43 @@ function onValueChange(i, e) {
   emitChange()
 }
 
+// ── QUICK-FILTER PILLS: standing category pills (Groups/Types/Severity) rendered before "+ Filter". They REUSE
+// the exact chip machinery (chips ref, barAdd/barRemove, the embedded value <obs-select>, emitChange) — an empty
+// pill is a preset-field stub with no value yet; setting a value promotes it to a normal complete chip.
+const firstOp = (f) => { const list = OPS[f && f.type ? f.type : 'enum'] || OPS.enum; return list[0] }
+const quickKeys = computed(() => {
+  const q = props.quickFilters
+  let arr = []
+  if (Array.isArray(q)) arr = q
+  else if (typeof q === 'string' && q.trim()) { try { const p = JSON.parse(q); arr = Array.isArray(p) ? p : q.split(',') } catch (e) { arr = q.split(',') } }
+  return arr.map((k) => String(k).trim()).filter((k) => fd(k)) // only field keys that exist in `fields`
+})
+const quickLabel = (key) => { const f = fd(key); return f ? f.label : key }
+// ordered render slots: each quick field first (its chip if present, else an empty pill), then the non-quick chips
+const barSlots = computed(() => {
+  const slots = []; const used = new Set()
+  for (const key of quickKeys.value) {
+    const i = chips.value.findIndex((c) => c.field === key)
+    if (i >= 0) { slots.push({ t: 'chip', i, c: chips.value[i] }); used.add(i) }
+    else slots.push({ t: 'empty', key })
+  }
+  chips.value.forEach((c, i) => { if (!used.has(i)) slots.push({ t: 'chip', i, c }) })
+  return slots
+})
+// clicking an empty pill presets field=key + its default operator and opens the value picker (like the product)
+function quickAdd(key) {
+  editing.value = null; menuPos.value = null
+  let i = chips.value.findIndex((c) => c.field === key)
+  if (i < 0) {
+    const f = fd(key); const o = firstOp(f); const multi = !!(o && o.multi)
+    chips.value = [...chips.value, { field: key, operator: o ? o.k : 'is', value: multi ? [] : '' }]
+    i = chips.value.length - 1
+  }
+  const c = chips.value[i]
+  if (isMulti(c) && takesValue(c)) openValueSelect(i)
+  else if (takesValue(c)) { editing.value = { i, step: 'value' }; positionMenu(i) }
+}
+
 // ─────────────── QUICK / ROW ───────────────
 const quickPresets = ['Down monitors', 'Critical alerts', 'Unacknowledged', 'My favorites']
 
@@ -246,6 +287,10 @@ function onDocClick(e) {
   // discard an abandoned "+ Filter" chip (opened but no field picked) so no empty "Select Filter" lingers.
   // safe: a no-field chip is always a fresh stub — never mid value-selection (that requires a field first).
   if (chips.value.some((c) => !c.field)) chips.value = chips.value.filter((c) => c.field)
+  // discard an opened-but-unset quick-filter chip so its standing pill reverts to the empty grey category pill.
+  const q = quickKeys.value
+  if (q.length && chips.value.some((c) => q.includes(c.field) && !isCompleteChip(c)))
+    chips.value = chips.value.filter((c) => !(q.includes(c.field) && !isCompleteChip(c)))
 }
 onMounted(() => document.addEventListener('click', onDocClick, true))
 onBeforeUnmount(() => document.removeEventListener('click', onDocClick, true))
@@ -310,22 +355,29 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocClick, true))
     <template v-else-if="kind === 'bar'">
       <div class="bar" @click="editing = null; menuPos = null">
         <div class="bar-chips" ref="barChipsEl" @click.stop>
-          <span v-for="(c, i) in chips" :key="i" class="chip-wrap">
-            <span class="chip">
-              <span class="seg field" :class="{ on: active(i, 'field') }" @click.stop="edit(i, 'field', $event)">{{ fieldLabel(c) }}</span>
-              <span v-if="c.operator" class="seg op" :class="{ on: active(i, 'operator') }" @click.stop="edit(i, 'operator', $event)">{{ barOpLabel(c) }}</span>
-              <span v-if="c.operator && takesValue(c) && isMulti(c)" class="seg val valsel" @click.stop>
-                <obs-select
-                  text-only multiple allow-clear
-                  :allow-select-all="selAllFor(c) ? 'true' : undefined"
-                  :options="valueOptionsJson(c)" :value="valueStr(c)" placeholder="…"
-                  @change="onValueChange(i, $event)"
-                ></obs-select>
+          <template v-for="s in barSlots">
+            <!-- empty quick-filter pill: grey category pill (just the label) that opens the value picker -->
+            <button v-if="s.t === 'empty'" :key="'q-' + s.key" class="chip qpill" @click.stop="quickAdd(s.key)">
+              <span class="seg field">{{ quickLabel(s.key) }}</span>
+            </button>
+            <!-- a chip (either a set quick field or a "+ Filter" chip) — s.i is its index in `chips` -->
+            <span v-else :key="'c-' + s.i" class="chip-wrap" :data-ci="s.i">
+              <span class="chip">
+                <span class="seg field" :class="{ on: active(s.i, 'field') }" @click.stop="edit(s.i, 'field', $event)">{{ fieldLabel(s.c) }}</span>
+                <span v-if="s.c.operator" class="seg op" :class="{ on: active(s.i, 'operator') }" @click.stop="edit(s.i, 'operator', $event)">{{ barOpLabel(s.c) }}</span>
+                <span v-if="s.c.operator && takesValue(s.c) && isMulti(s.c)" class="seg val valsel" @click.stop>
+                  <obs-select
+                    text-only multiple allow-clear
+                    :allow-select-all="selAllFor(s.c) ? 'true' : undefined"
+                    :options="valueOptionsJson(s.c)" :value="valueStr(s.c)" placeholder="…"
+                    @change="onValueChange(s.i, $event)"
+                  ></obs-select>
+                </span>
+                <span v-else-if="s.c.operator && takesValue(s.c)" class="seg val" :class="{ on: active(s.i, 'value') }" @click.stop="edit(s.i, 'value', $event)">{{ valSummary(s.c) }}</span>
+                <span v-if="showClose(s.c)" class="seg-x" @click.stop="barRemove(s.i)"><obs-icon name="times" size="11" class="i11"></obs-icon></span>
               </span>
-              <span v-else-if="c.operator && takesValue(c)" class="seg val" :class="{ on: active(i, 'value') }" @click.stop="edit(i, 'value', $event)">{{ valSummary(c) }}</span>
-              <span v-if="showClose(c)" class="seg-x" @click.stop="barRemove(i)"><obs-icon name="times" size="11" class="i11"></obs-icon></span>
             </span>
-          </span>
+          </template>
           <button class="add-filter" @click.stop="barAdd"><obs-icon class="plus" name="plus" size="12"></obs-icon><span class="pf-label">Filter</span></button>
         </div>
         <!-- picker floats position:fixed so the scrolling chip row (overflow-x:auto) never clips it -->
@@ -464,6 +516,10 @@ button, input, select, textarea { font-family: inherit; }
 .seg.val.valsel { padding: 0 0 0 8px; display: inline-flex; align-items: center; }
 .valsel obs-select { display: inline-flex; align-items: center; font-weight: 500; color: var(--primary, #111c2c); }
 .seg-x { display: inline-flex; align-items: center; margin-left: 8px; color: var(--neutral-light, #6a7fa0); cursor: pointer; }
+/* standing quick-filter pill (empty state) — reuses .chip's grey pill; a button showing just the category label */
+.qpill { border: none; font-family: inherit; font-size: 13px; cursor: pointer; flex-shrink: 0; }
+.qpill .seg.field { cursor: pointer; }
+.qpill:hover { background: var(--neutral-lighter, #e3e8f2); }
 .add-filter { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border: none; border-radius: 4px;
   background: var(--code-tag-background-color, #ecf1f9); color: var(--primary, #111c2c); cursor: pointer; font-family: inherit; font-size: 13px; flex-shrink: 0; }
 .add-filter .plus { color: var(--primary, #111c2c); } .pf-label { margin-left: 2px; }

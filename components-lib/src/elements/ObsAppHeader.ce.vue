@@ -84,8 +84,11 @@ button { font-family: inherit; }
 }
 /* user avatar (opens the account menu — use the `user` slot for an obs-menu) */
 .avatar {
-  width: 32px; height: 32px; border: 0; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
-  background: var(--primary, #111c2c); color: var(--white-regular, #fff); font-size: 12px; font-weight: 600; cursor: pointer;
+  width: 32px; height: 32px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  /* --neutral-darker is a stable dark navy in BOTH themes (unlike --primary, which is an INK token that flips light in
+     dark mode → the avatar was going pale). A faint light ring separates it from a dark header (matches the product). */
+  background: var(--neutral-darker, #172336); color: var(--white-regular, #fff); font-size: 12px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--avatar-ring-color, rgba(255, 255, 255, 0.14));
 }
 .avatar:focus-visible { outline: 2px solid var(--primary-alt, #3279be); outline-offset: 2px; }
 </style>

@@ -41,7 +41,17 @@ export default {
       block('rich cells via a column `type`: severity ring · type icons · status tag (obs-tag)', tbl('sort="name:asc"')),
     ] },
     { group: 'Selectable + row actions — checkbox column + select-all (indeterminate on partial), ⋯ actions per row', items: [
-      block('check some rows → the header box goes indeterminate + an "N items selected" tag appears; el.selected reflects the ids', tbl(`selectable selected='["1"]' row-actions='${ACTS}'`)),
+      block('check some rows → el.selected reflects the ids; the header box goes indeterminate on a partial select', tbl(`selectable selected='["1"]' row-actions='${ACTS}'`)),
+    ] },
+    { group: 'Bulk action bar — with rows selected, a FLOATING, centered bar appears just above the footer (SaaS pattern): count + clear (built in) + your buttons via the `bulk-actions` slot. DS pattern: bordered actions (variant=default) + a red danger (variant=danger) + a vertical divider + a bordered ⋮ more-menu. Wire the danger action to a confirm modal (obs-modal variant=confirm).', items: [
+      block('3 pre-selected → the floating bulk bar with Acknowledge / Assign / red Delete / ⋮',
+        `<obs-table selectable selected='["1","2"]' columns='${COLS}' rows='${ROWS}' row-actions='${ACTS}' style="min-height:220px">` +
+        `<obs-button slot="bulk-actions" variant="default"><obs-icon name="checkCircle" size="14"></obs-icon> Acknowledge</obs-button>` +
+        `<obs-button slot="bulk-actions" variant="default"><obs-icon name="user" size="14"></obs-icon> Assign</obs-button>` +
+        `<obs-button slot="bulk-actions" variant="danger"><obs-icon name="trashAlt" size="14"></obs-icon> Delete</obs-button>` +
+        `<obs-divider slot="bulk-actions" type="vertical" style="--divider-height:24px;--divider-gap:4px"></obs-divider>` +
+        `<obs-menu slot="bulk-actions" bordered items='[{"key":"export","label":"Export selected","icon":"download"},{"key":"tag","label":"Add tag","icon":"tag"}]'></obs-menu>` +
+        `</obs-table>`),
     ] },
     { group: 'Expandable — a chevron column opens each row\'s detail below (the detailRow slot)', items: [
       block('click a chevron to reveal the row detail', tbl('expandable')),
@@ -65,6 +75,10 @@ export default {
       block('variant="borderless-rows" — no row dividers (just the header underline), airy spacing', tbl('variant="borderless-rows"')),
       block('hide-header (compact widget grids)', tbl('hide-header')),
     ] },
+    { group: 'Logo cells — the inventory Monitors TYPE column: COLOURED vendor/technology marks (obs-logo). type "logo" value = a name, an object, or an ARRAY (side by side)', items: [
+      block('type "logo": each row\'s TYPE is a coloured brand mark (Azure Cloud · Windows · Linux · MySQL · VMware ESXi). The last row carries a 2-logo ARRAY (base OS + role) rendered side by side. (The showcase site bundles the full logo set.)',
+        `<obs-table columns='[{"key":"name","title":"Monitor","sortable":true},{"key":"type","title":"Type","type":"logo"},{"key":"status","title":"Status","type":"status"}]' rows='[{"id":"1","name":"prod-azure-vm-01","type":"azure-cloud","status":"up"},{"id":"2","name":"win-dc-02","type":"windowsserver","status":"up"},{"id":"3","name":"linux-web-03","type":"linux","status":"up"},{"id":"4","name":"mysql-primary","type":"mysql","status":"down"},{"id":"5","name":"esxi-host-07","type":"vmware-esxi","status":"maintenance"},{"id":"6","name":"pg-on-linux","type":[{"name":"linux"},{"name":"postgresql"}],"status":"up"}]'></obs-table>`),
+    ] },
     { group: 'Cells: color-coded (heat) + relative-percent (bar) — threshold-tinted cells + inline progress bars', items: [
       block('type "heat": the cell fills a --severity token (column colorKey → the row\'s colour field) · type "bar": an inline percent bar',
         `<obs-table columns='[{"key":"name","title":"Monitor"},{"key":"cpu","title":"CPU","type":"heat","colorKey":"cpuC"},{"key":"mem","title":"Memory","type":"heat","colorKey":"memC"},{"key":"disk","title":"Disk usage","type":"bar"}]' rows='[{"id":"1","name":"web-server-01","cpu":"94%","cpuC":"--severity-critical","mem":"72%","memC":"--severity-warning","disk":45},{"id":"2","name":"db-primary","cpu":"38%","cpuC":"--severity-clear","mem":"61%","memC":"--severity-major","disk":80},{"id":"3","name":"cache-02","cpu":"12%","cpuC":"--severity-clear","mem":"20%","memC":"--severity-clear","disk":22}]'></obs-table>`),
@@ -82,6 +96,17 @@ export default {
     { group: 'Inline editing — `editable` adds a pencil per row; a column marked `editable:true` becomes an obs-input while the row is edited (Save / Cancel)', items: [
       block('editable: click the pencil → editable columns (Name, Owner) turn into inputs; Save emits `save` {id, values}, Cancel reverts',
         `<obs-table editable columns='[{"key":"name","title":"Monitor","editable":true},{"key":"ip","title":"IP Address"},{"key":"owner","title":"Owner","editable":true},{"key":"status","title":"Status","type":"status"}]' rows='[{"id":"1","name":"web-server-01","ip":"10.0.0.12","owner":"neteng","status":"up"},{"id":"2","name":"db-primary","ip":"10.0.0.20","owner":"dba","status":"down"}]'></obs-table>`),
+    ] },
+    { group: 'Width — default (slight inset) vs full-width (FLUSH edge-to-edge: no side gutter; content, header rule, row dividers & hover span the whole width)', items: [
+      block('default — a slight left/right inset (the leading cell keeps its left pad, the trailing cell its right pad)', tbl('sort="name:asc"')),
+      block('full-width — the side pads are removed so everything runs to the table edges', tbl('full-width sort="name:asc"')),
+    ] },
+    { group: 'Checkboxes are optional — `selectable` toggles the checkbox column (a non-selectable table has NO checkboxes and keeps the same tight left inset)', items: [
+      block('no `selectable` → no checkbox column; the MONITOR name still sits on a tight left gutter', tbl('sort="name:asc"')),
+      block('`selectable` → a select-all + per-row checkbox column (slightly larger, softer corners, centered)', tbl('selectable')),
+    ] },
+    { group: 'Primary column — the first data column (or a column with primary:true) is the record NAME: bolder weight + a DOTTED UNDERLINE on ROW HOVER (hover a row to see it — the underline is a hover state, not static)', items: [
+      block('MONITOR (a severity first column) is primary → 500 weight; HOVER a row to reveal the dotted underline on the name', tbl('sort="name:asc"')),
     ] },
     { group: 'Empty & loading states', items: [
       block('no rows → empty message', `<obs-table columns='${COLS}' rows='[]' empty-text="No monitors match your filters"></obs-table>`),

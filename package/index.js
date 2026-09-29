@@ -15,6 +15,8 @@ const readText = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8')
 
 const index = readJSON('components/index.json')
 const recipes = readJSON('components/recipes/recipes.json')
+// page contracts: composition-level fidelity + behaviour per page type (dashboard/list/settings/form)
+const pageContracts = (() => { try { return readJSON('components/page-contracts.json') } catch (e) { return { pageTypes: {} } } })()
 // the ACTUAL element API (attributes/events/slots/enums) for every SHIPPED obs-* tag — authoritative for validators
 const elementsApi = (() => { try { return readJSON('elements-api.json') } catch (e) { return { elements: {} } } })()
 const manifest = readJSON('spec.manifest.json')
@@ -64,6 +66,7 @@ function specPath(rel) {
 module.exports = {
   index,
   recipes,
+  pageContracts,
   layout,
   tokens,
   elementsApi,

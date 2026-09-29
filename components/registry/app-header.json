@@ -170,6 +170,7 @@
     "--white-regular"
   ],
   "changelog": [
+    "2026-09-25 — (owner) Dark-theme avatar fix: the initials avatar used --primary as its BACKGROUND, but --primary is an INK token that flips light in dark mode → the avatar went pale. Switched to --neutral-darker (stable dark navy in both themes) + white text + a faint light ring, matching the product (dark circle, white initials).",
     "2026-08-11 — Default brand logo enlarged to height 36 and switched to the crisp SVG (was a smaller pixelating raster).",
     "2026-08-11 — Default brand is the FULL ObserveOps logo (motadata_full, mark + wordmark), not just the mark. Bundled motadata_full into the built-in logo set so it renders out of the box, and made obs-logo image logos aspect-preserving (height-driven) so the wide wordmark isn't squished.",
     "2026-08-11 — Brand default + padding (owner/consumer): the brand area now FALLS BACK to the default ObserveOps mark (obs-logo name=\"motadata_full\" — the FULL logo with wordmark) when neither the `brand` slot nor the `brand` text prop is provided (was an empty area with no obs-logo reference). Reduced the header horizontal padding to 8px (both sides).",

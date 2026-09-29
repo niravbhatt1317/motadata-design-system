@@ -1,7 +1,9 @@
 <script setup>
-// <obs-page-header> — the product's list/detail PAGE HEADER (FlotoPageHeader, 54×): an optional back button +
-// the title (--primary-alt, weight 500, 16px) + an optional count pill on the left, and right-side actions
-// (search / export / primary Add) via the default slot. A bottom divider (--border-color) by default.
+// <obs-page-header> — the product's list/detail PAGE HEADER (FlotoPageHeader, 54×): an optional back button OR a
+// section menu-toggle + the title (--primary-alt, weight 500, 18px) + an optional count pill on the left, and
+// right-side actions (search / export / primary Add) via the default slot. A bottom divider (--border-color) by
+// default. Variants: default · with-count · back · menu-toggle (module SECTION header) · with-subtitle ·
+// with-breadcrumb · detail-meta · monitor-detail · title-only · no-divider.
 // Sits at the TOP of a page. NOT the strip above a list/table (→ obs-toolbar) and NOT between-page nav
 // (→ obs-sidebar / obs-breadcrumbs). The product page-header has no subtitle/breadcrumbs — those are separate.
 // Values measured from the rendered story (organisms-toolbars-examples--page-header).
@@ -18,6 +20,8 @@ const props = defineProps({
   meta: { type: String, default: '' },            // detail-header attribute strip: JSON [{label?,value,icon?,status?}]
   accent: { type: String, default: '' },          // left stripe colour: a severity level (up/critical/…) or a colour token
   back: { type: [Boolean, String], default: false },      // show the back chevron button (fires `back` on click)
+  menuToggle: { type: [Boolean, String], default: false }, // a CIRCULAR toggle button + separator that shows/hides the module's side-menu (fires `menutoggle` {open}). The section-header variant (Settings, module sub-nav).
+  menuOpen: { type: [Boolean, String], default: true },   // the side-menu's open state — flips the chevron (open → ‹ collapse, closed → › expand)
   noDivider: { type: [Boolean, String], default: false }, // remove the bottom rule (default: shown, per the 54× render)
 })
 const host = useHost()
@@ -39,6 +43,10 @@ const accentColor = computed(() => {
 })
 // dispatch a native `back` event (NOT defineEmits — the emit name would collide with the `back` prop)
 const onBack = () => { if (host) host.dispatchEvent(new CustomEvent('back', { bubbles: true, composed: true })) }
+// the menu-toggle fires `menutoggle` with the NEW open state — the consumer shows/hides the module's obs-side-menu.
+const onMenuToggle = () => { if (host) host.dispatchEvent(new CustomEvent('menutoggle', { detail: { open: !on(props.menuOpen) }, bubbles: true, composed: true })) }
+// leading controls centre on the TITLE line for a simple header; a DETAIL header (subtitle/meta) top-aligns them.
+const stacked = computed(() => !!props.subtitle || metaItems.value.length > 0)
 </script>
 
 <template>
@@ -48,13 +56,20 @@ const onBack = () => { if (host) host.dispatchEvent(new CustomEvent('back', { bu
     <!-- optional breadcrumb trail above the header row (drop an obs-breadcrumbs here) -->
     <div class="crumb"><slot name="breadcrumb"></slot></div>
     <div class="ph">
-      <div class="left">
+      <div class="left" :class="{ stacked }">
+        <!-- menu-toggle: a CIRCULAR button that shows/hides the module's side-menu, then a vertical separator. -->
+        <template v-if="on(menuToggle)">
+          <button class="menu-tgl" type="button" :aria-label="on(menuOpen) ? 'Hide menu' : 'Show menu'" :aria-expanded="String(on(menuOpen))" @click="onMenuToggle">
+            <obs-icon class="tgl-ic" :class="{ open: on(menuOpen) }" :name="on(menuOpen) ? 'chevronLeft' : 'chevronRight'" size="18"></obs-icon>
+          </button>
+          <span class="tgl-sep" aria-hidden="true"></span>
+        </template>
         <!-- back is a full-height LEFT GUTTER; the title/subtitle/meta form a left-aligned column beside it -->
-        <button v-if="on(back)" class="back" type="button" aria-label="Back" @click="onBack">
+        <button v-else-if="on(back)" class="back" type="button" aria-label="Back" @click="onBack">
           <obs-icon name="chevronLeft" size="16"></obs-icon>
         </button>
         <slot name="back"></slot>
-        <slot name="before"></slot>
+        <span class="before"><slot name="before"></slot></span>
         <div class="titles">
           <div class="ttl-row">
             <span v-if="accentColor" class="accent" :style="{ background: accentColor }" aria-hidden="true"></span>
@@ -99,7 +114,13 @@ button { font-family: inherit; }
   display: flex; align-items: center; justify-content: space-between;
   color: var(--page-text-color, #1d2a3e);
 }
-.left { display: flex; align-items: flex-start; gap: 10px; min-width: 0; }
+/* leading controls (menu-toggle / back / before-icon) centre on the title line for a SIMPLE header; a DETAIL header
+   (with subtitle/meta) top-aligns them so they sit on the first line while the extra lines flow below. */
+.left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.left.stacked { align-items: flex-start; }
+/* the before-slot (a leading icon, e.g. the Settings gear) — centred on the title line box */
+.before { display: inline-flex; align-items: center; }
+.left.stacked .before { height: 27px; }
 .titles { display: flex; flex-direction: column; min-width: 0; }
 .ttl-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .subtitle {
@@ -121,11 +142,28 @@ button { font-family: inherit; }
 .right { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .back {
   appearance: none; background: none; border: 0; padding: 0; cursor: pointer;
-  height: 24px;                     /* = the title's line box (16px × 1.5) so the chevron centres on the TITLE line */
+  height: 27px;                     /* = the title's line box (18px × 1.5) so the chevron centres on the TITLE line */
   display: inline-flex; align-items: center; color: var(--neutral-light, #a5bad0);
 }
+/* menu-toggle: a circular bordered button (shows/hides the module side-menu) + a vertical separator, matching the product */
+.menu-tgl {
+  appearance: none; flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-color, #e3e8f2); background: var(--page-background-color, #fff); color: var(--neutral-light, #6a7fa0);
+  transition: background .12s, border-color .12s, color .12s;
+}
+.menu-tgl:hover { background: var(--neutral-lightest, #ecf1f9); border-color: var(--neutral-lighter, #dfe5ef); color: var(--primary-alt, #3279be); }
+.menu-tgl:focus-visible { outline: 2px solid var(--primary-alt, #3279be); outline-offset: 2px; }
+.left.stacked .menu-tgl { margin-top: -1px; }  /* centre the 28px button on the 27px title line in a detail header */
+/* Optical centring — a chevron's arms open away from its point, so its visual mass sits on the ARMS side.
+   Closed (›, arms open left → mass left): nudge RIGHT. Open (‹, arms open right → mass right, big left gap):
+   nudge LEFT. Same-magnitude, opposite sign, so each state reads centred in the circle. */
+.tgl-ic { transform: translateX(1px); }
+.tgl-ic.open { transform: translateX(-1px); }
+/* separator: no side margin — the 8px .left gap already spaces it; a tighter cluster toggle · | · title */
+.tgl-sep { flex: 0 0 auto; width: 1px; align-self: center; height: 22px; margin: 0; background: var(--border-color, #e3e8f2); }
 .title {
-  margin: 0; font-size: 16px; font-weight: 500; line-height: 1.5;
+  margin: 0; font-size: 18px; font-weight: 500; line-height: 1.5;
   color: var(--primary-alt, #1d2a3e);
   min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }

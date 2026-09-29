@@ -20,8 +20,20 @@ const props = defineProps({
 // bumped when the opt-in observeops-logos bundle finishes loading, so a rendered logo upgrades to the full set
 const ready = ref(0)
 const onLoaded = () => { ready.value++ }
-onMounted(() => { try { globalThis.addEventListener('obs-logos-loaded', onLoaded) } catch (e) { /* non-DOM */ } })
-onBeforeUnmount(() => { try { globalThis.removeEventListener('obs-logos-loaded', onLoaded) } catch (e) { /* non-DOM */ } })
+// dark-theme awareness: the app flips <html data-theme='dark-theme'>. A brand logo with a monochrome wordmark (motadata)
+// is invisible on a dark header, so when a `<name>_dark` variant exists we auto-swap to it in dark theme.
+const isDark = ref(false)
+let themeMo = null
+const checkDark = () => { try { isDark.value = document.documentElement.getAttribute('data-theme') === 'dark-theme' } catch (e) { /* non-DOM */ } }
+onMounted(() => {
+  try { globalThis.addEventListener('obs-logos-loaded', onLoaded) } catch (e) { /* non-DOM */ }
+  checkDark()
+  try { themeMo = new MutationObserver(checkDark); themeMo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }) } catch (e) { /* non-DOM */ }
+})
+onBeforeUnmount(() => {
+  try { globalThis.removeEventListener('obs-logos-loaded', onLoaded) } catch (e) { /* non-DOM */ }
+  if (themeMo) themeMo.disconnect()
+})
 // resolve tables: the full opt-in registry if loaded, else the built-in common set
 const tables = () => {
   void ready.value // reactive dependency
@@ -31,9 +43,12 @@ const tables = () => {
 // symmetric fallback: prefer the requested variant, else the other one, else the neutral no-icon — so a logo that
 // exists in only ONE form (colour-only or line-only) still renders
 const svg = computed(() => {
+  void isDark.value // reactive dependency: re-resolve when the theme flips
   const { LOGOS, LINE_LOGOS, LOGO_ALIASES } = tables()
   let k = String(props.name || '').trim().toLowerCase().replace(/\s+/g, '-')
   k = (LOGO_ALIASES && LOGO_ALIASES[k]) || k
+  // dark theme → prefer the <name>_dark brand variant when one exists (e.g. motadata_full → motadata_full_dark)
+  if (isDark.value && !/_dark$/.test(k)) { const dk = k + '_dark'; if (LOGOS[dk] || LINE_LOGOS[dk]) k = dk }
   return props.variant === 'line'
     ? (LINE_LOGOS[k] || LOGOS[k] || BUILTIN['no-icon'] || '')
     : (LOGOS[k] || LINE_LOGOS[k] || BUILTIN['no-icon'] || '')

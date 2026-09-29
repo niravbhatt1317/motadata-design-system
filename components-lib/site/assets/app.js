@@ -362,6 +362,8 @@
   if (controls) controls.addEventListener('input', function (e) {
     var el = e.target
     if (el.dataset.slot) { live.textContent = el.value; return refreshSnippet() }
+    // slot-TOGGLE: inject the carried HTML into the default slot when checked, clear it when unchecked
+    if (el.dataset.slotToggle != null) { live.innerHTML = el.checked ? el.dataset.slotToggle : ''; return refreshSnippet() }
     if (el.dataset.slotHtml) {
       var o = el.options[el.selectedIndex]
       // a preset may also carry attrs (e.g. the "Large" drawer type sets width + scrolled-content + footer)
