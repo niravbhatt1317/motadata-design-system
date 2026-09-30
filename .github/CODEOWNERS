@@ -1,0 +1,7 @@
+# Code owners for the ObserveOps Design System.
+# GitHub automatically requests these owners for review on EVERY pull request,
+# so you never have to remember to look — each PR pings you and shows up in your
+# "Review requests". To make it a hard gate, also turn on
+# "Require review from Code Owners" in the `main` branch protection settings.
+
+*       @niravbhatt1317
