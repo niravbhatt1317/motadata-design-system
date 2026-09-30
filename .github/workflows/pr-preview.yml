@@ -1,0 +1,46 @@
+name: PR preview
+
+# Builds the DS showcase from each PR and deploys it to a per-PR subpath on gh-pages,
+# then comments the live link on the PR. Product-free build (uses the committed icons),
+# so it runs entirely in CI without the private product source.
+#
+# Live preview:  https://niravbhatt1317.github.io/motadata-design-system/pr-preview/pr-<N>/
+# (open e.g. .../pr-preview/pr-<N>/side-menu.html — the logo gallery / Assets>Icons page
+#  are the only things missing without the product; every component page renders.)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+# one preview build at a time per PR (a new push supersedes the previous)
+concurrency: preview-${{ github.event.pull_request.number }}
+
+permissions:
+  contents: write        # to publish to gh-pages
+  pull-requests: write   # to comment the preview link
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Build the showcase (product-free)
+        if: github.event.action != 'closed'
+        run: |
+          cd components-lib
+          npm install --no-audit --no-fund
+          npx vite build                 # elements bundle (committed icons make this product-free)
+          node site/generate.mjs         # the showcase pages
+          test -f site/dist/side-menu.html   # sanity: pages actually rendered
+
+      - name: Deploy / update / remove the PR preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: components-lib/site/dist
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview

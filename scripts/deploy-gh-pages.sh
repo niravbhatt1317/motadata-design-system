@@ -109,6 +109,18 @@ cp "$UI_DIR/design-system/component-catalog.html" "$OUT/component-catalog.html"
 # .nojekyll prevents GitHub Pages (Jekyll) from dropping files; CNAME-free.
 touch "$OUT/.nojekyll"
 
+# Preserve any LIVE PR previews (pr-preview/, published by the PR-preview Action) — this deploy replaces
+# the whole gh-pages branch, so without this a production deploy would wipe open previews. Best-effort:
+# if the clone fails, we just proceed (previews will be regenerated on the PR's next push).
+if command -v git >/dev/null 2>&1; then
+  PREV="$(mktemp -d)"
+  if git clone --quiet --depth 1 --branch gh-pages "https://github.com/${REPO}.git" "$PREV/gh" 2>/dev/null && [ -d "$PREV/gh/pr-preview" ]; then
+    cp -R "$PREV/gh/pr-preview" "$OUT/pr-preview"
+    echo "==> preserved $(find "$PREV/gh/pr-preview" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ') live PR preview(s)"
+  fi
+  rm -rf "$PREV"
+fi
+
 echo "==> Publishing $OUT to $REPO (gh-pages)…"
 TMP="$(mktemp -d)"
 cp -R "$OUT/." "$TMP/"
