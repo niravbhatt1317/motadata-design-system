@@ -1,0 +1,24 @@
+{
+  "$fixture": "gauge-number",
+  "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
+  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised.",
+  "variant": {
+    "category": "Gauge",
+    "widgetType": "MetroTile"
+  },
+  "engines": {
+    "highcharts": false,
+    "leaflet": false,
+    "table": false
+  },
+  "config": {},
+  "result": {
+    "columns": [
+      "metric.series.v1"
+    ],
+    "data": {
+      "metric.series.v1": 42.17,
+      "metric.series.v2": "42.17%"
+    }
+  }
+}

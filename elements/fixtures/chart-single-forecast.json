@@ -1,0 +1,292 @@
+{
+  "$fixture": "chart-single-forecast",
+  "$provenance": "built from a real backend response excerpt (forecast series verbatim; actuals extended to the full 5 m interval pattern with a seeded generator); sanitised — counter/monitor names generic, session/query metadata dropped",
+  "$note": "forecast points continue AFTER the last actuals interval; upper clamps at 100 for the percent unit. totalPredictions is carried by the payload and unused by the renderer, like the product.",
+  "variant": {
+    "category": "Forecast"
+  },
+  "granularity": {
+    "value": 5,
+    "unit": "m"
+  },
+  "result": {
+    "Chart": {
+      "series": [
+        {
+          "counter": "metric.series.v1",
+          "aggr": "avg",
+          "name": "metric.series.v1.avg",
+          "unit": "percent",
+          "data": [
+            [
+              1787824500000,
+              16
+            ],
+            [
+              1787824800000,
+              null
+            ],
+            [
+              1787825100000,
+              11
+            ],
+            [
+              1787825400000,
+              2
+            ],
+            [
+              1787825700000,
+              2
+            ],
+            [
+              1787826000000,
+              8
+            ],
+            [
+              1787826300000,
+              2
+            ],
+            [
+              1787826600000,
+              9
+            ],
+            [
+              1787826900000,
+              2
+            ],
+            [
+              1787827200000,
+              2
+            ],
+            [
+              1787827500000,
+              7
+            ],
+            [
+              1787827800000,
+              4
+            ],
+            [
+              1787828100000,
+              7
+            ],
+            [
+              1787828400000,
+              17
+            ],
+            [
+              1787828700000,
+              13
+            ],
+            [
+              1787829000000,
+              13
+            ],
+            [
+              1787829300000,
+              24
+            ],
+            [
+              1787829600000,
+              13
+            ],
+            [
+              1787829900000,
+              19
+            ],
+            [
+              1787830200000,
+              12
+            ],
+            [
+              1787830500000,
+              44
+            ],
+            [
+              1787830800000,
+              49
+            ],
+            [
+              1787831100000,
+              58
+            ],
+            [
+              1787831400000,
+              48
+            ],
+            [
+              1787831700000,
+              50
+            ],
+            [
+              1787832000000,
+              45
+            ],
+            [
+              1787832300000,
+              36
+            ],
+            [
+              1787832600000,
+              44
+            ],
+            [
+              1787832900000,
+              50
+            ],
+            [
+              1787833200000,
+              50
+            ],
+            [
+              1787833500000,
+              46
+            ],
+            [
+              1787833800000,
+              35
+            ],
+            [
+              1787834100000,
+              36
+            ],
+            [
+              1787834400000,
+              39
+            ],
+            [
+              1787834700000,
+              37
+            ],
+            [
+              1787835000000,
+              34
+            ],
+            [
+              1787835300000,
+              25
+            ],
+            [
+              1787835600000,
+              19
+            ],
+            [
+              1787835900000,
+              50
+            ],
+            [
+              1787836200000,
+              null
+            ],
+            [
+              1787836500000,
+              null
+            ],
+            [
+              1787836800000,
+              null
+            ],
+            [
+              1787837100000,
+              null
+            ]
+          ],
+          "formattedValues": [
+            "16%",
+            null,
+            "11%",
+            "2%",
+            "2%",
+            "8%",
+            "2%",
+            "9%",
+            "2%",
+            "2%",
+            "7%",
+            "4%",
+            "7%",
+            "17%",
+            "13%",
+            "13%",
+            "24%",
+            "13%",
+            "19%",
+            "12%",
+            "44%",
+            "49%",
+            "58%",
+            "48%",
+            "50%",
+            "45%",
+            "36%",
+            "44%",
+            "50%",
+            "50%",
+            "46%",
+            "35%",
+            "36%",
+            "39%",
+            "37%",
+            "34%",
+            "25%",
+            "19%",
+            "50%",
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "counter": "metric.series.v1",
+          "aggr": "forecast",
+          "seriesType": "forecast",
+          "name": "metric.series.v1.avg",
+          "unit": "percent",
+          "totalPredictions": 4,
+          "data": [
+            {
+              "interval": 1787837400000,
+              "upper": 98.87,
+              "lower": 30.25,
+              "value": 64.56
+            },
+            {
+              "interval": 1787838600000,
+              "upper": 100,
+              "lower": 36.45,
+              "value": 70.79
+            },
+            {
+              "interval": 1787839800000,
+              "upper": 100,
+              "lower": 42.95,
+              "value": 77.33
+            },
+            {
+              "interval": 1787841000000,
+              "upper": 100,
+              "lower": 49,
+              "value": 83.46
+            }
+          ],
+          "formattedValues": [
+            "64.560%",
+            "70.790%",
+            "77.330%",
+            "83.460%"
+          ]
+        }
+      ],
+      "groupByColumns": [
+        "timestamp"
+      ],
+      "columns": [
+        "Timestamp",
+        "metric.series.v1.avg",
+        "metric.series.v1.avg.upperbound",
+        "metric.series.v1.avg.lowerbound"
+      ]
+    }
+  }
+}

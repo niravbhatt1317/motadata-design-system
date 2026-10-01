@@ -1,0 +1,323 @@
+{
+  "$fixture": "chart-single-horizontal-bar",
+  "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
+  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised. Display subsample: the captured 211-interval series is thinned to every 18th interval (~11 points, an hourly-equivalent rollup) so bar geometry stays readable — values are the real captured ones, unchanged.",
+  "config": {
+    "title": {
+      "text": "chart-single-horizontal-bar",
+      "align": "center",
+      "style": {
+        "color": "var(--page-text-color)",
+        "fontSize": "14px"
+      }
+    },
+    "chart": {
+      "type": "bar",
+      "plotBorderColor": "var(--border-color)",
+      "backgroundColor": "transparent",
+      "style": {
+        "fontFamily": "var(--chart-font-family)"
+      },
+      "reflow": false,
+      "skipClone": true,
+      "resetZoomButton": {
+        "theme": {
+          "fill": "var(--primary)",
+          "stroke": "var(--primary)",
+          "r": 4,
+          "style": {
+            "color": "var(--primary-button-text)"
+          },
+          "states": {
+            "hover": {
+              "fill": "var(--primary-button-hover-bg)",
+              "style": {
+                "color": "var(--primary-button-hover-text)"
+              }
+            }
+          }
+        }
+      },
+      "events": {
+        "load": "«fn»",
+        "redraw": "«fn»"
+      },
+      "zoomType": "x"
+    },
+    "boost": {
+      "useGPUTranslations": true,
+      "seriesThreshold": 11
+    },
+    "colors": [
+      "#14B8A6",
+      "#FB923C",
+      "#A855F7",
+      "#84CC16",
+      "#EC4899",
+      "#06B6D4",
+      "#EAB308",
+      "#FF6B6B",
+      "#10B981",
+      "#D946EF",
+      "#FBBF24",
+      "#8B5CF6",
+      "#F97316",
+      "#2DD4BF",
+      "#F43F5E",
+      "#A3E635",
+      "#C026D3",
+      "#E83E8C"
+    ],
+    "xAxis": {
+      "lineColor": "var(--bottom-line-color)",
+      "tickLength": 0,
+      "labels": {
+        "style": {
+          "color": "var(--page-text-color)",
+          "fontSize": "0.65rem"
+        },
+        "rotation": 0
+      },
+      "title": {
+        "style": {
+          "color": "var(--page-text-color)"
+        },
+        "text": ""
+      },
+      "gridLineColor": "var(--chart-grid-line-color)",
+      "type": "datetime"
+    },
+    "yAxis": {
+      "reversedStacks": false,
+      "labels": {
+        "style": {
+          "color": "var(--page-text-color)",
+          "fontSize": "0.65rem"
+        },
+        "formatter": "«fn»"
+      },
+      "title": {
+        "style": {
+          "color": "var(--page-text-color)",
+          "fontWeight": "500"
+        }
+      },
+      "lineWidth": 1,
+      "lineColor": "var(--bottom-line-color)",
+      "gridLineColor": "var(--chart-grid-line-color)",
+      "endOnTick": true,
+      "allowDecimal": true,
+      "plotBands": [],
+      "plotLines": []
+    },
+    "tooltip": {
+      "useHTML": true,
+      "crosshairs": true,
+      "headerFormat": "{field.v1}",
+      "backgroundColor": "var(--chart-tooltip-background)",
+      "style": {
+        "color": "var(--page-text-color)",
+        "fontFamily": "var(--chart-font-family)"
+      },
+      "borderWidth": 1,
+      "borderColor": "var(--border-color)",
+      "className": "shadow-lg hc-tooltip-bg",
+      "animation": false,
+      "borderRadius": 10,
+      "valueSuffix": "percent",
+      "shared": true,
+      "formatter": "«fn»"
+    },
+    "legend": {
+      "align": "center",
+      "symbolWidth": 11,
+      "symbolHeight": 11,
+      "symbolRadius": 1,
+      "itemStyle": {
+        "color": "var(--chart-legend-color)",
+        "fontWeight": "normal",
+        "opacity": "1",
+        "fontSize": "0.65rem"
+      },
+      "itemHoverStyle": {
+        "color": "var(--page-text-color)",
+        "fontWeight": "normal",
+        "opacity": "1"
+      },
+      "itemHiddenStyle": {
+        "opacity": "0.5"
+      },
+      "navigation": {
+        "activeColor": "var(--primary)",
+        "inactiveColor": "var(--faded-page-background-color)",
+        "style": {
+          "color": "var(--page-text-color)"
+        }
+      },
+      "enabled": false
+    },
+    "plotOptions": {
+      "series": {
+        "boostThreshold": 3000,
+        "borderWidth": 2,
+        "animation": {
+          "duration": 300,
+          "easing": "linear"
+        },
+        "connectNulls": true,
+        "dataLabels": {
+          "color": "var(--page-text-color)",
+          "shadow": false,
+          "style": {
+            "fontWeight": "normal",
+            "textOutline": "none"
+          },
+          "overflow": "none",
+          "formatter": "«fn»"
+        },
+        "marker": {
+          "enabled": false,
+          "symbol": "circle",
+          "fillColor": "white",
+          "lineColor": null,
+          "lineWidth": 2,
+          "radius": 3,
+          "states": {
+            "hover": {
+              "enabled": true
+            }
+          }
+        },
+        "states": {
+          "hover": {
+            "lineWidthPlus": 0
+          }
+        },
+        "events": {
+          "afterAnimate": "«fn»",
+          "click": "«fn»"
+        },
+        "lineWidth": 2,
+        "centerInCategory": true,
+        "minPointLength": 0,
+        "maxPointWidth": 20,
+        "pointPadding": 0.1,
+        "groupPadding": 0.25,
+        "borderColor": "var(--widget-background)",
+        "point": {
+          "events": {
+            "mouseOver": "«fn»"
+          }
+        }
+      },
+      "bar": {
+        "maxPointWidth": 50
+      },
+      "column": {
+        "maxPointWidth": 50
+      },
+      "areasplinerange": {
+        "marker": {
+          "enabled": true
+        }
+      },
+      "pie": {
+        "allowPointSelect": true,
+        "cursor": "pointer",
+        "dataLabels": {
+          "enabled": false,
+          "formatter": "«fn»",
+          "rotation": 0,
+          "style": {
+            "fontWeight": "normal",
+            "fontFamily": "'JetBrains Mono', monospace",
+            "fontSize": "10px"
+          }
+        },
+        "showInLegend": true,
+        "events": {
+          "click": "«fn»"
+        }
+      }
+    },
+    "credits": {
+      "enabled": false
+    },
+    "exporting": {
+      "enabled": false
+    },
+    "noData": {
+      "style": {
+        "fontSize": "16px",
+        "color": "var(--text-neutral-ligher)",
+        "fontWeight": "normal"
+      }
+    },
+    "lang": {
+      "noData": "No data found"
+    },
+    "disableAutoFetchServerSideZoomData": false,
+    "subtitle": {
+      "text": null
+    },
+    "series": [
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1787702400000,
+            46.47
+          ],
+          [
+            1787707800000,
+            46.38
+          ],
+          [
+            1787713200000,
+            46.49
+          ],
+          [
+            1787718600000,
+            46.42
+          ],
+          [
+            1787724000000,
+            46.71
+          ],
+          [
+            1787729400000,
+            46.77
+          ],
+          [
+            1787734800000,
+            46.78
+          ],
+          [
+            1787740200000,
+            46.62
+          ],
+          [
+            1787745600000,
+            46.31
+          ],
+          [
+            1787751000000,
+            46.82
+          ],
+          [
+            1787756400000,
+            32.16
+          ],
+          [
+            1787761800000,
+            32.44
+          ]
+        ],
+        "name": "web-01",
+        "unit": "percent"
+      }
+    ],
+    "timezone": "Asia/Calcutta"
+  }
+}

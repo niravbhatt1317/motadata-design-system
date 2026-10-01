@@ -1,0 +1,161 @@
+{
+  "$fixture": "heatmap",
+  "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
+  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised.",
+  "variant": {
+    "category": "HeatMap",
+    "widgetType": "PlainHeatMap"
+  },
+  "engines": {
+    "highcharts": false,
+    "leaflet": false,
+    "table": false
+  },
+  "config": {},
+  "result": {
+    "data": [
+      {
+        "field.v1": "Windows",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Extreme Wireless",
+        "field.v2": "Extreme Networks",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Linux",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Linux",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Windows",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "FTP",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Linux",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Linux",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Windows",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Linux",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Proxmox VE",
+        "severity": "DOWN",
+        "severityNumber": 1
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      {
+        "field.v1": "Router",
+        "field.v2": "Cisco Systems",
+        "severity": "CRITICAL",
+        "severityNumber": 3
+      },
+      "«225 more rows truncated»"
+    ],
+    "totalCount": 448
+  }
+}
