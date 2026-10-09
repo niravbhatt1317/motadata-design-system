@@ -1,0 +1,845 @@
+{
+  "$fixture": "chart-multi-vertical-bar",
+  "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
+  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised. Display subsample: the captured 803-interval series is thinned to every 67th interval (~11 points, an hourly-equivalent rollup) so bar geometry stays readable — values are the real captured ones, unchanged.",
+  "variant": {
+    "category": "Chart",
+    "widgetType": "VerticalBar"
+  },
+  "engines": {
+    "highcharts": true,
+    "leaflet": false,
+    "table": false
+  },
+  "config": {
+    "title": {
+      "text": "chart-multi-vertical-bar",
+      "align": "center",
+      "style": {
+        "color": "var(--page-text-color)",
+        "fontSize": "14px"
+      }
+    },
+    "chart": {
+      "type": "column",
+      "plotBorderColor": "var(--border-color)",
+      "backgroundColor": "transparent",
+      "style": {
+        "fontFamily": "var(--chart-font-family)"
+      },
+      "reflow": false,
+      "skipClone": true,
+      "resetZoomButton": {
+        "theme": {
+          "fill": "var(--primary)",
+          "stroke": "var(--primary)",
+          "r": 4,
+          "style": {
+            "color": "var(--primary-button-text)"
+          },
+          "states": {
+            "hover": {
+              "fill": "var(--primary-button-hover-bg)",
+              "style": {
+                "color": "var(--primary-button-hover-text)"
+              }
+            }
+          }
+        }
+      },
+      "events": {
+        "load": "«fn»",
+        "redraw": "«fn»"
+      },
+      "zoomType": "x"
+    },
+    "boost": {
+      "useGPUTranslations": true,
+      "seriesThreshold": 11
+    },
+    "colors": [
+      "#14B8A6",
+      "#FB923C",
+      "#A855F7",
+      "#84CC16",
+      "#EC4899",
+      "#06B6D4",
+      "#EAB308",
+      "#FF6B6B",
+      "#10B981",
+      "#D946EF",
+      "#FBBF24",
+      "#8B5CF6",
+      "#F97316",
+      "#2DD4BF",
+      "#F43F5E",
+      "#A3E635",
+      "#C026D3",
+      "#E83E8C"
+    ],
+    "xAxis": {
+      "lineColor": "var(--bottom-line-color)",
+      "tickLength": 0,
+      "labels": {
+        "style": {
+          "color": "var(--page-text-color)",
+          "fontSize": "0.65rem"
+        },
+        "rotation": 0
+      },
+      "title": {
+        "style": {
+          "color": "var(--page-text-color)"
+        },
+        "text": ""
+      },
+      "gridLineColor": "var(--chart-grid-line-color)",
+      "type": "datetime"
+    },
+    "yAxis": {
+      "reversedStacks": false,
+      "labels": {
+        "style": {
+          "color": "var(--page-text-color)",
+          "fontSize": "0.65rem"
+        },
+        "formatter": "«fn»"
+      },
+      "title": {
+        "style": {
+          "color": "var(--page-text-color)",
+          "fontWeight": "500"
+        },
+        "text": ""
+      },
+      "lineWidth": 1,
+      "lineColor": "var(--bottom-line-color)",
+      "gridLineColor": "var(--chart-grid-line-color)",
+      "endOnTick": true,
+      "allowDecimal": true,
+      "plotBands": [],
+      "plotLines": []
+    },
+    "tooltip": {
+      "useHTML": true,
+      "crosshairs": true,
+      "headerFormat": "{field.v1}",
+      "backgroundColor": "var(--chart-tooltip-background)",
+      "style": {
+        "color": "var(--page-text-color)",
+        "fontFamily": "var(--chart-font-family)"
+      },
+      "borderWidth": 1,
+      "borderColor": "var(--border-color)",
+      "className": "shadow-lg hc-tooltip-bg",
+      "animation": false,
+      "borderRadius": 10,
+      "valueSuffix": "percent",
+      "shared": true,
+      "formatter": "«fn»"
+    },
+    "legend": {
+      "align": "center",
+      "symbolWidth": 11,
+      "symbolHeight": 11,
+      "symbolRadius": 1,
+      "itemStyle": {
+        "color": "var(--chart-legend-color)",
+        "fontWeight": "normal",
+        "opacity": "1",
+        "fontSize": "0.65rem"
+      },
+      "itemHoverStyle": {
+        "color": "var(--page-text-color)",
+        "fontWeight": "normal",
+        "opacity": "1"
+      },
+      "itemHiddenStyle": {
+        "opacity": "0.5"
+      },
+      "navigation": {
+        "activeColor": "var(--primary)",
+        "inactiveColor": "var(--faded-page-background-color)",
+        "style": {
+          "color": "var(--page-text-color)"
+        }
+      },
+      "enabled": true
+    },
+    "plotOptions": {
+      "series": {
+        "boostThreshold": 3000,
+        "borderWidth": 2,
+        "animation": {
+          "duration": 300,
+          "easing": "linear"
+        },
+        "connectNulls": true,
+        "dataLabels": {
+          "color": "var(--page-text-color)",
+          "shadow": false,
+          "style": {
+            "fontWeight": "normal",
+            "textOutline": "none"
+          },
+          "overflow": "none",
+          "formatter": "«fn»"
+        },
+        "marker": {
+          "enabled": false,
+          "symbol": "circle",
+          "fillColor": "white",
+          "lineColor": null,
+          "lineWidth": 2,
+          "radius": 3,
+          "states": {
+            "hover": {
+              "enabled": true
+            }
+          }
+        },
+        "states": {
+          "hover": {
+            "lineWidthPlus": 0
+          }
+        },
+        "events": {
+          "afterAnimate": "«fn»",
+          "click": "«fn»"
+        },
+        "lineWidth": 2,
+        "centerInCategory": true,
+        "minPointLength": 0,
+        "maxPointWidth": 20,
+        "pointPadding": 0.1,
+        "groupPadding": 0.25,
+        "borderColor": "var(--widget-background)",
+        "point": {
+          "events": {
+            "mouseOver": "«fn»"
+          }
+        }
+      },
+      "bar": {
+        "maxPointWidth": 50
+      },
+      "column": {
+        "maxPointWidth": 50
+      },
+      "areasplinerange": {
+        "marker": {
+          "enabled": true
+        }
+      },
+      "pie": {
+        "allowPointSelect": true,
+        "cursor": "pointer",
+        "dataLabels": {
+          "enabled": false,
+          "formatter": "«fn»",
+          "rotation": 0,
+          "style": {
+            "fontWeight": "normal",
+            "fontFamily": "'JetBrains Mono', monospace",
+            "fontSize": "10px"
+          }
+        },
+        "showInLegend": true,
+        "events": {
+          "click": "«fn»"
+        }
+      }
+    },
+    "credits": {
+      "enabled": false
+    },
+    "exporting": {
+      "enabled": false
+    },
+    "noData": {
+      "style": {
+        "fontSize": "16px",
+        "color": "var(--text-neutral-ligher)",
+        "fontWeight": "normal"
+      }
+    },
+    "lang": {
+      "noData": "No data found"
+    },
+    "disableAutoFetchServerSideZoomData": false,
+    "subtitle": {
+      "text": null
+    },
+    "series": [
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            99
+          ],
+          [
+            1785663000000,
+            99
+          ],
+          [
+            1785783600000,
+            99
+          ],
+          [
+            1785904200000,
+            99
+          ],
+          [
+            1786033800000,
+            99
+          ],
+          [
+            1786158000000,
+            99
+          ],
+          [
+            1786278600000,
+            99
+          ],
+          [
+            1786399200000,
+            99
+          ],
+          [
+            1786519800000,
+            99
+          ],
+          [
+            1787085000000,
+            96
+          ],
+          [
+            1787205600000,
+            96
+          ],
+          [
+            1787650200000,
+            96
+          ]
+        ],
+        "name": "web-01",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            100
+          ],
+          [
+            1785663000000,
+            100
+          ],
+          [
+            1785783600000,
+            100
+          ],
+          [
+            1785904200000,
+            100
+          ],
+          [
+            1786033800000,
+            100
+          ],
+          [
+            1786158000000,
+            100
+          ],
+          [
+            1786278600000,
+            100
+          ],
+          [
+            1786399200000,
+            100
+          ],
+          [
+            1786519800000,
+            100
+          ],
+          [
+            1787085000000,
+            91
+          ],
+          [
+            1787205600000,
+            91
+          ],
+          [
+            1787650200000,
+            91
+          ]
+        ],
+        "name": "web-02",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            94
+          ],
+          [
+            1785663000000,
+            94
+          ],
+          [
+            1785783600000,
+            94
+          ],
+          [
+            1785904200000,
+            94
+          ],
+          [
+            1786033800000,
+            94
+          ],
+          [
+            1786158000000,
+            94
+          ],
+          [
+            1786278600000,
+            94
+          ],
+          [
+            1786399200000,
+            94
+          ],
+          [
+            1786519800000,
+            94
+          ],
+          [
+            1787085000000,
+            98
+          ],
+          [
+            1787205600000,
+            98
+          ],
+          [
+            1787650200000,
+            98
+          ]
+        ],
+        "name": "db-01",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            98
+          ],
+          [
+            1785663000000,
+            98
+          ],
+          [
+            1785783600000,
+            98
+          ],
+          [
+            1785904200000,
+            98
+          ],
+          [
+            1786033800000,
+            98
+          ],
+          [
+            1786158000000,
+            98
+          ],
+          [
+            1786278600000,
+            98
+          ],
+          [
+            1786399200000,
+            98
+          ],
+          [
+            1786519800000,
+            98
+          ],
+          [
+            1787085000000,
+            94
+          ],
+          [
+            1787205600000,
+            94
+          ],
+          [
+            1787650200000,
+            94
+          ]
+        ],
+        "name": "db-02",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            100
+          ],
+          [
+            1785663000000,
+            100
+          ],
+          [
+            1785783600000,
+            100
+          ],
+          [
+            1785904200000,
+            100
+          ],
+          [
+            1786033800000,
+            100
+          ],
+          [
+            1786158000000,
+            100
+          ],
+          [
+            1786278600000,
+            100
+          ],
+          [
+            1786399200000,
+            100
+          ],
+          [
+            1786519800000,
+            100
+          ],
+          [
+            1787085000000,
+            87
+          ],
+          [
+            1787205600000,
+            87
+          ],
+          [
+            1787650200000,
+            87
+          ]
+        ],
+        "name": "cache-01",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            98
+          ],
+          [
+            1785663000000,
+            98
+          ],
+          [
+            1785783600000,
+            98
+          ],
+          [
+            1785904200000,
+            98
+          ],
+          [
+            1786033800000,
+            98
+          ],
+          [
+            1786158000000,
+            98
+          ],
+          [
+            1786278600000,
+            98
+          ],
+          [
+            1786399200000,
+            98
+          ],
+          [
+            1786519800000,
+            98
+          ],
+          [
+            1787085000000,
+            95
+          ],
+          [
+            1787205600000,
+            95
+          ],
+          [
+            1787650200000,
+            95
+          ]
+        ],
+        "name": "queue-01",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            99
+          ],
+          [
+            1785663000000,
+            99
+          ],
+          [
+            1785783600000,
+            99
+          ],
+          [
+            1785904200000,
+            99
+          ],
+          [
+            1786033800000,
+            99
+          ],
+          [
+            1786158000000,
+            99
+          ],
+          [
+            1786278600000,
+            99
+          ],
+          [
+            1786399200000,
+            99
+          ],
+          [
+            1786519800000,
+            99
+          ],
+          [
+            1787085000000,
+            88
+          ],
+          [
+            1787205600000,
+            88
+          ],
+          [
+            1787650200000,
+            88
+          ]
+        ],
+        "name": "edge-01",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            94
+          ],
+          [
+            1785663000000,
+            94
+          ],
+          [
+            1785783600000,
+            94
+          ],
+          [
+            1785904200000,
+            94
+          ],
+          [
+            1786033800000,
+            94
+          ],
+          [
+            1786158000000,
+            94
+          ],
+          [
+            1786278600000,
+            94
+          ],
+          [
+            1786399200000,
+            94
+          ],
+          [
+            1786519800000,
+            94
+          ],
+          [
+            1787085000000,
+            95
+          ],
+          [
+            1787205600000,
+            95
+          ],
+          [
+            1787650200000,
+            95
+          ]
+        ],
+        "name": "edge-02",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            96
+          ],
+          [
+            1785663000000,
+            96
+          ],
+          [
+            1785783600000,
+            96
+          ],
+          [
+            1785904200000,
+            96
+          ],
+          [
+            1786033800000,
+            96
+          ],
+          [
+            1786158000000,
+            96
+          ],
+          [
+            1786278600000,
+            96
+          ],
+          [
+            1786399200000,
+            96
+          ],
+          [
+            1786519800000,
+            96
+          ],
+          [
+            1787085000000,
+            92
+          ],
+          [
+            1787205600000,
+            92
+          ],
+          [
+            1787650200000,
+            92
+          ]
+        ],
+        "name": "worker-01",
+        "unit": "percent"
+      },
+      {
+        "counter": "metricValue",
+        "aggr": "avg",
+        "data": [
+          [
+            1785542400000,
+            95
+          ],
+          [
+            1785663000000,
+            95
+          ],
+          [
+            1785783600000,
+            95
+          ],
+          [
+            1785904200000,
+            95
+          ],
+          [
+            1786033800000,
+            95
+          ],
+          [
+            1786158000000,
+            95
+          ],
+          [
+            1786278600000,
+            95
+          ],
+          [
+            1786399200000,
+            95
+          ],
+          [
+            1786519800000,
+            95
+          ],
+          [
+            1787085000000,
+            95
+          ],
+          [
+            1787205600000,
+            95
+          ],
+          [
+            1787650200000,
+            95
+          ]
+        ],
+        "name": "worker-02",
+        "unit": "percent"
+      }
+    ],
+    "timezone": "Asia/Calcutta"
+  },
+  "result": {
+    "columns": [
+      "metric.series.v3~field.v4"
+    ],
+    "data": {
+      "metric.series.v3~field.v4": "Up"
+    }
+  }
+}

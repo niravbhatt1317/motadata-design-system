@@ -1,0 +1,25 @@
+{
+  "$fixture": "map-points",
+  "$provenance": "built for the map-point variant — the row shape is the product's mappoint result (name, code2, z/value, formatted value, GeoJSON Point geometry); locations are major-city coordinates and values are illustrative.",
+  "$note": "map points render as fixed markers (fill var(--primary)) with the location name labelled, not value-sized bubbles — the product's second map series type. geometry carries the explicit GeoJSON Point type so the engine plots at the coordinates.",
+  "variant": { "category": "Map", "widgetType": "Map" },
+  "result": {
+    "type": "mappoint",
+    "data": {
+      "mappoint": [
+        { "name": "London", "code2": "GB", "z": 412, "value": 412, "metric.series.v1": "412", "geometry": { "type": "Point", "coordinates": [-0.1276, 51.5072] } },
+        { "name": "New York", "code2": "US", "z": 980, "value": 980, "metric.series.v1": "980", "geometry": { "type": "Point", "coordinates": [-74.006, 40.7128] } },
+        { "name": "San Francisco", "code2": "US", "z": 645, "value": 645, "metric.series.v1": "645", "geometry": { "type": "Point", "coordinates": [-122.4194, 37.7749] } },
+        { "name": "Frankfurt", "code2": "DE", "z": 530, "value": 530, "metric.series.v1": "530", "geometry": { "type": "Point", "coordinates": [8.6821, 50.1109] } },
+        { "name": "Singapore", "code2": "SG", "z": 715, "value": 715, "metric.series.v1": "715", "geometry": { "type": "Point", "coordinates": [103.8198, 1.3521] } },
+        { "name": "Sydney", "code2": "AU", "z": 388, "value": 388, "metric.series.v1": "388", "geometry": { "type": "Point", "coordinates": [151.2093, -33.8688] } },
+        { "name": "Tokyo", "code2": "JP", "z": 842, "value": 842, "metric.series.v1": "842", "geometry": { "type": "Point", "coordinates": [139.6917, 35.6895] } },
+        { "name": "Mumbai", "code2": "IN", "z": 601, "value": 601, "metric.series.v1": "601", "geometry": { "type": "Point", "coordinates": [72.8777, 19.076] } },
+        { "name": "Dubai", "code2": "AE", "z": 466, "value": 466, "metric.series.v1": "466", "geometry": { "type": "Point", "coordinates": [55.2708, 25.2048] } },
+        { "name": "São Paulo", "code2": "BR", "z": 355, "value": 355, "metric.series.v1": "355", "geometry": { "type": "Point", "coordinates": [-46.6333, -23.5505] } },
+        { "name": "Toronto", "code2": "CA", "z": 298, "value": 298, "metric.series.v1": "298", "geometry": { "type": "Point", "coordinates": [-79.3832, 43.6532] } },
+        { "name": "Nairobi", "code2": "KE", "z": 187, "value": 187, "metric.series.v1": "187", "geometry": { "type": "Point", "coordinates": [36.8219, -1.2921] } }
+      ]
+    }
+  }
+}

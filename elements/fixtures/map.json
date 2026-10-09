@@ -1,0 +1,548 @@
+{
+  "$fixture": "map",
+  "$provenance": "captured from a host rendering, then sanitised — see scripts/sanitize-fixture.mjs",
+  "$note": "\"«fn»\" marks a function that existed in the source config but cannot be serialised. NOTE: this is an engine-rendered map (country paths), NOT Leaflet. Leaflet belongs to the separate Geo Map screen.",
+  "variant": {
+    "category": "Map",
+    "widgetType": "Map"
+  },
+  "engines": {
+    "highcharts": true,
+    "leaflet": false,
+    "table": false
+  },
+  "config": {},
+  "result": {
+    "type": "mapbubble",
+    "data": {
+      "mapbubble": [
+        {
+          "metric.series.v1": "69.47 KB",
+          "z": 71137.425,
+          "value": 71137.425,
+          "name": "New Zealand",
+          "code2": "NZ",
+          "untouchedData": {
+            "metric.series.v1": 71137.425,
+            "metric.series.v2": "69.47 KB",
+            "field.v3": "New Zealand",
+            "field.v4": "NZ",
+            "field.v5": "-40.900557",
+            "field.v6": "174.885971"
+          },
+          "geometry": {
+            "coordinates": [
+              "174.885971",
+              "-40.900557"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "16.38 KB",
+          "z": 16772.675500309844,
+          "value": 16772.675500309844,
+          "name": "Uruguay",
+          "code2": "UY",
+          "untouchedData": {
+            "metric.series.v1": 16772.675500309844,
+            "metric.series.v2": "16.38 KB",
+            "field.v3": "Uruguay",
+            "field.v4": "UY",
+            "field.v5": "-32.522779",
+            "field.v6": "-55.765835"
+          },
+          "geometry": {
+            "coordinates": [
+              "-55.765835",
+              "-32.522779"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "143.39 KB",
+          "z": 146826.5246321177,
+          "value": 146826.5246321177,
+          "name": "Italy",
+          "code2": "IT",
+          "untouchedData": {
+            "metric.series.v1": 146826.5246321177,
+            "metric.series.v2": "143.39 KB",
+            "field.v3": "Italy",
+            "field.v4": "IT",
+            "field.v5": "41.87194",
+            "field.v6": "12.56738"
+          },
+          "geometry": {
+            "coordinates": [
+              "12.56738",
+              "41.87194"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "5.15 KB",
+          "z": 5271.811004784689,
+          "value": 5271.811004784689,
+          "name": "Russia",
+          "code2": "RU",
+          "untouchedData": {
+            "metric.series.v1": 5271.811004784689,
+            "metric.series.v2": "5.15 KB",
+            "field.v3": "Russia",
+            "field.v4": "RU",
+            "field.v5": "61.52401",
+            "field.v6": "105.318756"
+          },
+          "geometry": {
+            "coordinates": [
+              "105.318756",
+              "61.52401"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "2.58 KB",
+          "z": 2645.4,
+          "value": 2645.4,
+          "name": "Qatar",
+          "code2": "QA",
+          "untouchedData": {
+            "metric.series.v1": 2645.4,
+            "metric.series.v2": "2.58 KB",
+            "field.v3": "Qatar",
+            "field.v4": "QA",
+            "field.v5": "25.354826",
+            "field.v6": "51.183884"
+          },
+          "geometry": {
+            "coordinates": [
+              "51.183884",
+              "25.354826"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "8.88 KB",
+          "z": 9091.717770034844,
+          "value": 9091.717770034844,
+          "name": "Indonesia",
+          "code2": "ID",
+          "untouchedData": {
+            "metric.series.v1": 9091.717770034844,
+            "metric.series.v2": "8.88 KB",
+            "field.v3": "Indonesia",
+            "field.v4": "ID",
+            "field.v5": "-0.789275",
+            "field.v6": "113.921327"
+          },
+          "geometry": {
+            "coordinates": [
+              "113.921327",
+              "-0.789275"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "22.74 KB",
+          "z": 23282.85851866561,
+          "value": 23282.85851866561,
+          "name": "France",
+          "code2": "FR",
+          "untouchedData": {
+            "metric.series.v1": 23282.85851866561,
+            "metric.series.v2": "22.74 KB",
+            "field.v3": "France",
+            "field.v4": "FR",
+            "field.v5": "46.227638",
+            "field.v6": "2.213749"
+          },
+          "geometry": {
+            "coordinates": [
+              "2.213749",
+              "46.227638"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "472.67 Bytes",
+          "z": 472.6666666666667,
+          "value": 472.6666666666667,
+          "name": "Lithuania",
+          "code2": "LT",
+          "untouchedData": {
+            "metric.series.v1": 472.6666666666667,
+            "metric.series.v2": "472.67 Bytes",
+            "field.v3": "Lithuania",
+            "field.v4": "LT",
+            "field.v5": "55.169438",
+            "field.v6": "23.881275"
+          },
+          "geometry": {
+            "coordinates": [
+              "23.881275",
+              "55.169438"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "2.39 KB",
+          "z": 2451.8823529411766,
+          "value": 2451.8823529411766,
+          "name": "Guatemala",
+          "code2": "GT",
+          "untouchedData": {
+            "metric.series.v1": 2451.8823529411766,
+            "metric.series.v2": "2.39 KB",
+            "field.v3": "Guatemala",
+            "field.v4": "GT",
+            "field.v5": "15.783471",
+            "field.v6": "-90.230759"
+          },
+          "geometry": {
+            "coordinates": [
+              "-90.230759",
+              "15.783471"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "263.96 KB",
+          "z": 270293.7004592902,
+          "value": 270293.7004592902,
+          "name": "United Kingdom",
+          "code2": "GB",
+          "untouchedData": {
+            "metric.series.v1": 270293.7004592902,
+            "metric.series.v2": "263.96 KB",
+            "field.v3": "United Kingdom",
+            "field.v4": "GB",
+            "field.v5": "55.378051",
+            "field.v6": "-3.435973"
+          },
+          "geometry": {
+            "coordinates": [
+              "-3.435973",
+              "55.378051"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "51.92 KB",
+          "z": 53170.907949790795,
+          "value": 53170.907949790795,
+          "name": "Denmark",
+          "code2": "DK",
+          "untouchedData": {
+            "metric.series.v1": 53170.907949790795,
+            "metric.series.v2": "51.92 KB",
+            "field.v3": "Denmark",
+            "field.v4": "DK",
+            "field.v5": "56.26392",
+            "field.v6": "9.501785"
+          },
+          "geometry": {
+            "coordinates": [
+              "9.501785",
+              "56.26392"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "1.28 KB",
+          "z": 1307.983606557377,
+          "value": 1307.983606557377,
+          "name": "Chile",
+          "code2": "CL",
+          "untouchedData": {
+            "metric.series.v1": 1307.983606557377,
+            "metric.series.v2": "1.28 KB",
+            "field.v3": "Chile",
+            "field.v4": "CL",
+            "field.v5": "-35.675147",
+            "field.v6": "-71.542969"
+          },
+          "geometry": {
+            "coordinates": [
+              "-71.542969",
+              "-35.675147"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "169.33 KB",
+          "z": 173389.43292682926,
+          "value": 173389.43292682926,
+          "name": "Ukraine",
+          "code2": "UA",
+          "untouchedData": {
+            "metric.series.v1": 173389.43292682926,
+            "metric.series.v2": "169.33 KB",
+            "field.v3": "Ukraine",
+            "field.v4": "UA",
+            "field.v5": "48.379433",
+            "field.v6": "31.16558"
+          },
+          "geometry": {
+            "coordinates": [
+              "31.16558",
+              "48.379433"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "1.96 KB",
+          "z": 2009.8461538461538,
+          "value": 2009.8461538461538,
+          "name": "Croatia",
+          "code2": "HR",
+          "untouchedData": {
+            "metric.series.v1": 2009.8461538461538,
+            "metric.series.v2": "1.96 KB",
+            "field.v3": "Croatia",
+            "field.v4": "HR",
+            "field.v5": "45.1",
+            "field.v6": "15.2"
+          },
+          "geometry": {
+            "coordinates": [
+              "15.2",
+              "45.1"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "4.65 MB",
+          "z": 4878005.333333333,
+          "value": 4878005.333333333,
+          "name": "Nigeria",
+          "code2": "NG",
+          "untouchedData": {
+            "metric.series.v1": 4878005.333333333,
+            "metric.series.v2": "4.65 MB",
+            "field.v3": "Nigeria",
+            "field.v4": "NG",
+            "field.v5": "9.081999",
+            "field.v6": "8.675277"
+          },
+          "geometry": {
+            "coordinates": [
+              "8.675277",
+              "9.081999"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "6.47 KB",
+          "z": 6621.875,
+          "value": 6621.875,
+          "name": "Iran",
+          "code2": "IR",
+          "untouchedData": {
+            "metric.series.v1": 6621.875,
+            "metric.series.v2": "6.47 KB",
+            "field.v3": "Iran",
+            "field.v4": "IR",
+            "field.v5": "32.427908",
+            "field.v6": "53.688046"
+          },
+          "geometry": {
+            "coordinates": [
+              "53.688046",
+              "32.427908"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "15.98 KB",
+          "z": 16359.296296296296,
+          "value": 16359.296296296296,
+          "name": "Argentina",
+          "code2": "AR",
+          "untouchedData": {
+            "metric.series.v1": 16359.296296296296,
+            "metric.series.v2": "15.98 KB",
+            "field.v3": "Argentina",
+            "field.v4": "AR",
+            "field.v5": "-38.416097",
+            "field.v6": "-63.616672"
+          },
+          "geometry": {
+            "coordinates": [
+              "-63.616672",
+              "-38.416097"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "1.75 KB",
+          "z": 1787.1538461538462,
+          "value": 1787.1538461538462,
+          "name": "Bulgaria",
+          "code2": "BG",
+          "untouchedData": {
+            "metric.series.v1": 1787.1538461538462,
+            "metric.series.v2": "1.75 KB",
+            "field.v3": "Bulgaria",
+            "field.v4": "BG",
+            "field.v5": "42.733883",
+            "field.v6": "25.48583"
+          },
+          "geometry": {
+            "coordinates": [
+              "25.48583",
+              "42.733883"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "8.02 KB",
+          "z": 8217.231884057972,
+          "value": 8217.231884057972,
+          "name": "Taiwan",
+          "code2": "TW",
+          "untouchedData": {
+            "metric.series.v1": 8217.231884057972,
+            "metric.series.v2": "8.02 KB",
+            "field.v3": "Taiwan",
+            "field.v4": "TW",
+            "field.v5": "23.69781",
+            "field.v6": "120.960515"
+          },
+          "geometry": {
+            "coordinates": [
+              "120.960515",
+              "23.69781"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "2.19 KB",
+          "z": 2243.714285714286,
+          "value": 2243.714285714286,
+          "name": "Peru",
+          "code2": "PE",
+          "untouchedData": {
+            "metric.series.v1": 2243.714285714286,
+            "metric.series.v2": "2.19 KB",
+            "field.v3": "Peru",
+            "field.v4": "PE",
+            "field.v5": "-9.189967",
+            "field.v6": "-75.015152"
+          },
+          "geometry": {
+            "coordinates": [
+              "-75.015152",
+              "-9.189967"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "559.83 Bytes",
+          "z": 559.8333333333334,
+          "value": 559.8333333333334,
+          "name": "Iceland",
+          "code2": "IS",
+          "untouchedData": {
+            "metric.series.v1": 559.8333333333334,
+            "metric.series.v2": "559.83 Bytes",
+            "field.v3": "Iceland",
+            "field.v4": "IS",
+            "field.v5": "64.963051",
+            "field.v6": "-19.020835"
+          },
+          "geometry": {
+            "coordinates": [
+              "-19.020835",
+              "64.963051"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "61.84 KB",
+          "z": 63320.24603228663,
+          "value": 63320.24603228663,
+          "name": "South Korea",
+          "code2": "KR",
+          "untouchedData": {
+            "metric.series.v1": 63320.24603228663,
+            "metric.series.v2": "61.84 KB",
+            "field.v3": "South Korea",
+            "field.v4": "KR",
+            "field.v5": "35.907757",
+            "field.v6": "127.766922"
+          },
+          "geometry": {
+            "coordinates": [
+              "127.766922",
+              "35.907757"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "115.1 KB",
+          "z": 117861.2802359882,
+          "value": 117861.2802359882,
+          "name": "Sweden",
+          "code2": "SE",
+          "untouchedData": {
+            "metric.series.v1": 117861.2802359882,
+            "metric.series.v2": "115.1 KB",
+            "field.v3": "Sweden",
+            "field.v4": "SE",
+            "field.v5": "60.128161",
+            "field.v6": "18.643501"
+          },
+          "geometry": {
+            "coordinates": [
+              "18.643501",
+              "60.128161"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "83.47 KB",
+          "z": 85475.98353985575,
+          "value": 85475.98353985575,
+          "name": "Hong Kong",
+          "code2": "HK",
+          "untouchedData": {
+            "metric.series.v1": 85475.98353985575,
+            "metric.series.v2": "83.47 KB",
+            "field.v3": "Hong Kong",
+            "field.v4": "HK",
+            "field.v5": "22.396428",
+            "field.v6": "114.109497"
+          },
+          "geometry": {
+            "coordinates": [
+              "114.109497",
+              "22.396428"
+            ]
+          }
+        },
+        {
+          "metric.series.v1": "2.22 KB",
+          "z": 2277.7368421052633,
+          "value": 2277.7368421052633,
+          "name": "Belize",
+          "code2": "BZ",
+          "untouchedData": {
+            "metric.series.v1": 2277.7368421052633,
+            "metric.series.v2": "2.22 KB",
+            "field.v3": "Belize",
+            "field.v4": "BZ",
+            "field.v5": "17.189877",
+            "field.v6": "-88.49765"
+          },
+          "geometry": {
+            "coordinates": [
+              "-88.49765",
+              "17.189877"
+            ]
+          }
+        },
+        "«50 more rows truncated»"
+      ]
+    }
+  }
+}
