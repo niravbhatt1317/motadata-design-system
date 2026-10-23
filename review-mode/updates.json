@@ -1,0 +1,13 @@
+{
+  "addons": {
+    "review-mode@heynirav": {
+      "updates": [
+        {
+          "version": "2.0.41",
+          "update_link": "https://niravbhatt1317.github.io/motadata-design-system/review-mode/review-mode-2.0.41.xpi",
+          "update_hash": "sha256:3d8e6f292a7474335bff2beb733a9a1de134a3110719241cde6e952b625ba803"
+        }
+      ]
+    }
+  }
+}
